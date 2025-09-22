@@ -43,7 +43,7 @@ Example (from the sample configuration file):
 ::NSK_HEADER_REGION = nsk::RP2C02
 ```
 
-This directive defines the release region for the ROM by referencing constants provided in `header/nsk_consts.inc`.
+This directive defines the release region for the ROM by referencing constants provided in `header/nsk_header_consts.inc`.
 
 ---
 

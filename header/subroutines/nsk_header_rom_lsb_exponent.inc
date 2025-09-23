@@ -4,6 +4,9 @@
 ;
 ; Part of the Nesokia project — MIT License.
 
+.ifndef ::__NSK_HEADER_ROM_LSB_EXPONENT__
+::__NSK_HEADER_ROM_LSB__ = 1
+
 .linecont +
 
 ; @def NSK_HEADER_EXPONENT_LOGLOOP_LIMIT
@@ -162,3 +165,4 @@
         out_result .set (_exponent << 2) | _multiplier
 .endmacro
 
+.endif

@@ -3,6 +3,9 @@
 ;
 ; Part of the Nesokia project — MIT License.
 
+.ifndef ::__NSK_HEADER_MAGIC__
+::__NSK_HEADER_MAGIC__ = 1
+
 ; @macro nsk_header_magic
 ; @brief Inserts the standard NES ROM magic signature.
 ;
@@ -18,3 +21,6 @@
     eof:
         .byte $1a
 .endmacro
+
+.endif
+

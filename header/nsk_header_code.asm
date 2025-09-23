@@ -12,12 +12,12 @@
 .include "nsk_header_config.inc"
 
 .include "subroutines/nsk_header_magic.inc"
-.include "subroutines/nsk_header_prg_lsb.inc"
-.include "subroutines/nsk_header_chr_lsb.inc"
+.include "subroutines/nsk_header_prgrom_lsb.inc"
+.include "subroutines/nsk_header_chrrom_lsb.inc"
 .include "subroutines/nsk_header_flags6.inc"
 .include "subroutines/nsk_header_flags7.inc"
 .include "subroutines/nsk_header_mapper.inc"
-.include "subroutines/nsk_header_prgchr_msb.inc"
+.include "subroutines/nsk_header_prgchrrom_msb.inc"
 .include "subroutines/nsk_header_prgram.inc"
 .include "subroutines/nsk_header_chrram.inc"
 .include "subroutines/nsk_header_timings.inc"
@@ -31,11 +31,11 @@
 nsk_header_magic
 
 ; 4: PRG ROM size LSB
-nsk_header_prg_lsb                          \
+nsk_header_prgrom_lsb                       \
     ::NSK_HEADER_PRGROM_SIZE
 
 ; 5: CHR ROM size LSB
-nsk_header_chr_lsb                          \
+nsk_header_chrrom_lsb                       \
     ::NSK_HEADER_CHRROM_SIZE
 
 ; 6: A set of flags to be put in the 6th byte
@@ -58,7 +58,7 @@ nsk_header_mapper                           \
     ::NSK_HEADER_SUBMAPPER_ID
 
 ; 9: PRG/CHR-ROM size MSB
-nsk_header_prgchr_msb                       \
+nsk_header_prgchrrom_msb                    \
     ::NSK_HEADER_PRGROM_SIZE,               \
     ::NSK_HEADER_CHRROM_SIZE
 

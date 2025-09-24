@@ -63,11 +63,13 @@ nsk_header_prgchrrom_msb                    \
 
 ; 10: PRG-RAM/EEPROM size
 nsk_header_prgram                           \
-    ::NSK_HEADER_PRGRAM_SIZE
+    ::NSK_HEADER_PRGRAM_SIZE,               \
+    ::NSK_HEADER_PRGNVRAM_SIZE
 
 ; 11: CHR-RAM size
 nsk_header_chrram                           \
-    ::NSK_HEADER_CHRRAM_SIZE
+    ::NSK_HEADER_CHRRAM_SIZE,               \
+    ::NSK_HEADER_CHRNVRAM_SIZE
 
 ; 12: CPU/PPU timings
 nsk_header_timings                          \

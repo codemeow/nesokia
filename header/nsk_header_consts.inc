@@ -99,6 +99,75 @@
         present                     = 1
     .endscope
 
+    ; @enum console
+    ; @brief Console type identifiers for NES 2.0 header Flags 7.
+    ;
+    ; Encodes the target hardware family of the ROM image. 
+    .scope console
+
+        ; @var famicom
+        ; @brief Nintendo Family Computer (Famicom).
+        famicom                     = $00
+
+        ; @var NES
+        ; @brief Nintendo Entertainment System (NTSC/PAL). Alias of @ref console::famicom.
+        NES                         = nsk::console::famicom
+
+        ; @var dendy
+        ; @brief Dendy (Russian NES clone). Alias of @ref console::famicom.
+        dendy                       = nsk::console::famicom
+
+        ; @var nintendo_vs_system
+        ; @brief Nintendo VS. System arcade hardware.
+        nintendo_vs_system          = $01
+
+        ; @var nintendo_playchoice_10
+        ; @brief Nintendo PlayChoice-10 arcade system.
+        nintendo_playchoice_10      = $02
+
+        ; @var famiclone_decimal
+        ; @brief Generic famiclone with decimal-based PPU.
+        famiclone_decimal           = $03
+
+        ; @var famicom_epsm
+        ; @brief Famicom clone with extended sound (EPSM).
+        famicom_epsm                = $04
+
+        ; @var VR_Technology_VT01
+        ; @brief VT01 SoC (basic NOAC clone).
+        VR_Technology_VT01          = $05
+
+        ; @var VR_Technology_VT02
+        ; @brief VT02 SoC.
+        VR_Technology_VT02          = $06
+
+        ; @var VR_Technology_VT03
+        ; @brief VT03 SoC.
+        VR_Technology_VT03          = $07
+
+        ; @var VR_Technology_VT09
+        ; @brief VT09 SoC.
+        VR_Technology_VT09          = $08
+
+        ; @var VR_Technology_VT32
+        ; @brief VT32 SoC.
+        VR_Technology_VT32          = $09
+
+        ; @var VR_Technology_VT369
+        ; @brief VT369 SoC.
+        VR_Technology_VT369         = $0a
+
+        ; @var UMC_UM6578
+        ; @brief UMC UM6578 SoC.
+        UMC_UM6578                  = $0b
+
+        ; @var famicom_network_system
+        ; @brief Famicom Network System (Japan-only add-on).
+        famicom_network_system      = $0c
+
+    .endscope
+
+
 .endscope
 
 .endif

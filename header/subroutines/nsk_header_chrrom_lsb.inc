@@ -49,24 +49,24 @@
 ; @param    chrrom_size  ROM size in bytes (constant expression).
 .macro nsk_header_chrrom_lsb chrrom_size
     locals:
-        .local result
-        .local issimple
+        .local byte_chr
+        .local flag_issimple_chr
 
     check:
         nsk_header_rom_issimple             \
             chrrom_size,                    \
             ::NSK_HEADER_CHRROM_QUANTUM,    \
-            issimple
+            flag_issimple_chr
 
     call:
-        .if issimple = 1
-            _chr_lsb_simple chrrom_size, result
+        .if flag_issimple_chr = 1
+            _chr_lsb_simple chrrom_size, byte_chr
         .else
-            _chr_lsb_exponent chrrom_size, result
+            _chr_lsb_exponent chrrom_size, byte_chr
         .endif
 
     write:
-        .byte result
+        .byte byte_chr
 .endmacro
 
 .delmacro _chrrom_lsb_simple

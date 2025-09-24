@@ -49,24 +49,24 @@
 ; @param    prgrom_size  ROM size in bytes (constant expression).
 .macro nsk_header_prgrom_lsb prgrom_size
     locals:
-        .local result
-        .local issimple
+        .local byte_prg
+        .local flag_issimple_prg
 
     check:
         nsk_header_rom_issimple             \
             prgrom_size,                    \
             ::NSK_HEADER_PRGROM_QUANTUM,    \
-            issimple
+            flag_issimple_prg
 
     call:
-        .if issimple = 1
-            _prg_lsb_simple prgrom_size, result
+        .if flag_issimple_prg = 1
+            _prg_lsb_simple prgrom_size, byte_prg
         .else
-            _prg_lsb_exponent prgrom_size, result
+            _prg_lsb_exponent prgrom_size, byte_prg
         .endif
 
     write:
-        .byte result
+        .byte byte_prg
 .endmacro
 
 .delmacro _prgrom_lsb_simple

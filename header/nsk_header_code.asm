@@ -49,7 +49,6 @@ nsk_header_flags6                           \
 ; 7: A set of flags to be put in the 7th byte
 nsk_header_flags7                           \
     ::NSK_HEADER_CONSOLE_TYPE,              \
-    ::NSK_HEADER_ISNES20,                   \
     ::NSK_HEADER_MAPPER_ID
 
 ; 8: The rest of the mapper ID and a submapper ID
@@ -76,7 +75,8 @@ nsk_header_timings                          \
 
 ; 13: VS/extended system type
 nsk_header_vstype                           \
-    ::NSK_HEADER_SYSTEM_TYPE
+    ::NSK_HEADER_SYSTEM_TYPE,
+    ::NSK_HEADER_CONSOLE_TYPE
 
 ; 14: Miscellaneous ROMs
 nsk_header_miscroms                         \

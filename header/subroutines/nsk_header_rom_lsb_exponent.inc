@@ -165,4 +165,8 @@
         out_result .set (_exponent << 2) | _multiplier
 .endmacro
 
+.delmacro _exponent_loop
+.delmacro _dyadic_check
+.delmacro _multiplier_check
+
 .endif

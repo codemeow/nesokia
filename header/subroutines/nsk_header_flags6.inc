@@ -19,9 +19,15 @@
 ; @error Emits a error if @p input is not a supported layout constant.
 .macro _convert_nametable_hardwired input, out_bit
     convert:
-        .if   input = nsk::nametable::layout::vertical_arrangement
+        .if                                                           \
+            input = nsk::nametable::layout::vertical_arrangement   || \
+            input = nsl::nametable::layout::horizontal_mirroring
+
             out_bit = 0
-        .elif input = nsk::nametable::layout::horizontal_arrangement
+        .elif                                                         \
+            input = nsk::nametable::layout::horizontal_arrangement || \
+            input = nsk::nametable::layout::vertical_mirroring
+
             out_bit = 1
         .elif
             .error "Invalid value: NSK_HEADER_NAMETABLE_HARDWIRED"
@@ -85,7 +91,7 @@
 ; @macro _convert_mapperid
 ; @brief Extract the low nibble of a NES 2.0 mapper ID for Flags 6.
 ;
-; @param    input     Mapper ID (0..4095). Higher bits are encoded elsewhere.
+; @param    input     Mapper ID (0..4095). 
 ; @param    out_nib   Symbol assigned to resulting nibble
 ;
 ; @error Emits a error if @p input > 4095.
@@ -137,5 +143,11 @@
             (bit_nametablealt   <<  3) | \
             (nib_mapper         <<  4)
 .endmacro
+
+.delmacro _convert_nametable_hardwired
+.delmacro _convert_battery
+.delmacro _convert_trainer
+.delmacro _convert_nametable_alternative
+.delmacro _convert_mapperid
 
 .endif

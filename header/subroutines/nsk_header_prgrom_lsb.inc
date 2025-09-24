@@ -69,5 +69,8 @@
         .byte result
 .endmacro
 
+.delmacro _prgrom_lsb_simple
+.delmacro _prg_lsb_exponent
+
 .endif
 

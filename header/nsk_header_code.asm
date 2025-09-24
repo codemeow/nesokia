@@ -53,7 +53,7 @@ nsk_header_flags7                           \
 
 ; 8: The rest of the mapper ID and a submapper ID
 nsk_header_mapper                           \
-    ::NSK_HEADER_MAPPER_ID,
+    ::NSK_HEADER_MAPPER_ID,                 \
     ::NSK_HEADER_SUBMAPPER_ID
 
 ; 9: PRG/CHR-ROM size MSB

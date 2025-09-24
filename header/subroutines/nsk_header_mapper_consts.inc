@@ -12,4 +12,10 @@
 ; Accepts mapper IDs in the NES 2.0 range 0..4095 (12 bits)
 ::_NSK_HEADER_MAPPER_MAXID = $0fff
 
+; @def _NSK_HEADER_SUBMAPPER_MAXID
+; @brief Maximum allowed NES 2.0 submapper identifier.
+;
+; Accepts submapper IDs in the NES 2.0 range 0..15 (4 bits)
+::_NSK_HEADER_SUBMAPPER_MAXID = $0f
+
 .endif

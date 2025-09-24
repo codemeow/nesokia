@@ -112,9 +112,9 @@
         .local nib_mapper
 
     set:
-        _convert_console console, bits_console
-        _convert_nes20   ::NSK_HEADER_ISNES20, bits_nes20
-        _convert_mapper  mapperid, nib_mapper
+        _convert_console    console,                bits_console
+        _convert_nes20      ::NSK_HEADER_ISNES20,   bits_nes20
+        _convert_mapper     mapperid,               nib_mapper
 
     write:
         .byte                        \

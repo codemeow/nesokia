@@ -83,16 +83,16 @@
 .endmacro
 
 ; @macro _convert_mapperid
-; @brief Extract the low nybble of a NES 2.0 mapper ID for Flags 6.
+; @brief Extract the low nibble of a NES 2.0 mapper ID for Flags 6.
 ;
 ; @param    input     Mapper ID (0..4095). Higher bits are encoded elsewhere.
-; @param    out_nyb   Symbol assigned to resulting nybble
+; @param    out_nib   Symbol assigned to resulting nibble
 ;
 ; @error Emits a error if @p input > 4095.
-.macro _convert_mapperid input, out_nyb
+.macro _convert_mapperid input, out_nib
     convert:
         .if   input <= ::_NSK_HEADER_MAPPER_MAXID
-            out_nyb = input & $0f
+            out_nib = input & $0f
         .else
             .error "Invalid value: NSK_HEADER_MAPPER_ID"
         .endif
@@ -107,7 +107,7 @@
 ;   bit 1 : Battery-backed RAM (0 = absent, 1 = present)
 ;   bit 2 : Trainer present       (0 = absent, 1 = present)
 ;   bit 3 : Alternative mirroring (0 = normal, 1 = alternative)
-;   bits4..7 : Mapper ID low nybble (mapperid & $0F)
+;   bits4..7 : Mapper ID low nibble (mapperid & $0F)
 ;
 ; @param    nametablehw  nsk::nametable::layout::xxx
 ; @param    battery      nsk::battery::xxx
@@ -120,22 +120,22 @@
         .local bit_battery
         .local bit_trainer
         .local bit_nametablealt
-        .local nyb_mapper
+        .local nib_mapper
 
     set:
         _convert_battery                battery,        bit_battery
-        _convert_mapperid               mapperid,       nyb_mapper
+        _convert_mapperid               mapperid,       nib_mapper
         _convert_nametable_alternative  nametablealt,   bit_nametablealt
         _convert_nametable_hardwired    nametablehw,    bit_nametablehw
         _convert_trainer                trainer,        bit_trainer
 
     write:
-        .byte                               \
-            (bit_nametablehw         ) |    \
-            (bit_battery        <<  1) |    \
-            (bit_trainer        <<  2) |    \
-            (bit_nametablealt   <<  3) |    \
-            (nyb_mapper         <<  4)
+        .byte                            \
+            (bit_nametablehw         ) | \
+            (bit_battery        <<  1) | \
+            (bit_trainer        <<  2) | \
+            (bit_nametablealt   <<  3) | \
+            (nib_mapper         <<  4)
 .endmacro
 
 .endif

@@ -1,4 +1,4 @@
-; @file nsk_header_chrrom_consts.asm
+; @file nsk_header_chrrom_consts.inc
 ; @brief Include module for the CHR-ROM constants
 ;
 ; Part of the Nesokia project — MIT License.

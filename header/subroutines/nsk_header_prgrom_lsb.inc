@@ -1,4 +1,4 @@
-; @file nsk_header_prg_lsb.asm
+; @file nsk_header_prg_lsb.inc
 ; @brief Include module for the PRG-ROM size LSB
 ;
 ; Part of the Nesokia project — MIT License.

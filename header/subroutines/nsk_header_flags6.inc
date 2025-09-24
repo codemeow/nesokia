@@ -1,4 +1,4 @@
-; @file nsk_header_flags6.asm
+; @file nsk_header_flags6.inc
 ; @brief Include module for the compilation of the flags for the 6th header byte
 ;
 ; Part of the Nesokia project — MIT License.
@@ -97,7 +97,7 @@
 ; @error Emits a error if @p input > 4095.
 .macro _convert_mapperid input, out_nib
     convert:
-        .if   input <= ::_NSK_HEADER_MAPPER_MAXID
+        .if   input >= 0 && input <= ::_NSK_HEADER_MAPPER_MAXID
             out_nib = input & $0f
         .else
             .error "Invalid value: NSK_HEADER_MAPPER_ID"

@@ -1,4 +1,4 @@
-; @file nsk_header_romlsb_exponent.asm
+; @file nsk_header_romlsb_exponent.inc
 ; @brief Include module for the ROM LSB byte calculations for the exponential
 ;   encoding
 ;

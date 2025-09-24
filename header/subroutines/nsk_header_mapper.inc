@@ -1,4 +1,4 @@
-; @file nsk_header_mapper.asm
+; @file nsk_header_mapper.inc
 ; @brief Include module for the mapper byte calculations
 ;
 ; Part of the Nesokia project — MIT License.
@@ -22,7 +22,7 @@
 ; @error Emits an error if @p input > 4095.
 .macro _convert_mapperid input, out_nib
     convert:
-        .if   input <= ::_NSK_HEADER_MAPPER_MAXID
+        .if   input >= 0 && input <= ::_NSK_HEADER_MAPPER_MAXID
             out_nib = (input >> 8) & $0f
         .else
             .error "Invalid value: NSK_HEADER_MAPPER_ID"
@@ -41,7 +41,7 @@
 ; @error Emits an error if @p input exceeds max.
 .macro _convert_submapperid input, out_nib
     convert:
-        .if input <= ::_NSK_HEADER_SUBMAPPER_MAXID
+        .if input >= 0 && input <= ::_NSK_HEADER_SUBMAPPER_MAXID
             out_nib = input
         .else
             .error "Invalid value: NSK_HEADER_SUBMAPPER_ID"

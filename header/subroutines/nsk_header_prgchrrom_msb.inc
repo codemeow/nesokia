@@ -1,4 +1,4 @@
-; @file nsk_header_prgchrrom_msb.asm
+; @file nsk_header_prgchrrom_msb.inc
 ; @brief Include module for the PRG/CHR-ROM size MSB
 ;
 ; Part of the Nesokia project — MIT License.

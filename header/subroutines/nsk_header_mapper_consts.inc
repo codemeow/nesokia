@@ -1,4 +1,4 @@
-; @file nsk_header_mapper_consts.asm
+; @file nsk_header_mapper_consts.inc
 ; @brief Include module for the mapper-related constants
 ;
 ; Part of the Nesokia project — MIT License.

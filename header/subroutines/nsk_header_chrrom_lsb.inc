@@ -1,4 +1,4 @@
-; @file nsk_header_chr_lsb.asm
+; @file nsk_header_chr_lsb.inc
 ; @brief Include module for the CHR-ROM size LSB
 ;
 ; Part of the Nesokia project — MIT License.

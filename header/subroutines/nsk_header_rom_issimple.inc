@@ -1,4 +1,4 @@
-; @file nsk_header_rom_issimple.asm
+; @file nsk_header_rom_issimple.inc
 ; @brief Include module for checking is the ROM size fits the simple encoding
 ;
 ; Part of the Nesokia project — MIT License.

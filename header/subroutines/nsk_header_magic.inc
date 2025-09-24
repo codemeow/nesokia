@@ -1,4 +1,4 @@
-; @file nsk_header_magic.asm
+; @file nsk_header_magic.inc
 ; @brief Include module for the NES 2.0 magic number generation
 ;
 ; Part of the Nesokia project — MIT License.

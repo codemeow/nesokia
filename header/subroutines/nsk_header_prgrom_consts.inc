@@ -1,4 +1,4 @@
-; @file nsk_header_prgrom_consts.asm
+; @file nsk_header_prgrom_consts.inc
 ; @brief Include module for the PRG-ROM constants
 ;
 ; Part of the Nesokia project — MIT License.

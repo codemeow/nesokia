@@ -167,6 +167,96 @@
 
     .endscope
 
+    ; @enum nsk::region
+    ; @brief Region and PPU identifiers for NES 2.0 header configuration.
+    ;
+    ; Encodes the intended video standard / PPU variant used by the ROM.
+    ; These values inform the emulator or hardware which timing and
+    ; region-specific behavior to apply.
+    ;
+    ; Multiple aliases are provided for human readability, all resolving
+    ; to the same underlying constant.
+    .scope region
+        ; @var RP2C02
+        ; @brief NTSC PPU used in Japan and North America
+        ; 
+        ; Licensed NTSC 60 Hz 
+        RP2C02          = $00
+        ; @var NTSC
+        ; @brief Alias of @ref region::RP2C02
+        NTSC            = nsk::region::RP2C02
+
+        ; @var North_America
+        ; @brief Alias of @ref region::RP2C02
+        North_America   = nsk::region::RP2C02
+
+        ; @var Japan
+        ; @brief Alias of @ref region::RP2C02
+        Japan           = nsk::region::RP2C02
+
+        ; @var South_Korea
+        ; @brief Alias of @ref region::RP2C02
+        South_Korea     = nsk::region::RP2C02
+
+        ; @var Taiwan
+        ; @brief Alias of @ref region::RP2C02
+        Taiwan          = nsk::region::RP2C02
+
+
+        ; @var RP2C07
+        ; @brief PAL PPU used in Western Europe and Australia
+        ;
+        ; Licensed PAL 50 Hz 
+        RP2C07          = $01
+
+        ; @var PAL
+        ; @brief Alias of @ref region::RP2C07
+        PAL             = nsk::region::RP2C07
+
+        ; @var Western_Europe
+        ; @brief Alias of @ref region::RP2C07
+        Western_Europe  = nsk::region::RP2C07
+
+        ; @var Australia
+        ; @brief Alias of @ref region::RP2C07
+        Australia       = nsk::region::RP2C07
+
+
+        ; @var Multiple
+        ; @brief Multiregion / dual-PPU cartridge support
+        Multiple        = $02
+
+
+        ; @var UA6538
+        ; @brief Dendy-compatible PAL clone PPU, common in E.Europe, Russia, etc
+        UA6538          = $03
+    
+        ; @var Dendy
+        ; @brief Alias of @ref region::UA6538
+        ;
+        ; Unlicensed hybrid with 50 Hz PAL CPU and 60 Hz NTSC PPU
+        Dendy           = nsk::region::UA6538
+    
+        ; @var Eastern_Europe
+        ; @brief Alias of @ref region::UA6538
+        Eastern_Europe  = nsk::region::UA6538
+    
+        ; @var Russia
+        ; @brief Alias of @ref region::UA6538
+        Russia          = nsk::region::UA6538
+    
+        ; @var Mainland_China
+        ; @brief Alias of @ref region::UA6538
+        Mainland_China  = nsk::region::UA6538
+    
+        ; @var India
+        ; @brief Alias of @ref region::UA6538
+        India           = nsk::region::UA6538
+    
+        ; @var Africa
+        ; @brief Alias of @ref region::UA6538
+        Africa          = nsk::region::UA6538
+    .endscope
 
 .endscope
 

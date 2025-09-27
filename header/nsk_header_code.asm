@@ -73,7 +73,8 @@ nsk_header_chrram                           \
 
 ; 12: CPU/PPU timings
 nsk_header_timings                          \
-    ::NSK_HEADER_REGION
+    ::NSK_HEADER_REGION,                    \
+    ::NSK_HEADER_CONSOLE_TYPE
 
 ; 13: VS/extended system type
 nsk_header_vstype                           \

@@ -93,4 +93,7 @@
             (nib_nvram  <<  4)
 .endmacro
 
+.delmacro _ram_sanity_check
+.delmacro _ram_convert
+
 .endif

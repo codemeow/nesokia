@@ -165,6 +165,105 @@
         ; @brief Famicom Network System (Japan-only add-on).
         famicom_network_system      = $0c
 
+        ; @enum console::vs
+        ; @brief VS console additional constants
+        .scope vs
+
+            ; @enum console::vs::ppu
+            ; @brief VS console PPU types
+            .scope ppu
+                ; @var RP2C03
+                ; @brief RP2C03 PPU chip
+                RP2C03 = $00
+
+                ; @var RC2C03
+                ; @brief RC2C03 PPU chip
+                RC2C03 = nsk::console::vs::ppu::RP2C03
+
+                ; @enum console::vs::ppu::RP2C04
+                ; @brief RP2C04 PPU chip
+                .scope RP2C04
+                    ; @var rev1
+                    ; @brief Revision 1
+                    rev1 = $02
+
+                    ; @var rev2
+                    ; @brief Revision 2
+                    rev2 = $03
+
+                    ; @var rev3
+                    ; @brief Revision 3
+                    rev3 = $04
+
+                    ; @var rev4
+                    ; @brief Revision 4
+                    rev4 = $05
+                .endscope
+
+                ; @enum RC2C05
+                ; @brief RC2C05 PPU chip
+                .scope RC2C05
+                    ; @var rev1
+                    ; @brief Revision 1
+                    rev1 = $08
+
+                    ; @var rev2
+                    ; @brief Revision 2
+                    rev2 = $09
+
+                    ; @var rev3
+                    ; @brief Revision 3
+                    rev3 = $0a
+
+                    ; @var rev4
+                    ; @brief Revision 4
+                    rev4 = $0b
+                .endscope
+            .endscope
+
+            ; @enum console::vs::hardware
+            ; @enum VS console hardware types
+            .scope hardware
+
+                ; @enum console::vs::hardware::unisystem
+                ; @enum Unisystem hardware types
+                .scope unisystem
+                    ; @var normal
+                    ; @brief Standard Vs. Unisystem hardware (0).
+                    normal              = $00
+
+                    ; @var RBI_baseball
+                    ; @brief Vs. Unisystem with RBI Baseball protection
+                    RBI_baseball        = $01
+
+                    ; @var TKO_boxing
+                    ; @brief Vs. Unisystem with TKO Boxing protection
+                    TKO_boxing          = $02
+
+                    ; @var Super_Xevious
+                    ; @brief Vs. Unisystem with Super Xevious protection
+                    super_xevious       = $03
+
+                    ; @var ice_climber_japan
+                    ; @brief Vs. Unisystem with Ice Climber Japan protection
+                    ice_climber_japan   = $04
+                .endscope
+
+                ; @enum console::vs::hardware::dualsystem
+                ; @enum Dualsystem hardware types
+                .scope dualsystem
+                    ; @var normal
+                    ; @brief Standard Vs. DualSystem hardware 
+                    normal                  = $05
+
+                    ; @var raid_on_bungeling_bay
+                    ; @brief Vs. DualSystem with Raid on Bungeling Bay protection
+                    raid_on_bungeling_bay   = $06
+                .endscope
+            .endscope
+
+        .endscope
+
     .endscope
 
     ; @enum nsk::region

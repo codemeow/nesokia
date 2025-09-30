@@ -143,6 +143,31 @@
         .endif
 .endmacro
 
+; @macro _check_vssystem
+; @brief Checks if the VS system console has th valid mapper selection
+;
+; @param    console  Console selector (`nsk::console::xxx` values).
+; @param    mapperid Mapper ID
+.macro _check_vssystem console, mapperid
+    check:
+        .if console = nsk::console::nintendo_vs_system
+            .if !(                 \
+                mapperid =    1 || \
+                mapperid =    2 || \
+                mapperid =   67 || \
+                mapperid =   75 || \
+                mapperid =   99 || \
+                mapperid =  206    \
+            )
+                .error                                                             \
+                    .sprintf(                                                      \
+                        "Mapper %d is not an acceptable value for the VS console", \
+                        region                                                     \
+                    )
+            .endif
+        .endif
+.endmacro
+
 ; @macro nsk_header_timings
 ; @brief Resolve and write the region/timing byte for the NES 2.0 header.
 ;
@@ -151,10 +176,13 @@
 ;
 ; @param    region   Region selector (`nsk::region::xxx` values).
 ; @param    console  Console selector (`nsk::console::xxx` values).
-.macro nsk_header_timings region, console
+.macro nsk_header_timings region, console, mapperid
     locals:
         .local bits_region
         _detected .set 0
+
+    validate:
+        _check_vssystem     console, mapperid
 
     convert:
         _convert_ifntsc     region, console, bits_region, _detected
@@ -175,5 +203,6 @@
 .delmacro _convert_ifmultiple
 .delmacro _convert_ifdendy
 .delmacro _check_ifunknown
+.delmacro _check_vssystem
 
 .endif

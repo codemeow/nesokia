@@ -74,11 +74,13 @@ nsk_header_chrram                           \
 ; 12: CPU/PPU timings
 nsk_header_timings                          \
     ::NSK_HEADER_REGION,                    \
-    ::NSK_HEADER_CONSOLE_TYPE
+    ::NSK_HEADER_CONSOLE_TYPE,              \
+    ::NSK_HEADER_MAPPER_ID
 
 ; 13: VS/extended system type
 nsk_header_vstype                           \
-    ::NSK_HEADER_SYSTEM_TYPE,
+    ::NSK_HEADER_VS_PPU,                    \
+    ::NSK_HEADER_VS_HARDWARE,               \
     ::NSK_HEADER_CONSOLE_TYPE
 
 ; 14: Miscellaneous ROMs

@@ -84,8 +84,8 @@ nsk_header_vstype                           \
     ::NSK_HEADER_CONSOLE_TYPE
 
 ; 14: Miscellaneous ROMs
-nsk_header_miscroms                         \
-    ::NSK_HEADER_MISC_ROMS
+nsk_header_rom_misc                         \
+    ::NSK_HEADER_ROMS_MISC
 
 ; 15: Default expansion device
 nsk_header_defexp                           \

@@ -88,6 +88,6 @@ nsk_header_rom_misc                         \
     ::NSK_HEADER_ROMS_MISC
 
 ; 15: Default expansion device
-nsk_header_defexp                           \
+nsk_header_device                           \
     ::NSK_HEADER_EXPANSION_DEVICE
 

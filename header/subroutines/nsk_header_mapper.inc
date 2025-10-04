@@ -21,12 +21,14 @@
 ;
 ; @error Emits an error if @p input > 4095.
 .macro _convert_mapperid input, out_nib
+.scope
     convert:
         .if   input >= 0 && input <= ::_NSK_HEADER_MAPPER_MAXID
             out_nib = (input >> 8) & $0f
         .else
             .error "Invalid value: NSK_HEADER_MAPPER_ID"
         .endif
+.endscope
 .endmacro
 
 ; @macro _convert_submapperid
@@ -40,12 +42,14 @@
 ;
 ; @error Emits an error if @p input exceeds max.
 .macro _convert_submapperid input, out_nib
+.scope
     convert:
         .if input >= 0 && input <= ::_NSK_HEADER_SUBMAPPER_MAXID
             out_nib = input
         .else
             .error "Invalid value: NSK_HEADER_SUBMAPPER_ID"
         .endif
+.endscope
 .endmacro
 
 ; @macro nsk_header_mapper
@@ -56,6 +60,7 @@
 ; @param    mapperid     NES 2.0 mapper ID (0..4095)
 ; @param    submapperid  Submapper ID (0..15).
 .macro nsk_header_mapper mapperid, submapperid
+.scope
     locals:
         .local nib_mapper
         .local nib_submapper
@@ -68,6 +73,7 @@
         .byte                        \
             (nib_mapper          ) | \
             (nib_submapper  <<  4)
+.endscope
 .endmacro
 
 .delmacro _convert_mapperid

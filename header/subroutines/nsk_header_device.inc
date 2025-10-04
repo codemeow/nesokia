@@ -16,10 +16,12 @@
 ;
 ; @error Emits an error if the device is not found
 .macro _check_ifunknown found
+.scope
     check:
         .if found = 0
             .error "Invalid value: NSK_HEADER_EXPANSION_DEVICE"
         .endif
+.endscope
 .endmacro
 
 ; @macro _convert_ifbasic
@@ -31,6 +33,7 @@
 ; @param    out_nibits   Symbol assigned to the resulting 6-bit value.
 ; @param    out_found    Flag set to 1 if matched (unchanged otherwise).
 .macro _convert_ifbasic device, out_nibits, out_found
+.scope
     convert:
         .if                                      \
             device = nsk::device::unspecified || \
@@ -39,6 +42,7 @@
             out_nibits = device
             out_found .set 1
         .endif
+.endscope
 .endmacro
 
 ; @macro _convert_iffamicom
@@ -51,6 +55,7 @@
 ; @param    out_nibits   Symbol assigned to the resulting 6-bit value.
 ; @param    out_found    Flag set to 1 if matched (unchanged otherwise).
 .macro _convert_iffamicom device, out_nibits, out_found
+.scope
     convert:
         .if                                                                \
             device = nsk::device::famicom::controller                   || \
@@ -70,6 +75,7 @@
             out_nibits = device
             out_found .set 1
         .endif
+.endscope
 .endmacro
 
 ; @macro _convert_ifNES
@@ -79,6 +85,7 @@
 ; @param    out_nibits   Symbol assigned to the resulting 6-bit value.
 ; @param    out_found    Flag set to 1 if matched (unchanged otherwise).
 .macro _convert_ifNES device, out_nibits, out_found
+.scope
     convert:
         .if                                                \
             device = nsk::device::NES::fourscore        || \
@@ -89,6 +96,7 @@
             out_nibits = device
             out_found .set 1
         .endif
+.endscope
 .endmacro
 
 ; @macro _convert_ifVS
@@ -98,6 +106,7 @@
 ; @param    out_nibits   Symbol assigned to the resulting 6-bit value.
 ; @param    out_found    Flag set to 1 if matched (unchanged otherwise).
 .macro _convert_ifVS device, out_nibits, out_found
+.scope
     convert:
         .if                                            \
             device = nsk::device::VS::system_4016   || \
@@ -107,6 +116,7 @@
             out_nibits = device
             out_found .set 1
         .endif
+.endscope
 .endmacro
 
 ; @macro _convert_ifbandai
@@ -116,6 +126,7 @@
 ; @param    out_nibits   Symbol assigned to the resulting 6-bit value.
 ; @param    out_found    Flag set to 1 if matched (unchanged otherwise).
 .macro _convert_ifbandai device, out_nibits, out_found
+.scope
     convert:
         .if                                                        \
             device = nsk::device::bandai::cookingplayset        || \
@@ -128,6 +139,7 @@
             out_nibits = device
             out_found .set 1
         .endif
+.endscope
 .endmacro
 
 ; @macro _convert_ifkonami
@@ -138,6 +150,7 @@
 ; @param    out_nibits   Symbol assigned to the resulting 6-bit value.
 ; @param    out_found    Flag set to 1 if matched (unchanged otherwise).
 .macro _convert_ifkonami device, out_nibits, out_found
+.scope
     convert:
         .if                                                \
             device = nsk::device::konami::doremikko     || \
@@ -147,6 +160,7 @@
             out_nibits = device
             out_found .set 1
         .endif
+.endscope
 .endmacro
 
 ; @macro _convert_ifIGS
@@ -156,6 +170,7 @@
 ; @param    out_nibits   Symbol assigned to the resulting 6-bit value.
 ; @param    out_found    Flag set to 1 if matched (unchanged otherwise).
 .macro _convert_ifIGS device, out_nibits, out_found
+.scope
     convert:
         .if                                            \
             device = nsk::device::IGS::battlebox    || \
@@ -164,6 +179,7 @@
             out_nibits = device
             out_found .set 1
         .endif
+.endscope
 .endmacro
 
 ; @macro _convert_ifSNES
@@ -173,6 +189,7 @@
 ; @param    out_nibits   Symbol assigned to the resulting 6-bit value.
 ; @param    out_found    Flag set to 1 if matched (unchanged otherwise).
 .macro _convert_ifSNES device, out_nibits, out_found
+.scope
     convert:
         .if                                            \
             device = nsk::device::SNES::controllers || \
@@ -182,6 +199,7 @@
             out_nibits = device
             out_found .set 1
         .endif
+.endscope
 .endmacro
 
 ; @macro _convert_iftaito
@@ -192,6 +210,7 @@
 ; @param    out_nibits   Symbol assigned to the resulting 6-bit value.
 ; @param    out_found    Flag set to 1 if matched (unchanged otherwise).
 .macro _convert_iftaito device, out_nibits, out_found
+.scope
     convert:
         .if                                                        \
             device = nsk::device::taito::vaus                   || \
@@ -201,6 +220,7 @@
             out_nibits = device
             out_found .set 1
         .endif
+.endscope
 .endmacro
 
 ; @macro _convert_ifclonekbm
@@ -211,6 +231,7 @@
 ; @param    out_nibits   Symbol assigned to the resulting 6-bit value.
 ; @param    out_found    Flag set to 1 if matched (unchanged otherwise).
 .macro _convert_ifclonekbm device, out_nibits, out_found
+.scope
     convert:
         .if                                                        \
             device = nsk::device::abl_pinball                   || \
@@ -240,6 +261,7 @@
             out_nibits = device
             out_found .set 1
         .endif
+.endscope
 .endmacro
 
 ; @macro _convert_ifother
@@ -252,6 +274,7 @@
 ; @param    out_nibits   Symbol assigned to the resulting 6-bit value.
 ; @param    out_found    Flag set to 1 if matched (unchanged otherwise).
 .macro _convert_ifother device, out_nibits, out_found
+.scope
     convert:
         .if                                                                     \
             device = nsk::device::clonekbm::bitcorp_keyboard                 || \
@@ -274,6 +297,7 @@
             out_nibits = device
             out_found .set 1
         .endif
+.endscope
 .endmacro
 
 ; @macro _convert_device
@@ -284,6 +308,7 @@
 ; @param    device       Input device symbol (one of nsk::device::*).
 ; @param    out_nibits   Symbol assigned to the resolved 8-bit device code.
 .macro _convert_device device, out_nibits
+.scope
     locals:
         _detected .set 0
 
@@ -302,6 +327,7 @@
 
     check:
         _check_ifunknown _detected
+.endscope
 .endmacro
 
 ; @macro nsk_header_device
@@ -309,6 +335,7 @@
 ;
 ; @param    device  Input device symbol (nsk::device::xxx).
 .macro nsk_header_device device
+.scope
     locals:
         .local nibits_device
 
@@ -317,6 +344,7 @@
 
     write:
         .byte nibits_device
+.endscope
 .endmacro
 
 .delmacro _convert_device

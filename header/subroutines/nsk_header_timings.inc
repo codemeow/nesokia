@@ -20,6 +20,7 @@
 ;
 ; @error Emits a error if @p console is one of the VTxx values.
 .macro _validate_vrtech region, console
+.scope
     validate:
         .if                                                \
             console = nsk::console::VR_Technology_VT01  || \
@@ -35,6 +36,7 @@
                     region                                          \
                 )
         .endif
+.endscope
 .endmacro
 
 ; @macro _convert_ifntsc
@@ -45,6 +47,7 @@
 ; @param    out_bits   Symbol assigned to the resulting region byte.
 ; @param    out_found  Symbol set to 1 if a match was found (otherwise unchanged).
 .macro _convert_ifntsc region, console, out_bits, out_found
+.scope
     convert:
         .if                                            \
             region = nsk::region::RP2C02            || \
@@ -57,6 +60,7 @@
             out_bits = region
             out_found .set 1
         .endif
+.endscope
 .endmacro
 
 ; @macro _convert_ifpal
@@ -67,6 +71,7 @@
 ; @param    out_bits   Symbol assigned to the resulting region byte.
 ; @param    out_found  Symbol set to 1 if a match was found (otherwise unchanged).
 .macro _convert_ifpal region, console, out_bits, out_found
+.scope
     validate:
         _validate_vrtech region, console
 
@@ -80,6 +85,7 @@
             out_bits = region
             out_found .set 1
         .endif
+.endscope
 .endmacro
 
 ; @macro _convert_ifntsc
@@ -90,6 +96,7 @@
 ; @param    out_bits   Symbol assigned to the resulting region byte.
 ; @param    out_found  Symbol set to 1 if a match was found (otherwise unchanged).
 .macro _convert_ifmultiple region, console, out_bits, out_found
+.scope
     validate:
         _validate_vrtech region, console
 
@@ -100,6 +107,7 @@
             out_bits = region
             out_found .set 1
         .endif
+.endscope
 .endmacro
 
 ; @macro _convert_ifntsc
@@ -110,6 +118,7 @@
 ; @param    out_bits   Symbol assigned to the resulting region byte.
 ; @param    out_found  Symbol set to 1 if a match was found (otherwise unchanged).
 .macro _convert_ifdendy region, console, out_bits, out_found
+.scope
     convert:
         .if                                            \
             region = nsk::region::UA6538            || \
@@ -123,6 +132,7 @@
             out_bits = region
             out_found .set 1
         .endif
+.endscope
 .endmacro
 
 ; @macro _check_ifunknown
@@ -133,6 +143,7 @@
 ;
 ; @error Emits an error with the provided @p region value.
 .macro _check_ifunknown region, found
+.scope
     check:
         .if found = 0
             .error                                  \
@@ -141,6 +152,7 @@
                     region                          \
                 )
         .endif
+.endscope
 .endmacro
 
 ; @macro _check_vssystem
@@ -149,6 +161,7 @@
 ; @param    console  Console selector (`nsk::console::xxx` values).
 ; @param    mapperid Mapper ID
 .macro _check_vssystem console, mapperid
+.scope
     check:
         .if console = nsk::console::nintendo_vs_system
             .if !(                 \
@@ -166,6 +179,7 @@
                     )
             .endif
         .endif
+.endscope
 .endmacro
 
 ; @macro nsk_header_timings
@@ -177,6 +191,7 @@
 ; @param    region   Region selector (`nsk::region::xxx` values).
 ; @param    console  Console selector (`nsk::console::xxx` values).
 .macro nsk_header_timings region, console, mapperid
+.scope
     locals:
         .local bits_region
         _detected .set 0
@@ -195,6 +210,7 @@
 
     write:
         .byte bits_region
+.endscope
 .endmacro
 
 .delmacro _validate_vrtech

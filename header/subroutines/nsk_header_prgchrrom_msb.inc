@@ -18,8 +18,10 @@
 ; @param    prgrom_size  PRG-ROM size in bytes.
 ; @param    out_nib      Symbol assigned to the 4-bit result.
 .macro _prg_msb_simple prgrom_size, out_nib
+.scope
     calc:
         out_nib = ((prgrom_size / ::NSK_HEADER_PRGROM_QUANTUM) >> 8) & $0f
+.endscope
 .endmacro
 
 ; @macro _chr_msb_simple
@@ -28,8 +30,10 @@
 ; @param    chrrom_size  CHR-ROM size in bytes.
 ; @param    out_nib      Symbol assigned to the 4-bit result.
 .macro _chr_msb_simple chrrom_size, out_nib
+.scope
     calc:
         out_nib = ((chrrom_size / ::NSK_HEADER_CHRROM_QUANTUM) >> 8) & $0f
+.endscope
 .endmacro
 
 ; @macro _prg_msb_exponent
@@ -40,8 +44,10 @@
 ;
 ; @param    out_nib  Symbol assigned to $0F.
 .macro _prg_msb_exponent out_nib
+.scope
     set:
         out_nib = $0f
+.endscope
 .endmacro
 
 ; @macro _chr_msb_exponent
@@ -52,8 +58,10 @@
 ;
 ; @param    out_nib  Symbol assigned to $0F.
 .macro _chr_msb_exponent out_nib
+.scope
     set:
         out_nib = $0f
+.endscope
 .endmacro
 
 ; @macro nsk_header_prgchrrom_msb
@@ -72,6 +80,7 @@
 ; @param    prgrom_size  PRG-ROM size in bytes.
 ; @param    chrrom_size  CHR-ROM size in bytes.
 .macro nsk_header_prgchrrom_msb prgrom_size, chrrom_size
+.scope
     locals:
         .local nib_prg
         .local nib_chr
@@ -107,6 +116,7 @@
         .byte                    \
             (nib_prg         ) | \
             (nib_chr    <<  4)
+.endscope
 .endmacro
 
 .delmacro _prg_msb_simple

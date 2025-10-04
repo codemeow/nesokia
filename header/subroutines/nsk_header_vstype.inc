@@ -20,6 +20,7 @@
 ; @param    console   Console selector (value from @ref console).
 ; @param    out_isvs  Symbol assigned to {0,1}.
 .macro _check_ifisvs console, out_isvs
+.scope
     check:
         .if console = nsk::console::nintendo_vs_system
             out_isvs = 1
@@ -27,6 +28,7 @@
         .else
             out_isvs = 0
          .endif
+.endscope
 .endmacro
 
 ; @macro _check_ifextended
@@ -42,6 +44,7 @@
 ;
 ; @error Emits an error if @p console is unknown.
 .macro _check_ifextended console, out_isext
+.scope
     check:
         .if                                                    \
             console = nsk::console::famicom                 || \
@@ -69,6 +72,7 @@
 
             .error "Invalid value: NSK_HEADER_CONSOLE_TYPE"
         .endif
+.endscope
 .endmacro
 
 ; @macro _convert_none
@@ -76,8 +80,10 @@
 ;
 ; @param    out_res  Symbol assigned to $00.
 .macro _convert_none out_res
+.scope
     write:
         out_res = $00
+.endscope
 .endmacro
 
 ; @macro _convert_extended
@@ -86,8 +92,10 @@
 ; @param    console  Extended console selector (`nsk::console::xxx`).
 ; @param    out_res  Symbol assigned to the console code.
 .macro _convert_extended console, out_res
+.scope
     write:
         out_res = console
+.endscope
 .endmacro
 
 ; @macro _convert_vssystem
@@ -105,6 +113,7 @@
 ; @error Emits an error if @p pputype is not recognized.
 ; @error Emits an error if @p hardwaretype is not recognized.
 .macro _convert_vssystem pputype, hardwaretype, out_res
+.scope
     locals:
         .local nib_ppu
         .local nib_hardware
@@ -146,6 +155,7 @@
         out_res =                   \
             (nib_ppu            ) | \
             (nib_hardware <<   4)
+.endscope
 .endmacro
 
 ; @macro nsk_header_vstype
@@ -160,6 +170,7 @@
 ; @param    hardwaretype  Vs. hardware type (`nsk::console::vs::hardware::xxx`)
 ; @param    console       Console selector (`nsk::console::xxx`)
 .macro nsk_header_vstype pputype, hardwaretype, console
+.scope
     locals:
         .local byte_out
         .local flag_isext
@@ -183,6 +194,7 @@
 
     write:
         .byte byte_out
+.endscope
 .endmacro
 
 .delmacro _check_ifextended

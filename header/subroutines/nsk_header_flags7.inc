@@ -37,6 +37,7 @@
 ;
 ; @error Emits an error when @p input is not a recognized console identifier.
 .macro _convert_console input, out_bits
+.scope
     convert:
         .if                                                    \
             input = nsk::console::famicom                   || \
@@ -62,6 +63,7 @@
         .else
             .error "Invalid value: NSK_HEADER_CONSOLE_TYPE"
         .endif
+.endscope
 .endmacro
 
 ; @macro _convert_nes20
@@ -74,6 +76,7 @@
 ;
 ; @error Emits an error when @p input is ∉ {0, 1}
 .macro _convert_nes20 input, out_bits
+.scope
     convert:
         .if   input = 1
             out_bits = %10
@@ -82,6 +85,7 @@
         .else
             .error "Invalid value: NSK_HEADER_ISNES20"
         .endif
+.endscope
 .endmacro
 
 ; @macro _convert_mapperid
@@ -92,12 +96,14 @@
 ;
 ; @error Emits a error if @p input > 4095.
 .macro _convert_mapper input, out_nib
+.scope
     convert:
         .if   input >= 0 && input <= ::_NSK_HEADER_MAPPER_MAXID
             out_nib = (input >> 4) & $0f
         .else
             .error "Invalid value: NSK_HEADER_MAPPER_ID"
         .endif
+.endscope
 .endmacro
 
 ; @macro nsk_header_flags7
@@ -106,6 +112,7 @@
 ; @param    console   Console identifier (One of `nsk::console::xxx`).
 ; @param    mapperid  NES 2.0 mapper ID (0..4095).
 .macro nsk_header_flags7 console, mapperid
+.scope
     locals:
         .local bits_console
         .local bits_nes20
@@ -121,6 +128,7 @@
             (bits_console        ) | \
             (bits_nes20     <<  2) | \
             (nib_mapper     <<  4)
+.endscope
 .endmacro
 
 .delmacro _convert_console

@@ -21,8 +21,10 @@
 ; @param    prgrom_size  ROM size in bytes (constant expression).
 ; @param    out_result   Symbol that will be set to the resulting LSB value.
 .macro _prgrom_lsb_simple prgrom_size, out_result
+.scope
     calc:
         out_result = (prgrom_size / ::NSK_HEADER_PRGROM_QUANTUM) & $ff
+.endscope
 .endmacro
 
 ; @macro _prgrom_lsb_exponent
@@ -34,8 +36,10 @@
 ; @param    prgrom_size  ROM size in bytes (constant expression).
 ; @param    out_result   Symbol that will be set to the resulting LSB value.
 .macro _prgrom_lsb_exponent prgrom_size, out_result
+.scope
     call:
         nsk_header_romlsb_exponent prgrom_size, out_result
+.endscope
 .endmacro
 
 ; @macro nsk_header_prgrom_lsb
@@ -48,6 +52,7 @@
 ;
 ; @param    prgrom_size  ROM size in bytes (constant expression).
 .macro nsk_header_prgrom_lsb prgrom_size
+.scope
     locals:
         .local byte_prg
         .local flag_issimple_prg
@@ -67,6 +72,7 @@
 
     write:
         .byte byte_prg
+.endscope
 .endmacro
 
 .delmacro _prgrom_lsb_simple

@@ -15,6 +15,7 @@
 ;
 ; @error Emits an error if @p value = 0 or not a power of two.
 .macro nsk_header_log2 value, out_result
+.scope
     check:
         .if value = 0 || (value & (value - 1)) <> 0
             .error "Invalid value passed to the `nsk_header_log2`"
@@ -37,6 +38,7 @@
         .if _found = 0
             .error .sprintf("Failed to find log2(%d)", value)
         .endif
+.endscope
 .endmacro
 
 .endif

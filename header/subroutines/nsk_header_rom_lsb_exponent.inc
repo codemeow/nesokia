@@ -35,6 +35,7 @@
 ; @param    out_multiplier  Symbol to receive the normalized multiplier
 ; @param    out_found       Symbol set to 1 if a match was found, 0 otherwise.
 .macro _exponent_loop multiplier, dyadic, out_exponent, out_multiplier, out_found
+.scope
     exponent_loop:
         ; Find E = log2(_dyadic) by repeated doubling.
         .repeat ::_NSK_HEADER_EXPONENT_LOGLOOP_LIMIT, _loop_exponent
@@ -49,6 +50,7 @@
             out_multiplier .set multiplier
             out_found .set 1
         .endif
+.endscope
 .endmacro
 
 ; @macro _dyadic_check
@@ -61,6 +63,7 @@
 ; @param    out_multiplier  Symbol to receive the multiplier MM
 ; @param    out_found       Symbol set to 1 if a match was found, 0 otherwise.
 .macro _dyadic_check multiplier, rom_size, divisor, out_exponent, out_multiplier, out_found
+.scope
     dyadic_set:
         ; Candidate 2^E (must be a power of two)
          _dyadic .set rom_size / _divisor
@@ -81,6 +84,7 @@
                 out_found
             
         .endif
+.endscope
 .endmacro
 
 ; @macro _multiplier_check
@@ -92,6 +96,7 @@
 ; @param    out_multiplier  Symbol to receive the multiplier MM
 ; @param    out_found       Symbol set to 1 if a match was found, 0 otherwise.
 .macro _multiplier_check multiplier, rom_size, out_exponent, out_multiplier, out_found
+.scope
     divisor_set:
         _divisor .set multiplier * 2 + 1
 
@@ -109,6 +114,7 @@
                 out_found
         
         .endif
+.endscope
 .endmacro
 
 ; @macro nsk_header_romlsb_exponent
@@ -123,6 +129,7 @@
 ;
 ; @error Emits a build error if `rom_size` cannot be expressed as NES 2.0 format
 .macro nsk_header_romlsb_exponent rom_size, out_result
+.scope
     const_check:
         .ifnconst rom_size
             .error "`rom_size` must be a constant expression"
@@ -163,6 +170,7 @@
 
     write:
         out_result .set (_exponent << 2) | _multiplier
+.endscope
 .endmacro
 
 .delmacro _exponent_loop

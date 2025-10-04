@@ -21,8 +21,10 @@
 ; @param    chrrom_size  ROM size in bytes (constant expression).
 ; @param    out_result   Symbol that will be set to the resulting LSB value.
 .macro _chrrom_lsb_simple chrrom_size, out_result
+.scope
     calc:
         out_result = (chrrom_size / ::NSK_HEADER_CHRROM_QUANTUM) & $ff
+.endscope
 .endmacro
 
 ; @macro _chrrom_lsb_exponent
@@ -34,8 +36,10 @@
 ; @param    chrrom_size  ROM size in bytes (constant expression).
 ; @param    out_result   Symbol that will be set to the resulting LSB value.
 .macro _chrrom_lsb_exponent chrrom_size, out_result
+.scope
     call:
         nsk_header_romlsb_exponent chrrom_size, out_result
+.endscope
 .endmacro
 
 ; @macro nsk_header_chrrom_lsb
@@ -48,6 +52,7 @@
 ;
 ; @param    chrrom_size  ROM size in bytes (constant expression).
 .macro nsk_header_chrrom_lsb chrrom_size
+.scope
     locals:
         .local byte_chr
         .local flag_issimple_chr
@@ -67,6 +72,7 @@
 
     write:
         .byte byte_chr
+.endscope
 .endmacro
 
 .delmacro _chrrom_lsb_simple

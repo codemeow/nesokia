@@ -18,6 +18,7 @@
 ;
 ; @error Emits a error if @p input is not a supported layout constant.
 .macro _convert_nametable_hardwired input, out_bit
+.scope
     convert:
         .if                                                           \
             input = nsk::nametable::layout::vertical_arrangement   || \
@@ -32,6 +33,7 @@
         .elif
             .error "Invalid value: NSK_HEADER_NAMETABLE_HARDWIRED"
         .endif
+.endscope
 .endmacro
 
 ; @macro _convert_battery
@@ -42,6 +44,7 @@
 ;
 ; @error Emits a error if @p input is not recognized.
 .macro _convert_battery input, out_bit
+.scope
     convert:
         .if   input = nsk::battery::absent
             out_bit = 0
@@ -50,6 +53,7 @@
         .elif
             .error "Invalid value: NSK_HEADER_BATTERY"
         .endif
+.endscope
 .endmacro
 
 ; @macro _convert_trainer
@@ -60,6 +64,7 @@
 ;
 ; @error Emits a error if @p input is not recognized.
 .macro _convert_trainer input, out_bit
+.scope
     convert:
         .if   input = nsk::trainer::absent
             out_bit = 0
@@ -68,6 +73,7 @@
         .elif
             .error "Invalid value: NSK_HEADER_TRAINER"
         .endif
+.endscope
 .endmacro
 
 ; @macro _convert_nametable_alternative
@@ -78,6 +84,7 @@
 ;
 ; @error Emits a error if @p input is not a supported mode constant.
 .macro _convert_nametable_alternative input, out_bit
+.scope
     convert:
         .if   input = nsk::nametable::mode::normal
             out_bit = 0
@@ -86,6 +93,7 @@
         .elif
             .error "Invalid value: NSK_HEADER_NAMETABLE_ALTERNATIVE"
         .endif
+.endscope
 .endmacro
 
 ; @macro _convert_mapperid
@@ -96,12 +104,14 @@
 ;
 ; @error Emits a error if @p input > 4095.
 .macro _convert_mapperid input, out_nib
+.scope
     convert:
         .if   input >= 0 && input <= ::_NSK_HEADER_MAPPER_MAXID
             out_nib = input & $0f
         .else
             .error "Invalid value: NSK_HEADER_MAPPER_ID"
         .endif
+.endscope
 .endmacro
 
 ; @macro nsk_header_flags6
@@ -121,6 +131,7 @@
 ; @param    nametablealt nsk::nametable::mode::xxx
 ; @param    mapperid     NES 2.0 mapper ID (0..4095)
 .macro nsk_header_flags6 nametablehw, battery, trainer, nametablealt, mapperid
+.scope
     locals:
         .local bit_nametablehw
         .local bit_battery
@@ -142,6 +153,7 @@
             (bit_trainer        <<  2) | \
             (bit_nametablealt   <<  3) | \
             (nib_mapper         <<  4)
+.endscope
 .endmacro
 
 .delmacro _convert_nametable_hardwired

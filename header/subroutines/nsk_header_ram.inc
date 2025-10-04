@@ -25,6 +25,7 @@
 ;   _ram_sanity_check 2048   ; OK (2 KiB is divisible by 64)
 ;   _ram_sanity_check 1234   ; ERROR
 .macro _ram_sanity_check ram_size
+.scope
     check:
         .if ram_size .mod ::NSK_HEADER_RAMSIZE_MULTIPLIER <> 0
             .error                                                          \
@@ -34,6 +35,7 @@
                     ::NSK_HEADER_RAMSIZE_MULTIPLIER                         \
                 )
         .endif
+.endscope
 .endmacro
 
 ; @macro _ram_convert
@@ -55,6 +57,7 @@
 ;   _ram_convert 2048, nib  ; nib = 5  (2 KiB = 64 << 5)
 ;   _ram_convert 0, nib     ; nib = 0  (no RAM)
 .macro _ram_convert ram_size, out_nib
+.scope
     convert:
         .if ram_size = 0
             out_nib = 0
@@ -62,6 +65,7 @@
             _pow2 .set ram_size / ::NSK_HEADER_RAMSIZE_MULTIPLIER
             nsk_header_log2 _pow2, out_nib
         .endif
+.endscope
 .endmacro
 
 ; @macro nsk_header_ram
@@ -75,6 +79,7 @@
 ; @param    ram_size    Size of volatile RAM (in bytes).
 ; @param    nvram_size  Size of non-volatile RAM (NVRAM / EEPROM) in bytes.
 .macro nsk_header_ram ram_size, nvram_size
+.scope
     locals:
         .local nib_ram
         .local nib_nvram
@@ -91,6 +96,7 @@
         .byte                    \
             (nib_ram         ) | \
             (nib_nvram  <<  4)
+.endscope
 .endmacro
 
 .delmacro _ram_sanity_check

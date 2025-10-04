@@ -335,8 +335,7 @@
             ; Four-player titles using the simple 15-pin EXP protocol.
             fourplayers_simple = $03
             ; @var nsk::device::famicom::keyboardsilent_datarecorder
-            ; @brief Famicom Data Recorder with “silent” keyboard 
-            ; (no audio passthrough).
+            ; @brief Famicom Data Recorder with “silent” keyboard
             keyboardsilent_datarecorder = $20
             ; @var nsk::device::famicom::keyboardBASIC_datarecorder
             ; @brief Family BASIC Keyboard + Famicom Data Recorder bundle.

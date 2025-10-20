@@ -7,18 +7,7 @@
 
 #include "../../ROM/header/nsk_header_raw.h"
 #include "../../ROM/header/nsk_header_data.h"
-
-/*!
- * \brief  Match function possible oparators
- */
-enum nsk_match_operator {
-    NSK_MATCH_EQUAL,        /*!< =, equal               */
-    NSK_MATCH_NOTEQUAL,     /*!< !=, not equal          */
-    NSK_MATCH_LESS,         /*!< <, less than           */
-    NSK_MATCH_LESSOREQUAL,  /*!< <=, less or equal      */
-    NSK_MATCH_MORE,         /*!< >, more than           */
-    NSK_MATCH_MOREOREQUAL   /*!< >=, more or equal      */
-};
+#include "../../list/pair/nsk_pair_cmp.h"
 
 /*!
  * \brief  Row categories for grouping
@@ -90,7 +79,7 @@ struct nsk_header_tableentry {
     bool (*match)(
         const void *field,
         uint64_t value,
-        enum nsk_match_operator operator
+        enum nsk_pair_operator operator
     );
 };
 

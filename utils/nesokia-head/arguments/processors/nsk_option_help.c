@@ -28,7 +28,7 @@ void nsk_option_help(void) {
                 nsk_inf(", ");
             }
 
-            nsk_inf("--%s\n", nsk_options_table[i].option_long);
+            nsk_inf("--%s", nsk_options_table[i].option_long);
             switch (nsk_options_table[i].option_arg) {
                 case optional_argument:
                     nsk_inf("[=value]");
@@ -44,4 +44,6 @@ void nsk_option_help(void) {
         nsk_inf("%s", nsk_options_table[i].option_desc);
         nsk_inf("\n");
     }
+
+    exit(EXIT_SUCCESS);
 }

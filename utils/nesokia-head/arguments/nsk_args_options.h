@@ -27,12 +27,15 @@ struct nsk_options_entry {
  * \brief  Provided program options
  */
 struct nsk_options_program {
-    bool          follow;                  /*!< Follow symbolic links flag    */
-    bool          quiet;                   /*!< Show no output but errors     */
-    bool          recursive;               /*!< Recursive flag is set         */
-    bool          table;                   /*!< Use table output instead      */
-    const char   *filter;                  /*!< Filter string                 */
-    char *const  *files;                   /*!< Null-terminated files list    */
+    bool             follow;               /*!< Follow symbolic links flag    */
+    bool             quiet;                /*!< Show no output but errors     */
+    bool             recursive;            /*!< Recursive flag is set         */
+    bool             table;                /*!< Use table output instead      */
+
+    struct nsk_pair *filter;               /*!< Filter fields                 */
+    struct nsk_pair *fields;               /*!< Table fields                  */
+
+    char *const     *files;                /*!< Null-terminated files list    */
 };
 
 /*!

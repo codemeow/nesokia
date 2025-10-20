@@ -10,6 +10,8 @@
 #include "../arguments/processors/nsk_option_table.h"
 #include "../arguments/processors/nsk_option_version.h"
 
+#include "../list/pair/nsk_pair_type.h"
+
 /*!
  * Available options table
  */
@@ -27,14 +29,15 @@ struct nsk_options_entry nsk_options_table[] = {
         "\n"
         "    expr  ::= pair ('&' pair)*\n"
         "    pair  ::= key op value\n"
-        "    op    ::= '=' | '!=' | <' | '>' | '<=' | '>='\n"
+        "    op    ::= '=' | '!=' | '<>' | <' | '>' | '<=' | '>='\n"
         "    key   ::= [A-Za-z0-9_]+\n"
-        "    value ::= uint32 (decimal)\n"
+        "    value ::= uint64 (decimal)\n"
         "\n"
         "Semantics\n"
         "\n"
         "    * \"=\"  — exact equality\n"
         "    * \"!=\" — not equal\n"
+        "    * \"<>\" - not equal\n"
         "    * \"<\"  — strictly less than\n"
         "    * \"<=\" — less or equal\n"
         "    * \">\"  — strictly greater than\n"
@@ -51,12 +54,12 @@ struct nsk_options_entry nsk_options_table[] = {
         "    alternative           0..1      Normal or alternative layout\n"
         "    mapper                0..4095   Mapper ID\n"
         "    submapper             0..15     Submapper ID\n"
-        "    prg_rom               uint32    PRG ROM size\n"
-        "    prg_ram               uint32    PRG RAM size\n"
-        "    prg_nvram             uint32    PRG NVRAM size\n"
-        "    chr_rom               uint32    CHR ROM size\n"
-        "    chr_ram               uint32    CHR RAM size\n"
-        "    chr_nvram             uint32    CHR NVRAM size\n"
+        "    prg_rom               uint64    PRG ROM size\n"
+        "    prg_ram               uint64    PRG RAM size\n"
+        "    prg_nvram             uint64    PRG NVRAM size\n"
+        "    chr_rom               uint64    CHR ROM size\n"
+        "    chr_ram               uint64    CHR RAM size\n"
+        "    chr_nvram             uint64    CHR NVRAM size\n"
         "    misc_roms             0..3      Miscellaneous ROMs count\n"
         "    battery               0..1      Battery NVRAM presence flag\n"
         "    trainer               0..1      Trainer area presence flag\n"
@@ -66,13 +69,13 @@ struct nsk_options_entry nsk_options_table[] = {
         "\n"
         "Examples\n"
         "\n"
-        "    * \"mapper_id=305&prg_ram>0\"\n"
+        "    * \"mapper=305&prg_ram>0\"\n"
         "        Mapper ID is exactly 305 and PRG RAM size is > 0.\n"
-        "    * \"console_region=1&chr_rom=0\"\n"
+        "    * \"region=1&chr_rom=0\"\n"
         "        PAL region/timings and no CHR ROM.\n"
         "    * \"prg_rom>262144&battery_nvram>0\"\n"
         "        PRG ROM larger than 256 KiB and battery-backed NVRAM present.\n"
-        "    * \"isnes20=1&submapper_id>0\"\n"
+        "    * \"isnes20=1&submapper>0\"\n"
         "        iNES 2.0 with a nonzero submapper.\n"
     },
     {
@@ -106,7 +109,7 @@ struct nsk_options_entry nsk_options_table[] = {
         "\n"
         "* Each row corresponds to a ROM file name.\n"
         "* Each column corresponds to all field names or only optionally \n"
-        "  requested ones (e.g. mapper_id, prg_ram, etc.).\n"
+        "  requested ones (e.g. mapper, prg_ram, etc.).\n"
         "* The header row starts with the # character.\n"
         "* Fields are separated by the | character.\n"
         "\n"
@@ -130,3 +133,12 @@ size_t nsk_options_count =
  * \brief  Provided program options
  */
 struct nsk_options_program nsk_options_program = { 0 };
+
+/*!
+ * \brief  Module finalizer
+ */
+__attribute__((destructor))
+static void _fini(void) {
+//    nsk_pair_free(nsk_options_program.filter);
+//    nsk_pair_free(nsk_options_program.fields);
+}

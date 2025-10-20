@@ -2,6 +2,7 @@
 #define NSK_TABLE_CMP
 
 #include "../../../ROM/header/nsk_header_table.h"
+#include "../../../list/pair/nsk_pair_cmp.h"
 
 /*!
  * \brief  Compares the field value with the reference value
@@ -17,7 +18,7 @@
 bool nsk_compare_bool(
     const void *field,
     uint64_t value,
-    enum nsk_match_operator operator
+    enum nsk_pair_operator operator
 );
 
 /*!
@@ -34,7 +35,7 @@ bool nsk_compare_bool(
 bool nsk_compare_u64(
     const void *field,
     uint64_t value,
-    enum nsk_match_operator operator
+    enum nsk_pair_operator operator
 );
 
 /*!
@@ -51,7 +52,7 @@ bool nsk_compare_u64(
 bool nsk_compare_u8(
     const void *field,
     uint64_t value,
-    enum nsk_match_operator operator
+    enum nsk_pair_operator operator
 );
 
 /*!
@@ -68,7 +69,7 @@ bool nsk_compare_u8(
 bool nsk_compare_u16(
     const void *field,
     uint64_t value,
-    enum nsk_match_operator operator
+    enum nsk_pair_operator operator
 );
 
 /*!
@@ -85,7 +86,7 @@ bool nsk_compare_u16(
 bool nsk_compare_mirroring(
     const void *field,
     uint64_t value,
-    enum nsk_match_operator operator
+    enum nsk_pair_operator operator
 );
 
 /*!
@@ -102,7 +103,7 @@ bool nsk_compare_mirroring(
 bool nsk_compare_type(
     const void *field,
     uint64_t value,
-    enum nsk_match_operator operator
+    enum nsk_pair_operator operator
 );
 
 /*!
@@ -119,7 +120,7 @@ bool nsk_compare_type(
 bool nsk_compare_region(
     const void *field,
     uint64_t value,
-    enum nsk_match_operator operator
+    enum nsk_pair_operator operator
 );
 
 /*!
@@ -136,7 +137,7 @@ bool nsk_compare_region(
 bool nsk_compare_vsppu(
     const void *field,
     uint64_t value,
-    enum nsk_match_operator operator
+    enum nsk_pair_operator operator
 );
 
 /*!
@@ -153,7 +154,7 @@ bool nsk_compare_vsppu(
 bool nsk_compare_vshardware(
     const void *field,
     uint64_t value,
-    enum nsk_match_operator operator
+    enum nsk_pair_operator operator
 );
 
 /*!
@@ -170,7 +171,7 @@ bool nsk_compare_vshardware(
 bool nsk_compare_device(
     const void *field,
     uint64_t value,
-    enum nsk_match_operator operator
+    enum nsk_pair_operator operator
 );
 
 #endif

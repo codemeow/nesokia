@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "../utils/nsk_util_malloc.h"
 #include "../output/nsk_output_err.h"
 
@@ -27,3 +29,4 @@ void *nsk_util_malloc(size_t size) {
 void nsk_util_free(void *ptr) {
     free(ptr);
 }
+

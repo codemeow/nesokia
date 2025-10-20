@@ -25,9 +25,11 @@ void nsk_header_show(
         }
 
         nsk_inf(
-            "     - %20s: %s\n",
+            "     - %-20s: %s\n",
             nsk_header_table[i].description,
-            nsk_header_table[i].conv_long(data + nsk_header_table[i].shift)
+            nsk_header_table[i].conv_long(
+                (void *)data + nsk_header_table[i].shift
+            )
         );
     }
 

@@ -5,6 +5,7 @@
     #include "../io/windows/nsk_io_path.h"      // IWYU pragma: export
 
 #elif defined(NSK_OS_GNULINUX)
+    #include <linux/limits.h>
     #include "../io/gnulinux/nsk_io_path.h"     // IWYU pragma: export
 #endif
 

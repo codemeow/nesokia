@@ -12,8 +12,7 @@ void nsk_convraw_isnes20(
     const struct nsk_header_raw *raw,
     struct nsk_header_data *data
 ) {
-    static const uint8_t NES20_magic = 0x02;
-    data->isNES20 = raw->flags7.nes20_magic == NES20_magic;
+    data->isNES20 = raw->flags7.nes20_magic == nsk_magic_NES20;
 }
 
 /*!
@@ -28,11 +27,20 @@ void nsk_convraw_prgrom(
 ) {
     const uint32_t multiplier = 16 * 1024;
 
-    data->ROM.prg = nsk_util_expsize(
-        raw->roms_msb.prg_msb,
-        raw->prg_rom_lsb.raw,
-        multiplier
-    );
+    if (data->isNES20) {
+        data->ROM.prg = nsk_util_expsize(
+            raw->NES20.roms_msb.prg_msb,
+            raw->prg_rom_lsb.raw,
+            multiplier
+        );
+
+    } else {
+        data->ROM.prg = nsk_util_expsize(
+            0,
+            raw->prg_rom_lsb.raw,
+            multiplier
+        );
+    }
 }
 
 /*!
@@ -47,11 +55,20 @@ void nsk_convraw_chrrom(
 ) {
     const uint32_t multiplier = 8 * 1024;
 
-    data->ROM.prg = nsk_util_expsize(
-        raw->roms_msb.chr_msb,
-        raw->chr_rom_lsb.raw,
-        multiplier
-    );
+    if (data->isNES20) {
+        data->ROM.chr = nsk_util_expsize(
+            raw->NES20.roms_msb.chr_msb,
+            raw->chr_rom_lsb.raw,
+            multiplier
+        );
+
+    } else {
+        data->ROM.chr = nsk_util_expsize(
+            0,
+            raw->chr_rom_lsb.raw,
+            multiplier
+        );
+    }
 }
 
 /*!
@@ -64,7 +81,12 @@ void nsk_convraw_miscroms(
     const struct nsk_header_raw *raw,
     struct nsk_header_data *data
 ) {
-    data->ROM.misc = raw->misc.rom_count;
+    if (data->isNES20) {
+        data->ROM.misc = raw->NES20.misc.rom_count;
+
+    } else {
+        data->ROM.misc = 0;
+    }
 }
 
 /*!
@@ -77,10 +99,20 @@ void nsk_convraw_prgram(
     const struct nsk_header_raw *raw,
     struct nsk_header_data *data
 ) {
-    data->RAM.prg =
-        raw->prg_ram.ram_shift > 0
-        ? 64 << raw->prg_ram.ram_shift
-        : 0;
+    if (data->isNES20) {
+        data->RAM.prg =
+            raw->NES20.prg_ram.ram_shift > 0
+            ? 64 << raw->NES20.prg_ram.ram_shift
+            : 0;
+
+    } else {
+        const uint32_t multiplier = 8 * 1024;
+
+        data->RAM.prg =
+            raw->iNES.prg_ram == 0
+            ? multiplier
+            : multiplier * raw->iNES.prg_ram;
+    }
 }
 
 /*!
@@ -93,10 +125,15 @@ void nsk_convraw_chrram(
     const struct nsk_header_raw *raw,
     struct nsk_header_data *data
 ) {
-    data->RAM.chr =
-        raw->chr_ram.ram_shift > 0
-        ? 64 << raw->chr_ram.ram_shift
-        : 0;
+    if (data->isNES20) {
+        data->RAM.chr =
+            raw->NES20.chr_ram.ram_shift > 0
+            ? 64 << raw->NES20.chr_ram.ram_shift
+            : 0;
+
+    } else {
+        data->RAM.chr = 0;
+    }
 }
 
 /*!
@@ -109,10 +146,15 @@ void nsk_convraw_prgnvram(
     const struct nsk_header_raw *raw,
     struct nsk_header_data *data
 ) {
-    data->RAM.prg =
-        raw->prg_ram.nvram_shift > 0
-        ? 64 << raw->prg_ram.nvram_shift
-        : 0;
+    if (data->isNES20) {
+        data->NVRAM.prg =
+            raw->NES20.prg_ram.nvram_shift > 0
+            ? 64 << raw->NES20.prg_ram.nvram_shift
+            : 0;
+
+    } else {
+        data->NVRAM.prg = 0;
+    }
 }
 
 /*!
@@ -125,10 +167,15 @@ void nsk_convraw_chrnvram(
     const struct nsk_header_raw *raw,
     struct nsk_header_data *data
 ) {
-    data->RAM.chr =
-        raw->chr_ram.nvram_shift > 0
-        ? 64 << raw->chr_ram.nvram_shift
-        : 0;
+    if (data->isNES20) {
+        data->NVRAM.chr =
+            raw->NES20.chr_ram.nvram_shift > 0
+            ? 64 << raw->NES20.chr_ram.nvram_shift
+            : 0;
+
+    } else {
+        data->NVRAM.chr = 0;
+    }
 }
 
 /*!
@@ -141,10 +188,17 @@ void nsk_convraw_mapper(
     const struct nsk_header_raw *raw,
     struct nsk_header_data *data
 ) {
-    data->mapper.id =
-        raw->mappers.mapper_high << 8 |
-        raw->flags7.mapper_mid   << 4 |
-        raw->flags6.mapper_low;
+    if (data->isNES20) {
+        data->mapper.id =
+            raw->NES20.mappers.mapper_high << 8 |
+            raw->flags7.mapper_mid         << 4 |
+            raw->flags6.mapper_low;
+
+    } else {
+        data->mapper.id =
+            raw->flags7.mapper_mid         << 4 |
+            raw->flags6.mapper_low;
+    }
 }
 
 /*!
@@ -157,7 +211,12 @@ void nsk_convraw_submapper(
     const struct nsk_header_raw *raw,
     struct nsk_header_data *data
 ) {
-    data->mapper.subid = raw->mappers.submapper;
+    if (data->isNES20) {
+        data->mapper.subid = raw->NES20.mappers.submapper;
+
+    } else {
+        data->mapper.subid = 0;
+    }
 }
 
 /*!
@@ -170,7 +229,7 @@ void nsk_convraw_mirroring(
     const struct nsk_header_raw *raw,
     struct nsk_header_data *data
 ) {
-    data->nametables.isvertical = raw->flags6.mirror;
+    data->nametables.mirror = raw->flags6.mirror;
 }
 
 /*!
@@ -222,10 +281,31 @@ void nsk_convraw_console(
     const struct nsk_header_raw *raw,
     struct nsk_header_data *data
 ) {
-    if (raw->flags7.console_type > NSK_CONSOLE_PLAYCHOICE10) {
-        data->hardware.console.type = raw->subtype.extended.console_subtype;
+    if (data->isNES20) {
+        if (raw->flags7.console_type > NSK_CONSOLE_PLAYCHOICE10) {
+            data->hardware.console.type =
+                raw->NES20.subtype.extended.console_subtype;
+
+        } else {
+            data->hardware.console.type =
+                raw->flags7.console_type;
+        }
+
     } else {
-        data->hardware.console.type = raw->flags7.console_type;
+        switch (raw->flags7.console_type) {
+            case 0:
+                data->hardware.console.type = NSK_CONSOLE_NES;
+                break;
+            case 1:
+                data->hardware.console.type = NSK_CONSOLE_NINTENDO_VS;
+                break;
+
+            default:
+                /* Despite the 2nd bit may signal of Playchoice-10 it is
+                 * still not a part of the official specification.
+                 * Considering anything else as garbage */
+                data->hardware.console.type = NSK_CONSOLE_NES;
+        }
     }
 }
 
@@ -239,7 +319,12 @@ void nsk_convraw_region(
     const struct nsk_header_raw *raw,
     struct nsk_header_data *data
 ) {
-    data->hardware.console.region = raw->timing.timing_mode;
+    if (data->isNES20) {
+        data->hardware.console.region = raw->NES20.timing.timing_mode;
+
+    } else {
+        data->hardware.console.region = raw->iNES.timing.timing_mode;
+    }
 }
 
 /*!
@@ -252,7 +337,12 @@ void nsk_convraw_device(
     const struct nsk_header_raw *raw,
     struct nsk_header_data *data
 ) {
-    data->hardware.expansion = raw->expansion.device;
+    if (data->isNES20) {
+        data->hardware.expansion = raw->NES20.expansion.device;
+
+    } else {
+        data->hardware.expansion = NSK_DEVICE_NONE_UNSPECIFIED;
+    }
 }
 
 /*!
@@ -265,8 +355,15 @@ void nsk_convraw_vsppu(
     const struct nsk_header_raw *raw,
     struct nsk_header_data *data
 ) {
-    if (raw->flags7.console_type == NSK_CONSOLE_NINTENDO_VS) {
-        data->hardware.console.vs.ppu = raw->subtype.vssystem.ppu;
+    if (data->isNES20) {
+        if (raw->flags7.console_type == NSK_CONSOLE_NINTENDO_VS) {
+            data->hardware.console.vs.ppu =
+                raw->NES20.subtype.vssystem.ppu;
+
+        } else {
+            data->hardware.console.vs.ppu = NSK_VSPPU_NONE;
+        }
+
     } else {
         data->hardware.console.vs.ppu = NSK_VSPPU_NONE;
     }
@@ -282,8 +379,15 @@ void nsk_convraw_vshardware(
     const struct nsk_header_raw *raw,
     struct nsk_header_data *data
 ) {
-    if (raw->flags7.console_type == NSK_CONSOLE_NINTENDO_VS) {
-        data->hardware.console.vs.hardware = raw->subtype.vssystem.hardware;
+    if (data->isNES20) {
+        if (raw->flags7.console_type == NSK_CONSOLE_NINTENDO_VS) {
+            data->hardware.console.vs.hardware =
+                raw->NES20.subtype.vssystem.hardware;
+
+        } else {
+            data->hardware.console.vs.hardware = NSK_VSHARDWARE_NONE;
+        }
+
     } else {
         data->hardware.console.vs.hardware = NSK_VSHARDWARE_NONE;
     }

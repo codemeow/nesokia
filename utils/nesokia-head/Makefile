@@ -27,11 +27,11 @@ LIST_HEADERS := $(shell find $(DIR_PLATFORM) -type f -name '*.h')
 INCLUDE_HEADERS := $(addprefix -include ,$(LIST_HEADERS))
 
 # Compiler and flags
-#CC      := gcc
-CC := x86_64-w64-mingw32-gcc
+CC      := gcc
+#CC := x86_64-w64-mingw32-gcc -mno-ms-bitfields -static-libgcc
 
 # Compilation flags
-CFLAGS  := -std=c11 -Wall -Wextra -Werror -O2 $(VER_STRING) $(NAME_STRING) $(INCLUDE_HEADERS)
+CFLAGS  := -std=c11 -Wall -Wextra -Werror -O0 -g $(VER_STRING) $(NAME_STRING) $(INCLUDE_HEADERS)
 # Linking flags
 LDFLAGS := -lm
 

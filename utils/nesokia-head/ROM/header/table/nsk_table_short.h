@@ -34,6 +34,14 @@ const char *nsk_convshort_u8(const void *field);
 const char *nsk_convshort_u16(const void *field);
 
 /*!
+ * Converts Mirroring mode into short description
+ *
+ * \param[in]  field  The field (`enum nsk_mirroring_type *` expected)
+ * \return Static string
+ */
+const char *nsk_convshort_mirroring(const void *field);
+
+/*!
  * \brief  Converts console type into short description
  *
  * \param[in] field  The field (`enum nsk_console_type *` expected)

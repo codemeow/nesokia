@@ -11,6 +11,7 @@
 #include "../../ROM/types/nsk_romtype_vsppu.h"
 #include "../../ROM/types/nsk_romtype_vshardware.h"
 #include "../../ROM/types/nsk_romtype_device.h"
+#include "../../ROM/types/nsk_romtype_mirroring.h"
 
 /*!
  * \brief  Parsed and structured ROM header data
@@ -42,7 +43,7 @@ struct nsk_header_data {
     } mapper;
 
     struct {
-        bool isvertical;    /*!< Is Vertical alignment (or mapper-controlled) */
+        enum nsk_mirroring_type mirror; /*!< Mirroring mode                   */
         bool alternative;   /*!< Is alternative nametables layout used        */
     } nametables;
 

@@ -9,6 +9,7 @@
 #include "../../../ROM/types/nsk_romtype_region.h"
 #include "../../../ROM/types/nsk_romtype_vshardware.h"
 #include "../../../ROM/types/nsk_romtype_vsppu.h"
+#include "../../../ROM/types/nsk_romtype_mirroring.h"
 
 /*!
  * \brief  Direct uint64_t to string converter
@@ -66,6 +67,18 @@ const char *nsk_convshort_u16(const void *field) {
     return _convert_u64(value);
 }
 
+
+/*!
+ * Converts Mirroring mode into short description
+ *
+ * \param[in]  field  The field (`enum nsk_mirroring_type *` expected)
+ * \return Static string
+ */
+const char *nsk_convshort_mirroring(const void *field) {
+    enum nsk_mirroring_type value = *(enum nsk_mirroring_type *)field;
+    return _convert_u64(value);
+}
+
 /*!
  * \brief  Converts console type into short description
  *
@@ -73,7 +86,7 @@ const char *nsk_convshort_u16(const void *field) {
  * \return Static string
  */
 const char *nsk_convshort_type(const void *field) {
-    enum nsk_device_type value = *(enum nsk_device_type *)field;
+    enum nsk_console_type value = *(enum nsk_console_type *)field;
     return _convert_u64(value);
 }
 

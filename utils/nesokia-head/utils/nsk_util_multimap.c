@@ -27,7 +27,12 @@ const char *nsk_multimap_lookup(
         if (entry->key == key) {
 
             if (!first) {
-                count = snprintf(value + pos, sizeof(value) - pos, separator);
+                count = snprintf(
+                    value + pos,
+                    sizeof(value) - pos,
+                    "%s",
+                    separator
+                );
                 if (count > 0 && count < (int)sizeof(value) - pos) {
                     pos += count;
                 } else {
@@ -41,6 +46,8 @@ const char *nsk_multimap_lookup(
             } else {
                 return "";
             }
+
+            first = false;
         }
 
         entry++;

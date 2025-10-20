@@ -19,6 +19,7 @@ static bool _rom_validate(const struct nsk_header_raw *header) {
     return memcmp(header->magic, NESmagic, sizeof(NESmagic)) == 0;
 }
 
+
 /*!
  * \brief  Read the header from the ROM file
  *

@@ -34,6 +34,14 @@ const char *nsk_convlong_u8(const void *field);
 const char *nsk_convlong_u16(const void *field);
 
 /*!
+ * Converts Mirroring mode into long description
+ *
+ * \param[in]  field  The field (`enum nsk_mirroring_type *` expected)
+ * \return Static string
+ */
+const char *nsk_convlong_mirroring(const void *field);
+
+/*!
  * \brief  Converts console type into long description
  *
  * \param[in]  field  The field (`enum nsk_console_type *` expected)

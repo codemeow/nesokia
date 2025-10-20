@@ -13,12 +13,12 @@
 
 # OS
 -D__gnu_linux__
--D__WINDOWS__
+# -D__WINDOWS__
 
 # Mingw-specific
--isystem-after/usr/x86_64-w64-mingw32/include
--D_WIN32_WINNT=0x0601
--D__USE_MINGW_ANSI_STDIO=1
+# -isystem-after/usr/x86_64-w64-mingw32/include
+# -D_WIN32_WINNT=0x0601
+# -D__USE_MINGW_ANSI_STDIO=1
 
 # Current target
---target=x86_64-w64-mingw32
+# --target=x86_64-w64-mingw32

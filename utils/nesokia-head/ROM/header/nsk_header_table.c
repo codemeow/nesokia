@@ -77,11 +77,11 @@ const struct nsk_header_tableentry nsk_header_table[] = {
         .category   = NSK_CATEGORY_NAMETABLES,
         .description= "Mirroring / layout",
         .shortcut   = "mirroring",
-        .shift      = NSK_OF(nametables.isvertical),
+        .shift      = NSK_OF(nametables.mirror),
         .conv_raw   = nsk_convraw_mirroring,
-        .conv_long  = nsk_convlong_bool,
-        .conv_short = nsk_convshort_bool,
-        .match      = nsk_compare_bool
+        .conv_long  = nsk_convlong_mirroring,
+        .conv_short = nsk_convshort_mirroring,
+        .match      = nsk_compare_mirroring
     },
     {
         .category   = NSK_CATEGORY_NAMETABLES,

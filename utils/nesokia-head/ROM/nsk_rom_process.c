@@ -20,10 +20,12 @@ void nsk_rom_process(const char *filename) {
 
     data = nsk_header_raw2data(&raw);
 
-    if (nsk_options_program.table) {
-        //nsk_table_push(filename, &data);
+//    if (nsk_filter_match(&data)) {
+        if (nsk_options_program.table) {
+            //nsk_table_push(filename, &data);
 
-    } else {
-        nsk_header_show(filename, &data);
-    }
+        } else {
+            nsk_header_show(filename, &data);
+        }
+//    }
 }

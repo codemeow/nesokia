@@ -16,7 +16,7 @@
  */
 void nsk_scan_entry(const char *entryname, unsigned level) {
     struct stat stat;
-    if (!nsk_io_lstat(entryname, &stat)) {
+    if (nsk_io_lstat(entryname, &stat) != 0) {
         nsk_err("Error: cannot `lstat` file: \"%s\"\n", entryname);
         return;
     }

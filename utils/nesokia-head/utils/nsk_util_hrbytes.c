@@ -38,7 +38,7 @@ const char *nsk_util_hrbytes(uint64_t value) {
     do {
         scaled = (double)value / units[i].multiplier;
         i++;
-    } while (i < maxunit && scaled >= 100.0);
+    } while (i < maxunit && scaled >= 512.0);
 
     snprintf(
         result,

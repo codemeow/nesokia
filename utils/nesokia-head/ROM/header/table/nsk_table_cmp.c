@@ -7,6 +7,7 @@
 #include "../../../ROM/types/nsk_romtype_region.h"
 #include "../../../ROM/types/nsk_romtype_vshardware.h"
 #include "../../../ROM/types/nsk_romtype_vsppu.h"
+#include "../../../ROM/types/nsk_romtype_mirroring.h"
 #include "../../../output/nsk_output_err.h"
 
 /*!
@@ -115,6 +116,26 @@ bool nsk_compare_u16(
     enum nsk_match_operator operator
 ) {
     uint16_t fvalue = *(uint16_t *)field;
+    return _compare_u64(fvalue, value, operator);
+}
+
+/*!
+ * \brief  Compares the field value with the reference value
+ *
+ * Answer the question "is <field> <operator> <value>?", i.e.
+ * "Is mapper > 304?"
+ *
+ * \param[in] field      The field
+ * \param[in] value      The value
+ * \param[in] operator   The required operator
+ * \return True if <field> <operator> <value>
+ */
+bool nsk_compare_mirroring(
+    const void *field,
+    uint64_t value,
+    enum nsk_match_operator operator
+) {
+    enum nsk_mirroring_type fvalue = *(enum nsk_mirroring_type *)field;
     return _compare_u64(fvalue, value, operator);
 }
 

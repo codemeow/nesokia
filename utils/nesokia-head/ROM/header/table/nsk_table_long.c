@@ -9,6 +9,7 @@
 #include "../../../ROM/types/nsk_romtype_region.h"
 #include "../../../ROM/types/nsk_romtype_vshardware.h"
 #include "../../../ROM/types/nsk_romtype_vsppu.h"
+#include "../../../ROM/types/nsk_romtype_mirroring.h"
 #include "../../../utils/nsk_util_hrbytes.h"
 
 /*!
@@ -59,6 +60,17 @@ const char *nsk_convlong_u16(const void *field) {
 
     snprintf(result, sizeof(result), "%" PRIu16, value);
     return result;
+}
+
+/*!
+ * Converts Mirroring mode into long description
+ *
+ * \param[in]  field  The field (`enum nsk_mirroring_type *` expected)
+ * \return Static string
+ */
+const char *nsk_convlong_mirroring(const void *field) {
+    enum nsk_mirroring_type value = *(enum nsk_mirroring_type *)field;
+    return nsk_mirroring_name(value);
 }
 
 /*!

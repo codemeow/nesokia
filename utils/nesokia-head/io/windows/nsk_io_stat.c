@@ -3,11 +3,13 @@
 #include <sys/stat.h>
 #include <stdbool.h>
 #include <time.h>
+#include <windows.h>
 
 #include "../../io/nsk_io_stat.h"
 #include "../../strings/windows/nsk_strings_wide.h"
 #include "../../utils/nsk_util_malloc.h"
 #include "../../utils/nsk_util_cleanup.h"
+#include "../../output/nsk_output_err.h"
 
 /*!
  * \brief  Symlink types list
@@ -76,11 +78,16 @@ static mode_t _symlink_mode(const BY_HANDLE_FILE_INFORMATION * info) {
 static bool _filetime_convert(const FILETIME * filetime, time_t *unixtime) {
     SYSTEMTIME systime;
     if (!FileTimeToSystemTime(filetime, &systime)) {
+        nsk_err("Error: FileTimeToSystemTime error: %lu\n", GetLastError());
         return false;
     }
 
     SYSTEMTIME localtime;
     if (!SystemTimeToTzSpecificLocalTime(NULL, &systime, &localtime)) {
+        nsk_err(
+            "Error: SystemTimeToTzSpecificLocalTime error: %lu\n",
+            GetLastError()
+        );
         return false;
     }
 
@@ -178,19 +185,29 @@ int nsk_io_lstat(const char *path, struct stat *statbuf) {
         NULL
     );
 
-    if (handle == INVALID_HANDLE_VALUE)
+    if (handle == INVALID_HANDLE_VALUE) {
+        nsk_err("Error: CreateFileW error: %lu\n", GetLastError());
         return -1;
+    }
 
     BY_HANDLE_FILE_INFORMATION info;
 
     bool success = GetFileInformationByHandle(handle, &info);
     CloseHandle(handle);
 
-    if (!success || !_symlink_stat(&info, statbuf))
+    if (!success) {
+        nsk_err(
+            "Error: GetFileInformationByHandle error: %lu\n",
+            GetLastError()
+        );
         return -1;
+    }
+
+    if (!_symlink_stat(&info, statbuf)) {
+        return -1;
+    }
 
     return 0;
-
 }
 
 #endif

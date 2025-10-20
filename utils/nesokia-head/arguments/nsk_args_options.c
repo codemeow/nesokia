@@ -139,6 +139,6 @@ struct nsk_options_program nsk_options_program = { 0 };
  */
 __attribute__((destructor))
 static void _fini(void) {
-//    nsk_pair_free(nsk_options_program.filter);
-//    nsk_pair_free(nsk_options_program.fields);
+    nsk_pair_free(nsk_options_program.filter);
+    nsk_pair_free(nsk_options_program.fields);
 }

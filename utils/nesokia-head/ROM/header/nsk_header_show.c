@@ -28,7 +28,7 @@ void nsk_header_show(
             "     - %-20s: %s\n",
             nsk_header_table[i].description,
             nsk_header_table[i].conv_long(
-                (void *)data + nsk_header_table[i].shift
+                (char *)data + nsk_header_table[i].shift
             )
         );
     }

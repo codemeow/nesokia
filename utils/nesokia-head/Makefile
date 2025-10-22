@@ -7,11 +7,13 @@ VER_MINOR := 1
 VER_BUILD := 1
 
 # Build directory for object files
-DIR_BUILD := build
+DIR_BUILD := ../../build
 # Output binary directory
-DIR_BIN := bin
+DIR_BIN := ../../bin
 # Extra headers to cover platform-specific stuff
-DIR_PLATFORM := platform
+DIR_INCLUDES := includes
+# Extra headers with XMacro consts
+DIR_ICOMMON := ../common
 
 # Version defines
 VER_STRING := \
@@ -22,7 +24,7 @@ VER_STRING := \
 NAME_STRING := -DNSK_PROGRAM_NAME=\"$(TARGET)\"
 
 # List of additional headers
-LIST_HEADERS := $(shell find $(DIR_PLATFORM) -type f -name '*.h')
+LIST_HEADERS := $(shell find $(DIR_INCLUDES) -type f -name '*.h')
 # Compile options for additional headers
 INCLUDE_HEADERS := $(addprefix -include ,$(LIST_HEADERS))
 
@@ -31,7 +33,7 @@ CC      := gcc
 #CC := x86_64-w64-mingw32-gcc -mno-ms-bitfields -static-libgcc
 
 # Compilation flags
-CFLAGS  := -std=c11 -Wall -Wextra -Werror -O0 -g $(VER_STRING) $(NAME_STRING) $(INCLUDE_HEADERS)
+CFLAGS  := -std=c11 -Wall -Wextra -Werror -O0 -g $(VER_STRING) $(NAME_STRING) $(INCLUDE_HEADERS) -I$(DIR_ICOMMON)
 # Linking flags
 LDFLAGS := -lm
 

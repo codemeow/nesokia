@@ -30,10 +30,11 @@ struct nsk_options_program {
     bool             follow;               /*!< Follow symbolic links flag    */
     bool             quiet;                /*!< Show no output but errors     */
     bool             recursive;            /*!< Recursive flag is set         */
-    bool             table;                /*!< Use table output instead      */
+
+    const char      *printer;              /*!< Type of printer to use        */
 
     struct nsk_pair *filter;               /*!< Filter fields                 */
-    struct nsk_pair *fields;               /*!< Table fields                  */
+    struct nsk_pair *keys;                 /*!< Table fields                  */
 
     char *const     *files;                /*!< Null-terminated files list    */
 };

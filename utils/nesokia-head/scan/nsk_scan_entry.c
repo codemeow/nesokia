@@ -1,11 +1,12 @@
 #include <sys/stat.h>
 
 #include "../scan/nsk_scan_entry.h"
+
 #include "../scan/nsk_scan_directory.h"
-#include "../scan/nsk_scan_link.h"
 #include "../scan/nsk_scan_file.h"
-#include "../io/nsk_io_stat.h"
-#include "../log/nsk_log_err.h"
+#include "../scan/nsk_scan_link.h"
+#include "../utils/io/nsk_io_stat.h"
+#include "../utils/log/nsk_log_err.h"
 
 /*!
  * \brief  Scans the provided entry and either provides detailed description

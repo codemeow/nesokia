@@ -1,6 +1,9 @@
-#include <stdio.h>
 #include <inttypes.h>
+#include <stdio.h>
+
 #include "../utils/nsk_util_hrbytes.h"
+
+#include "../utils/nsk_util_size.h"
 
 /*!
  * \brief  Converts bytes into human-readable format (KB/MB/GB + raw value)
@@ -19,7 +22,7 @@ const char *nsk_util_hrbytes(uint64_t value) {
         { "GiB", UINT64_C(1) << 30},
         { "TiB", UINT64_C(1) << 40},
     };
-    static const size_t maxunit = sizeof(units) / sizeof(units[0]);
+    static const size_t maxunit = NSK_SIZE(units);
 
     if (value < units[0].multiplier) {
         snprintf(

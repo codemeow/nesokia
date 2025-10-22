@@ -1,7 +1,8 @@
 #include <string.h>
 
 #include "../utils/nsk_util_malloc.h"
-#include "../log/nsk_log_err.h"
+
+#include "../utils/log/nsk_log_err.h"
 
 /*!
  * \brief  Allocates the required amount of memory and fill it with zeroes

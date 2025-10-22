@@ -11,6 +11,14 @@
 -DNSK_VERSION_MINOR=0
 -DNSK_VERSION_BUILD=0
 
+-include includes/nsk_platform_format.h
+-include includes/nsk_platform_os.h
+-include includes/nsk_platform_posix.h
+-include includes/windows/nsk_windows_mingw.h
+-include includes/windows/nsk_windows_winver.h
+
+-I../common
+
 # OS
 -D__gnu_linux__
 # -D__WINDOWS__

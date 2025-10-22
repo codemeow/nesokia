@@ -5,12 +5,13 @@
 #include "../arguments/processors/nsk_option_filter.h"
 #include "../arguments/processors/nsk_option_follow.h"
 #include "../arguments/processors/nsk_option_help.h"
+#include "../arguments/processors/nsk_option_keys.h"
+#include "../arguments/processors/nsk_option_output.h"
 #include "../arguments/processors/nsk_option_quiet.h"
 #include "../arguments/processors/nsk_option_recursive.h"
-#include "../arguments/processors/nsk_option_table.h"
 #include "../arguments/processors/nsk_option_version.h"
-
-#include "../list/pair/nsk_pair_type.h"
+#include "../types/pair/nsk_pair_type.h"
+#include "../utils/nsk_util_size.h"
 
 /*!
  * Available options table
@@ -19,7 +20,6 @@ struct nsk_options_entry nsk_options_table[] = {
    {
         "filter", 'f', required_argument,
         nsk_option_filter,
-
         "Filter\n"
         "\n"
         "Use a single string to filter ROM entries. The string is a sequence of `pair`s\n"
@@ -46,7 +46,7 @@ struct nsk_options_entry nsk_options_table[] = {
         "\n"
         "Supported keys\n"
         "\n"
-        "         key             values            description\n"
+        "         key             values(*)        description\n"
         "    isnes20               0..1      iNES or NES 2.0 header format\n"
         "    console               0..12     Console type: NES, VS System, etc\n"
         "    region                0..3      Console region/timing (NTSC, PAL, etc)\n"
@@ -67,6 +67,9 @@ struct nsk_options_entry nsk_options_table[] = {
         "    vs_ppu                0..11     Vs. System PPU type\n"
         "    vs_hardware           0..6      Vs. System hardware type\n"
         "\n"
+        "(*) Any valid uint64_t value could be passed, but only listed values make \n"
+        "    any sense.\n"
+        "\n"
         "Examples\n"
         "\n"
         "    * \"mapper=305&prg_ram>0\"\n"
@@ -82,11 +85,43 @@ struct nsk_options_entry nsk_options_table[] = {
         "follow", 'l', no_argument,
         nsk_option_follow,
         "Follow symbolic links.\n"
+        "By default no symbolic links are followed\n"
     },
     {
         "help", 'h', no_argument,
         nsk_option_help,
         "Print help and exit\n"
+    },
+    {
+        "keys", 'k', required_argument,
+        nsk_option_keys,
+        "Sets the subset of keys to be shown. By default all keys are shown instead\n"
+        "The string is a sequence of keys joined by `&`.\n"
+        "\n"
+        "Grammar\n"
+        "\n"
+        "    expr  ::= key ('&' key)*\n"
+        "    key   ::= [A-Za-z0-9_]+\n"
+        "\n"
+        "Supported keys\n"
+        "\n"
+        "    See \"filter\" option description\n"
+    },
+    {
+        "output", 'o', required_argument,
+        nsk_option_output,
+        "Select the output type\n"
+        "\n"
+        "Possible values:\n"
+        "    * \"tree\":\n"
+        "        This is default output type. Shows the ROMs information as\n"
+        "        detailed human-readable tree-like output\n"
+        "    * \"table\":\n"
+        "        Prints the ROMs information as a table\n"
+        "    * \"json\":\n"
+        "        Prints the ROMs information as a JSON document\n"
+        "    * \"xml\":\n"
+        "        Prints the ROMs information as an XML document\n"
     },
     {
         "quiet", 'q', no_argument,
@@ -97,23 +132,8 @@ struct nsk_options_entry nsk_options_table[] = {
         "recursive", 'r', no_argument,
         nsk_option_recursive,
         "Enable recursive directory scanning.\n"
-        "When specified, the program will process not only the given file(s) or directory\n"
+        "When specified, the program will process not only the given file(s)\n"
         "but also all subdirectories."
-    },
-    {
-        "table", 't', optional_argument,
-        nsk_option_table,
-        "Enable table output mode.\n"
-        "\n"
-        "Instead of detailed per-ROM information, prints a summary table where:\n"
-        "\n"
-        "* Each row corresponds to a ROM file name.\n"
-        "* Each column corresponds to all field names or only optionally \n"
-        "  requested ones (e.g. mapper, prg_ram, etc.).\n"
-        "* The header row starts with the # character.\n"
-        "* Fields are separated by the | character.\n"
-        "\n"
-        "This mode is convenient for quick comparison and scripting.\n"
     },
     {
         "version", 'v', no_argument,
@@ -125,9 +145,7 @@ struct nsk_options_entry nsk_options_table[] = {
 /*!
  * Available options table size
  */
-size_t nsk_options_count =
-    sizeof(nsk_options_table) /
-    sizeof(nsk_options_table[0]);
+size_t nsk_options_count = NSK_SIZE(nsk_options_table);
 
 /*!
  * \brief  Provided program options
@@ -140,5 +158,5 @@ struct nsk_options_program nsk_options_program = { 0 };
 __attribute__((destructor))
 static void _fini(void) {
     nsk_pair_free(nsk_options_program.filter);
-    nsk_pair_free(nsk_options_program.fields);
+    nsk_pair_free(nsk_options_program.keys);
 }

@@ -1,6 +1,7 @@
 #include "../scan/nsk_scan_file.h"
+
 #include "../arguments/nsk_args_options.h"
-#include "../ROM/nsk_rom_process.h"
+#include "../types/entry/nsk_entry_process.h"
 
 /*!
  * \brief  Scans the provided file and either provides detailed description
@@ -14,5 +15,5 @@ void nsk_scan_file(const char *filename, unsigned level) {
         return;
     }
 
-    nsk_rom_process(filename);
+    nsk_entry_process(filename);
 }

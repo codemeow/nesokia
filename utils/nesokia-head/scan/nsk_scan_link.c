@@ -1,9 +1,10 @@
 #include "../scan/nsk_scan_link.h"
+
 #include "../arguments/nsk_args_options.h"
-#include "../io/nsk_io_stat.h"
-#include "../log/nsk_log_err.h"
 #include "../scan/nsk_scan_directory.h"
 #include "../scan/nsk_scan_file.h"
+#include "../utils/io/nsk_io_stat.h"
+#include "../utils/log/nsk_log_err.h"
 
 /*!
  * \brief  Scan the symbolic link entry

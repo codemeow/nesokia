@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 #include "../../list/pair/nsk_pair_cmp.h"
-#include "../../output/nsk_output_err.h"
+#include "../../log/nsk_log_err.h"
 
 /* Forward declaration */
 static bool _compare_equal      (uint64_t left, uint64_t right);

@@ -10,6 +10,9 @@
 void nsk_option_table(void) {
     nsk_options_program.table = true;
     if (optarg) {
-        nsk_options_program.filter = nsk_pair_parse(optarg);
+        nsk_options_program.fields = nsk_pair_parse(
+            optarg,
+            NSK_PAIR_NAME
+        );
     }
 }

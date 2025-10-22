@@ -5,7 +5,7 @@
 #include "../scan/nsk_scan_link.h"
 #include "../scan/nsk_scan_file.h"
 #include "../io/nsk_io_stat.h"
-#include "../output/nsk_output_err.h"
+#include "../log/nsk_log_err.h"
 
 /*!
  * \brief  Scans the provided entry and either provides detailed description

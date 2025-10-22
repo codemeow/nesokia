@@ -7,6 +7,15 @@
 #include "../../list/pair/nsk_pair_cmp.h"
 
 /*!
+ * \brief  List of fields, used in particular pair instance
+ */
+enum nsk_pair_fields {
+    NSK_PAIR_NAME       = 1 << 0, /*!< Name field       */
+    NSK_PAIR_OPERATOR   = 1 << 1, /*!< Operator field   */
+    NSK_PAIR_VALUE      = 1 << 2  /*!< Value field      */
+};
+
+/*!
  * \brief  Name:value pair holder
  */
 struct nsk_pair {

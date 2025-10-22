@@ -2,7 +2,7 @@
 
 #include "../../ROM/header/nsk_header_show.h"
 #include "../../ROM/header/nsk_header_table.h"
-#include "../../output/nsk_output_inf.h"
+#include "../../log/nsk_log_inf.h"
 
 /*!
  * \brief  Fancy prints the header data

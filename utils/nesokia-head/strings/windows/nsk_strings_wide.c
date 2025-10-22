@@ -6,7 +6,7 @@
 #include <windows.h>
 
 #include "../../utils/nsk_util_malloc.h"
-#include "../../output/nsk_output_err.h"
+#include "../../log/nsk_log_err.h"
 #include "../../utils/nsk_util_cleanup.h"
 
 /*!

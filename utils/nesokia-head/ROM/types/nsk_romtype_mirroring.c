@@ -1,7 +1,7 @@
 #include <stdlib.h>
 
 #include "../../ROM/types/nsk_romtype_mirroring.h"
-#include "../../output/nsk_output_err.h"
+#include "../../log/nsk_log_err.h"
 
 /*!
  * \brief  Returns text description of the type

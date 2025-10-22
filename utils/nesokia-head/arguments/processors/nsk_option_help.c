@@ -2,7 +2,7 @@
 
 #include "../../arguments/processors/nsk_option_help.h"
 #include "../../arguments/nsk_args_options.h"
-#include "../../output/nsk_output_inf.h"
+#include "../../log/nsk_log_inf.h"
 
 #if !defined(NSK_PROGRAM_NAME)
     #error "NSK_PROGRAM_NAME should be defined with the program name"

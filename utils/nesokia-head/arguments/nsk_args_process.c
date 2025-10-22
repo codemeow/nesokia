@@ -4,7 +4,7 @@
 
 #include "../arguments/nsk_args_process.h"
 #include "../arguments/nsk_args_options.h"
-#include "../output/nsk_output_err.h"
+#include "../log/nsk_log_err.h"
 #include "../utils/nsk_util_malloc.h"
 #include "../utils/nsk_util_cleanup.h"
 

@@ -9,7 +9,7 @@
 #include "../../strings/windows/nsk_strings_wide.h"
 #include "../../utils/nsk_util_malloc.h"
 #include "../../utils/nsk_util_cleanup.h"
-#include "../../output/nsk_output_err.h"
+#include "../../log/nsk_log_err.h"
 
 /*!
  * \brief  Symlink types list

@@ -2,7 +2,7 @@
 #include <stdarg.h>
 
 #include "../arguments/nsk_args_options.h"
-#include "../output/nsk_output_inf.h"
+#include "../log/nsk_log_inf.h"
 
 /*!
  * \brief  Outputs message to stdout

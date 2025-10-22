@@ -2,7 +2,7 @@
 
 #include "../../ROM/header/nsk_header_table.h"
 #include "../../ROM/header/nsk_header_data.h"
-#include "../../output/nsk_output_err.h"
+#include "../../log/nsk_log_err.h"
 
 #include "../../ROM/header/table/nsk_table_long.h"
 #include "../../ROM/header/table/nsk_table_short.h"

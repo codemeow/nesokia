@@ -1,7 +1,7 @@
 #include "../scan/nsk_scan_link.h"
 #include "../arguments/nsk_args_options.h"
 #include "../io/nsk_io_stat.h"
-#include "../output/nsk_output_err.h"
+#include "../log/nsk_log_err.h"
 #include "../scan/nsk_scan_directory.h"
 #include "../scan/nsk_scan_file.h"
 

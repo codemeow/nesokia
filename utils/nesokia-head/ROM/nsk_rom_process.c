@@ -5,6 +5,7 @@
 #include "../ROM/nsk_rom_read.h"
 #include "../arguments/nsk_args_options.h"
 #include "../ROM/nsk_rom_match.h"
+#include "../list/entry/nsk_entry_list.h"
 
 /*!
  * \brief  Process the possible ROM file
@@ -23,7 +24,7 @@ void nsk_rom_process(const char *filename) {
 
     if (nsk_rom_match(&data)) {
         if (nsk_options_program.table) {
-            //nsk_table_push(filename, &data);
+            //nsk_entry_push(filename, &data);
 
         } else {
             nsk_header_show(filename, &data);

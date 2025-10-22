@@ -1,1 +1,7 @@
-- Table rows selection (same syntax (names) as filter), as optional argument
+Always push to the entry queue, print later
+Rename current output to log
+
+Use grouped module output for output option
+
+Fields filter should also apply to every output
+-o --output=human (default)/table/json/xml

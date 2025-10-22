@@ -26,8 +26,10 @@
  * available key values
  *
  * \param[in] string  The input string
+ * \param[in] fields  The combination of nsk_pair_fields to indicate which
+ *                    fields to parse
  * \return  Allocated list of pairs
  */
-struct nsk_pair *nsk_pair_parse(const char *string);
+struct nsk_pair *nsk_pair_parse(const char *string, unsigned fields);
 
 #endif

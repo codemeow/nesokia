@@ -4,7 +4,7 @@
 #include "../arguments/nsk_args_options.h"
 #include "../list/pair/nsk_pair_type.h"
 #include "../ROM/header/nsk_header_table.h"
-#include "../output/nsk_output_err.h"
+#include "../log/nsk_log_err.h"
 
 /*!
  * \brief  Matches against a single filter

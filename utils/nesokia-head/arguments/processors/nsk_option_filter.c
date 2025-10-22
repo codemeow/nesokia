@@ -8,5 +8,8 @@
  * \brief  Sets the filter string for the scan process
  */
 void nsk_option_filter(void) {
-    nsk_options_program.filter = nsk_pair_parse(optarg);
+    nsk_options_program.filter = nsk_pair_parse(
+        optarg,
+        NSK_PAIR_NAME | NSK_PAIR_OPERATOR | NSK_PAIR_VALUE
+    );
 }

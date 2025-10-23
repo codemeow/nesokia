@@ -115,14 +115,10 @@ bool nsk_pair_compare(
     uint64_t right,
     enum nsk_pair_operator operator
 ) {
-    switch (operator) {
-        case NSK_PAIR_EQUAL         :
-        case NSK_PAIR_NOTEQUAL      :
-        case NSK_PAIR_LESS          :
-        case NSK_PAIR_LESSOREQUAL   :
-        case NSK_PAIR_MORE          :
-        case NSK_PAIR_MOREOREQUAL   :
-            return nsk_compare_table[operator].function(left, right);
+    for (size_t i = 0; i < nsk_compare_tablesize; i++) {
+        if (nsk_compare_table[i].operator == operator) {
+            return nsk_compare_table[i].function(left, right);
+        }
     }
 
     nsk_err("Error: unknown compare operator: %d\n", (int)operator);

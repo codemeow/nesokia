@@ -7,6 +7,9 @@
 
 #include "../../utils/strings/nsk_strings_columns.h"
 
+#include "../../utils/nsk_util_cleanup.h"
+#include "../../utils/nsk_util_malloc.h"
+
 /*!
  * \brief  Module initializer
  */
@@ -23,7 +26,7 @@ static void _init(void) {
  * \param[out] occupied   The number f columns actually occupied
  * \return  The number of bytes that fit
  */
-size_t nsk_strings_columns(
+size_t nsk_strings_limitcolumns(
     const char *string,
     size_t      requested,
     size_t     *occupied
@@ -91,4 +94,44 @@ size_t nsk_strings_columns(
         *occupied = requested - left;
     }
     return bytes;
+}
+
+/*!
+ * \brief  Returns the number of the displayed columns when printing this string
+ *
+ * \param[in] string  The string
+ * \return Number of columns required
+ */
+size_t nsk_strings_colums(
+    const char *string
+) {
+    mbstate_t state = {0};
+    wchar_t wc;
+    size_t len = 0;
+    const char *p = string;
+
+    while (*p) {
+        size_t n = mbrtowc(&wc, p, MB_CUR_MAX, &state);
+        if (
+            n == (size_t)-1 ||
+            n == (size_t)-2
+        ) {
+            break;
+        }
+
+        len++;
+        p += n;
+    }
+
+    nsk_auto_free wchar_t *wbuf = nsk_util_malloc((len + 1) * sizeof(wchar_t));
+    if (mbstowcs(wbuf, string, len + 1) == (size_t)-1) {
+        return 0;
+    }
+
+    int width = wcswidth(wbuf, len);
+    if (width < 0) {
+        return 0;
+    } else {
+        return width;
+    }
 }

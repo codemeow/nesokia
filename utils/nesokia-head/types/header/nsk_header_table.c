@@ -210,7 +210,7 @@ const struct nsk_header_tableentry nsk_header_table[] = {
     },
     {
         .category   = NSK_CATEGORY_MEMORY,
-        .description= "Miscellaneous ROMs",
+        .description= "Misc. ROMs",
         .shortcut   = "misc_roms",
         .length     = 1,
         .shift      = NSK_OF(ROM.misc),

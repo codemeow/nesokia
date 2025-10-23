@@ -128,6 +128,7 @@ struct nsk_options_entry nsk_options_table[] = {
         "\n"
         "    * \"table\":\n"
         "        Prints the ROMs information as a table\n"
+        "        This output is compatible with Markdown tables format\n"
         "\n"
         "    * \"json\":\n"
         "        Prints the ROMs information as a JSON document\n"
@@ -175,6 +176,10 @@ struct nsk_options_entry nsk_options_table[] = {
         "        Additionally enriches them with the \"filename\" field.\n"
         "        Every field (except \"filename\") is represented as an object, containing\n"
         "        \"raw\" and \"display\" values."
+        "\n"
+        "   * \"md\":\n"
+        "        Prints the ROMs information as pretty Markdown document\n"
+        "\n"
 
     },
     {

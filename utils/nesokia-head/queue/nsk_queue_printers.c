@@ -4,6 +4,7 @@
 #include "../queue/nsk_queue_printers.h"
 
 #include "../queue/printers/nsk_printer_json.h"
+#include "../queue/printers/nsk_printer_md.h"
 #include "../queue/printers/nsk_printer_table.h"
 #include "../queue/printers/nsk_printer_tree.h"
 #include "../queue/printers/nsk_printer_xml.h"
@@ -23,6 +24,7 @@ static const struct  {
     { "json",   nsk_printer_json    },
     { "xml",    nsk_printer_xml     },
     { "yaml",   nsk_printer_yaml    },
+    { "md",     nsk_printer_md      },
 };
 
 /*!

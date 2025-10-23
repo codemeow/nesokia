@@ -7,6 +7,7 @@
 #include "../queue/printers/nsk_printer_table.h"
 #include "../queue/printers/nsk_printer_tree.h"
 #include "../queue/printers/nsk_printer_xml.h"
+#include "../queue/printers/nsk_printer_yaml.h"
 #include "../utils/log/nsk_log_err.h"
 #include "../utils/nsk_util_size.h"
 
@@ -20,7 +21,8 @@ static const struct  {
     { "tree",   nsk_printer_tree    },
     { "table",  nsk_printer_table   },
     { "json",   nsk_printer_json    },
-    { "xml",    nsk_printer_xml     }
+    { "xml",    nsk_printer_xml     },
+    { "yaml",   nsk_printer_yaml    },
 };
 
 /*!

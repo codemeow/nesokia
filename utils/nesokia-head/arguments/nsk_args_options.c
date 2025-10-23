@@ -133,6 +133,8 @@ struct nsk_options_entry nsk_options_table[] = {
         "        Prints the ROMs information as a JSON document\n"
         "        Uses the fields naming convention from the \"filter\" option description\n"
         "        Additionally enriches them with the \"filename\" field.\n"
+        "        Every field (except \"filename\") is represented as an object, containing\n"
+        "        \"raw\" and \"display\" values."
         "\n"
         "    * \"xml\":\n"
         "        Prints the ROMs information as an XML document\n"
@@ -166,6 +168,14 @@ struct nsk_options_entry nsk_options_table[] = {
         "        - New field \"format\": attribute \"isnes20\"\n"
         "\n"
         "        Note: this output ignores the \"keys\" settings\n"
+        "\n"
+        "   * \"yaml\":\n"
+        "        Prints the ROMs information as a YAML document\n"
+        "        Uses the fields naming convention from the \"filter\" option description\n"
+        "        Additionally enriches them with the \"filename\" field.\n"
+        "        Every field (except \"filename\") is represented as an object, containing\n"
+        "        \"raw\" and \"display\" values."
+
     },
     {
         "quiet", 'q', no_argument,

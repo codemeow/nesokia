@@ -5,8 +5,8 @@
  * \brief  Possible nametables mirrorings
  */
 enum nsk_mirroring_type {
-    NSK_MIRRORING_VERTICAL,
-    NSK_MIRRORING_HORIZONTAL
+    NSK_MIRRORING_HORIZONTAL,
+    NSK_MIRRORING_VERTICAL
 };
 
 /*!

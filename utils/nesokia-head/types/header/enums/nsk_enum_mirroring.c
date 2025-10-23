@@ -12,10 +12,10 @@
  */
 const char *nsk_mirroring_name(enum nsk_mirroring_type type) {
     switch (type) {
-        case NSK_MIRRORING_VERTICAL     :
-            return "Vertical (or mapper controlled)";
         case NSK_MIRRORING_HORIZONTAL   :
-            return "Horizontal";
+            return "Horizontal (or mapper controlled)";
+        case NSK_MIRRORING_VERTICAL     :
+            return "Vertical";
     }
 
     nsk_err("Error: unknown mirroring type: %d\n", (int)type);

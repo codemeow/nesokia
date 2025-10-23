@@ -5,6 +5,7 @@
 
 #include "../../../types/header/table/nsk_table_short.h"
 
+#include "../../../types/header/nsk_header_table.h"
 #include "../../../types/header/enums/nsk_enum_console.h"
 #include "../../../types/header/enums/nsk_enum_device.h"
 #include "../../../types/header/enums/nsk_enum_mirroring.h"
@@ -111,7 +112,7 @@ const char *nsk_convshort_region(const void *field) {
 const char *nsk_convshort_vsppu(const void *field) {
     enum nsk_vsppu_type value = *(enum nsk_vsppu_type *)field;
     if (value == NSK_VSPPU_NONE) {
-        return "-";
+        return NSK_TABLE_NAN;
     }
     return _convert_u64(value);
 }
@@ -125,7 +126,7 @@ const char *nsk_convshort_vsppu(const void *field) {
 const char *nsk_convshort_vshardware(const void *field) {
     enum nsk_vshardware_type value = *(enum nsk_vshardware_type *)field;
     if (value == NSK_VSHARDWARE_NONE) {
-        return "-";
+        return NSK_TABLE_NAN;
     }
     return _convert_u64(value);
 }

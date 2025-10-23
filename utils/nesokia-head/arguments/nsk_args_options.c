@@ -83,17 +83,20 @@ struct nsk_options_entry nsk_options_table[] = {
         "\n"
         "    * \"isnes20=1&submapper>0\"\n"
         "        iNES 2.0 with a nonzero submapper.\n"
+        "\n"
     },
     {
         "follow", 'l', no_argument,
         nsk_option_follow,
         "Follow symbolic links.\n"
         "By default no symbolic links are followed\n"
+        "\n"
     },
     {
         "help", 'h', no_argument,
         nsk_option_help,
         "Print help and exit\n"
+        "\n"
     },
     {
         "keys", 'k', required_argument,
@@ -180,24 +183,30 @@ struct nsk_options_entry nsk_options_table[] = {
         "   * \"md\":\n"
         "        Prints the ROMs information as pretty Markdown document\n"
         "\n"
+        "   * \"csv\":\n"
+        "        Prints the ROMs information as a comma-separated CSV document\n"
+        "\n"
 
     },
     {
         "quiet", 'q', no_argument,
         nsk_option_quiet,
         "Suppress any output but errors\n"
+        "\n"
     },
     {
         "recursive", 'r', no_argument,
         nsk_option_recursive,
         "Enable recursive directory scanning.\n"
         "When specified, the program will process not only the given file(s)\n"
-        "but also all subdirectories."
+        "but also all subdirectories.\n"
+        "\n"
     },
     {
         "version", 'v', no_argument,
         nsk_option_version,
         "Print program version and exit\n"
+        "\n"
     },
 };
 

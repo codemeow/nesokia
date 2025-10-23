@@ -11,6 +11,11 @@
 #include "../../types/pair/nsk_pair_cmp.h"
 
 /*!
+ * "Not applicable" value
+ */
+#define NSK_TABLE_NAN "-"
+
+/*!
  * \brief  Global header entry structure
  */
 struct nsk_header_tableentry {

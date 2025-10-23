@@ -3,6 +3,7 @@
 
 #include "../queue/nsk_queue_printers.h"
 
+#include "../queue/printers/nsk_printer_csv.h"
 #include "../queue/printers/nsk_printer_json.h"
 #include "../queue/printers/nsk_printer_md.h"
 #include "../queue/printers/nsk_printer_table.h"
@@ -25,6 +26,7 @@ static const struct  {
     { "xml",    nsk_printer_xml     },
     { "yaml",   nsk_printer_yaml    },
     { "md",     nsk_printer_md      },
+    { "csv",    nsk_printer_csv     },
 };
 
 /*!

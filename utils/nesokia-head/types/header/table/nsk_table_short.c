@@ -110,6 +110,9 @@ const char *nsk_convshort_region(const void *field) {
  */
 const char *nsk_convshort_vsppu(const void *field) {
     enum nsk_vsppu_type value = *(enum nsk_vsppu_type *)field;
+    if (value == NSK_VSPPU_NONE) {
+        return "-";
+    }
     return _convert_u64(value);
 }
 
@@ -121,6 +124,9 @@ const char *nsk_convshort_vsppu(const void *field) {
  */
 const char *nsk_convshort_vshardware(const void *field) {
     enum nsk_vshardware_type value = *(enum nsk_vshardware_type *)field;
+    if (value == NSK_VSHARDWARE_NONE) {
+        return "-";
+    }
     return _convert_u64(value);
 }
 

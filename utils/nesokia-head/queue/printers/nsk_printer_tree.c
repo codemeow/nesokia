@@ -1,5 +1,6 @@
 #include "../../queue/printers/nsk_printer_tree.h"
 
+#include "../../queue/printers/nsk_printer_match.h"
 #include "../../types/entry/nsk_entry_storage.h"
 #include "../../types/entry/nsk_entry_type.h"
 #include "../../types/header/nsk_header_table.h"
@@ -20,6 +21,10 @@ void _header_print(
     nsk_inf("# %s\n", filename);
 
     for (size_t i = 0; i < nsk_header_tablesize; i++) {
+        if (!nsk_printer_match(nsk_header_table[i].shortcut)) {
+            continue;
+        }
+
         if (nsk_header_table[i].category != category) {
             category = nsk_header_table[i].category;
             nsk_inf(" - %s:\n", nsk_category_name(category));

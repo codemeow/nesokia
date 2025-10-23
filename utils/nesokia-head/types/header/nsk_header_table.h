@@ -30,6 +30,11 @@ struct nsk_header_tableentry {
     const char *shortcut;
 
     /*!
+     * Printing length for printf-like printers
+     */
+    size_t length;
+
+    /*!
      * The associated field shift from the beginning of the #nsk_header_data
      * struct's memory block. Used to match the tpassed field in the
      * processors

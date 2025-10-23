@@ -1,4 +1,3 @@
-XML: fields from nes20db by NewRisingSun (https://forums.nesdev.org/viewtopic.php?f=3&t=19940&p=248796)
 json as per tree but lowercase (also only short forms)
 add YAML (bool should be true/false, --- should be null, can reuse JSON converters)
 add Markdown

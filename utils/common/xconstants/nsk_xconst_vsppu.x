@@ -7,7 +7,7 @@
 // `raw = input & 0xff`.
 
 // key       name         value            description
-X(  0, NONE,               -1, "---"                        )
+X(  0, NONE,               -1, "Not applicable"             )
 X(  1, RP2C03,              0, "Any RP2C03"                 )
 X(  2, RC2C03,              0, "Any RC2C03"                 )
 X(  3, RP2C04_001,          2, "RP2C04-001"                 )

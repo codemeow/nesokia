@@ -31,7 +31,7 @@ void _header_print(
         }
 
         nsk_inf(
-            "     - %-20s: %s\n",
+            "\t - %-20s: %s\n",
             nsk_header_table[i].description,
             nsk_header_table[i].conv_long(
                 (char *)data + nsk_header_table[i].shift

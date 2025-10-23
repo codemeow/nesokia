@@ -4,6 +4,7 @@
 
 #include "../../types/header/nsk_header_data.h"
 #include "../../types/header/table/nsk_table_cmp.h"
+#include "../../types/header/table/nsk_table_json.h"
 #include "../../types/header/table/nsk_table_long.h"
 #include "../../types/header/table/nsk_table_raw.h"
 #include "../../types/header/table/nsk_table_short.h"
@@ -28,6 +29,7 @@ const struct nsk_header_tableentry nsk_header_table[] = {
         .conv_raw   = nsk_convraw_isnes20,
         .conv_long  = nsk_convlong_bool,
         .conv_short = nsk_convshort_bool,
+        .conv_json  = nsk_convjson_bool,
         .match      = nsk_compare_bool
     },
 
@@ -41,6 +43,7 @@ const struct nsk_header_tableentry nsk_header_table[] = {
         .conv_raw   = nsk_convraw_console,
         .conv_long  = nsk_convlong_type,
         .conv_short = nsk_convshort_type,
+        .conv_json  = nsk_convjson_type,
         .match      = nsk_compare_type
     },
     {
@@ -52,6 +55,7 @@ const struct nsk_header_tableentry nsk_header_table[] = {
         .conv_raw   = nsk_convraw_region,
         .conv_long  = nsk_convlong_region,
         .conv_short = nsk_convshort_region,
+        .conv_json  = nsk_convjson_region,
         .match      = nsk_compare_region
     },
     {
@@ -63,6 +67,7 @@ const struct nsk_header_tableentry nsk_header_table[] = {
         .conv_raw   = nsk_convraw_vsppu,
         .conv_long  = nsk_convlong_vsppu,
         .conv_short = nsk_convshort_vsppu,
+        .conv_json  = nsk_convjson_vsppu,
         .match      = nsk_compare_vsppu
     },
     {
@@ -74,6 +79,7 @@ const struct nsk_header_tableentry nsk_header_table[] = {
         .conv_raw   = nsk_convraw_vshardware,
         .conv_long  = nsk_convlong_vshardware,
         .conv_short = nsk_convshort_vshardware,
+        .conv_json  = nsk_convjson_vshardware,
         .match      = nsk_compare_vshardware
     },
 
@@ -87,6 +93,7 @@ const struct nsk_header_tableentry nsk_header_table[] = {
         .conv_raw   = nsk_convraw_mirroring,
         .conv_long  = nsk_convlong_mirroring,
         .conv_short = nsk_convshort_mirroring,
+        .conv_json  = nsk_convjson_mirroring,
         .match      = nsk_compare_mirroring
     },
     {
@@ -98,6 +105,7 @@ const struct nsk_header_tableentry nsk_header_table[] = {
         .conv_raw   = nsk_convraw_alternative,
         .conv_long  = nsk_convlong_bool,
         .conv_short = nsk_convshort_bool,
+        .conv_json  = nsk_convjson_bool,
         .match      = nsk_compare_bool
     },
 
@@ -111,6 +119,7 @@ const struct nsk_header_tableentry nsk_header_table[] = {
         .conv_raw   = nsk_convraw_mapper,
         .conv_long  = nsk_convlong_u16,
         .conv_short = nsk_convshort_u16,
+        .conv_json  = nsk_convjson_u16,
         .match      = nsk_compare_u16
     },
     {
@@ -122,6 +131,7 @@ const struct nsk_header_tableentry nsk_header_table[] = {
         .conv_raw   = nsk_convraw_submapper,
         .conv_long  = nsk_convlong_u8,
         .conv_short = nsk_convshort_u8,
+        .conv_json  = nsk_convjson_u8,
         .match      = nsk_compare_u8
     },
 
@@ -135,6 +145,7 @@ const struct nsk_header_tableentry nsk_header_table[] = {
         .conv_raw   = nsk_convraw_prgrom,
         .conv_long  = nsk_convlong_bytes,
         .conv_short = nsk_convshort_u64,
+        .conv_json  = nsk_convjson_u64,
         .match      = nsk_compare_u64
     },
     {
@@ -146,6 +157,7 @@ const struct nsk_header_tableentry nsk_header_table[] = {
         .conv_raw   = nsk_convraw_chrrom,
         .conv_long  = nsk_convlong_bytes,
         .conv_short = nsk_convshort_u64,
+        .conv_json  = nsk_convjson_u64,
         .match      = nsk_compare_u64
     },
     {
@@ -157,6 +169,7 @@ const struct nsk_header_tableentry nsk_header_table[] = {
         .conv_raw   = nsk_convraw_prgram,
         .conv_long  = nsk_convlong_bytes,
         .conv_short = nsk_convshort_u64,
+        .conv_json  = nsk_convjson_u64,
         .match      = nsk_compare_u64
     },
     {
@@ -168,6 +181,7 @@ const struct nsk_header_tableentry nsk_header_table[] = {
         .conv_raw   = nsk_convraw_chrram,
         .conv_long  = nsk_convlong_bytes,
         .conv_short = nsk_convshort_u64,
+        .conv_json  = nsk_convjson_u64,
         .match      = nsk_compare_u64
     },
     {
@@ -179,6 +193,7 @@ const struct nsk_header_tableentry nsk_header_table[] = {
         .conv_raw   = nsk_convraw_prgnvram,
         .conv_long  = nsk_convlong_bytes,
         .conv_short = nsk_convshort_u64,
+        .conv_json  = nsk_convjson_u64,
         .match      = nsk_compare_u64
     },
     {
@@ -190,6 +205,7 @@ const struct nsk_header_tableentry nsk_header_table[] = {
         .conv_raw   = nsk_convraw_chrnvram,
         .conv_long  = nsk_convlong_bytes,
         .conv_short = nsk_convshort_u64,
+        .conv_json  = nsk_convjson_u64,
         .match      = nsk_compare_u64
     },
     {
@@ -201,6 +217,7 @@ const struct nsk_header_tableentry nsk_header_table[] = {
         .conv_raw   = nsk_convraw_miscroms,
         .conv_long  = nsk_convlong_u8,
         .conv_short = nsk_convshort_u8,
+        .conv_json  = nsk_convjson_u8,
         .match      = nsk_compare_u8
     },
 
@@ -214,6 +231,7 @@ const struct nsk_header_tableentry nsk_header_table[] = {
         .conv_raw   = nsk_convraw_trainer,
         .conv_long  = nsk_convlong_bool,
         .conv_short = nsk_convshort_bool,
+        .conv_json  = nsk_convjson_bool,
         .match      = nsk_compare_bool
     },
     {
@@ -225,6 +243,7 @@ const struct nsk_header_tableentry nsk_header_table[] = {
         .conv_raw   = nsk_convraw_battery,
         .conv_long  = nsk_convlong_bool,
         .conv_short = nsk_convshort_bool,
+        .conv_json  = nsk_convjson_bool,
         .match      = nsk_compare_bool
     },
     {
@@ -236,6 +255,7 @@ const struct nsk_header_tableentry nsk_header_table[] = {
         .conv_raw   = nsk_convraw_device,
         .conv_long  = nsk_convlong_device,
         .conv_short = nsk_convshort_device,
+        .conv_json  = nsk_convjson_device,
         .match      = nsk_compare_device
     },
 };

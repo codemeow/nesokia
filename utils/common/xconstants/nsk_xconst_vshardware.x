@@ -1,7 +1,7 @@
 // X-Macro records for the Vs System hardware type
 
 // key       name     value            description
-X(  0, NONE,           -1, "---"                                              )
+X(  0, NONE,           -1, "Not applicable"                                   )
 X(  0, VSUNI_NORMAL,    0, "Vs. Unisystem (normal)"                           )
 X(  1, VSUNI_BASEBALL,  1, "Vs. Unisystem (RBI Baseball protection)"          )
 X(  2, VSUNI_BOXING,    2, "Vs. Unisystem (TKO Boxing protection)"            )

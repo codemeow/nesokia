@@ -27,3 +27,27 @@ const char *nsk_category_name(enum nsk_table_category category) {
     nsk_err("Error: unknown category: %d\n", (int)category);
     abort();
 }
+
+/*!
+ * \brief  Return the JSON-valid short name of the category
+ *
+ * \param[in] category  The category
+ * \return Static string
+ */
+const char *nsk_category_json(enum nsk_table_category category) {
+    switch (category) {
+        case NSK_CATEGORY_NONE:
+            nsk_err("Error: \"NONE\" category should not be printed\n");
+            abort();
+
+        case NSK_CATEGORY_FORMAT    : return "format";
+        case NSK_CATEGORY_CONSOLE   : return "console";
+        case NSK_CATEGORY_NAMETABLES: return "nametables";
+        case NSK_CATEGORY_MAPPER    : return "mapper";
+        case NSK_CATEGORY_MEMORY    : return "memory";
+        case NSK_CATEGORY_MISC      : return "misc";
+    }
+
+    nsk_err("Error: unknown category: %d\n", (int)category);
+    abort();
+}

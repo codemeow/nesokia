@@ -62,6 +62,12 @@ struct nsk_header_tableentry {
     const char *(*conv_short)(const void *field);
 
     /*!
+     * Value converter to string. Fits JSON rules and any similar formats
+     * like YAML,HCL etc
+     */
+    const char *(*conv_json)(const void *field);
+
+    /*!
      * Check if the provided value somehow matches the field value with the
      * provided operator, i.e.
      * `field = 5, value = 4, operator = NSK_MATCH_MOREOREQUAL` - true

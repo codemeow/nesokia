@@ -23,4 +23,12 @@ enum nsk_table_category {
  */
 const char *nsk_category_name(enum nsk_table_category category);
 
+/*!
+ * \brief  Return the JSON-valid short name of the category
+ *
+ * \param[in] category  The category
+ * \return Static string
+ */
+const char *nsk_category_json(enum nsk_table_category category);
+
 #endif

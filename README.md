@@ -7,10 +7,8 @@ The project is structured as a set of submodules, each dedicated to a specific t
 
 _Each module provides its own documentation inside its respective subdirectory._
 
-- **Header Generator** (`header/`)  
-  A configurable tool for generating NES 2.0 headers for ROM images.  
-
 - **Header Reader** (`utils/nesokia-head/`)
+
   iNES/NES 2.0 headers reader
 
 ## Authors

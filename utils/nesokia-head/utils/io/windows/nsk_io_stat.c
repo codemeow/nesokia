@@ -7,10 +7,10 @@
 
 #include "../../io/nsk_io_stat.h"
 
-#include "../../log/nsk_log_err.h"
-#include "../../strings/windows/nsk_strings_wide.h"
-#include "../../utils/nsk_util_cleanup.h"
-#include "../../utils/nsk_util_malloc.h"
+#include "../../../utils/log/nsk_log_err.h"
+#include "../../../utils/strings/windows/nsk_strings_wide.h"
+#include "../../../utils/nsk_util_cleanup.h"
+#include "../../../utils/nsk_util_malloc.h"
 
 /*!
  * \brief  Symlink types list

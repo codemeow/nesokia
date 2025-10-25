@@ -1,3 +1,5 @@
+#if defined(NSK_OS_GNULINUX)
+
 #define _XOPEN_SOURCE /* wcwidth */
 
 #include <locale.h>
@@ -5,10 +7,10 @@
 #include <stdlib.h>
 #include <wchar.h>
 
-#include "../../utils/strings/nsk_strings_columns.h"
+#include "../../../utils/strings/nsk_strings_columns.h"
 
-#include "../../utils/nsk_util_cleanup.h"
-#include "../../utils/nsk_util_malloc.h"
+#include "../../../utils/nsk_util_cleanup.h"
+#include "../../../utils/nsk_util_malloc.h"
 
 /*!
  * \brief  Module initializer
@@ -135,3 +137,5 @@ size_t nsk_strings_colums(
         return width;
     }
 }
+
+#endif

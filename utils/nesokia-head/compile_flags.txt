@@ -20,8 +20,8 @@
 -I../common
 
 # OS
--D__gnu_linux__
-# -D__WINDOWS__
+#-D__gnu_linux__
+ -D__WINDOWS__
 
 # Mingw-specific
 # -isystem-after/usr/x86_64-w64-mingw32/include

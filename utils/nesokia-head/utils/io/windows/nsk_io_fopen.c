@@ -2,9 +2,9 @@
 
 #include "../../io/nsk_io_fopen.h"
 
-#include "../../strings/windows/nsk_strings_wide.h"
-#include "../../utils/nsk_util_cleanup.h"
-#include "../../utils/nsk_util_malloc.h"
+#include "../../../utils/strings/windows/nsk_strings_wide.h"
+#include "../../../utils/nsk_util_cleanup.h"
+#include "../../../utils/nsk_util_malloc.h"
 
 /*!
  * \brief  Platform-specific version of fopen

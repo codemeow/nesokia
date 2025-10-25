@@ -489,6 +489,12 @@ Follow symlinks, NES 2.0 only, pretty Markdown:
 nesokia-head -o md "Zen - Intergalactic Ninja (U) .nes"
 ```
 
+## Known bugs
+
+### Windows
+
+* As per missing `wcwidth` function under mingw the `filename` column width in `table` mode could be calculated incorrectly in case of non-English characters. The table itself is still valid if treated as markdown.
+
 ---
 
 ## License & building

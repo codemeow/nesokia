@@ -1,0 +1,52 @@
+; @file nsk_header_config.inc
+; @brief User configuration for NES 2.0 header generation.
+;
+; Edit this file to set ROM header parameters.
+; All required constants and flags will be generated automatically.
+;
+; Part of the Nesokia project — MIT License.
+
+.ifndef ::__NSK_HEADER_CONFIG__
+::__NSK_HEADER_CONFIG__ = 1
+
+.define NSK_SEGMENT_HEADER "HEADER"
+
+::NSK_HEADER_PRGROM_SIZE
+
+::NSK_HEADER_CHRROM_SIZE
+
+::NSK_HEADER_PRGRAM_SIZE
+
+::NSK_HEADER_CHRRAM_SIZE
+
+::NSK_HEADER_PRGNVRAM_SIZE
+
+::NSK_HEADER_CHRNVRAM_SIZE
+
+::NSK_HEADER_REGION
+
+::NSK_HEADER_VS_PPU
+
+::NSK_HEADER_VS_HARDWARE
+
+::NSK_HEADER_ROMS_MISC
+
+::NSK_HEADER_EXPANSION_DEVICE
+
+::NSK_HEADER_NAMETABLE_HARDWIRED
+
+::NSK_HEADER_BATTERY
+
+::NSK_HEADER_TRAINER
+
+::NSK_HEADER_NAMETABLE_ALTERNATIVE
+
+::NSK_HEADER_MAPPERID
+
+::NSK_HEADER_CONSOLE_TYPE
+
+::NSK_HEADER_MAPPER_ID
+
+::NSK_HEADER_SUBMAPPER_ID
+
+.endif

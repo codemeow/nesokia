@@ -5,28 +5,25 @@
 X(  0, NONE,            UNSPECIFIED,                 0, "Unspecified/none"                                       )
 X(  1, NONE,            MULTICART,                  42, "Multicart selector"                                     )
 
-// Famicom accessories
+// Famicom/NES accessories
 // key   manufacturer         device               value                  description
-X(  2, FAMICOM,         CONTROLLERS,                 1, "Standard Famicom controller"                            )
-X(  3, FAMICOM,         CONTROLLERS_INV,            49, "Famicom controller with swapped LR/UD/BA"               )
-X(  4, FAMICOM,         CONTROLLERS_TEST,           55, "Famicom port test controller"                           )
-X(  5, FAMICOM,         FOURPLAYERS_SIMPLE,          3, "Famicom Four Players adapter (simple protocol)"         )
-X(  6, FAMICOM,         KEYBOARD_NOINPUT_DATAREC,   32, "Famicom BASIC keyboard with no input and Data Recorder" )
-X(  7, FAMICOM,         KEYBOARD_BASIC_DATAREC,     35, "Famicom BASIC keyboard and Data Recorder"               )
-X(  8, FAMICOM,         CONTROLLER_NETWORK,         59, "Famicom Network Controller"                             )
-X(  9, FAMICOM,         ROB_GYRO,                   31, "Famicom R.O.B. Gyro set"                                )
-X( 10, FAMICOM,         ROB_STACKUP,                46, "Famicom R.O.B. Stack-Up set"                            )
-X( 11, FAMICOM,         ZAPPER_4016,                73, "Famicom Zapper on port $4016"                           )
-X( 12, FAMICOM,         ZAPPER_4017,                 8, "Famicom Zapper on port $4017"                           )
-X( 13, FAMICOM,         ZAPPER_DUAL,                 9, "Famicom dual Zappers"                                   )
-X( 14, FAMICOM,         SYSTEM3D,                   29, "Famicom 3D System"                                      )
-
-// NES accessories
-// key   manufacturer         device               value                  description
-X( 15, NES,             FOURSCORE,                   2, "NES Four Score/Satellite"                               )
-X( 16, NES,             POWERPAD_A,                 11, "NES PowerPad (Side A)"                                  )
-X( 17, NES,             POWERPAD_B,                 12, "NES PowerPad (Side B)"                                  )
-X( 18, NES,             VAUS,                       15, "NES Arkanoid Vaus paddle"                               )
+X(  2, NINTENDO,        CONTROLLERS,                 1, "Standard Famicom/NES controllers"                       )
+X(  3, NINTENDO,        CONTROLLERS_INV,            49, "Famicom/NES controller with swapped LR/UD/BA"           )
+X(  4, NINTENDO,        CONTROLLERS_TEST,           55, "Famicom/NES port test controller"                       )
+X(  5, NINTENDO,        FOURPLAYERS_SIMPLE,          3, "Famicom Four Players adapter (simple protocol)"         )
+X(  6, NINTENDO,        KEYBOARD_NOINPUT_DATAREC,   32, "Famicom BASIC keyboard with no input and Data Recorder" )
+X(  7, NINTENDO,        KEYBOARD_BASIC_DATAREC,     35, "Famicom BASIC keyboard and Data Recorder"               )
+X(  8, NINTENDO,        CONTROLLER_NETWORK,         59, "Famicom/NES Network Controller"                         )
+X(  9, NINTENDO,        ROB_GYRO,                   31, "Famicom/NES R.O.B. Gyro set"                            )
+X( 10, NINTENDO,        ROB_STACKUP,                46, "Famicom/NES R.O.B. Stack-Up set"                        )
+X( 11, NINTENDO,        ZAPPER_4016,                73, "NES Zapper on port $4016"                               )
+X( 12, NINTENDO,        ZAPPER_4017,                 8, "Famicom/NES Zapper on port $4017"                       )
+X( 13, NINTENDO,        ZAPPER_DUAL,                 9, "NES dual Zappers"                                       )
+X( 14, NINTENDO,        SYSTEM3D,                   29, "Famicom 3D System"                                      )
+X( 15, NINTENDO,        FOURSCORE,                   2, "NES Four Score/Satellite"                               )
+X( 16, NINTENDO,        POWERPAD_A,                 11, "Famicom/NES PowerPad (Side A)"                          )
+X( 17, NINTENDO,        POWERPAD_B,                 12, "Famicom/NES PowerPad (Side B)"                          )
+X( 18, NINTENDO,        VAUS,                       15, "NES Arkanoid Vaus paddle"                               )
 
 // Vs. System accessories
 // key   manufacturer         device               value                  description

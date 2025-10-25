@@ -1,2 +1,5 @@
 *.sublime-workspace
-
+*.elf
+*.nes
+build
+bin

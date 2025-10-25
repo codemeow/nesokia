@@ -316,9 +316,9 @@
         ; hardware
         multicart = $2a
 
-        ; @enum nsk::device::famicom
-        ; @brief Official famicom controllers
-        .scope famicom
+        ; @enum nsk::device::nintendo
+        ; @brief Official Famicom/NES controllers
+        .scope nintendo
             ; @var nsk::device::famicom::controller
             ; @brief Standard NES/Famicom digital controllers (2 pads).
             controller = $01
@@ -365,11 +365,6 @@
             ; JJ/Tobidase Daisakusen, Falsion, 3D Hot Rally etc.
             ; @note OUT0 toggles eye; 30 Hz per-eye flicker.
             3dsystem = $1d
-        .endscope
-
-        ; @enum nsk::NES
-        ; @brief Official NES-specific controllers
-        .scope NES
             ; @var nsk::device::nes::fourscore
             ; @brief NES Four Score / Satellite (4-player hub) + two standard 
             ; pads.

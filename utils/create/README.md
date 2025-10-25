@@ -17,7 +17,7 @@ It is designed to be flexible and easily integrated into projects built with **c
 
 ## Installation & Setup
 
-1. Copy the header directory into your project. The name of the copied directory doesn't matter.
+1. Copy the utils/create directory into your project. The name of the copied directory doesn't matter.
 
 2. Change the `nsk_header_config.inc` configuration file.  
     * Refer to `header/nsk_header_consts.inc` for available constant values when editing the configuration file.

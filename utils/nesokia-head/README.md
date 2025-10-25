@@ -72,7 +72,7 @@ joined by `&`. Only ROMs that satisfy all specified conditions will be displayed
 | vs_ppu            |   0..11   |  Vs. System PPU type                    |
 | vs_hardware       |   0..6    |  Vs. System hardware type               |
 
-¹Any valid uint64_t value could be passed, but only listed values make any sense.
+¹Any valid uint64 value could be passed, but only listed values make any sense.
 
 Examples
 
@@ -141,18 +141,111 @@ Available formats:
   This is default output type. Shows the ROMs information as
   detailed human-readable tree-like output
 
+<details>
+<summary>
+Output example (click to expand)
+</summary>
+
+```
+# Test/snake.nes
+ - Format:
+   - Is NES 2.0?         : No
+ - Console:
+   - Type                : Nintendo Entertainment System / Famicom / Dendy
+   - Timings / region    : RP2C02 PPU / NTSC 21.47 MHz / North America / Japan / South Korea / Taiwan
+   - Vs. PPU type        : Not applicable
+   - Vs. Hardware type   : Not applicable
+ - Nametables:
+   - Mirroring / layout  : Horizontal (or mapper controlled)
+   - Alternative layout  : No
+ - Mapper:
+   - Mapper ID           : 4
+   - Submapper ID        : 0
+ - Memory:
+   - PRG ROM             : 0.50 MiB (524288 bytes)
+   - CHR ROM             : 256.00 KiB (262144 bytes)
+   - PRG RAM             : 8.00 KiB (8192 bytes)
+   - CHR RAM             : 0 bytes
+   - PRG NVRAM           : 0 bytes
+   - CHR NVRAM           : 0 bytes
+   - Misc. ROMs          : 0
+ - Miscellaneous info:
+   - Trainer area        : No
+   - Non volatile memory : Yes
+   - Expansion device    : Unspecified/none
+```
+
+</details>
+
 * `table`:
 
   Prints the ROMs information as a table
   This output is compatible with Markdown tables format
 
+<details>
+<summary>
+Output example (click to expand)
+</summary>
+
+```
+| Filename            | Mirroring / layout | Mapper ID |    PRG ROM |    CHR ROM |    PRG RAM |    CHR RAM |
+|---------------------|--------------------|-----------|------------|------------|------------|------------|
+| snake.nes           |                  0 |         4 |     524288 |     262144 |       8192 |          0 |
+| Spy Hunter (U) .nes |                  0 |         3 |      32768 |      32768 |       8192 |          0 |
+```
+
+</details>
+
 * `json`:
 
   Prints the ROMs information as a JSON document
-  Uses the fields naming convention from the "filter" option description
+  Uses the fields naming convention from the "filter" option description.
+
   Additionally enriches them with the "filename" field.
   Every field (except "filename") is represented as an object, containing
   "raw" and "display" values.
+
+<details>
+<summary>
+Output example (click to expand)
+</summary>
+
+```json
+[
+  {
+    "filename" : "Super C (U) .nes",
+    "mapper" : {
+      "mapper" : {
+        "raw" : 4,
+        "display" : "4"
+      },
+    },
+    "memory" : {
+      "prg_rom" : {
+        "raw" : 131072,
+        "display" : "128.00 KiB (131072 bytes)"
+      },
+    }
+  },
+  {
+    "filename" : "Trog (U) .nes",
+    "mapper" : {
+      "mapper" : {
+        "raw" : 2,
+        "display" : "2"
+      },
+    },
+    "memory" : {
+      "prg_rom" : {
+        "raw" : 131072,
+        "display" : "128.00 KiB (131072 bytes)"
+      },
+    }
+  }
+]
+```
+
+</details>
 
 * `xml`:
 
@@ -195,6 +288,39 @@ Available formats:
 
   Note: this output ignores the "keys" settings
 
+<details>
+<summary>
+Output example (click to expand)
+</summary>
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<scan>
+  <game><!-- ./Test/test/snake.nes -->
+    <name>./Test/test/snake.nes</name>
+    <format isnes20="0" />
+    <prgrom size="524288" />
+    <chrrom size="262144" />
+    <prgram size="8192" />
+    <pcb mapper="4" submapper="0" mirroring="V" battery="1" />
+    <console type="0" region="0" />
+  </game>
+  <game><!-- ./Test/test/Subor - LC V1.0 (Unl).nes -->
+    <name>./Test/test/Subor - LC V1.0 (Unl).nes</name>
+    <format isnes20="1" />
+    <prgrom size="131072" />
+    <prgram size="8192" />
+    <chrram size="8192" />
+    <pcb mapper="167" submapper="0" mirroring="V" battery="0" />
+    <console type="0" region="3" />
+    <expansion type="38" />
+  </game>
+</scan>
+
+```
+
+</details>
+
 * `yaml`:
 
   Prints the ROMs information as a YAML document.
@@ -204,154 +330,50 @@ Available formats:
   Every field (except "filename") is represented as an object, containing
   "raw" and "display" values.
 
+<details>
+<summary>
+Output example (click to expand)
+</summary>
+
+```yaml
+- "filename": "./Test/test/Subor - LC V1.0 (Unl).nes"
+  "format":
+    "isnes20":     { raw: true, display: "Yes" }
+  "console":
+    "console":     { raw: 0, display: "Nintendo Entertainment System / Famicom / Dendy" }
+    "region":      { raw: 3, display: "NTSC/PAL hybrid / Dendy / East. Europe / Russia / China / India / Africa" }
+    "vs_ppu":      { raw: null, display: "Not applicable" }
+    "vs_hardware": { raw: null, display: "Not applicable" }
+  "nametables":
+    "mirroring":   { raw: 0, display: "Horizontal (or mapper controlled)" }
+    "alternative": { raw: false, display: "No" }
+  "mapper":
+    "mapper":      { raw: 167, display: "167" }
+    "submapper":   { raw: 0, display: "0" }
+  "memory":
+    "prg_rom":     { raw: 131072, display: "128.00 KiB (131072 bytes)" }
+    "chr_rom":     { raw: 0, display: "0 bytes" }
+    "prg_ram":     { raw: 8192, display: "8.00 KiB (8192 bytes)" }
+    "chr_ram":     { raw: 8192, display: "8.00 KiB (8192 bytes)" }
+    "prg_nvram":   { raw: 0, display: "0 bytes" }
+    "chr_nvram":   { raw: 0, display: "0 bytes" }
+    "misc_roms":   { raw: 0, display: "0" }
+  "misc":
+    "trainer":     { raw: false, display: "No" }
+    "battery":     { raw: false, display: "No" }
+    "device":      { raw: 38, display: "Subor (小霸王) keyboard" }
+
+```
+
+</details>
+
 * `md`:
 
   Prints the ROMs information as pretty Markdown document
 
-* `csv`:
-
-  Prints the ROMs information as a comma-separated CSV document
-
-
-### Quiet mode
-
-`-q, --quiet`
-
-Suppress any output but errors
-
-### Recursive
-
-`-r, --recursive`
-
-Enable recursive directory scanning.
-When specified, the program will process not only the given file(s)
-but also all subdirectories.
-
-### Show version
-
-`-v, --version`
-
-Print program version and exit
-
----
-
-## Practical examples
-
-Just display ROM info (`tree` output is selected by default):
-
-```bash
-nesokia-head snake.nes
-```
 <details>
 <summary>
-Result
-</summary>
-
-```
-# Test/snake.nes
- - Format:
-   - Is NES 2.0?         : No
- - Console:
-   - Type                : Nintendo Entertainment System / Famicom / Dendy
-   - Timings / region    : RP2C02 PPU / NTSC 21.47 MHz / North America / Japan / South Korea / Taiwan
-   - Vs. PPU type        : Not applicable
-   - Vs. Hardware type   : Not applicable
- - Nametables:
-   - Mirroring / layout  : Horizontal (or mapper controlled)
-   - Alternative layout  : No
- - Mapper:
-   - Mapper ID           : 4
-   - Submapper ID        : 0
- - Memory:
-   - PRG ROM             : 0.50 MiB (524288 bytes)
-   - CHR ROM             : 256.00 KiB (262144 bytes)
-   - PRG RAM             : 8.00 KiB (8192 bytes)
-   - CHR RAM             : 0 bytes
-   - PRG NVRAM           : 0 bytes
-   - CHR NVRAM           : 0 bytes
-   - Misc. ROMs          : 0
- - Miscellaneous info:
-   - Trainer area        : No
-   - Non volatile memory : Yes
-   - Expansion device    : Unspecified/none
-```
-
-</details>
-
-Scan a directory, filter by PRG RAM = 8192 bytes and CHR ROM > 4000 bytes, show only mapper, PRG/CHR ROM, PRG/CHR RAM and mirroring columns:
-
-```bash
-nesokia-head -r -o "table" -f "prg_ram=8192&chr_rom>4000" -k "mapper&prg_rom&chr_rom&prg_ram&chr_ram&mirroring" ./path
-```
-<details>
-<summary>
-Result
-</summary>
-
-```
-| Filename            | Mirroring / layout | Mapper ID |    PRG ROM |    CHR ROM |    PRG RAM |    CHR RAM |
-|---------------------|--------------------|-----------|------------|------------|------------|------------|
-| snake.nes           |                  0 |         4 |     524288 |     262144 |       8192 |          0 |
-| Spy Hunter (U) .nes |                  0 |         3 |      32768 |      32768 |       8192 |          0 |
-```
-
-</details>
-
-List only mapper and PRG ROM size, in JSON:
-
-```bash
-nesokia-head -k "mapper&prg_rom" -o json "Super C (U) .nes" "Trog (U) .nes"
-```
-<details>
-<summary>
-Result
-</summary>
-
-```json
-[
-  {
-    "filename" : "Super C (U) .nes",
-    "mapper" : {
-      "mapper" : {
-        "raw" : 4,
-        "display" : "4"
-      },
-    },
-    "memory" : {
-      "prg_rom" : {
-        "raw" : 131072,
-        "display" : "128.00 KiB (131072 bytes)"
-      },
-    }
-  },
-  {
-    "filename" : "Trog (U) .nes",
-    "mapper" : {
-      "mapper" : {
-        "raw" : 2,
-        "display" : "2"
-      },
-    },
-    "memory" : {
-      "prg_rom" : {
-        "raw" : 131072,
-        "display" : "128.00 KiB (131072 bytes)"
-      },
-    }
-  }
-]
-```
-
-</details>
-
-Follow symlinks, NES 2.0 only, pretty Markdown:
-
-```bash
-nesokia-head -o md "Zen - Intergalactic Ninja (U) .nes"
-```
-<details>
-<summary>
-Result
+Output example (click to expand)
 </summary>
 
 ## `Zen - Intergalactic Ninja (U) .nes`
@@ -396,6 +418,76 @@ Result
 * **Expansion device:** Unspecified/none
 
 </details>
+
+* `csv`:
+
+  Prints the ROMs information as a comma-separated CSV document
+
+<details>
+<summary>
+Result
+</summary>
+
+```csv
+Filename,"Is NES 2.0?","Type","Timings / region","Vs. PPU type","Vs. Hardware type","Mirroring / layout","Alternative layout","Mapper ID","Submapper ID","PRG ROM","CHR ROM","PRG RAM","CHR RAM","PRG NVRAM","CHR NVRAM","Misc. ROMs","Trainer area","Non volatile memory","Expansion device"
+"./Test/test/snake.nes",0,0,0,,,0,0,4,0,524288,262144,8192,0,0,0,0,0,1,0
+"./Test/test/snake.nes",0,0,0,,,0,0,4,0,524288,262144,8192,0,0,0,0,0,1,0
+"./Test/test/Spy Hunter (U) .nes",0,0,0,,,0,0,3,0,32768,32768,8192,0,0,0,0,0,0,0
+"./Test/test/Subor - LC V1.0 (Unl).nes",1,0,3,,,0,0,167,0,131072,0,8192,8192,0,0,0,0,0,38
+"./Test/test/tinyprg-pong.nes",1,0,0,,,0,0,0,0,4,4096,0,0,0,0,0,0,0,0
+"./Test/test/測試蘭姆酒.nes",0,0,0,,,1,0,0,0,32768,8192,8192,0,0,0,0,0,0,0
+```
+
+</details>
+
+
+### Quiet mode
+
+`-q, --quiet`
+
+Suppress any output but errors
+
+### Recursive
+
+`-r, --recursive`
+
+Enable recursive directory scanning.
+When specified, the program will process not only the given file(s)
+but also all subdirectories.
+
+### Show version
+
+`-v, --version`
+
+Print program version and exit
+
+---
+
+## Practical examples
+
+Just display ROM info (`tree` output is selected by default):
+
+```bash
+nesokia-head snake.nes
+```
+
+Scan a directory, filter by PRG RAM = 8192 bytes and CHR ROM > 4000 bytes, show only mapper, PRG/CHR ROM, PRG/CHR RAM and mirroring columns:
+
+```bash
+nesokia-head -r -o "table" -f "prg_ram=8192&chr_rom>4000" -k "mapper&prg_rom&chr_rom&prg_ram&chr_ram&mirroring" ./path
+```
+
+List only mapper and PRG ROM size, in JSON:
+
+```bash
+nesokia-head -k "mapper&prg_rom" -o json "Super C (U) .nes" "Trog (U) .nes"
+```
+
+Follow symlinks, NES 2.0 only, pretty Markdown:
+
+```bash
+nesokia-head -o md "Zen - Intergalactic Ninja (U) .nes"
+```
 
 ---
 

@@ -5,7 +5,7 @@
 ; Part of the Nesokia project — MIT License.
 
 .ifndef ::__NSK_HEADER_ROM_LSB_EXPONENT__
-::__NSK_HEADER_ROM_LSB__ = 1
+::__NSK_HEADER_ROM_LSB_EXPONENT__ = 1
 
 .linecont +
 

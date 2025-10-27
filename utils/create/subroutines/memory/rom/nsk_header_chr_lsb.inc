@@ -8,9 +8,9 @@
 
 .linecont +
 
-.include "nsk_header_chrrom_consts.inc"
-.include "nsk_header_rom_issimple.inc"
-.include "nsk_header_rom_lsb_exponent.inc"
+.include "../../memory/rom/nsk_header_chr_consts.inc"
+.include "../../memory/rom/nsk_header_issimple.inc"
+.include "../../memory/rom/nsk_header_lsb_exponent.inc"
 
 ; @macro _chrrom_lsb_simple
 ; @brief Compute CHR-ROM size LSB using simple (linear) encoding.
@@ -20,11 +20,10 @@
 ;
 ; @param    chrrom_size  ROM size in bytes (constant expression).
 ; @param    out_result   Symbol that will be set to the resulting LSB value.
-.macro _chrrom_lsb_simple chrrom_size, out_result
-.scope
+.macro _chr_lsb_simple chrrom_size, out_result
+    .local calc
     calc:
         out_result = (chrrom_size / ::NSK_HEADER_CHRROM_QUANTUM) & $ff
-.endscope
 .endmacro
 
 ; @macro _chrrom_lsb_exponent
@@ -35,11 +34,10 @@
 ;
 ; @param    chrrom_size  ROM size in bytes (constant expression).
 ; @param    out_result   Symbol that will be set to the resulting LSB value.
-.macro _chrrom_lsb_exponent chrrom_size, out_result
-.scope
+.macro _chr_lsb_exponent chrrom_size, out_result
+    .local call
     call:
-        nsk_header_romlsb_exponent chrrom_size, out_result
-.endscope
+        nsk_header_rom_lsb_exponent chrrom_size, out_result
 .endmacro
 
 ; @macro nsk_header_chrrom_lsb
@@ -52,17 +50,19 @@
 ;
 ; @param    chrrom_size  ROM size in bytes (constant expression).
 .macro nsk_header_chrrom_lsb chrrom_size
-.scope
+    .local locals
     locals:
         .local byte_chr
         .local flag_issimple_chr
 
+    .local check
     check:
         nsk_header_rom_issimple             \
             chrrom_size,                    \
             ::NSK_HEADER_CHRROM_QUANTUM,    \
             flag_issimple_chr
 
+    .local call
     call:
         .if flag_issimple_chr = 1
             _chr_lsb_simple chrrom_size, byte_chr
@@ -70,13 +70,10 @@
             _chr_lsb_exponent chrrom_size, byte_chr
         .endif
 
+    .local write
     write:
         .byte byte_chr
-.endscope
 .endmacro
-
-.delmacro _chrrom_lsb_simple
-.delmacro _chr_lsb_exponent
 
 .endif
 

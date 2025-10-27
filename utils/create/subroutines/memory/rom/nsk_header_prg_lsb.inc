@@ -8,9 +8,9 @@
 
 .linecont +
 
-.include "nsk_header_prg_consts.inc"
-.include "nsk_header_issimple.inc"
-.include "nsk_header_lsb_exponent.inc"
+.include "../../memory/rom/nsk_header_prg_consts.inc"
+.include "../../memory/rom/nsk_header_issimple.inc"
+.include "../../memory/rom/nsk_header_lsb_exponent.inc"
 
 ; @macro _prgrom_lsb_simple
 ; @brief Compute PRG-ROM size LSB using simple (linear) encoding.

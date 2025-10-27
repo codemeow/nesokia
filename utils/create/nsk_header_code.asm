@@ -19,7 +19,7 @@
 .include "subroutines/nsk_header_mapper.inc"
 .include "subroutines/memory/rom/nsk_header_msb.inc"
 .include "subroutines/memory/ram/nsk_header_prg.inc"
-;.include "subroutines/nsk_header_chrram.inc"
+.include "subroutines/memory/ram/nsk_header_chr.inc"
 ;.include "subroutines/nsk_header_timings.inc"
 ;.include "subroutines/nsk_header_vstype.inc"
 ;.include "subroutines/nsk_header_miscroms.inc"
@@ -67,9 +67,9 @@ nsk_header_prgram                           \
     ::NSK_HEADER_PRGNVRAM_SIZE
 
 ; 11: CHR-RAM size
-;nsk_header_chrram                           \
-;    ::NSK_HEADER_CHRRAM_SIZE,               \
-;    ::NSK_HEADER_CHRNVRAM_SIZE
+nsk_header_chrram                           \
+    ::NSK_HEADER_CHRRAM_SIZE,               \
+    ::NSK_HEADER_CHRNVRAM_SIZE
 
 ; 12: CPU/PPU timings
 ;nsk_header_timings                          \

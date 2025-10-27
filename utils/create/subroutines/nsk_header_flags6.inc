@@ -18,21 +18,19 @@
 ;
 ; @error Emits a error if @p input is not a supported layout constant.
 .macro _convert_nametable_hardwired input, out_bit
-    .local convert
-    convert:
-        .if                                                           \
-            input = nsk::nametable::layout::vertical_arrangement   || \
-            input = nsk::nametable::layout::horizontal_mirroring
+    .if                                                           \
+        input = nsk::nametable::layout::vertical_arrangement   || \
+        input = nsk::nametable::layout::horizontal_mirroring
 
-            out_bit = 0
-        .elseif                                                       \
-            input = nsk::nametable::layout::horizontal_arrangement || \
-            input = nsk::nametable::layout::vertical_mirroring
+        out_bit = 0
+    .elseif                                                       \
+        input = nsk::nametable::layout::horizontal_arrangement || \
+        input = nsk::nametable::layout::vertical_mirroring
 
-            out_bit = 1
-        .elseif
-            .error "Invalid value: NSK_HEADER_NAMETABLE_HARDWIRED"
-        .endif
+        out_bit = 1
+    .elseif
+        .error "Invalid value: NSK_HEADER_NAMETABLE_HARDWIRED"
+    .endif
 .endmacro
 
 ; @macro _convert_battery
@@ -43,15 +41,13 @@
 ;
 ; @error Emits a error if @p input is not recognized.
 .macro _convert_battery input, out_bit
-    .local convert
-    convert:
-        .if   input = nsk::battery::absent
-            out_bit = 0
-        .elseif input = nsk::battery::present
-            out_bit = 1
-        .elseif
-            .error "Invalid value: NSK_HEADER_BATTERY"
-        .endif
+    .if   input = nsk::battery::absent
+        out_bit = 0
+    .elseif input = nsk::battery::present
+        out_bit = 1
+    .elseif
+        .error "Invalid value: NSK_HEADER_BATTERY"
+    .endif
 .endmacro
 
 ; @macro _convert_trainer
@@ -62,15 +58,13 @@
 ;
 ; @error Emits a error if @p input is not recognized.
 .macro _convert_trainer input, out_bit
-    .local convert
-    convert:
-        .if   input = nsk::trainer::absent
-            out_bit = 0
-        .elseif input = nsk::trainer::present
-            out_bit = 1
-        .elseif
-            .error "Invalid value: NSK_HEADER_TRAINER"
-        .endif
+    .if   input = nsk::trainer::absent
+        out_bit = 0
+    .elseif input = nsk::trainer::present
+        out_bit = 1
+    .elseif
+        .error "Invalid value: NSK_HEADER_TRAINER"
+    .endif
 .endmacro
 
 ; @macro _convert_nametable_alternative
@@ -81,15 +75,13 @@
 ;
 ; @error Emits a error if @p input is not a supported mode constant.
 .macro _convert_nametable_alternative input, out_bit
-    .local convert
-    convert:
-        .if   input = nsk::nametable::mode::normal
-            out_bit = 0
-        .elseif input = nsk::nametable::mode::alternative
-            out_bit = 1
-        .elseif
-            .error "Invalid value: NSK_HEADER_NAMETABLE_ALTERNATIVE"
-        .endif
+    .if   input = nsk::nametable::mode::normal
+        out_bit = 0
+    .elseif input = nsk::nametable::mode::alternative
+        out_bit = 1
+    .elseif
+        .error "Invalid value: NSK_HEADER_NAMETABLE_ALTERNATIVE"
+    .endif
 .endmacro
 
 ; @macro _convert_mapperid_low
@@ -100,13 +92,11 @@
 ;
 ; @error Emits a error if @p input > 4095.
 .macro _convert_mapperid_low input, out_nib
-    .local convert
-    convert:
-        .if   input >= 0 && input <= ::_NSK_HEADER_MAPPER_MAXID
-            out_nib = input & $0f
-        .else
-            .error "Invalid value: NSK_HEADER_MAPPER_ID"
-        .endif
+    .if   input >= 0 && input <= ::_NSK_HEADER_MAPPER_MAXID
+        out_nib = input & $0f
+    .else
+        .error "Invalid value: NSK_HEADER_MAPPER_ID"
+    .endif
 .endmacro
 
 ; @macro nsk_header_flags6
@@ -126,30 +116,27 @@
 ; @param    nametablealt nsk::nametable::mode::xxx
 ; @param    mapperid     NES 2.0 mapper ID (0..4095)
 .macro nsk_header_flags6 nametablehw, battery, trainer, nametablealt, mapperid
-    .local locals
-    locals:
-        .local bit_nametablehw
-        .local bit_battery
-        .local bit_trainer
-        .local bit_nametablealt
-        .local nib_mapper
+    ; locals:
+    .local bit_nametablehw
+    .local bit_battery
+    .local bit_trainer
+    .local bit_nametablealt
+    .local nib_mapper
 
-    .local set
-    set:
-        _convert_battery                battery,        bit_battery
-        _convert_mapperid_low           mapperid,       nib_mapper
-        _convert_nametable_alternative  nametablealt,   bit_nametablealt
-        _convert_nametable_hardwired    nametablehw,    bit_nametablehw
-        _convert_trainer                trainer,        bit_trainer
+    ; set:
+    _convert_battery                battery,        bit_battery
+    _convert_mapperid_low           mapperid,       nib_mapper
+    _convert_nametable_alternative  nametablealt,   bit_nametablealt
+    _convert_nametable_hardwired    nametablehw,    bit_nametablehw
+    _convert_trainer                trainer,        bit_trainer
 
-    .local write
-    write:
-        .byte                            \
-            (bit_nametablehw         ) | \
-            (bit_battery        <<  1) | \
-            (bit_trainer        <<  2) | \
-            (bit_nametablealt   <<  3) | \
-            (nib_mapper         <<  4)
+    ; write:
+    .byte                            \
+        (bit_nametablehw         ) | \
+        (bit_battery        <<  1) | \
+        (bit_trainer        <<  2) | \
+        (bit_nametablealt   <<  3) | \
+        (nib_mapper         <<  4)
 .endmacro
 
 .endif

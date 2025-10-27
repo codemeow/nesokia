@@ -15,32 +15,28 @@
 ;
 ; @error Emits an error if @p value = 0 or not a power of two.
 .macro nsk_header_log2 value, out_result
-    .local check
-    check:
-        .if value = 0 || (value & (value - 1)) <> 0
-            .error "Invalid value passed to the `nsk_header_log2`"
-        .endif
+    ; check:
+    .if value = 0 || (value & (value - 1)) <> 0
+        .error "Invalid value passed to the `nsk_header_log2`"
+    .endif
 
-    .local init
-    init:
-        _found .set 0
+    ; init:
+    _found .set 0
 
-    .local exponent_loop
-    exponent_loop:
-        .repeat 32, _loop_exponent
-            .if _found = 0
-                .if 1 << _loop_exponent = value
-                    out_result .set _loop_exponent
-                    _found .set 1
-                .endif
-            .endif
-        .endrepeat
-
-    .local failcheck
-    failcheck:
+    ; exponent_loop:
+    .repeat 32, _loop_exponent
         .if _found = 0
-            .error .sprintf("Failed to find log2(%d)", value)
+            .if 1 << _loop_exponent = value
+                out_result .set _loop_exponent
+                _found .set 1
+            .endif
         .endif
+    .endrepeat
+
+    ; failcheck:
+    .if _found = 0
+        .error .sprintf("Failed to find log2(%d)", value)
+    .endif
 .endmacro
 
 .endif

@@ -17,10 +17,10 @@
 ; and tools to recognize a valid NES ROM image.
 .macro nsk_header_magic
 .scope
-    nes:
-        .byte "NES"
-    eof:
-        .byte $1a
+    ; nes:
+    .byte "NES"
+    ; eof:
+    .byte $1a
 .endscope
 .endmacro
 

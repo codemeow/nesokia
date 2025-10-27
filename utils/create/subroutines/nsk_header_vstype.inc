@@ -20,14 +20,12 @@
 ; @param    consoleid Console selector (value from @ref console).
 ; @param    out_isvs  Symbol assigned to {0,1}.
 .macro _check_ifisvs consoleid, out_isvs
-    .local check
-    check:
-        .if consoleid = nsk::console::nintendo_vs_system
-            out_isvs = 1
+    .if consoleid = nsk::console::nintendo_vs_system
+        out_isvs = 1
 
-        .else
-            out_isvs = 0
-         .endif
+    .else
+        out_isvs = 0
+     .endif
 .endmacro
 
 ; @macro _check_ifextended
@@ -43,34 +41,32 @@
 ;
 ; @error Emits an error if @p consoleid is unknown.
 .macro _check_ifextended consoleid, out_isext
-    .local check
-    check:
-        .if                                                      \
-            consoleid = nsk::console::famicom                 || \
-            consoleid = nsk::console::NES                     || \
-            consoleid = nsk::console::dendy                   || \
-            consoleid = nsk::console::nintendo_vs_system      || \
-            consoleid = nsk::console::nintendo_playchoice_10
+    .if                                                      \
+        consoleid = nsk::console::famicom                 || \
+        consoleid = nsk::console::NES                     || \
+        consoleid = nsk::console::dendy                   || \
+        consoleid = nsk::console::nintendo_vs_system      || \
+        consoleid = nsk::console::nintendo_playchoice_10
 
-            out_isext = 0
+        out_isext = 0
 
-        .elseif                                                  \
-            consoleid = nsk::console::famiclone_decimal       || \
-            consoleid = nsk::console::famicom_epsm            || \
-            consoleid = nsk::console::VR_Technology_VT01      || \
-            consoleid = nsk::console::VR_Technology_VT02      || \
-            consoleid = nsk::console::VR_Technology_VT03      || \
-            consoleid = nsk::console::VR_Technology_VT09      || \
-            consoleid = nsk::console::VR_Technology_VT32      || \
-            consoleid = nsk::console::VR_Technology_VT369     || \
-            consoleid = nsk::console::UMC_UM6578              || \
-            consoleid = nsk::console::famicom_network_system
+    .elseif                                                  \
+        consoleid = nsk::console::famiclone_decimal       || \
+        consoleid = nsk::console::famicom_epsm            || \
+        consoleid = nsk::console::VR_Technology_VT01      || \
+        consoleid = nsk::console::VR_Technology_VT02      || \
+        consoleid = nsk::console::VR_Technology_VT03      || \
+        consoleid = nsk::console::VR_Technology_VT09      || \
+        consoleid = nsk::console::VR_Technology_VT32      || \
+        consoleid = nsk::console::VR_Technology_VT369     || \
+        consoleid = nsk::console::UMC_UM6578              || \
+        consoleid = nsk::console::famicom_network_system
 
-            out_isext = 1
-        .else
+        out_isext = 1
+    .else
 
-            .error "Invalid value: NSK_HEADER_CONSOLE_TYPE"
-        .endif
+        .error "Invalid value: NSK_HEADER_CONSOLE_TYPE"
+    .endif
 .endmacro
 
 ; @macro _convert_none
@@ -78,9 +74,7 @@
 ;
 ; @param    out_res  Symbol assigned to $00.
 .macro _convert_none out_res
-    .local write
-    write:
-        out_res = $00
+    out_res = $00
 .endmacro
 
 ; @macro _convert_extended
@@ -89,9 +83,7 @@
 ; @param    consoleid Extended console selector (`nsk::console::xxx`).
 ; @param    out_res   Symbol assigned to the console code.
 .macro _convert_extended consoleid, out_res
-    .local write
-    write:
-        out_res = consoleid
+    out_res = consoleid
 .endmacro
 
 ; @macro _convert_vssystem
@@ -109,51 +101,47 @@
 ; @error Emits an error if @p pputype is not recognized.
 ; @error Emits an error if @p hardwaretype is not recognized.
 .macro _convert_vssystem pputype, hardwaretype, out_res
-    .local locals
-    locals:
-        .local nib_ppu
-        .local nib_hardware
+    ; locals:
+    .local nib_ppu
+    .local nib_hardware
 
-    .local ppu
-    ppu:
-        .if                                                    \
-            pputype = nsk::console::vs::ppu::RP2C03         || \
-            pputype = nsk::console::vs::ppu::RC2C03         || \
-            pputype = nsk::console::vs::ppu::RP2C04::rev1   || \
-            pputype = nsk::console::vs::ppu::RP2C04::rev2   || \
-            pputype = nsk::console::vs::ppu::RP2C04::rev3   || \
-            pputype = nsk::console::vs::ppu::RP2C04::rev4   || \
-            pputype = nsk::console::vs::ppu::RC2C05::rev1   || \
-            pputype = nsk::console::vs::ppu::RC2C05::rev2   || \
-            pputype = nsk::console::vs::ppu::RC2C05::rev3   || \
-            pputype = nsk::console::vs::ppu::RC2C05::rev4
+    ; ppu:
+    .if                                                    \
+        pputype = nsk::console::vs::ppu::RP2C03         || \
+        pputype = nsk::console::vs::ppu::RC2C03         || \
+        pputype = nsk::console::vs::ppu::RP2C04::rev1   || \
+        pputype = nsk::console::vs::ppu::RP2C04::rev2   || \
+        pputype = nsk::console::vs::ppu::RP2C04::rev3   || \
+        pputype = nsk::console::vs::ppu::RP2C04::rev4   || \
+        pputype = nsk::console::vs::ppu::RC2C05::rev1   || \
+        pputype = nsk::console::vs::ppu::RC2C05::rev2   || \
+        pputype = nsk::console::vs::ppu::RC2C05::rev3   || \
+        pputype = nsk::console::vs::ppu::RC2C05::rev4
 
-            nib_ppu = pputype
-        .else
-            .error "Invalid value: NSK_HEADER_VS_PPU"
-        .endif
+        nib_ppu = pputype
+    .else
+        .error "Invalid value: NSK_HEADER_VS_PPU"
+    .endif
 
-    .local hardware
-    hardware:
-        .if                                                                                    \
-            hardwaretype = nsk::console::vs::hardware::unisystem::normal                    || \
-            hardwaretype = nsk::console::vs::hardware::unisystem::RBI_baseball              || \
-            hardwaretype = nsk::console::vs::hardware::unisystem::TKO_boxing                || \
-            hardwaretype = nsk::console::vs::hardware::unisystem::super_xevious             || \
-            hardwaretype = nsk::console::vs::hardware::unisystem::ice_climber_japan         || \
-            hardwaretype = nsk::console::vs::hardware::dualsystem::normal                   || \
-            hardwaretype = nsk::console::vs::hardware::dualsystem::raid_on_bungeling_bay
+    ; hardware:
+    .if                                                                                    \
+        hardwaretype = nsk::console::vs::hardware::unisystem::normal                    || \
+        hardwaretype = nsk::console::vs::hardware::unisystem::RBI_baseball              || \
+        hardwaretype = nsk::console::vs::hardware::unisystem::TKO_boxing                || \
+        hardwaretype = nsk::console::vs::hardware::unisystem::super_xevious             || \
+        hardwaretype = nsk::console::vs::hardware::unisystem::ice_climber_japan         || \
+        hardwaretype = nsk::console::vs::hardware::dualsystem::normal                   || \
+        hardwaretype = nsk::console::vs::hardware::dualsystem::raid_on_bungeling_bay
 
-            nib_hardware = hardwaretype
-        .else
-            .error "Invalid value: NSK_HEADER_VS_HARDWARE"
-        .endif
+        nib_hardware = hardwaretype
+    .else
+        .error "Invalid value: NSK_HEADER_VS_HARDWARE"
+    .endif
 
-    .local write
-    write:
-        out_res =                   \
-            (nib_ppu            ) | \
-            (nib_hardware <<   4)
+    ; write:
+    out_res =                   \
+        (nib_ppu            ) | \
+        (nib_hardware <<   4)
 .endmacro
 
 ; @macro nsk_header_vstype
@@ -168,33 +156,29 @@
 ; @param    hardwaretype  Vs. hardware type (`nsk::console::vs::hardware::xxx`)
 ; @param    consoleid     Console selector (`nsk::console::xxx`)
 .macro nsk_header_vstype pputype, hardwaretype, consoleid
-    .local locals
-    locals:
-        .local byte_out
-        .local flag_isext
-        .local flag_isvs
+    ; locals:
+    .local byte_out
+    .local flag_isext
+    .local flag_isvs
 
-    .local flags_set
-    flags_set:
-        _check_ifextended consoleid, flag_isext
-        _check_ifisvs     consoleid, flag_isvs
+    ; flags_set:
+    _check_ifextended consoleid, flag_isext
+    _check_ifisvs     consoleid, flag_isvs
 
-    .local select
-    select:
-        .if flag_isext = 0 && flag_isvs = 0
-            _convert_none byte_out
+    ; select:
+    .if flag_isext = 0 && flag_isvs = 0
+        _convert_none byte_out
             
-        .elseif flag_isext = 1
-            _convert_extended consoleid, byte_out
+    .elseif flag_isext = 1
+        _convert_extended consoleid, byte_out
 
-        .elseif flag_isvs = 1
-            _convert_vssystem pputype, hardwaretype, byte_out
+    .elseif flag_isvs = 1
+        _convert_vssystem pputype, hardwaretype, byte_out
             
-        .endif
+    .endif
 
-    .local write
-    write:
-        .byte byte_out
+    ; write:
+    .byte byte_out
 .endmacro
 
 .endif

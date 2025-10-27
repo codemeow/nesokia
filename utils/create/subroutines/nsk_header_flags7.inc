@@ -37,32 +37,30 @@
 ;
 ; @error Emits an error when @p input is not a recognized console identifier.
 .macro _convert_console input, out_bits
-    .local convert
-    convert:
-        .if                                                    \
-            input = nsk::console::famicom                   || \
-            input = nsk::console::NES                       || \
-            input = nsk::console::dendy                     || \
-            input = nsk::console::nintendo_vs_system        || \
-            input = nsk::console::nintendo_playchoice_10
+    .if                                                    \
+        input = nsk::console::famicom                   || \
+        input = nsk::console::NES                       || \
+        input = nsk::console::dendy                     || \
+        input = nsk::console::nintendo_vs_system        || \
+        input = nsk::console::nintendo_playchoice_10
 
-            out_bits = input
-        .elseif                                                \
-            input = nsk::console::famiclone_decimal         || \
-            input = nsk::console::famicom_epsm              || \
-            input = nsk::console::VR_Technology_VT01        || \
-            input = nsk::console::VR_Technology_VT02        || \
-            input = nsk::console::VR_Technology_VT03        || \
-            input = nsk::console::VR_Technology_VT09        || \
-            input = nsk::console::VR_Technology_VT32        || \
-            input = nsk::console::VR_Technology_VT369       || \
-            input = nsk::console::UMC_UM6578                || \
-            input = nsk::console::famicom_network_system    || \
+        out_bits = input
+    .elseif                                                \
+        input = nsk::console::famiclone_decimal         || \
+        input = nsk::console::famicom_epsm              || \
+        input = nsk::console::VR_Technology_VT01        || \
+        input = nsk::console::VR_Technology_VT02        || \
+        input = nsk::console::VR_Technology_VT03        || \
+        input = nsk::console::VR_Technology_VT09        || \
+        input = nsk::console::VR_Technology_VT32        || \
+        input = nsk::console::VR_Technology_VT369       || \
+        input = nsk::console::UMC_UM6578                || \
+        input = nsk::console::famicom_network_system    || \
 
-            out_bits = ::NSK_HEADER_CONSOLE_EXTENDED
-        .elseif
-            .error "Invalid value: NSK_HEADER_CONSOLE_TYPE"
-        .endif
+        out_bits = ::NSK_HEADER_CONSOLE_EXTENDED
+    .elseif
+        .error "Invalid value: NSK_HEADER_CONSOLE_TYPE"
+    .endif
 .endmacro
 
 ; @macro _convert_nes20
@@ -75,15 +73,13 @@
 ;
 ; @error Emits an error when @p input is ∉ {0, 1}
 .macro _convert_nes20 input, out_bits
-    .local convert
-    convert:
-        .if   input = 1
-            out_bits = %10
-        .elseif input = 0
-            out_bits = %00
-        .elseif
-            .error "Invalid value: NSK_HEADER_ISNES20"
-        .endif
+    .if   input = 1
+        out_bits = %10
+    .elseif input = 0
+        out_bits = %00
+    .elseif
+        .error "Invalid value: NSK_HEADER_ISNES20"
+    .endif
 .endmacro
 
 ; @macro _convert_mapperid_mid
@@ -94,13 +90,11 @@
 ;
 ; @error Emits a error if @p input > 4095.
 .macro _convert_mapper_mid input, out_nib
-    .local convert
-    convert:
-        .if   input >= 0 && input <= ::_NSK_HEADER_MAPPER_MAXID
-            out_nib = (input >> 4) & $0f
-        .elseif
-            .error "Invalid value: NSK_HEADER_MAPPER_ID"
-        .endif
+    .if   input >= 0 && input <= ::_NSK_HEADER_MAPPER_MAXID
+        out_nib = (input >> 4) & $0f
+    .elseif
+        .error "Invalid value: NSK_HEADER_MAPPER_ID"
+    .endif
 .endmacro
 
 ; @macro nsk_header_flags7
@@ -109,24 +103,21 @@
 ; @param    console   Console identifier (One of `nsk::console::xxx`).
 ; @param    mapperid  NES 2.0 mapper ID (0..4095).
 .macro nsk_header_flags7 console, mapperid
-    .local locals
-    locals:
-        .local bits_console
-        .local bits_nes20
-        .local nib_mapper
+    ; locals:
+    .local bits_console
+    .local bits_nes20
+    .local nib_mapper
 
-    .local set
-    set:
-        _convert_console    console,                bits_console
-        _convert_nes20      ::NSK_HEADER_ISNES20,   bits_nes20
-        _convert_mapper_mid mapperid,               nib_mapper
+    ; set:
+    _convert_console    console,                bits_console
+    _convert_nes20      ::NSK_HEADER_ISNES20,   bits_nes20
+    _convert_mapper_mid mapperid,               nib_mapper
 
-    .local write
-    write:
-        .byte                        \
-            (bits_console        ) | \
-            (bits_nes20     <<  2) | \
-            (nib_mapper     <<  4)
+    ; write:
+    .byte                        \
+        (bits_console        ) | \
+        (bits_nes20     <<  2) | \
+        (nib_mapper     <<  4)
 .endmacro
 
 .endif

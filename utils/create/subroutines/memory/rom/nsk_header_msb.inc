@@ -18,9 +18,7 @@
 ; @param    prgrom_size  PRG-ROM size in bytes.
 ; @param    out_nib      Symbol assigned to the 4-bit result.
 .macro _prg_msb_simple prgrom_size, out_nib
-    .local calc
-    calc:
-        out_nib = ((prgrom_size / ::NSK_HEADER_PRGROM_QUANTUM) >> 8) & $0f
+    out_nib = ((prgrom_size / ::NSK_HEADER_PRGROM_QUANTUM) >> 8) & $0f
 .endmacro
 
 ; @macro _chr_msb_simple
@@ -29,9 +27,7 @@
 ; @param    chrrom_size  CHR-ROM size in bytes.
 ; @param    out_nib      Symbol assigned to the 4-bit result.
 .macro _chr_msb_simple chrrom_size, out_nib
-    .local calc
-    calc:
-        out_nib = ((chrrom_size / ::NSK_HEADER_CHRROM_QUANTUM) >> 8) & $0f
+    out_nib = ((chrrom_size / ::NSK_HEADER_CHRROM_QUANTUM) >> 8) & $0f
 .endmacro
 
 ; @macro _prg_msb_exponent
@@ -42,9 +38,7 @@
 ;
 ; @param    out_nib  Symbol assigned to $0F.
 .macro _prg_msb_exponent out_nib
-    .local set
-    set:
-        out_nib = $0f
+    out_nib = $0f
 .endmacro
 
 ; @macro _chr_msb_exponent
@@ -55,9 +49,7 @@
 ;
 ; @param    out_nib  Symbol assigned to $0F.
 .macro _chr_msb_exponent out_nib
-    .local set
-    set:
-        out_nib = $0f
+    out_nib = $0f
 .endmacro
 
 ; @macro nsk_header_prgchrrom_msb
@@ -76,45 +68,40 @@
 ; @param    prgrom_size  PRG-ROM size in bytes.
 ; @param    chrrom_size  CHR-ROM size in bytes.
 .macro nsk_header_prgchrrom_msb prgrom_size, chrrom_size
-    .local locals
-    locals:
-        .local nib_prg
-        .local nib_chr
-        .local flag_issimple_prg
-        .local flag_issimple_chr
+    ; locals:
+    .local nib_prg
+    .local nib_chr
+    .local flag_issimple_prg
+    .local flag_issimple_chr
 
-    .local check
-    check:
-        nsk_header_rom_issimple             \
-            prgrom_size,                    \
-            ::NSK_HEADER_PRGROM_QUANTUM,    \
-            flag_issimple_prg
+    ; check:
+    nsk_header_rom_issimple             \
+        prgrom_size,                    \
+        ::NSK_HEADER_PRGROM_QUANTUM,    \
+        flag_issimple_prg
 
-        nsk_header_rom_issimple             \
-            chrrom_size,                    \
-            ::NSK_HEADER_CHRROM_QUANTUM,    \
-            flag_issimple_chr
+    nsk_header_rom_issimple             \
+        chrrom_size,                    \
+        ::NSK_HEADER_CHRROM_QUANTUM,    \
+        flag_issimple_chr
 
-    .local call
-    call:
-        .if flag_issimple_prg = 1
-            _prg_msb_simple prgrom_size, nib_prg
-        .else
-            _prg_msb_exponent nib_prg
-        .endif
+    ; call:
+    .if flag_issimple_prg = 1
+        _prg_msb_simple prgrom_size, nib_prg
+    .else
+        _prg_msb_exponent nib_prg
+    .endif
 
-        
-        .if flag_issimple_chr = 1
-            _chr_msb_simple chrrom_size, nib_chr
-        .else
-            _chr_msb_exponent nib_chr
-        .endif
+    .if flag_issimple_chr = 1
+        _chr_msb_simple chrrom_size, nib_chr
+    .else
+        _chr_msb_exponent nib_chr
+    .endif
 
-    .local write
-    write:
-        .byte                    \
-            (nib_prg         ) | \
-            (nib_chr    <<  4)
+    ; write:
+    .byte                    \
+        (nib_prg         ) | \
+        (nib_chr    <<  4)
 .endmacro
 
 .endif

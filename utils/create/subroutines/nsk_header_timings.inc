@@ -20,22 +20,20 @@
 ;
 ; @error Emits a error if @p console is one of the VTxx values.
 .macro _validate_vrtech regionid, consoleid
-    .local validate
-    validate:
-        .if                                              \
-            consoleid = nsk::console::VR::VT01        || \
-            consoleid = nsk::console::VR::VT02        || \
-            consoleid = nsk::console::VR::VT03        || \
-            consoleid = nsk::console::VR::VT09        || \
-            consoleid = nsk::console::VR::VT32        || \
-            consoleid = nsk::console::VR::VT369
+    .if                                              \
+        consoleid = nsk::console::VR::VT01        || \
+        consoleid = nsk::console::VR::VT02        || \
+        consoleid = nsk::console::VR::VT03        || \
+        consoleid = nsk::console::VR::VT09        || \
+        consoleid = nsk::console::VR::VT32        || \
+        consoleid = nsk::console::VR::VT369
 
-            .error                                                  \
-                .sprintf(                                           \
-                    "V.R. Technology boards cannot have %d region", \
-                    regionid                                        \
-                )
-        .endif
+        .error                                                  \
+            .sprintf(                                           \
+                "V.R. Technology boards cannot have %d region", \
+                regionid                                        \
+            )
+    .endif
 .endmacro
 
 ; @macro _convert_ifntsc
@@ -46,19 +44,17 @@
 ; @param    out_bits   Symbol assigned to the resulting region byte.
 ; @param    out_found  Symbol set to 1 if a match was found (otherwise unchanged).
 .macro _convert_ifntsc regionid, consoleid, out_bits, out_found
-    .local convert
-    convert:
-        .if                                              \
-            regionid = nsk::region::RP2C02            || \
-            regionid = nsk::region::NTSC              || \
-            regionid = nsk::region::North_America     || \
-            regionid = nsk::region::Japan             || \
-            regionid = nsk::region::South_Korea       || \
-            regionid = nsk::region::Taiwan
+    .if                                              \
+        regionid = nsk::region::RP2C02            || \
+        regionid = nsk::region::NTSC              || \
+        regionid = nsk::region::North_America     || \
+        regionid = nsk::region::Japan             || \
+        regionid = nsk::region::South_Korea       || \
+        regionid = nsk::region::Taiwan
 
-            out_bits = regionid
-            out_found .set 1
-        .endif
+        out_bits = regionid
+        out_found .set 1
+    .endif
 .endmacro
 
 ; @macro _convert_ifpal
@@ -69,21 +65,19 @@
 ; @param    out_bits   Symbol assigned to the resulting region byte.
 ; @param    out_found  Symbol set to 1 if a match was found (otherwise unchanged).
 .macro _convert_ifpal regionid, consoleid, out_bits, out_found
-    .local validate
-    validate:
-        _validate_vrtech regionid, consoleid
+    ; validate:
+    _validate_vrtech regionid, consoleid
 
-    .local convert
-    convert:
-        .if                                              \
-            regionid = nsk::region::RP2C07            || \
-            regionid = nsk::region::PAL               || \
-            regionid = nsk::region::Western_Europe    || \
-            regionid = nsk::region::Australia
+    ; convert:
+    .if                                              \
+        regionid = nsk::region::RP2C07            || \
+        regionid = nsk::region::PAL               || \
+        regionid = nsk::region::Western_Europe    || \
+        regionid = nsk::region::Australia
 
-            out_bits = regionid
-            out_found .set 1
-        .endif
+        out_bits = regionid
+        out_found .set 1
+    .endif
 .endmacro
 
 ; @macro _convert_ifntsc
@@ -94,18 +88,16 @@
 ; @param    out_bits   Symbol assigned to the resulting region byte.
 ; @param    out_found  Symbol set to 1 if a match was found (otherwise unchanged).
 .macro _convert_ifmultiple regionid, consoleid, out_bits, out_found
-    .local validate
-    validate:
-        _validate_vrtech regionid, consoleid
+    ; validate:
+    _validate_vrtech regionid, consoleid
 
-    .local convert
-    convert:
-        .if                                            \
-            regionid = nsk::region::Multiple
+    ; convert:
+    .if                                            \
+        regionid = nsk::region::Multiple
 
-            out_bits = regionid
-            out_found .set 1
-        .endif
+        out_bits = regionid
+        out_found .set 1
+    .endif
 .endmacro
 
 ; @macro _convert_ifntsc
@@ -116,20 +108,18 @@
 ; @param    out_bits   Symbol assigned to the resulting region byte.
 ; @param    out_found  Symbol set to 1 if a match was found (otherwise unchanged).
 .macro _convert_ifdendy regionid, consoleid, out_bits, out_found
-    .local convert
-    convert:
-        .if                                              \
-            regionid = nsk::region::UA6538            || \
-            regionid = nsk::region::Dendy             || \
-            regionid = nsk::region::Eastern_Europe    || \
-            regionid = nsk::region::Russia            || \
-            regionid = nsk::region::Mainland_China    || \
-            regionid = nsk::region::India             || \
-            regionid = nsk::region::Africa
+    .if                                              \
+        regionid = nsk::region::UA6538            || \
+        regionid = nsk::region::Dendy             || \
+        regionid = nsk::region::Eastern_Europe    || \
+        regionid = nsk::region::Russia            || \
+        regionid = nsk::region::Mainland_China    || \
+        regionid = nsk::region::India             || \
+        regionid = nsk::region::Africa
 
-            out_bits = regionid
-            out_found .set 1
-        .endif
+        out_bits = regionid
+        out_found .set 1
+    .endif
 .endmacro
 
 ; @macro _check_ifunknown
@@ -140,15 +130,13 @@
 ;
 ; @error Emits an error with the provided @p regionid value.
 .macro _check_ifunknown regionid, out_found
-    .local check
-    check:
-        .if out_found = 0
-            .error                                  \
-                .sprintf(                           \
-                    "Unknown console region: %d",   \
-                    regionid                        \
-                )
-        .endif
+    .if out_found = 0
+        .error                                  \
+            .sprintf(                           \
+                "Unknown console region: %d",   \
+                regionid                        \
+            )
+    .endif
 .endmacro
 
 ; @macro _check_vssystem
@@ -157,24 +145,22 @@
 ; @param    consoleid Console selector (`nsk::console::xxx` values).
 ; @param    mapperid  Mapper ID
 .macro _check_vssystem consoleid, mapperid
-    .local check
-    check:
-        .if consoleid = nsk::console::nintendo_vs_system
-            .if !(                 \
-                mapperid =    1 || \
-                mapperid =    2 || \
-                mapperid =   67 || \
-                mapperid =   75 || \
-                mapperid =   99 || \
-                mapperid =  206    \
-            )
-                .error                                                             \
-                    .sprintf(                                                      \
-                        "Mapper %d is not an acceptable value for the VS console", \
-                        mapperid                                                   \
-                    )
-            .endif
+    .if consoleid = nsk::console::nintendo_vs_system
+        .if !(                 \
+            mapperid =    1 || \
+            mapperid =    2 || \
+            mapperid =   67 || \
+            mapperid =   75 || \
+            mapperid =   99 || \
+            mapperid =  206    \
+        )
+            .error                                                             \
+                .sprintf(                                                      \
+                    "Mapper %d is not an acceptable value for the VS console", \
+                    mapperid                                                   \
+                )
         .endif
+    .endif
 .endmacro
 
 ; @macro nsk_header_timings
@@ -186,29 +172,24 @@
 ; @param    regionid   Region selector (`nsk::region::xxx` values).
 ; @param    consoleid  Console selector (`nsk::console::xxx` values).
 .macro nsk_header_timings regionid, consoleid, mapperid
-    .local locals
-    locals:
-        .local bits_region
-        _detected .set 0
+    ; locals:
+    .local bits_region
+    _detected .set 0
 
-    .local validate
-    validate:
-        _check_vssystem     consoleid, mapperid
+    ; validate:
+    _check_vssystem     consoleid, mapperid
 
-    .local convert
-    convert:
-        _convert_ifntsc     regionid, consoleid, bits_region, _detected
-        _convert_ifpal      regionid, consoleid, bits_region, _detected
-        _convert_ifmultiple regionid, consoleid, bits_region, _detected
-        _convert_ifdendy    regionid, consoleid, bits_region, _detected
+    ; convert:
+    _convert_ifntsc     regionid, consoleid, bits_region, _detected
+    _convert_ifpal      regionid, consoleid, bits_region, _detected
+    _convert_ifmultiple regionid, consoleid, bits_region, _detected
+    _convert_ifdendy    regionid, consoleid, bits_region, _detected
 
-    .local check
-    check:
-        _check_ifunknown    regionid, _detected
+    ; check:
+    _check_ifunknown    regionid, _detected
 
-    .local write
-    write:
-        .byte bits_region
+    ; write:
+    .byte bits_region
 .endmacro
 
 .endif

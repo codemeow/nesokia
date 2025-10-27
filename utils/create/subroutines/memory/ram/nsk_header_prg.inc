@@ -17,9 +17,7 @@
 ; @param    prgram_size   : Volatile PRG-RAM (work RAM) size in bytes.
 ; @param    prgnvram_size : Non-volatile PRG-NVRAM (battery-backed) size in bytes.
 .macro nsk_header_prgram prgram_size, prgnvram_size
-    .local call
-    call:
-        nsk_header_ram prgram_size, prgnvram_size
+    nsk_header_ram prgram_size, prgnvram_size
 .endmacro
 
 .endif

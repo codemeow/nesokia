@@ -21,9 +21,7 @@
 ; @param    prgrom_size  ROM size in bytes (constant expression).
 ; @param    out_result   Symbol that will be set to the resulting LSB value.
 .macro _prg_lsb_simple prgrom_size, out_result
-    .local calc
-    calc:
-        out_result = (prgrom_size / ::NSK_HEADER_PRGROM_QUANTUM) & $ff
+    out_result = (prgrom_size / ::NSK_HEADER_PRGROM_QUANTUM) & $ff
 .endmacro
 
 ; @macro _prgrom_lsb_exponent
@@ -35,9 +33,7 @@
 ; @param    prgrom_size  ROM size in bytes (constant expression).
 ; @param    out_result   Symbol that will be set to the resulting LSB value.
 .macro _prg_lsb_exponent prgrom_size, out_result
-    .local call
-    call:
-        nsk_header_rom_lsb_exponent prgrom_size, out_result
+    nsk_header_rom_lsb_exponent prgrom_size, out_result
 .endmacro
 
 ; @macro nsk_header_prgrom_lsb
@@ -50,29 +46,25 @@
 ;
 ; @param    prgrom_size  ROM size in bytes (constant expression).
 .macro nsk_header_prgrom_lsb prgrom_size
-    .local locals
-    locals:
-        .local byte_prg
-        .local flag_issimple_prg
+    ; locals:
+    .local byte_prg
+    .local flag_issimple_prg
 
-    .local check
-    check:
-        nsk_header_rom_issimple             \
-            prgrom_size,                    \
-            ::NSK_HEADER_PRGROM_QUANTUM,    \
-            flag_issimple_prg
+    ; check:
+    nsk_header_rom_issimple             \
+        prgrom_size,                    \
+        ::NSK_HEADER_PRGROM_QUANTUM,    \
+        flag_issimple_prg
 
-    .local call
-    call:
-        .if flag_issimple_prg = 1
-            _prg_lsb_simple prgrom_size, byte_prg
-        .else
-            _prg_lsb_exponent prgrom_size, byte_prg
-        .endif
+    ; call:
+    .if flag_issimple_prg = 1
+        _prg_lsb_simple prgrom_size, byte_prg
+    .else
+        _prg_lsb_exponent prgrom_size, byte_prg
+    .endif
 
-    .local write
-    write:
-        .byte byte_prg
+    ; write:
+    .byte byte_prg
 .endmacro
 
 .endif

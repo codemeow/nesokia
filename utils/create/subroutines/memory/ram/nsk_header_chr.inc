@@ -17,9 +17,7 @@
 ; @param    prgram_size   : Volatile CHR-RAM size in bytes.
 ; @param    prgnvram_size : Non-volatile CHR-NVRAM (battery-backed) size in bytes.
 .macro nsk_header_chrram chrram_size, chrnvram_size
-    .local call
-    call:
-        nsk_header_ram chrram_size, chrnvram_size
+    nsk_header_ram chrram_size, chrnvram_size
 .endmacro
 
 .endif

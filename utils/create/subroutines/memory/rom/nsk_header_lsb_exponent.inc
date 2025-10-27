@@ -35,22 +35,18 @@
 ; @param    out_multiplier  Symbol to receive the normalized multiplier
 ; @param    out_found       Symbol set to 1 if a match was found, 0 otherwise.
 .macro _exponent_loop multiplier, dyadic, out_exponent, out_multiplier, out_found
-    .local exponent_loop
-    exponent_loop:
-        ; Find E = log2(_dyadic) by repeated doubling.
-        .repeat ::_NSK_HEADER_EXPONENT_LOGLOOP_LIMIT, _loop_exponent
-            .if _dyadic = (1 << _loop_exponent)
-                out_exponent .set _loop_exponent
-            .endif
-        .endrepeat
-
-    .local exponent_check
-    exponent_check:
-        ; If we matched some 1<<n, we have E and MM.
-        .if _exponent <> ::_NSK_HEADER_EXPONENT_NOTFOUND
-            out_multiplier .set multiplier
-            out_found .set 1
+    ; Find E = log2(_dyadic) by repeated doubling.
+    .repeat ::_NSK_HEADER_EXPONENT_LOGLOOP_LIMIT, _loop_exponent
+        .if _dyadic = (1 << _loop_exponent)
+            out_exponent .set _loop_exponent
         .endif
+    .endrepeat
+
+    ; If we matched some 1<<n, we have E and MM.
+    .if _exponent <> ::_NSK_HEADER_EXPONENT_NOTFOUND
+        out_multiplier .set multiplier
+        out_found .set 1
+    .endif
 .endmacro
 
 ; @macro _dyadic_check
@@ -63,28 +59,24 @@
 ; @param    out_multiplier  Symbol to receive the multiplier MM
 ; @param    out_found       Symbol set to 1 if a match was found, 0 otherwise.
 .macro _dyadic_check multiplier, rom_size, divisor, out_exponent, out_multiplier, out_found
-    .local dyadic_set
-    dyadic_set:
-        ; Candidate 2^E (must be a power of two)
-         _dyadic .set rom_size / _divisor
+    ; Candidate 2^E (must be a power of two)
+     _dyadic .set rom_size / _divisor
 
-    .local dyadic_check
-    dyadic_check:
-        ; Power-of-two test:
-        ;   x is power of two ⇔ x>0 and (x & (x-1)) == 0
-        ; Rationale: a power of two has a single 1-bit; subtracting 1 flips
-        ; all lower bits, so the AND is zero if there was exactly one 1-bit.
-        .if (_dyadic & (_dyadic - 1)) = 0
+    ; Power-of-two test:
+    ;   x is power of two ⇔ x>0 and (x & (x-1)) == 0
+    ; Rationale: a power of two has a single 1-bit; subtracting 1 flips
+    ; all lower bits, so the AND is zero if there was exactly one 1-bit.
+    .if (_dyadic & (_dyadic - 1)) = 0
             
-            ; Find the exponent value or fail
-            _exponent_loop          \
-                multiplier,         \
-                _dyadic,            \
-                out_exponent,       \
-                out_multiplier,     \
-                out_found
+        ; Find the exponent value or fail
+        _exponent_loop          \
+            multiplier,         \
+            _dyadic,            \
+            out_exponent,       \
+            out_multiplier,     \
+            out_found
             
-        .endif
+    .endif
 .endmacro
 
 ; @macro _multiplier_check
@@ -96,25 +88,23 @@
 ; @param    out_multiplier  Symbol to receive the multiplier MM
 ; @param    out_found       Symbol set to 1 if a match was found, 0 otherwise.
 .macro _multiplier_check multiplier, rom_size, out_exponent, out_multiplier, out_found
-    .local divisor_set
-    divisor_set:
+    ; divisor_set:
         _divisor .set multiplier * 2 + 1
 
-    .local divisor_check
-    divisor_check:
-        ; If this odd factor divides the size, the quotient may be 2^E.
-        .if rom_size .mod _divisor = 0
+    ; divisor_check:
+    ; If this odd factor divides the size, the quotient may be 2^E.
+    .if rom_size .mod _divisor = 0
             
-            ; Check the 2-adic value for this multiplier
-            _dyadic_check           \
-                multiplier,         \
-                rom_size,           \
-                _divisor,           \
-                out_exponent,       \
-                out_multiplier,     \
-                out_found
+        ; Check the 2-adic value for this multiplier
+        _dyadic_check           \
+            multiplier,         \
+            rom_size,           \
+            _divisor,           \
+            out_exponent,       \
+            out_multiplier,     \
+            out_found
         
-        .endif
+    .endif
 .endmacro
 
 ; @macro nsk_header_romlsb_exponent
@@ -129,51 +119,44 @@
 ;
 ; @error Emits a build error if `rom_size` cannot be expressed as NES 2.0 format
 .macro nsk_header_rom_lsb_exponent rom_size, out_result
-    .local const_check
-    const_check:
-        .ifnconst rom_size
-            .error "`rom_size` must be a constant expression"
-        .endif
+    .ifnconst rom_size
+        .error "`rom_size` must be a constant expression"
+    .endif
 
-    .local vars_init
-    vars_init:
-        ; Multiplier (MM) ∈ {0,1,2,3}
-        _multiplier    .set ::_NSK_HEADER_MULTIPLIER_NOTFOUND
-        ; Exponent (E) ∈ [0..63]
-        _exponent      .set ::_NSK_HEADER_EXPONENT_NOTFOUND
-        ; Skip flag for the excessive iterations
-        _found    .set 0
+    ; Multiplier (MM) ∈ {0,1,2,3}
+    _multiplier    .set ::_NSK_HEADER_MULTIPLIER_NOTFOUND
+    ; Exponent (E) ∈ [0..63]
+    _exponent      .set ::_NSK_HEADER_EXPONENT_NOTFOUND
+    ; Skip flag for the excessive iterations
+    _found    .set 0
 
-    .local multiplier_loop
-    multiplier_loop:
-        .repeat 4, _loop_multiplier
+    ; multiplier_loop:
+    .repeat 4, _loop_multiplier
 
-            .if _found = 0
-                _multiplier_check           \
-                    _loop_multiplier,       \
-                    rom_size,               \
-                    _exponent,              \
-                    _multiplier,            \
-                    _found
-            .endif
-
-        .endrepeat
-
-    .local error_check
-    error_check:
         .if _found = 0
-            ; Either the size isn't of the form 2^E×(1|3|5|7), 
-            ; or the exponent cap is too small.
-            .error                                                          \
-                .sprintf(                                                   \
-                    "Size must be encodable via NES 2.0 encoding (see %s)", \
-                    "https://www.nesdev.org/wiki/NES_2.0#PRG-ROM_Area"      \
-                )
+            _multiplier_check           \
+                _loop_multiplier,       \
+                rom_size,               \
+                _exponent,              \
+                _multiplier,            \
+                _found
         .endif
 
-    .local write
-    write:
-        out_result .set (_exponent << 2) | _multiplier
+    .endrepeat
+
+    ; error_check:
+    .if _found = 0
+        ; Either the size isn't of the form 2^E×(1|3|5|7),
+        ; or the exponent cap is too small.
+        .error                                                          \
+            .sprintf(                                                   \
+                "Size must be encodable via NES 2.0 encoding (see %s)", \
+                "https://www.nesdev.org/wiki/NES_2.0#PRG-ROM_Area"      \
+            )
+    .endif
+
+    ; write:
+    out_result .set (_exponent << 2) | _multiplier
 .endmacro
 
 .endif

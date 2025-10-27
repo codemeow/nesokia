@@ -10,7 +10,7 @@
 
 .include "nsk_header_prg_consts.inc"
 .include "nsk_header_issimple.inc"
-;.include "nsk_header_lsb_exponent.inc"
+.include "nsk_header_lsb_exponent.inc"
 
 ; @macro _prgrom_lsb_simple
 ; @brief Compute PRG-ROM size LSB using simple (linear) encoding.
@@ -51,10 +51,6 @@
 ; @param    prgrom_size  ROM size in bytes (constant expression).
 .macro nsk_header_prgrom_lsb prgrom_size
     .local locals
-    .local call
-    .local write
-    .local check
-
     locals:
         .local byte_prg
         .local flag_issimple_prg
@@ -66,11 +62,12 @@
             ::NSK_HEADER_PRGROM_QUANTUM,    \
             flag_issimple_prg
 
+    .local call
     call:
         .if flag_issimple_prg = 1
             _prg_lsb_simple prgrom_size, byte_prg
         .else
-    ;        _prg_lsb_exponent prgrom_size, byte_prg
+            _prg_lsb_exponent prgrom_size, byte_prg
         .endif
 
     .local write

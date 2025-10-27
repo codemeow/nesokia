@@ -1,5 +1,6 @@
 *.sublime-workspace
 *.elf
 *.nes
+*.o
 build
 bin

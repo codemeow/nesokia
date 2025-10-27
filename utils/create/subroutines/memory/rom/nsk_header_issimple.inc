@@ -6,6 +6,8 @@
 .ifndef ::__NSK_HEADER_ROM_ISSIMPLE__
 ::__NSK_HEADER_ROM_ISSIMPLE__ = 1
 
+.linecont +
+
 ; @def NSK_HEADER_ROM_SIMPLELIMIT
 ; @brief Upper bound for simple (linear) ROM size encoding.
 ;
@@ -24,10 +26,10 @@
 ; @param    quantum         Quantization unit in bytes (e.g. 16 KiB for PRG).
 ; @param    out_issimple    Symbol set to 1 if the size is encodable
 ;                           with simple mode, or 0 otherwise.
-.macro nsk_header_rom_issimple size, quantum, out_issimple
-    .if                                                 \
-        size .mod quantum = 0 &&                        \
-        size / quantum <= ::NSK_HEADER_ROM_SIMPLELIMIT
+.macro nsk_header_rom_issimple romsize, quantum, out_issimple
+    .if                                                      \
+        (romsize .mod quantum) = 0 &&                        \
+        (romsize / quantum) <= ::NSK_HEADER_ROM_SIMPLELIMIT
 
         out_issimple = 1
     .else

@@ -3,8 +3,8 @@
 ;
 ; Part of the Nesokia project — MIT License.
 
-.ifndef ::__NSK_HEADER_CHRROM_LSB__
-::__NSK_HEADER_CHRROM_LSB__ = 1
+.ifndef ::__NSK_HEADER_ROM_CHR_LSB__
+::__NSK_HEADER_ROM_CHR_LSB__ = 1
 
 .linecont +
 

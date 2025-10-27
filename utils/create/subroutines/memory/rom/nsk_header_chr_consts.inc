@@ -3,8 +3,8 @@
 ;
 ; Part of the Nesokia project — MIT License.
 
-.ifndef ::__NSK_HEADER_CHRROM_CONSTS__
-::__NSK_HEADER_CHRROM_CONSTS__ = 1
+.ifndef ::__NSK_HEADER_ROM_CHR_CONSTS__
+::__NSK_HEADER_ROM_CHR_CONSTS__ = 1
 
 ; @def NSK_HEADER_CHRROM_QUANTUM
 ; @brief Quantization unit for CHR-ROM size in simple encoding.

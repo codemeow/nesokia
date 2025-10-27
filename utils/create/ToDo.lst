@@ -1,1 +1,1 @@
-* Rename the devices list to be the same as in utils/head. Or find a way to use the XMacro
+* Use optional -D to set path to config file

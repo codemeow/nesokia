@@ -3,8 +3,8 @@
 ;
 ; Part of the Nesokia project — MIT License.
 
-.ifndef ::__NSK_HEADER_CHRRAM__
-::__NSK_HEADER_CHRRAM__ = 1
+.ifndef ::__NSK_HEADER_RAM_CHR__
+::__NSK_HEADER_RAM_CHR__ = 1
 
 .include "nsk_header_ram.inc"
 

@@ -3,14 +3,14 @@
 ;
 ; Part of the Nesokia project — MIT License.
 
-.ifndef ::__NSK_HEADER_PRGROM_LSB__
-::__NSK_HEADER_PRGROM_LSB__ = 1
+.ifndef ::__NSK_HEADER_ROM_PRG_LSB__
+::__NSK_HEADER_ROM_PRG_LSB__ = 1
 
 .linecont +
 
-.include "nsk_header_prgrom_consts.inc"
-.include "nsk_header_rom_issimple.inc"
-.include "nsk_header_rom_lsb_exponent.inc"
+.include "nsk_header_prg_consts.inc"
+.include "nsk_header_issimple.inc"
+;.include "nsk_header_lsb_exponent.inc"
 
 ; @macro _prgrom_lsb_simple
 ; @brief Compute PRG-ROM size LSB using simple (linear) encoding.
@@ -20,11 +20,10 @@
 ;
 ; @param    prgrom_size  ROM size in bytes (constant expression).
 ; @param    out_result   Symbol that will be set to the resulting LSB value.
-.macro _prgrom_lsb_simple prgrom_size, out_result
-.scope
+.macro _prg_lsb_simple prgrom_size, out_result
+    .local calc
     calc:
         out_result = (prgrom_size / ::NSK_HEADER_PRGROM_QUANTUM) & $ff
-.endscope
 .endmacro
 
 ; @macro _prgrom_lsb_exponent
@@ -35,11 +34,10 @@
 ;
 ; @param    prgrom_size  ROM size in bytes (constant expression).
 ; @param    out_result   Symbol that will be set to the resulting LSB value.
-.macro _prgrom_lsb_exponent prgrom_size, out_result
-.scope
+.macro _prg_lsb_exponent prgrom_size, out_result
+    .local call
     call:
-        nsk_header_romlsb_exponent prgrom_size, out_result
-.endscope
+        nsk_header_rom_lsb_exponent prgrom_size, out_result
 .endmacro
 
 ; @macro nsk_header_prgrom_lsb
@@ -52,11 +50,16 @@
 ;
 ; @param    prgrom_size  ROM size in bytes (constant expression).
 .macro nsk_header_prgrom_lsb prgrom_size
-.scope
+    .local locals
+    .local call
+    .local write
+    .local check
+
     locals:
         .local byte_prg
         .local flag_issimple_prg
 
+    .local check
     check:
         nsk_header_rom_issimple             \
             prgrom_size,                    \
@@ -67,16 +70,13 @@
         .if flag_issimple_prg = 1
             _prg_lsb_simple prgrom_size, byte_prg
         .else
-            _prg_lsb_exponent prgrom_size, byte_prg
+    ;        _prg_lsb_exponent prgrom_size, byte_prg
         .endif
 
+    .local write
     write:
         .byte byte_prg
-.endscope
 .endmacro
-
-.delmacro _prgrom_lsb_simple
-.delmacro _prg_lsb_exponent
 
 .endif
 

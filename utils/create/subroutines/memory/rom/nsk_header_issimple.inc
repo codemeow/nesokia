@@ -25,7 +25,6 @@
 ; @param    out_issimple    Symbol set to 1 if the size is encodable
 ;                           with simple mode, or 0 otherwise.
 .macro nsk_header_rom_issimple size, quantum, out_issimple
-.scope
     .if                                                 \
         size .mod quantum = 0 &&                        \
         size / quantum <= ::NSK_HEADER_ROM_SIMPLELIMIT
@@ -34,7 +33,6 @@
     .else
         out_issimple = 0
     .endif
-.endscope
 .endmacro
 
 .endif

@@ -3,8 +3,8 @@
 ;
 ; Part of the Nesokia project — MIT License.
 
-.ifndef ::__NSK_HEADER_PRGROM_CONSTS__
-::__NSK_HEADER_PRGROM_CONSTS__ = 1
+.ifndef ::__NSK_HEADER_ROM_PRG_CONSTS__
+::__NSK_HEADER_ROM_PRG_CONSTS__ = 1
 
 ; @def NSK_HEADER_PRGROM_QUANTUM
 ; @brief Quantization unit for PRG-ROM size in simple encoding.

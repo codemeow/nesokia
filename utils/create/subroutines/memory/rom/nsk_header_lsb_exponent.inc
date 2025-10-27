@@ -35,7 +35,7 @@
 ; @param    out_multiplier  Symbol to receive the normalized multiplier
 ; @param    out_found       Symbol set to 1 if a match was found, 0 otherwise.
 .macro _exponent_loop multiplier, dyadic, out_exponent, out_multiplier, out_found
-.scope
+    .local exponent_loop
     exponent_loop:
         ; Find E = log2(_dyadic) by repeated doubling.
         .repeat ::_NSK_HEADER_EXPONENT_LOGLOOP_LIMIT, _loop_exponent
@@ -44,13 +44,13 @@
             .endif
         .endrepeat
 
+    .local exponent_check
     exponent_check:
         ; If we matched some 1<<n, we have E and MM.
         .if _exponent <> ::_NSK_HEADER_EXPONENT_NOTFOUND
             out_multiplier .set multiplier
             out_found .set 1
         .endif
-.endscope
 .endmacro
 
 ; @macro _dyadic_check
@@ -63,11 +63,12 @@
 ; @param    out_multiplier  Symbol to receive the multiplier MM
 ; @param    out_found       Symbol set to 1 if a match was found, 0 otherwise.
 .macro _dyadic_check multiplier, rom_size, divisor, out_exponent, out_multiplier, out_found
-.scope
+    .local dyadic_set
     dyadic_set:
         ; Candidate 2^E (must be a power of two)
          _dyadic .set rom_size / _divisor
 
+    .local dyadic_check
     dyadic_check:
         ; Power-of-two test:
         ;   x is power of two ⇔ x>0 and (x & (x-1)) == 0
@@ -84,7 +85,6 @@
                 out_found
             
         .endif
-.endscope
 .endmacro
 
 ; @macro _multiplier_check
@@ -96,10 +96,11 @@
 ; @param    out_multiplier  Symbol to receive the multiplier MM
 ; @param    out_found       Symbol set to 1 if a match was found, 0 otherwise.
 .macro _multiplier_check multiplier, rom_size, out_exponent, out_multiplier, out_found
-.scope
+    .local divisor_set
     divisor_set:
         _divisor .set multiplier * 2 + 1
 
+    .local divisor_check
     divisor_check:
         ; If this odd factor divides the size, the quotient may be 2^E.
         .if rom_size .mod _divisor = 0
@@ -114,7 +115,6 @@
                 out_found
         
         .endif
-.endscope
 .endmacro
 
 ; @macro nsk_header_romlsb_exponent
@@ -128,13 +128,14 @@
 ; @param out_result Symbol that will be set to the resulting LSB value.
 ;
 ; @error Emits a build error if `rom_size` cannot be expressed as NES 2.0 format
-.macro nsk_header_romlsb_exponent rom_size, out_result
-.scope
+.macro nsk_header_rom_lsb_exponent rom_size, out_result
+    .local const_check
     const_check:
         .ifnconst rom_size
             .error "`rom_size` must be a constant expression"
         .endif
 
+    .local vars_init
     vars_init:
         ; Multiplier (MM) ∈ {0,1,2,3}
         _multiplier    .set ::_NSK_HEADER_MULTIPLIER_NOTFOUND
@@ -143,6 +144,7 @@
         ; Skip flag for the excessive iterations
         _found    .set 0
 
+    .local multiplier_loop
     multiplier_loop:
         .repeat 4, _loop_multiplier
 
@@ -157,6 +159,7 @@
 
         .endrepeat
 
+    .local error_check
     error_check:
         .if _found = 0
             ; Either the size isn't of the form 2^E×(1|3|5|7), 
@@ -168,13 +171,9 @@
                 )
         .endif
 
+    .local write
     write:
         out_result .set (_exponent << 2) | _multiplier
-.endscope
 .endmacro
-
-.delmacro _exponent_loop
-.delmacro _dyadic_check
-.delmacro _multiplier_check
 
 .endif

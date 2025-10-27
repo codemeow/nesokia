@@ -6,7 +6,7 @@
 .ifndef ::__NSK_HEADER_RAM_PRG__
 ::__NSK_HEADER_RAM_PRG__ = 1
 
-.include "nsk_header_ram.inc"
+.include "../../memory/ram/nsk_header_ram.inc"
 
 ; @macro nsk_header_prgram
 ; @brief Build NES 2.0 header byte for PRG-RAM and PRG-NVRAM sizes.
@@ -17,10 +17,9 @@
 ; @param    prgram_size   : Volatile PRG-RAM (work RAM) size in bytes.
 ; @param    prgnvram_size : Non-volatile PRG-NVRAM (battery-backed) size in bytes.
 .macro nsk_header_prgram prgram_size, prgnvram_size
-.scope
+    .local call
     call:
         nsk_header_ram prgram_size, prgnvram_size
-.endscope
 .endmacro
 
 .endif

@@ -42,7 +42,7 @@
 
 ::NSK_HEADER_NAMETABLE_ALTERNATIVE = nsk::nametable::mode::alternative
 
-::NSK_HEADER_CONSOLE_TYPE = nsk::console::nintendo_vs_system
+::NSK_HEADER_CONSOLE_TYPE = nsk::console::famicom
 
 ::NSK_HEADER_MAPPER_ID = 304
 

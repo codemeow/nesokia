@@ -37,7 +37,7 @@
 ;
 ; @error Emits an error when @p input is not a recognized console identifier.
 .macro _convert_console input, out_bits
-.scope
+    .local convert
     convert:
         .if                                                    \
             input = nsk::console::famicom                   || \
@@ -47,7 +47,7 @@
             input = nsk::console::nintendo_playchoice_10
 
             out_bits = input
-        .elif                                                  \
+        .elseif                                                \
             input = nsk::console::famiclone_decimal         || \
             input = nsk::console::famicom_epsm              || \
             input = nsk::console::VR_Technology_VT01        || \
@@ -60,10 +60,9 @@
             input = nsk::console::famicom_network_system    || \
 
             out_bits = ::NSK_HEADER_CONSOLE_EXTENDED
-        .else
+        .elseif
             .error "Invalid value: NSK_HEADER_CONSOLE_TYPE"
         .endif
-.endscope
 .endmacro
 
 ; @macro _convert_nes20
@@ -76,16 +75,15 @@
 ;
 ; @error Emits an error when @p input is ∉ {0, 1}
 .macro _convert_nes20 input, out_bits
-.scope
+    .local convert
     convert:
         .if   input = 1
             out_bits = %10
-        .elif input = 0
+        .elseif input = 0
             out_bits = %00
-        .else
+        .elseif
             .error "Invalid value: NSK_HEADER_ISNES20"
         .endif
-.endscope
 .endmacro
 
 ; @macro _convert_mapperid
@@ -96,14 +94,13 @@
 ;
 ; @error Emits a error if @p input > 4095.
 .macro _convert_mapper input, out_nib
-.scope
+    .local convert
     convert:
         .if   input >= 0 && input <= ::_NSK_HEADER_MAPPER_MAXID
             out_nib = (input >> 4) & $0f
-        .else
+        .elseif
             .error "Invalid value: NSK_HEADER_MAPPER_ID"
         .endif
-.endscope
 .endmacro
 
 ; @macro nsk_header_flags7
@@ -112,27 +109,24 @@
 ; @param    console   Console identifier (One of `nsk::console::xxx`).
 ; @param    mapperid  NES 2.0 mapper ID (0..4095).
 .macro nsk_header_flags7 console, mapperid
-.scope
+    .local locals
     locals:
         .local bits_console
         .local bits_nes20
         .local nib_mapper
 
+    .local set
     set:
         _convert_console    console,                bits_console
         _convert_nes20      ::NSK_HEADER_ISNES20,   bits_nes20
         _convert_mapper     mapperid,               nib_mapper
 
+    .local write
     write:
         .byte                        \
             (bits_console        ) | \
             (bits_nes20     <<  2) | \
             (nib_mapper     <<  4)
-.endscope
 .endmacro
-
-.delmacro _convert_console
-.delmacro _convert_nes20
-.delmacro _convert_mapper
 
 .endif

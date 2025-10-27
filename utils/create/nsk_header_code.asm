@@ -22,7 +22,7 @@
 .include "subroutines/memory/ram/nsk_header_chr.inc"
 .include "subroutines/nsk_header_timings.inc"
 .include "subroutines/nsk_header_vstype.inc"
-;.include "subroutines/nsk_header_miscroms.inc"
+.include "subroutines/memory/rom/nsk_header_misc.inc"
 ;.include "subroutines/nsk_header_defexp.inc"
 
 .segment NSK_SEGMENT_HEADER
@@ -84,8 +84,8 @@ nsk_header_vstype                           \
     ::NSK_HEADER_CONSOLE_TYPE
 
 ; 14: Miscellaneous ROMs
-;nsk_header_rom_misc                         \
-;    ::NSK_HEADER_ROMS_MISC
+nsk_header_rom_misc                         \
+    ::NSK_HEADER_ROMS_MISC
 
 ; 15: Default expansion device
 ;nsk_header_device                           \

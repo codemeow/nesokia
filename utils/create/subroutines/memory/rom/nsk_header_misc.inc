@@ -19,7 +19,7 @@
 ;
 ; @error Emits an error if @p roms is outside the valid range
 .macro _convert_roms_misc roms, out_bits
-.scope
+    .local convert
     convert:
         .if roms >= 0 && roms <= 3
             out_bits = roms
@@ -27,7 +27,6 @@
         .else
             .error "Invalid value: NSK_HEADER_ROMS_MISC"
         .endif
-.endscope
 .endmacro
 
 ; @macro nsk_header_rom_misc
@@ -53,17 +52,18 @@
 ; @note This field is only meaningful for mappers/consoles that define
 ;       how the misc area is interpreted.
 .macro nsk_header_rom_misc roms_misc
-.scope
+    .local locals
     locals:
         .local bits_roms
 
+
+    .local convert
     convert:
         _convert_roms_misc roms_misc, bits_roms
 
+    .local write
     write:
         .byte bits_roms
-.endmaco
-
-.delmacro _convert_roms_misc
+.endmacro
 
 .endif

@@ -17,7 +17,7 @@
 .include "subroutines/nsk_header_flags6.inc"
 .include "subroutines/nsk_header_flags7.inc"
 .include "subroutines/nsk_header_mapper.inc"
-;.include "subroutines/nsk_header_prgchrrom_msb.inc"
+.include "subroutines/memory/rom/nsk_header_msb.inc"
 ;.include "subroutines/nsk_header_prgram.inc"
 ;.include "subroutines/nsk_header_chrram.inc"
 ;.include "subroutines/nsk_header_timings.inc"
@@ -57,9 +57,9 @@ nsk_header_mapper                           \
     ::NSK_HEADER_SUBMAPPER_ID
 
 ; 9: PRG/CHR-ROM size MSB
-;nsk_header_prgchrrom_msb                    \
-;    ::NSK_HEADER_PRGROM_SIZE,               \
-;    ::NSK_HEADER_CHRROM_SIZE
+nsk_header_prgchrrom_msb                    \
+    ::NSK_HEADER_PRGROM_SIZE,               \
+    ::NSK_HEADER_CHRROM_SIZE
 
 ; 10: PRG-RAM/EEPROM size
 ;nsk_header_prgram                           \

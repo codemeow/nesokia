@@ -8,9 +8,9 @@
 
 .linecont +
 
-.include "nsk_header_chrrom_consts.inc"
-.include "nsk_header_prgrom_consts.inc"
-.include "nsk_header_rom_issimple.inc"
+.include "../../memory/rom/nsk_header_chr_consts.inc"
+.include "../../memory/rom/nsk_header_prg_consts.inc"
+.include "../../memory/rom/nsk_header_issimple.inc"
 
 ; @macro _prg_msb_simple
 ; @brief Compute the high nibble of PRG-ROM size in simple encoding mode.
@@ -18,10 +18,9 @@
 ; @param    prgrom_size  PRG-ROM size in bytes.
 ; @param    out_nib      Symbol assigned to the 4-bit result.
 .macro _prg_msb_simple prgrom_size, out_nib
-.scope
+    .local calc
     calc:
         out_nib = ((prgrom_size / ::NSK_HEADER_PRGROM_QUANTUM) >> 8) & $0f
-.endscope
 .endmacro
 
 ; @macro _chr_msb_simple
@@ -30,10 +29,9 @@
 ; @param    chrrom_size  CHR-ROM size in bytes.
 ; @param    out_nib      Symbol assigned to the 4-bit result.
 .macro _chr_msb_simple chrrom_size, out_nib
-.scope
+    .local calc
     calc:
         out_nib = ((chrrom_size / ::NSK_HEADER_CHRROM_QUANTUM) >> 8) & $0f
-.endscope
 .endmacro
 
 ; @macro _prg_msb_exponent
@@ -44,10 +42,9 @@
 ;
 ; @param    out_nib  Symbol assigned to $0F.
 .macro _prg_msb_exponent out_nib
-.scope
+    .local set
     set:
         out_nib = $0f
-.endscope
 .endmacro
 
 ; @macro _chr_msb_exponent
@@ -58,10 +55,9 @@
 ;
 ; @param    out_nib  Symbol assigned to $0F.
 .macro _chr_msb_exponent out_nib
-.scope
+    .local set
     set:
         out_nib = $0f
-.endscope
 .endmacro
 
 ; @macro nsk_header_prgchrrom_msb
@@ -80,13 +76,14 @@
 ; @param    prgrom_size  PRG-ROM size in bytes.
 ; @param    chrrom_size  CHR-ROM size in bytes.
 .macro nsk_header_prgchrrom_msb prgrom_size, chrrom_size
-.scope
+    .local locals
     locals:
         .local nib_prg
         .local nib_chr
         .local flag_issimple_prg
         .local flag_issimple_chr
 
+    .local check
     check:
         nsk_header_rom_issimple             \
             prgrom_size,                    \
@@ -98,6 +95,7 @@
             ::NSK_HEADER_CHRROM_QUANTUM,    \
             flag_issimple_chr
 
+    .local call
     call:
         .if flag_issimple_prg = 1
             _prg_msb_simple prgrom_size, nib_prg
@@ -112,17 +110,12 @@
             _chr_msb_exponent nib_chr
         .endif
 
+    .local write
     write:
         .byte                    \
             (nib_prg         ) | \
             (nib_chr    <<  4)
-.endscope
 .endmacro
-
-.delmacro _prg_msb_simple
-.delmacro _chr_msb_simple
-.delmacro _prg_msb_exponent
-.delmacro _chr_msb_exponent
 
 .endif
 

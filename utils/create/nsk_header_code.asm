@@ -14,7 +14,7 @@
 .include "subroutines/nsk_header_magic.inc"
 .include "subroutines/memory/rom/nsk_header_prg_lsb.inc"
 .include "subroutines/memory/rom/nsk_header_chr_lsb.inc"
-;.include "subroutines/nsk_header_flags6.inc"
+.include "subroutines/nsk_header_flags6.inc"
 ;.include "subroutines/nsk_header_flags7.inc"
 ;.include "subroutines/nsk_header_mapper.inc"
 ;.include "subroutines/nsk_header_prgchrrom_msb.inc"
@@ -39,12 +39,12 @@ nsk_header_chrrom_lsb                       \
     ::NSK_HEADER_CHRROM_SIZE
 
 ; 6: A set of flags to be put in the 6th byte
-;nsk_header_flags6                           \
-;    ::NSK_HEADER_NAMETABLE_HARDWIRED,       \
-;    ::NSK_HEADER_BATTERY,                   \
-;    ::NSK_HEADER_TRAINER,                   \
-;    ::NSK_HEADER_NAMETABLE_ALTERNATIVE,     \
-;    ::NSK_HEADER_MAPPERID
+nsk_header_flags6                           \
+    ::NSK_HEADER_NAMETABLE_HARDWIRED,       \
+    ::NSK_HEADER_BATTERY,                   \
+    ::NSK_HEADER_TRAINER,                   \
+    ::NSK_HEADER_NAMETABLE_ALTERNATIVE,     \
+    ::NSK_HEADER_MAPPER_ID
 
 ; 7: A set of flags to be put in the 7th byte
 ;nsk_header_flags7                           \

@@ -18,22 +18,21 @@
 ;
 ; @error Emits a error if @p input is not a supported layout constant.
 .macro _convert_nametable_hardwired input, out_bit
-.scope
+    .local convert
     convert:
         .if                                                           \
             input = nsk::nametable::layout::vertical_arrangement   || \
-            input = nsl::nametable::layout::horizontal_mirroring
+            input = nsk::nametable::layout::horizontal_mirroring
 
             out_bit = 0
-        .elif                                                         \
+        .elseif                                                       \
             input = nsk::nametable::layout::horizontal_arrangement || \
             input = nsk::nametable::layout::vertical_mirroring
 
             out_bit = 1
-        .elif
+        .elseif
             .error "Invalid value: NSK_HEADER_NAMETABLE_HARDWIRED"
         .endif
-.endscope
 .endmacro
 
 ; @macro _convert_battery
@@ -44,16 +43,15 @@
 ;
 ; @error Emits a error if @p input is not recognized.
 .macro _convert_battery input, out_bit
-.scope
+    .local convert
     convert:
         .if   input = nsk::battery::absent
             out_bit = 0
-        .elif input = nsk::battery::present
+        .elseif input = nsk::battery::present
             out_bit = 1
-        .elif
+        .elseif
             .error "Invalid value: NSK_HEADER_BATTERY"
         .endif
-.endscope
 .endmacro
 
 ; @macro _convert_trainer
@@ -64,16 +62,15 @@
 ;
 ; @error Emits a error if @p input is not recognized.
 .macro _convert_trainer input, out_bit
-.scope
+    .local convert
     convert:
         .if   input = nsk::trainer::absent
             out_bit = 0
-        .elif input = nsk::trainer::present
+        .elseif input = nsk::trainer::present
             out_bit = 1
-        .elif
+        .elseif
             .error "Invalid value: NSK_HEADER_TRAINER"
         .endif
-.endscope
 .endmacro
 
 ; @macro _convert_nametable_alternative
@@ -84,16 +81,15 @@
 ;
 ; @error Emits a error if @p input is not a supported mode constant.
 .macro _convert_nametable_alternative input, out_bit
-.scope
+    .local convert
     convert:
         .if   input = nsk::nametable::mode::normal
             out_bit = 0
-        .elif input = nsk::nametable::mode::alternative
+        .elseif input = nsk::nametable::mode::alternative
             out_bit = 1
-        .elif
+        .elseif
             .error "Invalid value: NSK_HEADER_NAMETABLE_ALTERNATIVE"
         .endif
-.endscope
 .endmacro
 
 ; @macro _convert_mapperid
@@ -104,14 +100,13 @@
 ;
 ; @error Emits a error if @p input > 4095.
 .macro _convert_mapperid input, out_nib
-.scope
+    .local convert
     convert:
         .if   input >= 0 && input <= ::_NSK_HEADER_MAPPER_MAXID
             out_nib = input & $0f
         .else
             .error "Invalid value: NSK_HEADER_MAPPER_ID"
         .endif
-.endscope
 .endmacro
 
 ; @macro nsk_header_flags6
@@ -131,7 +126,7 @@
 ; @param    nametablealt nsk::nametable::mode::xxx
 ; @param    mapperid     NES 2.0 mapper ID (0..4095)
 .macro nsk_header_flags6 nametablehw, battery, trainer, nametablealt, mapperid
-.scope
+    .local locals
     locals:
         .local bit_nametablehw
         .local bit_battery
@@ -139,6 +134,7 @@
         .local bit_nametablealt
         .local nib_mapper
 
+    .local set
     set:
         _convert_battery                battery,        bit_battery
         _convert_mapperid               mapperid,       nib_mapper
@@ -146,6 +142,7 @@
         _convert_nametable_hardwired    nametablehw,    bit_nametablehw
         _convert_trainer                trainer,        bit_trainer
 
+    .local write
     write:
         .byte                            \
             (bit_nametablehw         ) | \
@@ -153,13 +150,6 @@
             (bit_trainer        <<  2) | \
             (bit_nametablealt   <<  3) | \
             (nib_mapper         <<  4)
-.endscope
 .endmacro
-
-.delmacro _convert_nametable_hardwired
-.delmacro _convert_battery
-.delmacro _convert_trainer
-.delmacro _convert_nametable_alternative
-.delmacro _convert_mapperid
 
 .endif

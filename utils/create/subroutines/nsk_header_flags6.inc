@@ -92,14 +92,14 @@
         .endif
 .endmacro
 
-; @macro _convert_mapperid
+; @macro _convert_mapperid_low
 ; @brief Extract the low nibble of a NES 2.0 mapper ID for Flags 6.
 ;
 ; @param    input     Mapper ID (0..4095). 
 ; @param    out_nib   Symbol assigned to resulting nibble
 ;
 ; @error Emits a error if @p input > 4095.
-.macro _convert_mapperid input, out_nib
+.macro _convert_mapperid_low input, out_nib
     .local convert
     convert:
         .if   input >= 0 && input <= ::_NSK_HEADER_MAPPER_MAXID
@@ -137,7 +137,7 @@
     .local set
     set:
         _convert_battery                battery,        bit_battery
-        _convert_mapperid               mapperid,       nib_mapper
+        _convert_mapperid_low           mapperid,       nib_mapper
         _convert_nametable_alternative  nametablealt,   bit_nametablealt
         _convert_nametable_hardwired    nametablehw,    bit_nametablehw
         _convert_trainer                trainer,        bit_trainer

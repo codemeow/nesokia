@@ -10,7 +10,7 @@
 
 .include "nsk_header_mapper_consts.inc"
 
-; @macro _convert_mapperid
+; @macro _convert_mapperid_hi
 ; @brief Extract the high nibble of a NES 2.0 mapper ID.
 ;
 ; Validates the 12-bit mapper ID range (0..@ref _NSK_HEADER_MAPPER_MAXID)
@@ -20,15 +20,14 @@
 ; @param out_nib   Symbol assigned to
 ;
 ; @error Emits an error if @p input > 4095.
-.macro _convert_mapperid input, out_nib
-.scope
+.macro _convert_mapperid_hi input, out_nib
+    .local convert
     convert:
         .if   input >= 0 && input <= ::_NSK_HEADER_MAPPER_MAXID
             out_nib = (input >> 8) & $0f
         .else
             .error "Invalid value: NSK_HEADER_MAPPER_ID"
         .endif
-.endscope
 .endmacro
 
 ; @macro _convert_submapperid
@@ -42,14 +41,13 @@
 ;
 ; @error Emits an error if @p input exceeds max.
 .macro _convert_submapperid input, out_nib
-.scope
+    .local convert
     convert:
         .if input >= 0 && input <= ::_NSK_HEADER_SUBMAPPER_MAXID
             out_nib = input
         .else
             .error "Invalid value: NSK_HEADER_SUBMAPPER_ID"
         .endif
-.endscope
 .endmacro
 
 ; @macro nsk_header_mapper
@@ -60,23 +58,21 @@
 ; @param    mapperid     NES 2.0 mapper ID (0..4095)
 ; @param    submapperid  Submapper ID (0..15).
 .macro nsk_header_mapper mapperid, submapperid
-.scope
+    .local locals
     locals:
         .local nib_mapper
         .local nib_submapper
 
+    .local set
     set:
-        _convert_mapperid       mapperid,       nib_mapper
+        _convert_mapperid_hi    mapperid,       nib_mapper
         _convert_submapperid    submapperid,    nib_submapper
 
+    .local write
     write:
         .byte                        \
             (nib_mapper          ) | \
             (nib_submapper  <<  4)
-.endscope
 .endmacro
-
-.delmacro _convert_mapperid
-.delmacro _convert_submapperid
 
 .endif

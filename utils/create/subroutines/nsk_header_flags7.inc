@@ -86,14 +86,14 @@
         .endif
 .endmacro
 
-; @macro _convert_mapperid
+; @macro _convert_mapperid_mid
 ; @brief Extract the middle nibble of a NES 2.0 mapper ID for Flags 7.
 ;
 ; @param    input     Mapper ID (0..4095).
 ; @param    out_nib   Symbol assigned to resulting nibble
 ;
 ; @error Emits a error if @p input > 4095.
-.macro _convert_mapper input, out_nib
+.macro _convert_mapper_mid input, out_nib
     .local convert
     convert:
         .if   input >= 0 && input <= ::_NSK_HEADER_MAPPER_MAXID
@@ -119,7 +119,7 @@
     set:
         _convert_console    console,                bits_console
         _convert_nes20      ::NSK_HEADER_ISNES20,   bits_nes20
-        _convert_mapper     mapperid,               nib_mapper
+        _convert_mapper_mid mapperid,               nib_mapper
 
     .local write
     write:

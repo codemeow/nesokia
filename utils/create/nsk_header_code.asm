@@ -16,7 +16,7 @@
 .include "subroutines/memory/rom/nsk_header_chr_lsb.inc"
 .include "subroutines/nsk_header_flags6.inc"
 .include "subroutines/nsk_header_flags7.inc"
-;.include "subroutines/nsk_header_mapper.inc"
+.include "subroutines/nsk_header_mapper.inc"
 ;.include "subroutines/nsk_header_prgchrrom_msb.inc"
 ;.include "subroutines/nsk_header_prgram.inc"
 ;.include "subroutines/nsk_header_chrram.inc"
@@ -52,9 +52,9 @@ nsk_header_flags7                           \
     ::NSK_HEADER_MAPPER_ID
 
 ; 8: The rest of the mapper ID and a submapper ID
-;nsk_header_mapper                           \
-;    ::NSK_HEADER_MAPPER_ID,                 \
-;    ::NSK_HEADER_SUBMAPPER_ID
+nsk_header_mapper                           \
+    ::NSK_HEADER_MAPPER_ID,                 \
+    ::NSK_HEADER_SUBMAPPER_ID
 
 ; 9: PRG/CHR-ROM size MSB
 ;nsk_header_prgchrrom_msb                    \

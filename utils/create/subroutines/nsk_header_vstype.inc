@@ -17,18 +17,17 @@
 ; Sets @p out_isvs to 1 iff @p console equals @ref console::nintendo_vs_system,
 ; otherwise sets it to 0.
 ;
-; @param    console   Console selector (value from @ref console).
+; @param    consoleid Console selector (value from @ref console).
 ; @param    out_isvs  Symbol assigned to {0,1}.
-.macro _check_ifisvs console, out_isvs
-.scope
+.macro _check_ifisvs consoleid, out_isvs
+    .local check
     check:
-        .if console = nsk::console::nintendo_vs_system
+        .if consoleid = nsk::console::nintendo_vs_system
             out_isvs = 1
 
         .else
             out_isvs = 0
          .endif
-.endscope
 .endmacro
 
 ; @macro _check_ifextended
@@ -39,40 +38,39 @@
 ; - For extended families (famiclones, VTxx, UMC, Famicom Network System) 
 ; sets @p out_isext=1.
 ;
-; @param    console    Console selector (`nsk::console::xxx`).
+; @param    consoleid  Console selector (`nsk::console::xxx`).
 ; @param    out_isext  Symbol assigned to {0,1}.
 ;
-; @error Emits an error if @p console is unknown.
-.macro _check_ifextended console, out_isext
-.scope
+; @error Emits an error if @p consoleid is unknown.
+.macro _check_ifextended consoleid, out_isext
+    .local check
     check:
-        .if                                                    \
-            console = nsk::console::famicom                 || \
-            console = nsk::console::NES                     || \
-            console = nsk::console::dendy                   || \
-            console = nsk::console::nintendo_vs_system      || \
-            console = nsk::console::nintendo_playchoice_10
+        .if                                                      \
+            consoleid = nsk::console::famicom                 || \
+            consoleid = nsk::console::NES                     || \
+            consoleid = nsk::console::dendy                   || \
+            consoleid = nsk::console::nintendo_vs_system      || \
+            consoleid = nsk::console::nintendo_playchoice_10
 
             out_isext = 0
 
-        .elif                                                  \
-            console = nsk::console::famiclone_decimal       || \
-            console = nsk::console::famicom_epsm            || \
-            console = nsk::console::VR_Technology_VT01      || \
-            console = nsk::console::VR_Technology_VT02      || \
-            console = nsk::console::VR_Technology_VT03      || \
-            console = nsk::console::VR_Technology_VT09      || \
-            console = nsk::console::VR_Technology_VT32      || \
-            console = nsk::console::VR_Technology_VT369     || \
-            console = nsk::console::UMC_UM6578              || \
-            console = nsk::console::famicom_network_system
+        .elseif                                                  \
+            consoleid = nsk::console::famiclone_decimal       || \
+            consoleid = nsk::console::famicom_epsm            || \
+            consoleid = nsk::console::VR_Technology_VT01      || \
+            consoleid = nsk::console::VR_Technology_VT02      || \
+            consoleid = nsk::console::VR_Technology_VT03      || \
+            consoleid = nsk::console::VR_Technology_VT09      || \
+            consoleid = nsk::console::VR_Technology_VT32      || \
+            consoleid = nsk::console::VR_Technology_VT369     || \
+            consoleid = nsk::console::UMC_UM6578              || \
+            consoleid = nsk::console::famicom_network_system
 
             out_isext = 1
         .else
 
             .error "Invalid value: NSK_HEADER_CONSOLE_TYPE"
         .endif
-.endscope
 .endmacro
 
 ; @macro _convert_none
@@ -80,22 +78,20 @@
 ;
 ; @param    out_res  Symbol assigned to $00.
 .macro _convert_none out_res
-.scope
+    .local write
     write:
         out_res = $00
-.endscope
 .endmacro
 
 ; @macro _convert_extended
 ; @brief Pass through extended console code into output byte.
 ;
-; @param    console  Extended console selector (`nsk::console::xxx`).
-; @param    out_res  Symbol assigned to the console code.
-.macro _convert_extended console, out_res
-.scope
+; @param    consoleid Extended console selector (`nsk::console::xxx`).
+; @param    out_res   Symbol assigned to the console code.
+.macro _convert_extended consoleid, out_res
+    .local write
     write:
-        out_res = console
-.endscope
+        out_res = consoleid
 .endmacro
 
 ; @macro _convert_vssystem
@@ -113,11 +109,12 @@
 ; @error Emits an error if @p pputype is not recognized.
 ; @error Emits an error if @p hardwaretype is not recognized.
 .macro _convert_vssystem pputype, hardwaretype, out_res
-.scope
+    .local locals
     locals:
         .local nib_ppu
         .local nib_hardware
 
+    .local ppu
     ppu:
         .if                                                    \
             pputype = nsk::console::vs::ppu::RP2C03         || \
@@ -136,6 +133,7 @@
             .error "Invalid value: NSK_HEADER_VS_PPU"
         .endif
 
+    .local hardware
     hardware:
         .if                                                                                    \
             hardwaretype = nsk::console::vs::hardware::unisystem::normal                    || \
@@ -151,11 +149,11 @@
             .error "Invalid value: NSK_HEADER_VS_HARDWARE"
         .endif
 
+    .local write
     write:
         out_res =                   \
             (nib_ppu            ) | \
             (nib_hardware <<   4)
-.endscope
 .endmacro
 
 ; @macro nsk_header_vstype
@@ -168,39 +166,35 @@
 ;
 ; @param    pputype       Vs. PPU type (`nsk::console::vs::ppu::xxx`)
 ; @param    hardwaretype  Vs. hardware type (`nsk::console::vs::hardware::xxx`)
-; @param    console       Console selector (`nsk::console::xxx`)
-.macro nsk_header_vstype pputype, hardwaretype, console
-.scope
+; @param    consoleid     Console selector (`nsk::console::xxx`)
+.macro nsk_header_vstype pputype, hardwaretype, consoleid
+    .local locals
     locals:
         .local byte_out
         .local flag_isext
         .local flag_isvs
 
+    .local flags_set
     flags_set:
-        _check_ifextended console, flag_isext
-        _check_ifisvs     console, flag_isvs
+        _check_ifextended consoleid, flag_isext
+        _check_ifisvs     consoleid, flag_isvs
 
+    .local select
     select:
         .if flag_isext = 0 && flag_isvs = 0
             _convert_none byte_out
             
-        .elif flag_isext = 1
-            _convert_extended console, byte_out
+        .elseif flag_isext = 1
+            _convert_extended consoleid, byte_out
 
-        .elif flag_isvs = 1
+        .elseif flag_isvs = 1
             _convert_vssystem pputype, hardwaretype, byte_out
             
         .endif
 
+    .local write
     write:
         .byte byte_out
-.endscope
 .endmacro
-
-.delmacro _check_ifextended
-.delmacro _check_ifisvs
-.delmacro _convert_none
-.delmacro _convert_extended
-.delmacro _convert_vssystem
 
 .endif

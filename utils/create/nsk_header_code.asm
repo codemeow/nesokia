@@ -21,7 +21,7 @@
 .include "subroutines/memory/ram/nsk_header_prg.inc"
 .include "subroutines/memory/ram/nsk_header_chr.inc"
 .include "subroutines/nsk_header_timings.inc"
-;.include "subroutines/nsk_header_vstype.inc"
+.include "subroutines/nsk_header_vstype.inc"
 ;.include "subroutines/nsk_header_miscroms.inc"
 ;.include "subroutines/nsk_header_defexp.inc"
 
@@ -78,10 +78,10 @@ nsk_header_timings                          \
     ::NSK_HEADER_MAPPER_ID
 
 ; 13: VS/extended system type
-;nsk_header_vstype                           \
-;    ::NSK_HEADER_VS_PPU,                    \
-;    ::NSK_HEADER_VS_HARDWARE,               \
-;    ::NSK_HEADER_CONSOLE_TYPE
+nsk_header_vstype                           \
+    ::NSK_HEADER_VS_PPU,                    \
+    ::NSK_HEADER_VS_HARDWARE,               \
+    ::NSK_HEADER_CONSOLE_TYPE
 
 ; 14: Miscellaneous ROMs
 ;nsk_header_rom_misc                         \

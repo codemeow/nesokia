@@ -18,14 +18,15 @@
 ;
 ; @error Emits a error if @p input is not a supported layout constant.
 .macro _convert_nametable_hardwired input, out_bit
-    .if                                                           \
-        input = nsk::nametable::layout::vertical_arrangement   || \
-        input = nsk::nametable::layout::horizontal_mirroring
+    .if                                                   \
+        input = NSK::NM_LAYOUT::VERTICAL_ARRANGEMENT   || \
+        input = NSK::NM_LAYOUT::HORIZONTAL_MIRRORING   || \
+        input = NSK::NM_LAYOUT::MAPPER_CONTROLLED
 
         out_bit = 0
-    .elseif                                                       \
-        input = nsk::nametable::layout::horizontal_arrangement || \
-        input = nsk::nametable::layout::vertical_mirroring
+    .elseif                                               \
+        input = NSK::NM_LAYOUT::HORIZONTAL_ARRANGEMENT || \
+        input = NSK::NM_LAYOUT::VERTICAL_MIRRORING
 
         out_bit = 1
     .elseif
@@ -41,9 +42,9 @@
 ;
 ; @error Emits a error if @p input is not recognized.
 .macro _convert_battery input, out_bit
-    .if   input = nsk::battery::absent
+    .if   input = NSK::BATTERY::NOT_PRESENT
         out_bit = 0
-    .elseif input = nsk::battery::present
+    .elseif input = NSK::BATTERY::PRESENT
         out_bit = 1
     .elseif
         .error "Invalid value: NSK_HEADER_BATTERY"
@@ -58,9 +59,9 @@
 ;
 ; @error Emits a error if @p input is not recognized.
 .macro _convert_trainer input, out_bit
-    .if   input = nsk::trainer::absent
+    .if   input = NSK::TRAINER::NOT_PRESENT
         out_bit = 0
-    .elseif input = nsk::trainer::present
+    .elseif input = NSK::TRAINER::PRESENT
         out_bit = 1
     .elseif
         .error "Invalid value: NSK_HEADER_TRAINER"
@@ -75,9 +76,9 @@
 ;
 ; @error Emits a error if @p input is not a supported mode constant.
 .macro _convert_nametable_alternative input, out_bit
-    .if   input = nsk::nametable::mode::normal
+    .if   input = NSK::NM_ALTERNATIVE::NORMAL
         out_bit = 0
-    .elseif input = nsk::nametable::mode::alternative
+    .elseif input = NSK::NM_ALTERNATIVE::ALTERNATIVE
         out_bit = 1
     .elseif
         .error "Invalid value: NSK_HEADER_NAMETABLE_ALTERNATIVE"

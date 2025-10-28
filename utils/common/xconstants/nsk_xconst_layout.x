@@ -14,6 +14,6 @@
 // key       name             value      description
 X(  0, VERTICAL_ARRANGEMENT,    0, "Vertical arrangement"   )
 X(  1, HORIZONTAL_ARRANGEMENT,  1, "Horizontal arrangment"  )
-X(  2, VERTCAL_MIRRORING,       1, "Vertical mirroring"     )
+X(  2, VERTICAL_MIRRORING,      1, "Vertical mirroring"     )
 X(  3, HORIZONTAL_MIRRORING,    0, "Horizontal mirroring"   )
 X(  4, MAPPER_CONTROLLED,       0, "Mapper controlled"      )

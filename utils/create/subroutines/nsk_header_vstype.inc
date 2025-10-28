@@ -20,7 +20,7 @@
 ; @param    consoleid Console selector (value from @ref console).
 ; @param    out_isvs  Symbol assigned to {0,1}.
 .macro _check_ifisvs consoleid, out_isvs
-    .if consoleid = nsk::console::nintendo_vs_system
+    .if consoleid = NSK::CONSOLE::NINTENDO_VS
         out_isvs = 1
 
     .else
@@ -42,25 +42,25 @@
 ; @error Emits an error if @p consoleid is unknown.
 .macro _check_ifextended consoleid, out_isext
     .if                                                      \
-        consoleid = nsk::console::famicom                 || \
-        consoleid = nsk::console::NES                     || \
-        consoleid = nsk::console::dendy                   || \
-        consoleid = nsk::console::nintendo_vs_system      || \
-        consoleid = nsk::console::nintendo_playchoice_10
+        consoleid = NSK::CONSOLE::FAMICOM                 || \
+        consoleid = NSK::CONSOLE::NES                     || \
+        consoleid = NSK::CONSOLE::DENDY                   || \
+        consoleid = NSK::CONSOLE::NINTENDO_VS             || \
+        consoleid = NSK::CONSOLE::PLAYCHOICE10
 
         out_isext = 0
 
     .elseif                                                  \
-        consoleid = nsk::console::famiclone_decimal       || \
-        consoleid = nsk::console::famicom_epsm            || \
-        consoleid = nsk::console::VR_Technology_VT01      || \
-        consoleid = nsk::console::VR_Technology_VT02      || \
-        consoleid = nsk::console::VR_Technology_VT03      || \
-        consoleid = nsk::console::VR_Technology_VT09      || \
-        consoleid = nsk::console::VR_Technology_VT32      || \
-        consoleid = nsk::console::VR_Technology_VT369     || \
-        consoleid = nsk::console::UMC_UM6578              || \
-        consoleid = nsk::console::famicom_network_system
+        consoleid = NSK::CONSOLE::FAMICLONE_DEC           || \
+        consoleid = NSK::CONSOLE::FAMICOM_EPSM            || \
+        consoleid = NSK::CONSOLE::VR_TECHNOLOGY_VT01      || \
+        consoleid = NSK::CONSOLE::VR_TECHNOLOGY_VT02      || \
+        consoleid = NSK::CONSOLE::VR_TECHNOLOGY_VT03      || \
+        consoleid = NSK::CONSOLE::VR_TECHNOLOGY_VT09      || \
+        consoleid = NSK::CONSOLE::VR_TECHNOLOGY_VT32      || \
+        consoleid = NSK::CONSOLE::VR_TECHNOLOGY_VT369     || \
+        consoleid = NSK::CONSOLE::UMC_UM6578              || \
+        consoleid = NSK::CONSOLE::FAMICOM_NETWORK
 
         out_isext = 1
     .else
@@ -94,8 +94,8 @@
 ;   bits 0–3 : Vs. PPU type
 ;   bits 4–7 : Vs. hardware type (header byte 13 D7..D4)
 ;
-; @param    pputype       One of nsk::console::vs::ppu::xxx
-; @param    hardwaretype  One of nsk::console::vs::hardware::xxx
+; @param    pputype       One of nsk::VSPPU::xxx
+; @param    hardwaretype  One of NSK::VSHARDWARE::xxx
 ; @param    out_res       Symbol assigned to the packed byte.
 ;
 ; @error Emits an error if @p pputype is not recognized.
@@ -106,17 +106,17 @@
     .local nib_hardware
 
     ; ppu:
-    .if                                                    \
-        pputype = nsk::console::vs::ppu::RP2C03         || \
-        pputype = nsk::console::vs::ppu::RC2C03         || \
-        pputype = nsk::console::vs::ppu::RP2C04::rev1   || \
-        pputype = nsk::console::vs::ppu::RP2C04::rev2   || \
-        pputype = nsk::console::vs::ppu::RP2C04::rev3   || \
-        pputype = nsk::console::vs::ppu::RP2C04::rev4   || \
-        pputype = nsk::console::vs::ppu::RC2C05::rev1   || \
-        pputype = nsk::console::vs::ppu::RC2C05::rev2   || \
-        pputype = nsk::console::vs::ppu::RC2C05::rev3   || \
-        pputype = nsk::console::vs::ppu::RC2C05::rev4
+    .if                                      \
+        pputype = NSK::VSPPU::RP2C03      || \
+        pputype = NSK::VSPPU::RC2C03      || \
+        pputype = NSK::VSPPU::RP2C04_001  || \
+        pputype = NSK::VSPPU::RP2C04_002  || \
+        pputype = NSK::VSPPU::RP2C04_003  || \
+        pputype = NSK::VSPPU::RP2C04_004  || \
+        pputype = NSK::VSPPU::RC2C05_01   || \
+        pputype = NSK::VSPPU::RC2C05_02   || \
+        pputype = NSK::VSPPU::RC2C05_03   || \
+        pputype = NSK::VSPPU::RC2C05_04
 
         nib_ppu = pputype
     .else
@@ -124,14 +124,14 @@
     .endif
 
     ; hardware:
-    .if                                                                                    \
-        hardwaretype = nsk::console::vs::hardware::unisystem::normal                    || \
-        hardwaretype = nsk::console::vs::hardware::unisystem::RBI_baseball              || \
-        hardwaretype = nsk::console::vs::hardware::unisystem::TKO_boxing                || \
-        hardwaretype = nsk::console::vs::hardware::unisystem::super_xevious             || \
-        hardwaretype = nsk::console::vs::hardware::unisystem::ice_climber_japan         || \
-        hardwaretype = nsk::console::vs::hardware::dualsystem::normal                   || \
-        hardwaretype = nsk::console::vs::hardware::dualsystem::raid_on_bungeling_bay
+    .if                                                   \
+        hardwaretype = NSK::VSHARDWARE::VSUNI_normal   || \
+        hardwaretype = NSK::VSHARDWARE::VSUNI_baseball || \
+        hardwaretype = NSK::VSHARDWARE::VSUNI_boxing   || \
+        hardwaretype = NSK::VSHARDWARE::VSUNI_xevious  || \
+        hardwaretype = NSK::VSHARDWARE::VSUNI_climber  || \
+        hardwaretype = NSK::VSHARDWARE::VSDUAL_normal  || \
+        hardwaretype = NSK::VSHARDWARE::VSDUAL_raid
 
         nib_hardware = hardwaretype
     .else
@@ -152,8 +152,8 @@
 ;   2) If console is extended                        → pass console code
 ;   3) If console is Vs. System                      → pack PPU+hardware
 ;
-; @param    pputype       Vs. PPU type (`nsk::console::vs::ppu::xxx`)
-; @param    hardwaretype  Vs. hardware type (`nsk::console::vs::hardware::xxx`)
+; @param    pputype       Vs. PPU type (`nsk::VSPPU::xxx`)
+; @param    hardwaretype  Vs. hardware type (`NSK::VSHARDWARE::xxx`)
 ; @param    consoleid     Console selector (`nsk::console::xxx`)
 .macro nsk_header_vstype pputype, hardwaretype, consoleid
     ; locals:

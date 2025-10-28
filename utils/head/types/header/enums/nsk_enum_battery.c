@@ -1,22 +1,22 @@
 #include <stdlib.h>
 
-#include "../../../types/header/enums/nsk_enum_mirroring.h"
+#include "../../../types/header/enums/nsk_enum_battery.h"
 
 #include "../../../utils/nsk_util_multimap.h"
 
 /*!
  * \brief  Returns text description of the type
  *
- * \param[in] type  The mirroring type
+ * \param[in] type  The battery type
  * \return Static string
  */
-const char *nsk_mirroring_name(enum nsk_mirroring_type type) {
+const char *nsk_battery_name(enum nsk_battery_type type) {
     static const char separator[] = " / ";
     static const struct nsk_multimap map[] = {
 #       define X(key, name, value, description) \
-        { NSK_MIRRORING_ ## name, description },
+        { NSK_BATTERY_ ## name, description },
 
-#           include <xconstants/nsk_xconst_layout.x>
+#           include <xconstants/nsk_xconst_battery.x>
 
 #       undef X
 

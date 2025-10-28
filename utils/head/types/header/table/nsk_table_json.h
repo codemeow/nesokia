@@ -42,6 +42,30 @@ const char *nsk_convjson_u16(const void *field);
 const char *nsk_convjson_mirroring(const void *field);
 
 /*!
+ * Converts Alternative mode into JSON format
+ *
+ * \param[in]  field  The field (`enum nsk_alternative_type *` expected)
+ * \return Static string
+ */
+const char *nsk_convjson_alternative(const void *field);
+
+/*!
+ * Converts Battery flag into JSON format
+ *
+ * \param[in]  field  The field (`enum nsk_battery_type *` expected)
+ * \return Static string
+ */
+const char *nsk_convjson_battery(const void *field);
+
+/*!
+ * Converts Trainer flag into JSON format
+ *
+ * \param[in]  field  The field (`enum nsk_trainer_type *` expected)
+ * \return Static string
+ */
+const char *nsk_convjson_trainer(const void *field);
+
+/*!
  * \brief  Converts console type into JSON format
  *
  * \param[in]  field  The field (`enum nsk_console_type *` expected)

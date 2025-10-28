@@ -42,6 +42,30 @@ const char *nsk_convshort_u16(const void *field);
 const char *nsk_convshort_mirroring(const void *field);
 
 /*!
+ * Converts Alternative mode into short description
+ *
+ * \param[in]  field  The field (`enum nsk_alternative_type *` expected)
+ * \return Static string
+ */
+const char *nsk_convshort_alternative(const void *field);
+
+/*!
+ * Converts Battery flag into short description
+ *
+ * \param[in]  field  The field (`enum nsk_battery_type *` expected)
+ * \return Static string
+ */
+const char *nsk_convshort_battery(const void *field);
+
+/*!
+ * Converts Trainer flag into short description
+ *
+ * \param[in]  field  The field (`enum nsk_trainer_type *` expected)
+ * \return Static string
+ */
+const char *nsk_convshort_trainer(const void *field);
+
+/*!
  * \brief  Converts console type into short description
  *
  * \param[in] field  The field (`enum nsk_console_type *` expected)

@@ -103,10 +103,10 @@ const struct nsk_header_tableentry nsk_header_table[] = {
         .length     = 1,
         .shift      = NSK_OF(nametables.alternative),
         .conv_raw   = nsk_convraw_alternative,
-        .conv_long  = nsk_convlong_bool,
-        .conv_short = nsk_convshort_bool,
-        .conv_json  = nsk_convjson_bool,
-        .match      = nsk_compare_bool
+        .conv_long  = nsk_convlong_alternative,
+        .conv_short = nsk_convshort_alternative,
+        .conv_json  = nsk_convjson_alternative,
+        .match      = nsk_compare_alternative
     },
 
     /* Mapper */
@@ -229,10 +229,10 @@ const struct nsk_header_tableentry nsk_header_table[] = {
         .length     = 1,
         .shift      = NSK_OF(trainer),
         .conv_raw   = nsk_convraw_trainer,
-        .conv_long  = nsk_convlong_bool,
-        .conv_short = nsk_convshort_bool,
-        .conv_json  = nsk_convjson_bool,
-        .match      = nsk_compare_bool
+        .conv_long  = nsk_convlong_trainer,
+        .conv_short = nsk_convshort_trainer,
+        .conv_json  = nsk_convjson_trainer,
+        .match      = nsk_compare_trainer
     },
     {
         .category   = NSK_CATEGORY_MISC,
@@ -241,10 +241,10 @@ const struct nsk_header_tableentry nsk_header_table[] = {
         .length     = 1,
         .shift      = NSK_OF(battery),
         .conv_raw   = nsk_convraw_battery,
-        .conv_long  = nsk_convlong_bool,
-        .conv_short = nsk_convshort_bool,
-        .conv_json  = nsk_convjson_bool,
-        .match      = nsk_compare_bool
+        .conv_long  = nsk_convlong_battery,
+        .conv_short = nsk_convshort_battery,
+        .conv_json  = nsk_convjson_battery,
+        .match      = nsk_compare_battery
     },
     {
         .category   = NSK_CATEGORY_MISC,

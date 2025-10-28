@@ -1,5 +1,10 @@
 // X-Macro records for the Vs System PPU type
 
+// Metadata:
+// [ Header: "Vs. PPU types" ]
+// [ Scope: "VSPPU" ]
+// [ Columns: 4 ]
+
 // For languages that do not allow enum members to share the same value,
 // you can include the key as part of the encoded value, for example:
 // `name = key << 8 | value`.
@@ -7,7 +12,7 @@
 // `raw = input & 0xff`.
 
 // key       name         value            description
-X(  0, NONE,               -1, "Not applicable"             )
+X(  0, NONE,                0, "Not applicable"             )
 X(  1, RP2C03,              0, "Any RP2C03"                 )
 X(  2, RC2C03,              0, "Any RC2C03"                 )
 X(  3, RP2C04_001,          2, "RP2C04-001"                 )

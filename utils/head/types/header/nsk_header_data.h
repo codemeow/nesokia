@@ -4,10 +4,13 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "../../types/header/enums/nsk_enum_alternative.h"
+#include "../../types/header/enums/nsk_enum_battery.h"
 #include "../../types/header/enums/nsk_enum_console.h"
 #include "../../types/header/enums/nsk_enum_device.h"
 #include "../../types/header/enums/nsk_enum_mirroring.h"
 #include "../../types/header/enums/nsk_enum_region.h"
+#include "../../types/header/enums/nsk_enum_trainer.h"
 #include "../../types/header/enums/nsk_enum_vshardware.h"
 #include "../../types/header/enums/nsk_enum_vsppu.h"
 
@@ -42,11 +45,11 @@ struct nsk_header_data {
 
     struct {
         enum nsk_mirroring_type mirror; /*!< Mirroring mode                   */
-        bool alternative;   /*!< Is alternative nametables layout used        */
+        enum nsk_alternative_type alternative;   /*!< Alternative layout      */
     } nametables;
 
-    bool trainer;           /*!< Is trainer section present                   */
-    bool battery;           /*!< Is battery backed NVROM is present           */
+    enum nsk_trainer_type trainer;  /*!< Trainer presence                     */
+    enum nsk_battery_type battery;  /*!< Battery/non-volatile memory presence */
 
     struct {
         struct {

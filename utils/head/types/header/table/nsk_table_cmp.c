@@ -2,10 +2,13 @@
 
 #include "../../../types/header/table/nsk_table_cmp.h"
 
+#include "../../../types/header/enums/nsk_enum_alternative.h"
+#include "../../../types/header/enums/nsk_enum_battery.h"
 #include "../../../types/header/enums/nsk_enum_console.h"
 #include "../../../types/header/enums/nsk_enum_device.h"
 #include "../../../types/header/enums/nsk_enum_mirroring.h"
 #include "../../../types/header/enums/nsk_enum_region.h"
+#include "../../../types/header/enums/nsk_enum_trainer.h"
 #include "../../../types/header/enums/nsk_enum_vshardware.h"
 #include "../../../types/header/enums/nsk_enum_vsppu.h"
 #include "../../../types/pair/nsk_pair_cmp.h"
@@ -126,6 +129,66 @@ bool nsk_compare_mirroring(
     enum nsk_pair_operator operator
 ) {
     enum nsk_mirroring_type fvalue = *(enum nsk_mirroring_type *)field;
+    return _compare_u64(fvalue, value, operator);
+}
+
+/*!
+ * \brief  Compares the field value with the reference value
+ *
+ * Answer the question "is <field> <operator> <value>?", i.e.
+ * "Is mapper > 304?"
+ *
+ * \param[in] field      The field
+ * \param[in] value      The value
+ * \param[in] operator   The required operator
+ * \return True if <field> <operator> <value>
+ */
+bool nsk_compare_alternative(
+    const void *field,
+    uint64_t value,
+    enum nsk_pair_operator operator
+) {
+    enum nsk_alternative_type fvalue = *(enum nsk_alternative_type *)field;
+    return _compare_u64(fvalue, value, operator);
+}
+
+/*!
+ * \brief  Compares the field value with the reference value
+ *
+ * Answer the question "is <field> <operator> <value>?", i.e.
+ * "Is mapper > 304?"
+ *
+ * \param[in] field      The field
+ * \param[in] value      The value
+ * \param[in] operator   The required operator
+ * \return True if <field> <operator> <value>
+ */
+bool nsk_compare_battery(
+    const void *field,
+    uint64_t value,
+    enum nsk_pair_operator operator
+) {
+    enum nsk_battery_type fvalue = *(enum nsk_battery_type *)field;
+    return _compare_u64(fvalue, value, operator);
+}
+
+/*!
+ * \brief  Compares the field value with the reference value
+ *
+ * Answer the question "is <field> <operator> <value>?", i.e.
+ * "Is mapper > 304?"
+ *
+ * \param[in] field      The field
+ * \param[in] value      The value
+ * \param[in] operator   The required operator
+ * \return True if <field> <operator> <value>
+ */
+bool nsk_compare_trainer(
+    const void *field,
+    uint64_t value,
+    enum nsk_pair_operator operator
+) {
+    enum nsk_trainer_type fvalue = *(enum nsk_trainer_type *)field;
     return _compare_u64(fvalue, value, operator);
 }
 

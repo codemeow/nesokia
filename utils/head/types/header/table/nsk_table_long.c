@@ -5,10 +5,13 @@
 
 #include "../../../types/header/table/nsk_table_long.h"
 
+#include "../../../types/header/enums/nsk_enum_alternative.h"
+#include "../../../types/header/enums/nsk_enum_battery.h"
 #include "../../../types/header/enums/nsk_enum_console.h"
 #include "../../../types/header/enums/nsk_enum_device.h"
 #include "../../../types/header/enums/nsk_enum_mirroring.h"
 #include "../../../types/header/enums/nsk_enum_region.h"
+#include "../../../types/header/enums/nsk_enum_trainer.h"
 #include "../../../types/header/enums/nsk_enum_vshardware.h"
 #include "../../../types/header/enums/nsk_enum_vsppu.h"
 #include "../../../utils/nsk_util_hrbytes.h"
@@ -72,6 +75,39 @@ const char *nsk_convlong_u16(const void *field) {
 const char *nsk_convlong_mirroring(const void *field) {
     enum nsk_mirroring_type value = *(enum nsk_mirroring_type *)field;
     return nsk_mirroring_name(value);
+}
+
+/*!
+ * Converts Mirroring mode into long description
+ *
+ * \param[in]  field  The field (`enum nsk_alternative_type *` expected)
+ * \return Static string
+ */
+const char *nsk_convlong_alternative(const void *field) {
+    enum nsk_alternative_type value = *(enum nsk_alternative_type *)field;
+    return nsk_alternative_name(value);
+}
+
+/*!
+ * Converts Mirroring mode into long description
+ *
+ * \param[in]  field  The field (`enum nsk_battery_type *` expected)
+ * \return Static string
+ */
+const char *nsk_convlong_battery(const void *field) {
+    enum nsk_battery_type value = *(enum nsk_battery_type *)field;
+    return nsk_battery_name(value);
+}
+
+/*!
+ * Converts Mirroring mode into long description
+ *
+ * \param[in]  field  The field (`enum nsk_trainer_type *` expected)
+ * \return Static string
+ */
+const char *nsk_convlong_trainer(const void *field) {
+    enum nsk_trainer_type value = *(enum nsk_trainer_type *)field;
+    return nsk_trainer_name(value);
 }
 
 /*!

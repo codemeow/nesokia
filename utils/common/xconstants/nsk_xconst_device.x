@@ -1,5 +1,10 @@
 // X-Macro records for the external device type
 
+// Metadata:
+// [ Header: "Expansion devices list" ]
+// [ Scope: "DEVICES" ]
+// [ Columns: 6 ]
+
 // General
 // key   manufacturer         device               value                  description
 X(  0, NONE,            UNSPECIFIED,                 0, "Unspecified/none"                                       )

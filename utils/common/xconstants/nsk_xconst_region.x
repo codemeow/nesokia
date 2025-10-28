@@ -1,5 +1,10 @@
 // X-Macro records for the console region
 
+// Metadata:
+// [ Header: "Timings/Regions list" ]
+// [ Scope: "REGION" ]
+// [ Columns: 4 ]
+
 // For languages that do not allow enum members to share the same value,
 // you can include the key as part of the encoded value, for example:
 // `name = key << 8 | value`.

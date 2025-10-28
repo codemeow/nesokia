@@ -42,6 +42,30 @@ const char *nsk_convlong_u16(const void *field);
 const char *nsk_convlong_mirroring(const void *field);
 
 /*!
+ * Converts Mirroring mode into long description
+ *
+ * \param[in]  field  The field (`enum nsk_alternative_type *` expected)
+ * \return Static string
+ */
+const char *nsk_convlong_alternative(const void *field);
+
+/*!
+ * Converts Mirroring mode into long description
+ *
+ * \param[in]  field  The field (`enum nsk_battery_type *` expected)
+ * \return Static string
+ */
+const char *nsk_convlong_battery(const void *field);
+
+/*!
+ * Converts Mirroring mode into long description
+ *
+ * \param[in]  field  The field (`enum nsk_trainer_type *` expected)
+ * \return Static string
+ */
+const char *nsk_convlong_trainer(const void *field);
+
+/*!
  * \brief  Converts console type into long description
  *
  * \param[in]  field  The field (`enum nsk_console_type *` expected)

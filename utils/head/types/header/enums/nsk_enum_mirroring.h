@@ -2,11 +2,19 @@
 #define NSK_ROMTYPE_MIRRORING
 
 /*!
- * \brief  Possible nametables mirrorings
+ * \brief  List of console regions/timings
+ *
+ * \note Constructed from xconst_mirroring file via XMacro
  */
 enum nsk_mirroring_type {
-    NSK_MIRRORING_HORIZONTAL,
-    NSK_MIRRORING_VERTICAL
+
+#   define X(key, name, value, description) \
+    NSK_MIRRORING_ ## name = value,
+
+#       include <xconstants/nsk_xconst_layout.x>
+
+#   undef X
+
 };
 
 /*!

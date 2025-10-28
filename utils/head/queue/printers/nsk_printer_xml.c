@@ -71,7 +71,7 @@ static char _print_mirroring(const struct nsk_header_data *data) {
     for (size_t i = 0; i < NSK_SIZE(table); i++) {
         if (table[i].selector(data->mapper.id)) {
             return table[i].values
-                [data->nametables.mirror == NSK_MIRRORING_HORIZONTAL]
+                [data->nametables.mirror == NSK_MIRRORING_HORIZONTAL_MIRRORING]
                 [data->nametables.alternative];
         }
     }

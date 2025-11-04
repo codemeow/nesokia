@@ -20,12 +20,15 @@ const char *nsk_multimap_lookup(
 ) {
     static char value[1024];
     bool first  = true;
+    bool found  = false;
     int pos     = 0;
     int count;
 
     const struct nsk_multimap *entry = multimap;
     while (entry->value) {
         if (entry->key == key) {
+
+            found = true;
 
             if (!first) {
                 count = snprintf(
@@ -52,6 +55,15 @@ const char *nsk_multimap_lookup(
         }
 
         entry++;
+    }
+
+    if (!found) {
+        snprintf(
+            value,
+            sizeof(value),
+            "Unknown (%d)",
+            key
+        );
     }
 
     return value;

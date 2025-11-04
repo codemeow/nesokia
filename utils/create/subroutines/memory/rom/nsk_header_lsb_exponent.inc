@@ -89,7 +89,7 @@
 ; @param    out_found       Symbol set to 1 if a match was found, 0 otherwise.
 .macro _multiplier_check multiplier, rom_size, out_exponent, out_multiplier, out_found
     ; divisor_set:
-        _divisor .set multiplier * 2 + 1
+    _divisor .set multiplier * 2 + 1
 
     ; divisor_check:
     ; If this odd factor divides the size, the quotient may be 2^E.

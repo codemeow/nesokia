@@ -3,8 +3,8 @@ TARGET  := nesokia-head
 
 # Version data
 VER_MAJOR := 0
-VER_MINOR := 2
-VER_BUILD := 3
+VER_MINOR := 3
+VER_BUILD := 9
 
 # Build directory for object files
 DIR_BUILD := ../../build

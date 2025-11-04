@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nes20db date="2021-12-25">
+	<!-- skipped -->
+	<game>
+		<prgrom size="262144" crc32="6B999AAF" sha1="5CB19C7CCCF9DEDB73DAD69A39B047A24B1BE50D" sum16="DDF9" />
+		<chrrom size="131072" crc32="4028916E" sha1="F986F72BA5284129620D31C0779AC6D50638E6F1" sum16="97C3" />
+		<rom size="393216" crc32="603AAA57" sha1="6780B3FCC547C013EE45AFAC6BB30C6FC6D8B46E" />
+		<pcb mapper="4" submapper="0" mirroring="H" battery="0" />
+		<console type="0" region="0" />
+		<expansion type="1" />
+	</game>
+	<!-- skipped -->
+</nes20db>

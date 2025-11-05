@@ -9,41 +9,61 @@ It is designed to be flexible and easily integrated into projects built with **c
 
 - Generates NES 2.0 headers based on user-defined configuration parameters.
 - Provides a sample configuration file for quick setup.
-- Automatically generates required constants and flags.
 - Supports customization of the output segment name for integration.
-- Includes enums and constants for use in your assembly projects.
+- Does not require copying the source files of this project into yours, thus keeping the projects separate. Only the configuration file is needed.
 
 ---
 
 ## Installation & Setup
 
-1. Copy the utils/create directory into your project. The name of the copied directory doesn't matter.
+### Installation
 
-2. Change the `nsk_header_config.inc` configuration file.  
-    * Refer to `header/nsk_header_consts.inc` for available constant values when editing the configuration file.
-    * Refer to `header/nsk_header_config.sample.inc` for sample configuration
+Either:
+  1. Copy the `nsk_header_config.sample.inc` to your project
+  2. Rename copied file to `nsk_header_config.inc`
+  3. Change the values in the file according to your needs
 
-3. Add the directory to your build system, ensuring that `header/nsk_header_code.asm` is compiled and linked into your project.
+Or:
+  1. Add empty `nsk_header_config.inc` file to your project
+  2. Populate it with the values, listed in the `nsk_header_config.sample.inc`
+
+### Compilation
+
+When using `ca65`:
+
+  1. Pass the `-I XXX` option to the compiler, listing the directory, containing `nsk_header_config.inc`
+  2. Use the `-o` option to select the output filename, containing the object file with the generated header
+  3. Link the produced file with your project
 
 ---
 
 ## Usage
 
-* The **`nsk_header_config.inc`** file controls all parameters of the generated header.
-* Constants and flags are generated automatically, depending on the values you set.
-* The configuration file also allows you to specify the name of the segment used to integrate the generated code.
+* The user-defined **`nsk_header_config.inc`** file controls all parameters of the generated header.
 
 Example (from the sample configuration file):
 
 ```asm
 ; @brief Release Region
 ;
-; Sets the region that the emulator should use when launching the ROM image.
-; See #nsk_header_regions in `header/nsk_header_consts.inc` for a list of possible values.
-::NSK_HEADER_REGION = nsk::RP2C02
+; Specifies the target region (affecting CPU/PPU timings) that the emulator
+; should use when launching the ROM image.
+;
+; See `NSK::REGION` in `nsk_header_consts.inc` for a list of possible values.
+;
+; Commonly used values:
+;   NSK::REGION::NTSC
+;   NSK::REGION::PAL
+;   NSK::REGION::MULTIPLE
+;
+::NSK_HEADER_REGION = NSK::REGION::JAPAN
 ```
 
-This directive defines the release region for the ROM by referencing constants provided in `header/nsk_header_consts.inc`.
+---
+
+## Updating the consts file
+
+If, by some reason, you have changed any file in the `utils/common` directory, call the `utils/create/scripts/nsk_consts_update.sh` script to update the `nsk_header_consts.inc` accordingly.
 
 ---
 

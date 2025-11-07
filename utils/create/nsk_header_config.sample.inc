@@ -8,6 +8,10 @@
 .ifndef ::__NSK_HEADER_CONFIG__
 ::__NSK_HEADER_CONFIG__ = 1
 
+; @note If the value in the provided user config is ommited this value is
+; considered to have the zero value instead (some exceptions apply)
+; Thus minimal config could be empty, considering all the values to be "0".
+
 ; @brief Selects the segment where the linker should place the
 ; generated header.
 ;
@@ -26,6 +30,8 @@
 ;
 ; Any name can be used in the linker script, but the variable must match
 ; the *segment* name.
+;
+; @note Default value if this field is ommited is "HEADER"
 ;
 ; Common values:
 ;  - "HEADER"

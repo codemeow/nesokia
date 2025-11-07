@@ -3,3 +3,6 @@
 *.o
 build
 bin
+
+# Utils/Create autotests configuration files
+utils/create/tests/cases/*/nsk_header_config.inc

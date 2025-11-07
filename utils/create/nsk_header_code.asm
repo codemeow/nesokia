@@ -25,6 +25,8 @@
 .include "subroutines/memory/rom/nsk_header_misc.inc"
 .include "subroutines/nsk_header_device.inc"
 
+.include "subroutines/nsk_header_defaults.inc"
+
 .segment NSK_SEGMENT_HEADER
 
 ; 0..3: iNES/NES2.0 "magic number"

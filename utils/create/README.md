@@ -27,6 +27,8 @@ Or:
   1. Add empty `nsk_header_config.inc` file to your project
   2. Populate it with the values, listed in the `nsk_header_config.sample.inc`
 
+Any zero-values could be safely skipped thus minimal valid configuration file is empty.
+
 ### Compilation
 
 When using `ca65`:

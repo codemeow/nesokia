@@ -6,3 +6,7 @@ bin
 
 # Utils/Create autotests configuration files
 utils/create/tests/cases/*/nsk_header_config.inc
+# Utils/Create autotests object files
+utils/create/tests/cases/*/test.o
+# Utils/Create autotests binary files
+utils/create/tests/cases/*/test.nes

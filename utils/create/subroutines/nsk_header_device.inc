@@ -11,13 +11,14 @@
 ; @macro _check_ifunknown_device
 ; @brief Emit an error if no deviceid converter matched.
 ;
-; @param    found  Flag expected to be 1 when any converter recognized 
-;                  the deviceid.
+; @param    deviceid Input deviceid symbol
+; @param    found    Flag expected to be 1 when any converter recognized
+;                    the deviceid.
 ;
 ; @error Emits an error if the deviceid is not found
-.macro _check_ifunknown_device found
+.macro _check_ifunknown_device deviceid, found
     .if found = 0
-        .error "Invalid value: NSK_HEADER_EXPANSION_DEVICE"
+        .error .sprintf("Invalid value: NSK_HEADER_EXPANSION_DEVICE: %d", deviceid)
     .endif
 .endmacro
 
@@ -274,7 +275,7 @@
     _convert_ifother        deviceid, out_nibits, _detected
 
     ; check:
-    _check_ifunknown_device _detected
+    _check_ifunknown_device deviceid, _detected
 .endmacro
 
 ; @macro nsk_header_deviceid

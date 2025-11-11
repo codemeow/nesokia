@@ -24,7 +24,7 @@
     .if   input >= 0 && input <= ::_NSK_HEADER_MAPPER_MAXID
         out_nib = (input >> 8) & $0f
     .else
-        .error "Invalid value: NSK_HEADER_MAPPER_ID"
+        .error .sprintf("Invalid value: NSK_HEADER_MAPPER_ID: %d", input)
     .endif
 .endmacro
 
@@ -42,7 +42,7 @@
     .if input >= 0 && input <= ::_NSK_HEADER_SUBMAPPER_MAXID
         out_nib = input
     .else
-        .error "Invalid value: NSK_HEADER_SUBMAPPER_ID"
+        .error .sprintf("Invalid value: NSK_HEADER_SUBMAPPER_ID: %d", input)
     .endif
 .endmacro
 

@@ -30,7 +30,7 @@
 
         out_bit = 1
     .elseif
-        .error "Invalid value: NSK_HEADER_NAMETABLE_HARDWIRED"
+        .error .sprintf("Invalid value: NSK_HEADER_NAMETABLE_HARDWIRED: %d", input)
     .endif
 .endmacro
 
@@ -47,7 +47,7 @@
     .elseif input = NSK::BATTERY::PRESENT
         out_bit = 1
     .elseif
-        .error "Invalid value: NSK_HEADER_BATTERY"
+        .error .sprintf("Invalid value: NSK_HEADER_BATTERY: %d", input)
     .endif
 .endmacro
 
@@ -64,7 +64,7 @@
     .elseif input = NSK::TRAINER::PRESENT
         out_bit = 1
     .elseif
-        .error "Invalid value: NSK_HEADER_TRAINER"
+        .error .sprintf("Invalid value: NSK_HEADER_TRAINER: %d", input)
     .endif
 .endmacro
 
@@ -81,7 +81,7 @@
     .elseif input = NSK::NM_ALTERNATIVE::ALTERNATIVE
         out_bit = 1
     .elseif
-        .error "Invalid value: NSK_HEADER_NAMETABLE_ALTERNATIVE"
+        .error .sprintf("Invalid value: NSK_HEADER_NAMETABLE_ALTERNATIVE: %d", input)
     .endif
 .endmacro
 
@@ -96,7 +96,7 @@
     .if   input >= 0 && input <= ::_NSK_HEADER_MAPPER_MAXID
         out_nib = input & $0f
     .else
-        .error "Invalid value: NSK_HEADER_MAPPER_ID"
+        .error .sprintf("Invalid value: NSK_HEADER_MAPPER_ID: %d", input)
     .endif
 .endmacro
 

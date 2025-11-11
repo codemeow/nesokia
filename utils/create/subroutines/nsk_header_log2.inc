@@ -17,7 +17,7 @@
 .macro nsk_header_log2 value, out_result
     ; check:
     .if value = 0 || (value & (value - 1)) <> 0
-        .error "Invalid value passed to the `nsk_header_log2`"
+        .error .sprintf("Invalid value passed to the `nsk_header_log2`: %d", value)
     .endif
 
     ; init:

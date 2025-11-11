@@ -23,7 +23,7 @@
         out_bits = roms
         
     .else
-        .error "Invalid value: NSK_HEADER_ROMS_MISC"
+        .error .sprintf("Invalid value: NSK_HEADER_ROMS_MISC: %d", roms)
     .endif
 .endmacro
 

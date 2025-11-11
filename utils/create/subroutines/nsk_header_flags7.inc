@@ -59,7 +59,7 @@
 
         out_bits = ::NSK_HEADER_CONSOLE_EXTENDED
     .elseif
-        .error "Invalid value: NSK_HEADER_CONSOLE_TYPE"
+        .error .sprintf("Invalid value: NSK_HEADER_CONSOLE_TYPE: %d", input)
     .endif
 .endmacro
 
@@ -78,7 +78,7 @@
     .elseif input = 0
         out_bits = %00
     .elseif
-        .error "Invalid value: NSK_HEADER_ISNES20"
+        .error .sprintf("Invalid value: NSK_HEADER_ISNES20: %d", input)
     .endif
 .endmacro
 
@@ -93,7 +93,7 @@
     .if   input >= 0 && input <= ::_NSK_HEADER_MAPPER_MAXID
         out_nib = (input >> 4) & $0f
     .elseif
-        .error "Invalid value: NSK_HEADER_MAPPER_ID"
+        .error .sprintf("Invalid value: NSK_HEADER_MAPPER_ID: %d", input)
     .endif
 .endmacro
 

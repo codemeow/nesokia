@@ -65,7 +65,7 @@
         out_isext = 1
     .else
 
-        .error "Invalid value: NSK_HEADER_CONSOLE_TYPE"
+        .error .sprintf("Invalid value: NSK_HEADER_CONSOLE_TYPE: %d", consoleid)
     .endif
 .endmacro
 
@@ -120,22 +120,22 @@
 
         nib_ppu = pputype
     .else
-        .error "Invalid value: NSK_HEADER_VS_PPU"
+        .error .sprintf("Invalid value: NSK_HEADER_VS_PPU: %d", pputype)
     .endif
 
     ; hardware:
     .if                                                   \
-        hardwaretype = NSK::VSHARDWARE::VSUNI_normal   || \
-        hardwaretype = NSK::VSHARDWARE::VSUNI_baseball || \
-        hardwaretype = NSK::VSHARDWARE::VSUNI_boxing   || \
-        hardwaretype = NSK::VSHARDWARE::VSUNI_xevious  || \
-        hardwaretype = NSK::VSHARDWARE::VSUNI_climber  || \
-        hardwaretype = NSK::VSHARDWARE::VSDUAL_normal  || \
-        hardwaretype = NSK::VSHARDWARE::VSDUAL_raid
+        hardwaretype = NSK::VSHARDWARE::VSUNI_NORMAL   || \
+        hardwaretype = NSK::VSHARDWARE::VSUNI_BASEBALL || \
+        hardwaretype = NSK::VSHARDWARE::VSUNI_BOXING   || \
+        hardwaretype = NSK::VSHARDWARE::VSUNI_XEVIOUS  || \
+        hardwaretype = NSK::VSHARDWARE::VSUNI_CLIMBER  || \
+        hardwaretype = NSK::VSHARDWARE::VSDUAL_NORMAL  || \
+        hardwaretype = NSK::VSHARDWARE::VSDUL_RAID
 
         nib_hardware = hardwaretype
     .else
-        .error "Invalid value: NSK_HEADER_VS_HARDWARE"
+        .error .sprintf("Invalid value: NSK_HEADER_VS_HARDWARE: %d", hardwaretype)
     .endif
 
     ; write:

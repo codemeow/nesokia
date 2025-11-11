@@ -12,30 +12,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Union, List
 
-PROGRAM_COMPILER     = "ca65"
-PROGRAM_LINKER       = "ld65"
-PROGRAM_MAKE         = "make"
-
-DIR_BIN              = "bin"
-DIR_BUILD            = "build"
-DIR_CASES            = "cases"
-DIR_HELPERS          = "subroutines"
-DIR_MEMORY           = "memory"
-DIR_READER           = "utils/head"
-
-CONFIG_FILE_CONSTS   = "nsk_header_consts.inc"
-CONFIG_FILE_SOURCE   = "nsk_header_code.asm"
-CONFIG_FILE_MEMORY   = "nsk_header_memory.cfg"
-
-TEST_FILE_OBJECT     = "test.o"
-TEST_FILE_BINARY     = "test.nes"
-TEST_FILE_CONFIG     = "nsk_header_config.inc"
-TEST_FILE_REFERENCE  = "rom-header.nes"
-TEST_FILE_XML        = "nes20db-slice.xml"
-
-HELPER_CONFIG_CREATE = "nsk_config_create.py"
-HELPER_ROM_READER    = "nesokia-head"
-
 # Colorama's init
 init(autoreset=True)
 
@@ -142,26 +118,27 @@ def resolve_program(name : str) -> Path:
 ##
 def build_setup() -> BuildSetup:
     here = Path(__file__).resolve().parent
+    root = here.parent.parent.parent
 
     return BuildSetup(
         compiler = BuildSetup.BuildCompiler(
-            ca65 = resolve_program(PROGRAM_COMPILER),
-            ld65 = resolve_program(PROGRAM_LINKER),
-            make = resolve_program(PROGRAM_MAKE)
+            ca65 = resolve_program("ca65"),
+            ld65 = resolve_program("ld65"),
+            make = resolve_program("make")
         ),
         directory = BuildSetup.BuildDirectories(
-            cases   = resolve_dir(here / DIR_CASES),
-            helpers = resolve_dir(here / DIR_HELPERS),
-            reader  = resolve_dir(here.parent.parent.parent / DIR_READER)
+            cases   = resolve_dir(here / "cases"),
+            helpers = resolve_dir(here / "subroutines"),
+            reader  = resolve_dir(root / "utils/head")
         ),
         helpers = BuildSetup.BuildHelpers(
-            generator = resolve_file(here / DIR_HELPERS / HELPER_CONFIG_CREATE),
-            reader    = resolve_file(here.parent.parent.parent / DIR_BIN / HELPER_ROM_READER)
+            generator = resolve_file(here / "subroutines/nsk_config_create.py"),
+            reader    = resolve_file(root / "bin/nesokia-head")
         ),
         config = BuildSetup.BuildConfig(
-            consts = resolve_file(here.parent / CONFIG_FILE_CONSTS),
-            source = resolve_file(here.parent / CONFIG_FILE_SOURCE),
-            memory = resolve_file(here / DIR_MEMORY / CONFIG_FILE_MEMORY)
+            consts = resolve_file(root / "utils/create/nsk_header_consts.inc"),
+            source = resolve_file(root / "utils/create/nsk_header_code.asm"),
+            memory = resolve_file(here / "memory/nsk_header_memory.cfg")
         )
     )
 
@@ -243,11 +220,11 @@ def cases_setup(setup: BuildSetup) -> List[CaseSetup]:
         cases.append(
             CaseSetup(
                 root        = sub,
-                slice       = resolve_file(sub / TEST_FILE_XML),
-                object      = resolve_file(sub / TEST_FILE_OBJECT, missing_ok = True),
-                target      = resolve_file(sub / TEST_FILE_BINARY, missing_ok = True),
-                config      = resolve_file(sub / TEST_FILE_CONFIG, missing_ok = True),
-                reference   = resolve_file(sub / TEST_FILE_REFERENCE),
+                slice       = resolve_file(sub / "nes20db-slice.xml"),
+                object      = resolve_file(sub / "test.o",                  missing_ok = True),
+                target      = resolve_file(sub / "test.nes",                missing_ok = True),
+                config      = resolve_file(sub / "nsk_header_config.inc",   missing_ok = True),
+                reference   = resolve_file(sub / "rom-header.nes"),
                 failed      = False
             )
         )
@@ -477,11 +454,14 @@ def build_printer(setup: BuildSetup) -> None:
         if proc.returncode != 0:
             print_failed(f"{cmd_str}")
             print_test_output(proc.stderr)
+            sys.exit(1)
         else:
             print_passed(f"{cmd_str}")
 
     except Exception as e:
         print_failed(f"{cmd_str}: {e}")
+        sys.exit(1)
+
     print()
 
 ##

@@ -18,10 +18,8 @@
 ; @brief Main loop function
 .export nsk_main
 .proc nsk_main
-    jsr nsk_stage_run
-
     loop:
-        ; <code>
+        jsr nsk_stage_run
 
     inc nsk_nmi_sleep_flag
     sleep:
@@ -29,7 +27,6 @@
         bne sleep
 
     jmp loop
-
 .endproc
 
 .endif

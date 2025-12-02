@@ -6,12 +6,14 @@
 .ifndef ::__NSK_STAGE_GAME_LOOP_ASM__
 ::__NSK_STAGE_GAME_LOOP_ASM__ = 1
 
+.include "nsk_common_meta.inc"
+
 .segment "CODE"
 
 ; @brief Stage for game loop
 .export nsk_stage_game_loop
 .proc nsk_stage_game_loop
-    ; @todo
+    nsk_todo "nsk_stage_game_loop"
 
     rts
 .endproc

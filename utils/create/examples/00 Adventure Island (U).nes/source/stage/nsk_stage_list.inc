@@ -8,10 +8,6 @@
 
 ; @brief Stages of the game
 .enum STAGE
-    PPU_DISABLE  ; Disable PPU to prepare mass rendering
-    TILES_DRAW   ; Render whole field
-    SPRITES_DRAW ; Render all sprites
-    PPU_ENABLE   ; Enable PPU back
     GAME_LOOP    ; Game/animation loop
 .endenum
 

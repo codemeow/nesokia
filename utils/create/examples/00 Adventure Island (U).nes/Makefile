@@ -55,7 +55,8 @@ $(GAME_DIRS):
 	$(MKDIR) $@
 
 # Target: Example game code
-$(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.asm | $(dir $(BUILD_DIR)/%.o)
+$(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.asm
+	@$(MKDIR) $(dir $@)
 	$(CA) $(CFLAGS) $< -o $@
 
 # Target: clean

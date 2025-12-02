@@ -9,10 +9,6 @@
 .include "nsk_common_meta.inc"
 
 .include "../stage/nsk_stage_list.inc"
-.include "../stage/handlers/nsk_stage_ppu_disable.inc"
-.include "../stage/handlers/nsk_stage_tiles_draw.inc"
-.include "../stage/handlers/nsk_stage_sprites_draw.inc"
-.include "../stage/handlers/nsk_stage_ppu_enable.inc"
 .include "../stage/handlers/nsk_stage_game_loop.inc"
 
 .segment "ZEROPAGE"
@@ -29,10 +25,6 @@ stage_jump_ptr:
 
 ; @brief Stage handlers list
 game_stage_table:
-    .addr nsk_stage_ppu_disable
-    .addr nsk_stage_tiles_draw
-    .addr nsk_stage_sprites_draw
-    .addr nsk_stage_ppu_enable
     .addr nsk_stage_game_loop
 
 .segment "CODE"
@@ -40,7 +32,7 @@ game_stage_table:
 ; @brief Inits the current stage index
 .export nsk_stage_init
 .proc nsk_stage_init
-    lda #STAGE::PPU_DISABLE
+    lda #STAGE::GAME_LOOP
     sta game_stage_num
     rts
 .endproc

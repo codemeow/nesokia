@@ -22,7 +22,7 @@
     push a
 
     lda #( \
-        NSK::PPU::BITS::PPUCTRL::NMI_BIT \
+        NSK::CPU::PPU::BITS::PPUCTRL::NMI_BIT \
     )
 
     not
@@ -39,7 +39,7 @@
     push a
 
     lda #( \
-        NSK::PPU::BITS::PPUCTRL::NMI_ENABLE \
+        NSK::CPU::PPU::BITS::PPUCTRL::NMI_ENABLE \
     )
 
     ora ppu_temp_control

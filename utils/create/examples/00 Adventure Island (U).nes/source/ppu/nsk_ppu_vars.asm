@@ -8,6 +8,8 @@
 
 .include "../ppu/nsk_ppu_vars.inc"
 
+.segment "BSS"
+
 ; @brief Temporary value for the NMI's PPUMASK
 .export ppu_temp_mask
 ppu_temp_mask:

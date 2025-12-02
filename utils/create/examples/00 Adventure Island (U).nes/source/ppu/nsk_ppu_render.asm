@@ -21,8 +21,8 @@
     push a
 
     lda #( \
-        NSK::PPU::BITS::PPUMASK::RENDER_BACK_BIT    | \
-        NSK::PPU::BITS::PPUMASK::RENDER_SPRITES_BIT   \
+        NSK::CPU::PPU::BITS::PPUMASK::RENDER_BACK_BIT    | \
+        NSK::CPU::PPU::BITS::PPUMASK::RENDER_SPRITES_BIT   \
     )
 
     not
@@ -39,8 +39,8 @@
     push a
 
     lda #( \
-        NSK::PPU::BITS::PPUMASK::RENDER_BACK_ON    | \
-        NSK::PPU::BITS::PPUMASK::RENDER_SPRITES_ON   \
+        NSK::CPU::PPU::BITS::PPUMASK::RENDER_BACK_ON    | \
+        NSK::CPU::PPU::BITS::PPUMASK::RENDER_SPRITES_ON   \
     )
 
     ora ppu_temp_mask

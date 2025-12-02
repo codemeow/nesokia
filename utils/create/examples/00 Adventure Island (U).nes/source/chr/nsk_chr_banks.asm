@@ -7,15 +7,23 @@
 ::__NSK_CHR_BANKS_ASM__ = 1
 
 .segment "CHR0"
-.incbin "../../chrrom/bank-0.chr"
+
+.incbin "../../chrrom/chr/bank-0.0.chr"
+.incbin "../../chrrom/chr/bank-0.1.chr"
 
 .segment "CHR1"
-.incbin "../../chrrom/bank-1.chr"
+
+.incbin "../../chrrom/chr/bank-1.0.chr"
+.incbin "../../chrrom/chr/bank-1.1.chr"
 
 .segment "CHR2"
-.incbin "../../chrrom/bank-2.chr"
+
+.incbin "../../chrrom/chr/bank-2.0.chr"
+.incbin "../../chrrom/chr/bank-2.1.chr"
 
 .segment "CHR3"
-.incbin "../../chrrom/bank-3.chr"
+
+.incbin "../../chrrom/chr/bank-3.0.chr"
+.incbin "../../chrrom/chr/bank-3.1.chr"
 
 .endif

@@ -30,7 +30,6 @@ nsk_nmi_sleep_flag:
     sta NSK::CPU::PPU::OAMDMA
 
     pull a
-
     rts
 .endproc
 
@@ -86,11 +85,11 @@ nsk_nmi_sleep_flag:
 .proc nsk_vector_nmi
     push a, x, y
 
-    ; @todo Array-to-PPUADDR interpreter
-    jsr _ppumask_update
-    jsr _sprites_update
-    jsr _ppuctrl_update
-    jsr _ppuscroll_update
+    nsk_todo "nsk_vector_nmi - Array-to-PPUADDR interpreter"
+    ;jsr _ppumask_update
+    ;jsr _sprites_update
+    ;jsr _ppuctrl_update
+    ;jsr _ppuscroll_update
 
     jsr _flag_reset
 

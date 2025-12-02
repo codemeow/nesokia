@@ -14,6 +14,8 @@
 .include "../../stage/nsk_stage_list.inc"
 .include "../../ppu/nsk_ppu_vars.inc"
 .include "../../nsk_main.inc"
+.include "../../init/nsk_init_loop.inc"
+.include "../../init/nsk_init_list.inc"
 
 .segment "CODE"
 
@@ -40,33 +42,37 @@
 
 .macro init_ppu_values
     lda #( \
-        NSK::PPU::BITS::PPUMASK::GRAYSCALE_OFF       | \
-        NSK::PPU::BITS::PPUMASK::LEFTMOST_BACK_OFF   | \
-        NSK::PPU::BITS::PPUMASK::LEFTMOST_SPRITE_OFF | \
-        NSK::PPU::BITS::PPUMASK::RENDER_BACK_OFF     | \
-        NSK::PPU::BITS::PPUMASK::RENDER_SPRITES_OFF  | \
-        NSK::PPU::BITS::PPUMASK::RED_NORMAL          | \
-        NSK::PPU::BITS::PPUMASK::GREEN_NORMAL        | \
-        NSK::PPU::BITS::PPUMASK::BLUE_NORMAL           \
+        NSK::CPU::PPU::BITS::PPUMASK::GRAYSCALE_OFF       | \
+        NSK::CPU::PPU::BITS::PPUMASK::LEFTMOST_BACK_OFF   | \
+        NSK::CPU::PPU::BITS::PPUMASK::LEFTMOST_SPRITE_OFF | \
+        NSK::CPU::PPU::BITS::PPUMASK::RENDER_BACK_OFF     | \
+        NSK::CPU::PPU::BITS::PPUMASK::RENDER_SPRITES_OFF  | \
+        NSK::CPU::PPU::BITS::PPUMASK::RED_NORMAL          | \
+        NSK::CPU::PPU::BITS::PPUMASK::GREEN_NORMAL        | \
+        NSK::CPU::PPU::BITS::PPUMASK::BLUE_NORMAL           \
     )
     sta ppu_temp_mask
     sta NSK::CPU::PPU::PPUMASK
 
     lda #( \
-        NSK::PPU::BITS::PPUCTRL::NAMETABLE_2000      | \
-        NSK::PPU::BITS::PPUCTRL::VRAM_INC_1          | \
-        NSK::PPU::BITS::PPUCTRL::SPRITE_TABLE_1000   | \
-        NSK::PPU::BITS::PPUCTRL::TILES_TABLE_0000    | \
-        NSK::PPU::BITS::PPUCTRL::SPRITE_8x8          | \
-        NSK::PPU::BITS::PPUCTRL::PPU_SLAVE           | \
-        NSK::PPU::BITS::PPUCTRL::NMI_DISABLE           \
+        NSK::CPU::PPU::BITS::PPUCTRL::NAMETABLE_2000      | \
+        NSK::CPU::PPU::BITS::PPUCTRL::VRAM_INC_1          | \
+        NSK::CPU::PPU::BITS::PPUCTRL::SPRITE_TABLE_1000   | \
+        NSK::CPU::PPU::BITS::PPUCTRL::TILES_TABLE_0000    | \
+        NSK::CPU::PPU::BITS::PPUCTRL::SPRITE_8x8          | \
+        NSK::CPU::PPU::BITS::PPUCTRL::PPU_SLAVE           | \
+        NSK::CPU::PPU::BITS::PPUCTRL::NMI_DISABLE           \
     )
     sta ppu_temp_control
     sta NSK::CPU::PPU::PPUCTRL
 .endmacro
 
 .macro init_apu_values
-    lda #$00 ; @todo - Set every value as bitflags instead
+    lda #( \
+        NSK::CPU::APU::DMC::BITS::IRQ::RATE::NTSC::R_428 | \
+        NSK::CPU::APU::DMC::BITS::IRQ::LOOP_OFF          | \
+        NSK::CPU::APU::DMC::BITS::IRQ::IRQ_DISABLE         \
+    )
     sta NSK::CPU::APU::DMC::IRQ
 .endmacro
 
@@ -118,6 +124,8 @@
     init_zeropage_reset
 
     init_vblank_wait
+
+    nsk_init_loop nsk_init_list
 
     jmp nsk_main
 .endproc

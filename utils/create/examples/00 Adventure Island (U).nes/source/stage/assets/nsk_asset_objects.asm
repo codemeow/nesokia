@@ -11,25 +11,21 @@
 .segment "RODATA"
 
 ; @brief Ground object
-; Ground surface, 2 2×2 tiles
+; Ground surface
 .export nsk_object_ground
 nsk_object_ground:
-    .byte $01                   ; One span only
-    .byte $04                   ; 4 tiles wide
-    .byte $00, $00              ; No span shift
-    .byte $e0, $e1, $e0, $e1    ; 1st row
-    .byte $f0, $f1, $f0, $f1    ; 2nd row
-    .byte %00, %00              ; Palettes
+    .byte $04, $02              ; (w,h)= (4x2)
+    .byte $e0, $e1, $e0, $e1    ; Data
+    .byte $f0, $f1, $f0, $f1    ; Data
+    .byte %00, %00              ; Palettes (pw,ph) = (w/2,h/2)
 
 ; @brief Counter object
-; Test counter, 1 2×2 tiles
+; Test counter
 .export nsk_object_counter
 nsk_object_counter:
-    .byte $01                   ; One span only
-    .byte $02                   ; 2 tiles wide
-    .byte $00, $00              ; No span shift
-    .byte $00, $01              ; 1st row
-    .byte $00, $00              ; 2nd row
+    .byte $02, $02              ; (w,h) = (2x2)
+    .byte $01, $02              ; Data
+    .byte $03, $04              ; Data
     .byte %11                   ; Palette
 
 .endif

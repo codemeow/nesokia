@@ -9,75 +9,27 @@
 ; @page NSK simple object format
 ; ~~~
 ; xxx:
-;    .byte n      ; Number of encoded spans
+;    .byte w, h ; Width and height of the object
+;               ; Must be even
 ;    [
-;       .byte l              ; Span's length in tiles
-;                            ; (must be even)
-;       .byte dx, dy         ; Relative X and Y of the span's beginning
-;                            ; (must be even)
-;       .byte a0, a1, a2 ... ; Span's data, 1st line
-;       .byte b0, b1, b2 ... ; Span's data, 2nd line
-;       .byte p0, p1, p3 ... ; Span's lines palettes
-;                            ; (l / 2 in length, 2 bits per byte only)
-;    ] × n
+;        [
+;            .byte x ; Tile
+;        ] × w
+;    ] × h
+;    [
+;        [
+;            .byte p ; Palette data (%00..%11)
+;        ] × w / 2
+;    ] × h / 2
 ; ~~~
 ;
 ; ### Example
 ; ~~~
-; ; $30 - leaves tile
-; ; $40 - trunk tile
-;
-; ; %00 - leaves' palette
-; ; %01 - trunk's palette
-;
-; tree:
-;     .byte $04                          ; 4 spans
-;
-;     ; 1st span: leaves
-;     .byte $06                          ; Span is 6 tiles wide
-;     .byte $00, $00                     ; Span starts at (0,0)
-;     .byte $30, $30, $30, $30, $30, $30 ; 1st row, all tiles are leaves
-;     .byte $30, $30, $30, $30, $30, $30 ; 2nd row, all tiles are leaves
-;     .byte %00, %00, %00                ; Span's palettes
-;
-;     ; 2nd span: leaves and trunk
-;     .byte $06                          ; Span is 6 tiles wide
-;     .byte $00, $02                     ; Span starts at (0,2)
-;     .byte $30, $30, $40, $40, $30, $30 ; 1st row, leaves/trunk/leaves
-;     .byte $30, $30, $40, $40, $30, $30 ; 2nd row, leaves/trunk/leaves
-;     .byte %00, %01, %00                ; Span's palettes
-;
-;     ; 3rd span: leaves and trunk
-;     .byte $06                          ; Span is 6 tiles wide
-;     .byte $00, $04                     ; Span starts at (0,4)
-;     .byte $30, $30, $40, $40, $30, $30 ; 1st row, leaves/trunk/leaves
-;     .byte $30, $30, $40, $40, $30, $30 ; 2nd row, leaves/trunk/leaves
-;     .byte %00, %01, %00                ; Span's palettes
-;
-;     ; 4th span: trunk only
-;     .byte $02                          ; Span is 2 tiles wide
-;     .byte $02, $06                     ; Span starts at (2, 6)
-;     .byte $40, $40                     ; 1st row: trunk
-;     .byte $40, $40                     ; 2nd row: trunk
-;     .byte %01                          ; Span's palette
-; ~~~
-; As the result, the following picture should be rendered:
-; ~~~
-; ░░  ░░  ░░  ░░  ░░  ░░
-;
-; ░░  ░░  ░░  ░░  ░░  ░░
-;
-; ░░  ░░  ██  ██  ░░  ░░
-;
-; ░░  ░░  ██  ██  ░░  ░░
-;
-; ░░  ░░  ██  ██  ░░  ░░
-;
-; ░░  ░░  ██  ██  ░░  ░░
-;
-;         ██  ██
-;
-;         ██  ██
+; nsk_object_ground:
+;     .byte $04, $02              ; (w,h)= (4x2)
+;     .byte $e0, $e1, $e0, $e1    ; Data
+;     .byte $f0, $f1, $f0, $f1    ; Data
+;     .byte %00, %00              ; Palettes (pw,ph) = (w/2,h/2)
 ; ~~~
 
 .ifndef ::__NSK_ASSET_OBJECTS_ASM__

@@ -15,7 +15,7 @@
 
 .ifndef ::__NSK_RENDER_MAP_ASM__
 ; @brief Address for the selected map data
-.import _nsk_render_mapdata
+.importzp _nsk_render_mapdata
 .endif
 
 .ifndef ::__NSK_RENDER_MAP_ASM__
@@ -27,7 +27,7 @@
 ; @param [in] nametable Nametable's address ($2000, $2400, $2800 or $2c00)
 ; @param [in] mapdata   NSK simple map data's address
 .macro nsk_render_map nametable, mapdata
-    nsk_p16_set _nsk_render_nametable, nametable, 16
+    nsk_p16_set _nsk_render_nametable,  nametable, 16
     nsk_p16_set _nsk_render_mapdata,   #mapdata,   16
     jsr _nsk_render_map
 .endmacro

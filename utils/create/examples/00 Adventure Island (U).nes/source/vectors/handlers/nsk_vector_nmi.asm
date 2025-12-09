@@ -18,6 +18,20 @@
 nsk_nmi_sleep_flag:
     .res 1
 
+nsk_debug "TEST BANK"
+test_bank:
+    .res 1
+
+frame_counter:
+    .res 1
+
+
+.segment "BANKREG"
+
+; @brief Locks the BANKREG segment $ff value to resolve BUS conflicts
+bankreg:
+    .byte $ff
+
 .segment "CODE"
 
 ; @brief Updates sprites data
@@ -86,10 +100,32 @@ nsk_nmi_sleep_flag:
     push a, x, y
 
     nsk_todo "nsk_vector_nmi - Array-to-PPUADDR interpreter"
-    ;jsr _ppumask_update
-    ;jsr _sprites_update
-    ;jsr _ppuctrl_update
-    ;jsr _ppuscroll_update
+
+    inc frame_counter
+    lda frame_counter
+    cmp #60
+    bne same
+
+        lda #$00
+        sta frame_counter
+
+        inc test_bank
+        lda test_bank
+        cmp #$04
+        bne ok
+            lda #$00
+            sta test_bank
+        ok:
+
+    same:
+
+    lda test_bank
+    sta bankreg
+
+    jsr _ppumask_update
+    jsr _sprites_update
+    jsr _ppuctrl_update
+    jsr _ppuscroll_update
 
     jsr _flag_reset
 
@@ -105,6 +141,9 @@ nsk_nmi_sleep_flag:
 
     lda #$00
     sta nsk_nmi_sleep_flag
+
+    sta test_bank
+    sta frame_counter
 
     pull a
     rts

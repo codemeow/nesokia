@@ -14,11 +14,11 @@
 .macro nsk_ppu_addrset addr
     push a
 
-    bit NSK::CPU::PPU::PPUSTATUS
+    bit ::NSK::CPU::PPU::PPUSTATUS
     lda addr + 1
-    sta NSK::CPU::PPU::PPUADDR
+    sta ::NSK::CPU::PPU::PPUADDR
     lda addr + 0
-    sta NSK::CPU::PPU::PPUADDR
+    sta ::NSK::CPU::PPU::PPUADDR
 
     pull a
 .endmacro
@@ -30,14 +30,15 @@
 .macro nsk_ppu_addrset_attrtable nametable
     push a
 
-    bit NSK::CPU::PPU::PPUSTATUS
+    bit ::NSK::CPU::PPU::PPUSTATUS
     lda nametable + 1
 
     clc
-    adc #.hibyte(NSK::PPU::NAMETABLE::SIZE::TABLE)
-    sta NSK::CPU::PPU::PPUADDR
-    lda #.lobyte(NSK::PPU::NAMETABLE::SIZE::TABLE)
-    sta NSK::CPU::PPU::PPUADDR
+    adc #.hibyte(::NSK::PPU::NAMETABLE::SIZE::TABLE)
+    sta ::NSK::CPU::PPU::PPUADDR
+
+    lda #.lobyte(::NSK::PPU::NAMETABLE::SIZE::TABLE)
+    sta ::NSK::CPU::PPU::PPUADDR
 
     pull a
 .endmacro

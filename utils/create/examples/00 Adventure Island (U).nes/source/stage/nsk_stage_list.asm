@@ -9,7 +9,8 @@
 .include "nsk_common_meta.inc"
 
 .include "../stage/nsk_stage_list.inc"
-.include "../stage/handlers/nsk_stage_game_loop.inc"
+.include "../stage/handlers/nsk_stage_look_left.inc"
+.include "../stage/handlers/nsk_stage_look_right.inc"
 
 .segment "ZEROPAGE"
 
@@ -25,14 +26,15 @@ stage_jump_ptr:
 
 ; @brief Stage handlers list
 game_stage_table:
-    .addr nsk_stage_game_loop
+    .addr nsk_stage_look_right
+    .addr nsk_stage_look_left
 
 .segment "CODE"
 
 ; @brief Inits the current stage index
 .export nsk_stage_init
 .proc nsk_stage_init
-    lda #STAGE::GAME_LOOP
+    lda #GAMESTAGE_START
     sta game_stage_num
     rts
 .endproc
@@ -41,6 +43,13 @@ game_stage_table:
 .export nsk_stage_next
 .proc nsk_stage_next
     inc game_stage_num
+    rts
+.endproc
+
+; @brief Select the previous stage
+.export nsk_stage_prev
+.proc nsk_stage_prev
+    dec game_stage_num
     rts
 .endproc
 

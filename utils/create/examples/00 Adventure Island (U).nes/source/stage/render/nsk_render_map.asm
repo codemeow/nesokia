@@ -10,8 +10,6 @@
 
 .include "../../stage/render/nsk_render_map.inc"
 
-; @brief Size of the attributes table of one nametable
-::NSK_ATTRTABLE_SIZE = 64
 nsk_todo "Use common constant"
 
 .segment "ZEROPAGE"
@@ -34,7 +32,7 @@ _nsk_render_nametable:
 
 ; @brief Attributes buffer
 _nsk_render_attrbuf:
-    .res NSK_ATTRTABLE_SIZE
+    .res ::NSK::PPU::NAMETABLE::SIZE::ATTRS
 
 ; @brief Object X
 _nsk_render_objx:
@@ -80,11 +78,12 @@ _nsk_render_quadrant_value:
     push a, x
 
     lda #$00
-    ldx #::NSK_ATTRTABLE_SIZE
+    ldx #$00
 
     loop:
-        sta _nsk_render_attrbuf - 1, x
-        dex
+        sta _nsk_render_attrbuf, x
+        inx
+        cpx #::NSK::PPU::NAMETABLE::SIZE::ATTRS
         bne loop
 
     pull a, x
@@ -99,7 +98,6 @@ _nsk_render_quadrant_value:
     nsk_ppu_addrset _nsk_render_nametable
 
     lda #$00
-
     ldy #::NSK::SCREEN::TILEMAP::HEIGHT
     rows:
         ldx #::NSK::SCREEN::TILEMAP::WIDTH
@@ -113,24 +111,6 @@ _nsk_render_quadrant_value:
         bne rows
 
     pull a, x, y
-    rts
-.endproc
-
-; @brief Clears the nametables' attributes
-.proc _render_attributes_clear
-    push a, x
-
-    nsk_ppu_addrset_attrtable _nsk_render_nametable
-
-    lda #$ff
-    nsk_debug "Attributes filler: lda #$00"
-    ldx #::NSK::PPU::NAMETABLE::SIZE::ATTRS
-    loop:
-        sta ::NSK::CPU::PPU::PPUDATA
-        dex
-        bne loop
-
-    pull a, x
     rts
 .endproc
 
@@ -173,8 +153,6 @@ _nsk_render_quadrant_value:
     iny
     sta _nsk_render_height
     pha
-
-    nsk_todo "To stack"
 
     ; Init offset
     lda _nsk_render_objy
@@ -361,6 +339,7 @@ _nsk_render_quadrant_value:
             beq :++
             :
                 asl
+                asl
                 dex
                 bne :-
             :
@@ -374,6 +353,7 @@ _nsk_render_quadrant_value:
             ldx _nsk_render_quadrant_shift
             beq :++
             :
+                asl
                 asl
                 dex
                 bne :-
@@ -394,9 +374,9 @@ _nsk_render_quadrant_value:
 
             ; Next offset
             lda _nsk_render_quadrant_posx
-            beq @same_x
+            beq :+
                 inc _nsk_render_offs
-            @same_x:
+            :
 
             ; Next X quadrant
             inc _nsk_render_quadrant_posx
@@ -415,12 +395,12 @@ _nsk_render_quadrant_value:
 
         ; Increase the offset by the attribute table width:
         lda _nsk_render_quadrant_posy
-        beq @same_y
+        beq :+
             lda _nsk_render_offs
             clc
             adc #::NSK::SCREEN::ATTR::BYTE::WIDTH
             sta _nsk_render_offs
-        @same_y:
+        :
 
         ; Nex Y quadrant
         inc _nsk_render_quadrant_posy
@@ -486,7 +466,7 @@ _nsk_render_quadrant_value:
 .proc _nsk_render_map
     jsr _render_attrbuf_clear
     jsr _render_nametable_clear
-    jsr _render_attributes_clear
+    ;jsr _render_attributes_clear
 
     jsr _render_map
 

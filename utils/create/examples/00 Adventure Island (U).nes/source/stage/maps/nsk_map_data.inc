@@ -1,10 +1,10 @@
-; @file nsk_map_left.inc
-; @brief Include module for the left map
+; @file nsk_map_data.inc
+; @brief Include module for the map
 ;
 ; Part of the Nesokia project — MIT License.
 
-.ifndef ::__NSK_MAP_LEFT__
-::__NSK_MAP_LEFT__ = 1
+.ifndef ::__NSK_MAP_DATA__
+::__NSK_MAP_DATA__ = 1
 
 ; @page NSK simple map format
 ; ~~~
@@ -15,9 +15,14 @@
 ;       .addr object            ; NSK simple object address
 ;    ] × n
 
-.ifndef ::__NSK_MAP_LEFT_ASM__
+.ifndef ::__NSK_MAP_DATA_ASM__
 ; @brief Left map data
 .import nsk_map_left
+.endif
+
+.ifndef ::__NSK_MAP_DATA_ASM__
+; @brief Right map data
+.import nsk_map_right
 .endif
 
 .endif

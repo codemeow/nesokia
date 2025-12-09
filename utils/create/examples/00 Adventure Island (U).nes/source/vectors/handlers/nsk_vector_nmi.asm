@@ -10,6 +10,7 @@
 
 .include "../../vectors/handlers/nsk_vector_nmi.inc"
 .include "../../ppu/nsk_ppu_vars.inc"
+.include "../../cnrom/nsk_map003_bankswitch.inc"
 
 .segment "ZEROPAGE"
 
@@ -18,19 +19,15 @@
 nsk_nmi_sleep_flag:
     .res 1
 
-nsk_debug "TEST BANK"
-test_bank:
+; @brief Current CHR ROM bank index
+_nsk_bank_index:
+    .res 1
+; @brief Current frame
+_nsk_bank_frame:
     .res 1
 
-frame_counter:
-    .res 1
-
-
-.segment "BANKREG"
-
-; @brief Locks the BANKREG segment $ff value to resolve BUS conflicts
-bankreg:
-    .byte $ff
+; @brief Period in frames to change to the next bank
+_NSK_BANKSWITCH_FRAME = 30
 
 .segment "CODE"
 
@@ -94,6 +91,31 @@ bankreg:
     rts
 .endproc
 
+; @brief Changes the CHR ROM bank periodically
+.proc _bank_switch
+    inc _nsk_bank_frame
+    lda _nsk_bank_frame
+    cmp #_NSK_BANKSWITCH_FRAME
+    bne done
+
+        lda #$00
+        sta _nsk_bank_frame
+
+        inc _nsk_bank_index
+        lda _nsk_bank_index
+        cmp #NSK_MAP003_BANKCOUNT
+        bne :+
+            lda #$00
+            sta _nsk_bank_index
+        :
+    done:
+
+    lda _nsk_bank_index
+    jsr nsk_map003_bankswitch
+
+    rts
+.endproc
+
 ; @brief NMI handler routine
 .export nsk_vector_nmi
 .proc nsk_vector_nmi
@@ -101,26 +123,7 @@ bankreg:
 
     nsk_todo "nsk_vector_nmi - Array-to-PPUADDR interpreter"
 
-    inc frame_counter
-    lda frame_counter
-    cmp #60
-    bne same
-
-        lda #$00
-        sta frame_counter
-
-        inc test_bank
-        lda test_bank
-        cmp #$04
-        bne ok
-            lda #$00
-            sta test_bank
-        ok:
-
-    same:
-
-    lda test_bank
-    sta bankreg
+    jsr _bank_switch
 
     jsr _ppumask_update
     jsr _sprites_update
@@ -142,8 +145,18 @@ bankreg:
     lda #$00
     sta nsk_nmi_sleep_flag
 
-    sta test_bank
-    sta frame_counter
+    pull a
+    rts
+.endproc
+
+; @brief Inits the NMI-related variables
+.export nsk_nmi_vars_init
+.proc nsk_nmi_vars_init
+    push a
+
+    lda #$00
+    sta _nsk_bank_frame
+    sta _nsk_bank_index
 
     pull a
     rts

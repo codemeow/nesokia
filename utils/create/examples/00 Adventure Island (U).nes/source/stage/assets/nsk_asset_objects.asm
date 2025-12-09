@@ -28,4 +28,14 @@ nsk_object_counter:
     .byte $03, $04              ; Data
     .byte %11                   ; Palette
 
+; @brief Tree object
+; Simple tree
+.export nsk_object_tree
+nsk_object_tree:
+    .byte $02, $02              ; (w,h) = (2x2)
+    .byte $c0, $c1              ; Data
+    .byte $d0, $d1              ; Data
+    .byte %01                   ; Palette
+
+
 .endif

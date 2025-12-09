@@ -7,9 +7,13 @@
 ::__NSK_STAGE_LIST__ = 1
 
 ; @brief Stages of the game
-.enum STAGE
-    GAME_LOOP    ; Game/animation loop
+.enum GAMESTAGE
+    LOOK_RIGHT    ; Moving camera to the right edge
+    LOOK_LEFT     ; Moving camera to the left edge
 .endenum
+
+; @brief Starting stage
+GAMESTAGE_START = GAMESTAGE::LOOK_RIGHT
 
 .ifndef ::__NSK_STAGE_LIST_ASM__
 ; @brief ; @brief Inits the current stage index
@@ -19,6 +23,11 @@
 .ifndef ::__NSK_STAGE_LIST_ASM__
 ; @brief Select the next stage
 .import nsk_stage_next
+.endif
+
+.ifndef ::__NSK_STAGE_LIST_ASM__
+; @brief Select the previous stage
+.import nsk_stage_prev
 .endif
 
 .ifndef ::__NSK_STAGE_LIST_ASM__

@@ -42,4 +42,9 @@
 .import nsk_object_counter
 .endif
 
+.ifndef ::__NSK_ASSET_OBJECTS_ASM__
+; @brief Tree object
+.import nsk_object_tree
+.endif
+
 .endif

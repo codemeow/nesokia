@@ -17,6 +17,11 @@
 .endif
 
 .ifndef ::__NSK_VECTOR_NMI_ASM__
+; @brief Inits the NMI-related variables
+.import nsk_nmi_vars_init
+.endif
+
+.ifndef ::__NSK_VECTOR_NMI_ASM__
 ; @brief NMI handler routine
 .import nsk_vector_nmi
 .endif

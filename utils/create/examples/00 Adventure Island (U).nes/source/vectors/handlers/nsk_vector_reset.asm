@@ -43,7 +43,7 @@
 .macro init_ppu_values
     lda #( \
         NSK::CPU::PPU::BITS::PPUMASK::GRAYSCALE_OFF       | \
-        NSK::CPU::PPU::BITS::PPUMASK::LEFTMOST_BACK_OFF   | \
+        NSK::CPU::PPU::BITS::PPUMASK::LEFTMOST_BACK_ON    | \
         NSK::CPU::PPU::BITS::PPUMASK::LEFTMOST_SPRITE_OFF | \
         NSK::CPU::PPU::BITS::PPUMASK::RENDER_BACK_OFF     | \
         NSK::CPU::PPU::BITS::PPUMASK::RENDER_SPRITES_OFF  | \
@@ -99,12 +99,16 @@
 .endmacro
 
 .macro init_zeropage_reset
-    jsr nsk_nmi_sleep_init
     jsr nsk_stage_init
 
     lda #$00
     sta ppu_temp_scroll_x
     sta ppu_temp_scroll_y
+.endmacro
+
+.macro init_nmi
+    jsr nsk_nmi_sleep_init
+    jsr nsk_nmi_vars_init
 .endmacro
 
 ; @brief Reset handler routine
@@ -121,6 +125,7 @@
     init_vblank_wait
 
     init_oam_reset
+    init_nmi
     init_zeropage_reset
 
     init_vblank_wait

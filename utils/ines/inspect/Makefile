@@ -1,5 +1,5 @@
 # Output binary name
-TARGET  := nesokia-head
+TARGET  := nesokia-ines-inspect
 
 # Version data
 VER_MAJOR := 0
@@ -13,7 +13,7 @@ DIR_BIN := ../../bin
 # Extra headers to cover platform-specific stuff
 DIR_INCLUDES := includes
 # Extra headers with XMacro consts
-DIR_ICOMMON := ../common
+DIR_ICOMMON := ../../common
 
 # Version defines
 VER_STRING := \

@@ -61,6 +61,12 @@ Example (from the sample configuration file):
 ::NSK_HEADER_REGION = NSK::REGION::JAPAN
 ```
 
+--
+
+## Autotests
+
+To run automatic tests execute the `tests/nsk_auto_test.py` script. It will automatically compile required utilities and run 32 test scenarios, generating the ROMs by provided config and compare them with the real ROM headers from the selected games.
+
 ---
 
 ## Updating the consts file

@@ -1,5 +1,17 @@
 *.sublime-workspace
 *.elf
-*.nes
+*.o
 build
 bin
+
+# Utils/Create autotests configuration files
+utils/create/tests/cases/*/nsk_header_config.inc
+# Utils/Create autotests object files
+utils/create/tests/cases/*/test.o
+# Utils/Create autotests binary files
+utils/create/tests/cases/*/test.nes
+
+# Utils/Create examples build directory
+utils/create/examples/*/bin
+# Utils/Create examples binary files
+utils/create/examples/*/*.nes

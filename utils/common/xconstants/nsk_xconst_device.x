@@ -21,8 +21,8 @@ X(  7, NINTENDO,        KEYBOARD_BASIC_DATAREC,     35, "Famicom BASIC keyboard 
 X(  8, NINTENDO,        CONTROLLER_NETWORK,         59, "Famicom/NES Network Controller"                         )
 X(  9, NINTENDO,        ROB_GYRO,                   31, "Famicom/NES R.O.B. Gyro set"                            )
 X( 10, NINTENDO,        ROB_STACKUP,                46, "Famicom/NES R.O.B. Stack-Up set"                        )
-X( 11, NINTENDO,        ZAPPER_4016,                73, "NES Zapper on port $4016"                               )
-X( 12, NINTENDO,        ZAPPER_4017,                 8, "Famicom/NES Zapper on port $4017"                       )
+X( 11, NINTENDO,        ZAPPER_P4016,               73, "NES Zapper on port $4016"                               )
+X( 12, NINTENDO,        ZAPPER_P4017,                8, "Famicom/NES Zapper on port $4017"                       )
 X( 13, NINTENDO,        ZAPPER_DUAL,                 9, "NES dual Zappers"                                       )
 X( 14, NINTENDO,        SYSTEM3D,                   29, "Famicom 3D System"                                      )
 X( 15, NINTENDO,        FOURSCORE,                   2, "NES Four Score/Satellite"                               )
@@ -32,8 +32,8 @@ X( 18, NINTENDO,        VAUS,                       15, "NES Arkanoid Vaus paddl
 
 // Vs. System accessories
 // key   manufacturer         device               value                  description
-X( 19, VSSYSTEM,        4016,                        4, "Vs. System, 1P via $4016"                               )
-X( 20, VSSYSTEM,        4017,                        5, "Vs. System, 1P via $4017"                               )
+X( 19, VSSYSTEM,        P4016,                       4, "Vs. System, 1P via $4016"                               )
+X( 20, VSSYSTEM,        P4017,                       5, "Vs. System, 1P via $4017"                               )
 X( 21, VSSYSTEM,        ZAPPER,                      7, "Vs. System zapper/lightgun"                             )
 
 // Bandai accessories
@@ -59,8 +59,8 @@ X( 32, IGS,             POKKUNMOGURA,               26, "IGS Pokkun Moguraa Whac
 // SNES accessories
 // key   manufacturer         device               value                  description
 X( 33, SNES,            CONTROLLERS,                43, "SNES Controllers"                                       )
-X( 34, SNES,            MOUSE_4016,                 41, "SNES Mouse via $4016"                                   )
-X( 35, SNES,            MOUSE_4017,                 72, "SNES Mouse via $4017"                                   )
+X( 34, SNES,            MOUSE_P4016,                41, "SNES Mouse via $4016"                                   )
+X( 35, SNES,            MOUSE_P4017,                72, "SNES Mouse via $4017"                                   )
 
 // Taito accessories
 // key   manufacturer         device               value                  description
@@ -97,21 +97,21 @@ X( 61, YONEZAWA,        PARTYTAP,                   22, "Yonezawa Party Tap"    
 // Famiclones keyboard/mouse sets
 // key   manufacturer         device               value                  description
 X( 62, BITCORP,         KEYBOARD,                   37, "Bitcorp (普澤 / Bit-79) keyboard"                         )
-X( 63, BUBUGAO,         KEYBOARD_MOUSE_4017,        70, "Bùbùgāo (步步高, BBK) keyboard with PS/2 mouse via $4017"  )
+X( 63, BUBUGAO,         KEYBOARD_MOUSE_P4017,       70, "Bùbùgāo (步步高, BBK) keyboard with PS/2 mouse via $4017"  )
 X( 64, DONGDA,          KEYBOARD,                   36, "Dongda (东达) PEC Keyboard"                               )
 X( 65, KEDA,            KEYBOARD,                   53, "Kēdá (科达) keyboard"                                     )
 X( 66, KEWANG,          KEYBOARD,                   62, "Kēwáng (科王, Kingwon) keyboard"                          )
-X( 67, UMC,             KEYBOARD_MOUSE_4017,        65, "UMC PS/2 keyboard wth PS/2 mouse via $4017"             )
+X( 67, UMC,             KEYBOARD_MOUSE_P4017,       65, "UMC PS/2 keyboard wth PS/2 mouse via $4017"             )
 X( 68, UMC,             MOUSE,                      66, "UMC PS/2 mouse"                                         )
-X( 69, YUXING,          MOUSE_4016,                 67, "Yùxìng (裕兴) mouse via $4016"                            )
+X( 69, YUXING,          MOUSE_P4016,                67, "Yùxìng (裕兴) mouse via $4016"                            )
 X( 70, ZECHENG,         KEYBOARD,                   63, "Zéchéng (泽诚) keyboard"                                  )
 
 // SUBOR keyboard/mouse sets
 // key   manufacturer         device               value                  description
 X( 71, SUBOR,           KEYBOARD,                   38, "Subor (小霸王) keyboard"                                   )
 X( 72, SUBOR,           KEYBOARD_MOUSE,             39, "Subor (小霸王) keyboard + Macro Winners mouse"             )
-X( 73, SUBOR,           KEYBOARD_MOUSE_4016,        40, "Subor (小霸王) keyboard + Subor mouse via $4016"           )
-X( 74, SUBOR,           KEYBOARD_MOUSE_4017,        54, "Subor (小霸王) keyboard + Subor mouse via $4017"           )
-X( 75, SUBOR,           KEYBOARD_MOUSEPS2_4017,     64, "Subor (小霸王) keyboard + PS/2 mouse via $4017"            )
-X( 76, SUBOR,           KEYBOARD_MOUSEPS2INV_4017,  77, "Subor (小霸王) keyboard + X-inverted PS/2 mouse via $4017" )
-X( 77, SUBOR,           KEYBOARD_MOUSEYUX_4016,     68, "Subor (小霸王) keyboard + Yuxing (裕兴) mouse via $4016"     )
+X( 73, SUBOR,           KEYBOARD_MOUSE_P4016,       40, "Subor (小霸王) keyboard + Subor mouse via $4016"           )
+X( 74, SUBOR,           KEYBOARD_MOUSE_P4017,       54, "Subor (小霸王) keyboard + Subor mouse via $4017"           )
+X( 75, SUBOR,           KEYBOARD_MOUSEPS2_P4017,    64, "Subor (小霸王) keyboard + PS/2 mouse via $4017"            )
+X( 76, SUBOR,           KEYBOARD_MOUSEPS2INV_P4017, 77, "Subor (小霸王) keyboard + X-inverted PS/2 mouse via $4017" )
+X( 77, SUBOR,           KEYBOARD_MOUSEYUX_P4016,    68, "Subor (小霸王) keyboard + Yuxing (裕兴) mouse via $4016"     )

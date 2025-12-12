@@ -118,7 +118,7 @@ def resolve_program(name : str) -> Path:
 ##
 def build_setup() -> BuildSetup:
     here = Path(__file__).resolve().parent
-    root = here.parent.parent.parent
+    root = here.parent.parent.parent.parent
 
     return BuildSetup(
         compiler = BuildSetup.BuildCompiler(
@@ -129,15 +129,15 @@ def build_setup() -> BuildSetup:
         directory = BuildSetup.BuildDirectories(
             cases   = resolve_dir(here / "cases"),
             helpers = resolve_dir(here / "subroutines"),
-            reader  = resolve_dir(root / "utils/head")
+            reader  = resolve_dir(root / "utils/ines/inspect")
         ),
         helpers = BuildSetup.BuildHelpers(
             generator = resolve_file(here / "subroutines/nsk_config_create.py"),
-            reader    = resolve_file(root / "bin/nesokia-head")
+            reader    = resolve_file(root / "bin/nesokia-ines-inspect", True)
         ),
         config = BuildSetup.BuildConfig(
-            consts = resolve_file(root / "utils/create/nsk_header_consts.inc"),
-            source = resolve_file(root / "utils/create/nsk_header_code.asm"),
+            consts = resolve_file(root / "utils/ines/header/nsk_header_consts.inc"),
+            source = resolve_file(root / "utils/ines/header/nsk_header_code.asm"),
             memory = resolve_file(here / "memory/nsk_header_memory.cfg")
         )
     )

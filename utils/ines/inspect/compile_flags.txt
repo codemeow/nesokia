@@ -17,7 +17,7 @@
 -include includes/windows/nsk_windows_mingw.h
 -include includes/windows/nsk_windows_winver.h
 
--I../common
+-I../../common
 
 # OS
 #-D__gnu_linux__

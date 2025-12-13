@@ -17,21 +17,6 @@ static void _getopt_messagesdisable(void) {
 }
 
 /*!
- * \brief  Validates the number of arguments passed
- *
- * \param[in] argc  The count of arguments
- */
-static void _arguments_validate(int argc) {
-    if (argc < 2) {
-        nsk_err(
-            "Error: no arguments provided — pass at least input file\n"
-            "See -h or --help for usage.\n"
-        );
-        exit(EXIT_FAILURE);
-    }
-}
-
-/*!
  * \brief  Returns the list of short options provided by #nsk_options_table
  *
  * \return Allocated string of options
@@ -163,7 +148,6 @@ static void _arguments_unknown(char *const *argv) {
  */
 void nsk_args_process(int argc, char *const *argv) {
     _getopt_messagesdisable();
-    _arguments_validate(argc);
 
     nsk_auto_free char            *options_short = _options_short();
     nsk_auto_free struct option   *options_long  = _options_long();
@@ -194,14 +178,6 @@ void nsk_args_process(int argc, char *const *argv) {
                 nsk_options_table[_option_index(c)].option_processor();
                 break;
         }
-    }
-
-    if (optind >= argc) {
-        nsk_err(
-            "Error: no input paths provided — pass at least one file or directory.\n"
-            "See -h or --help for usage.\n"
-        );
-        exit(EXIT_FAILURE);
     }
 
     nsk_options_program.files = argv + optind;

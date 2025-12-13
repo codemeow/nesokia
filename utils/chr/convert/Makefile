@@ -35,7 +35,7 @@ CC      := gcc
 # Compilation flags
 CFLAGS  := -std=c11 -Wall -Wextra -Werror -O0 -g $(VER_STRING) $(NAME_STRING) $(INCLUDE_HEADERS) -I$(DIR_ICOMMON)
 # Linking flags
-LDFLAGS := -lm
+LDFLAGS := -lm -lpng
 
 # List of source files
 SRCS := $(shell find . -type f -name '*.c')

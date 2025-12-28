@@ -2,31 +2,19 @@
 #define NSK_TYPE_IMAGE
 
 #include <stddef.h>
-#include <stdint.h>
 
 #include <libpng/png.h>
 
-/*!
- * \brief  Single pixel data
- */
-union nsk_pixel {
-    uint32_t raw;
-    struct {
-        uint8_t r;
-        uint8_t g;
-        uint8_t b;
-        uint8_t a;
-    };
-};
+#include "../types/nsk_type_pixel.h"
 
 /*!
  * \brief  Image data
  */
-struct nsk_image {
+struct nsk_type_image {
     char             *filename; /*!< Original filename      */
     size_t            width;    /*!< Image width            */
     size_t            height;   /*!< Image height           */
-    union nsk_pixel **data;     /*!< Image pixels as [y][x] */
+    union nsk_type_pixel **data;     /*!< Image pixels as [y][x] */
 };
 
 /*!
@@ -37,7 +25,7 @@ struct nsk_image {
  * \param[in] info_ptr  The pnglib info image pointer
  * \return Allocated image
  */
-struct nsk_image *nsk_image_create(
+struct nsk_type_image *nsk_image_create(
     const char *filename,
     png_structp png_ptr,
     png_infop info_ptr
@@ -50,7 +38,7 @@ struct nsk_image *nsk_image_create(
  * \param[in] height  The height
  * \return Allocated image
  */
-struct nsk_image *nsk_image_empty(size_t width, size_t height);
+struct nsk_type_image *nsk_image_empty(size_t width, size_t height);
 
 /*!
  * \brief  Checks if the images matches provided sizes
@@ -59,7 +47,7 @@ struct nsk_image *nsk_image_empty(size_t width, size_t height);
  * \param[in] width   The width
  * \param[in] height  The height
  */
-void nsk_image_measure(struct nsk_image *image, size_t width, size_t height);
+void nsk_image_measure(struct nsk_type_image *image, size_t width, size_t height);
 
 /*!
  * \brief  Combines the target and component images at X,Y
@@ -70,17 +58,27 @@ void nsk_image_measure(struct nsk_image *image, size_t width, size_t height);
  * \param[in] y            Y position
  */
 void nsk_image_combine(
-    struct nsk_image *target,
-    const struct nsk_image *component,
+    struct nsk_type_image *target,
+    const struct nsk_type_image *component,
     size_t x,
     size_t y
 );
 
 /*!
- * \brief  Frees the nsk_image data
+ * \brief  Frees the nsk_type_image data
  *
  * \param[in, out]  image
  */
-void nsk_image_free(struct nsk_image *image);
+void nsk_image_free(struct nsk_type_image *image);
+
+/*!
+ * \brief  Reads the image from the input file/files
+ */
+void nsk_image_read(void);
+
+/*!
+ * \brief  Validates the image
+ */
+void nsk_image_validate(void);
 
 #endif

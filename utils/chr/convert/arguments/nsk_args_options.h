@@ -24,6 +24,16 @@ struct nsk_options_entry {
 };
 
 /*!
+ * \brief  PPUCTRL 3th and 4th bits values
+ */
+enum nsk_ppuctlr34_values {
+    NSK_PPUCTRL34_NORMAL, /*!< Left is background  */
+    NSK_PPUCTRL34_INVERT, /*!< Right is background */
+
+    NSK_PPUCTRL34S_COUNT, /*!< Number of elements  */
+};
+
+/*!
  * \brief  Provided program options
  */
 struct nsk_options_program {
@@ -39,6 +49,7 @@ struct nsk_options_program {
         const char *chr1000;               /*!< Right nametable output name   */
         const char *palback;               /*!< Back palettes output name     */
         const char *palsprites;            /*!< Sprites palettes output name  */
+        bool        colored;               /*!< Enables ANSI 24bit color codes*/
     } output;
 
     struct {
@@ -48,6 +59,8 @@ struct nsk_options_program {
         const char *colors;                /*!< Global colors input name      */
         const char *palettes;              /*!< Local colors input name       */
     } input;
+
+    enum nsk_ppuctlr34_values ppuctrl34;   /*!< Nametables purpose            */
 
     char *const     *files;                /*!< Null-terminated files list    */
 };

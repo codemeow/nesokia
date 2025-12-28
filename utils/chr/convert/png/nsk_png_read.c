@@ -54,7 +54,7 @@ static void _png_convert2rgba(png_structp png_ptr, png_infop info_ptr) {
  * \param[in] filename  The filename
  * \return Allocated image
  */
-struct nsk_image *nsk_png_read(const char *filename) {
+struct nsk_type_image *nsk_png_read(const char *filename) {
     png_structp png_ptr;
     png_infop   info_ptr;
 
@@ -112,7 +112,7 @@ struct nsk_image *nsk_png_read(const char *filename) {
 
     png_read_png(png_ptr, info_ptr, PNG_TRANSFORM_IDENTITY, NULL);
 
-    struct nsk_image *image = nsk_image_create(filename, png_ptr, info_ptr);
+    struct nsk_type_image *image = nsk_image_create(filename, png_ptr, info_ptr);
 
     png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 

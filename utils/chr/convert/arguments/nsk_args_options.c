@@ -11,9 +11,11 @@
 #include "../arguments/processors/nsk_option_paldirectory.h"
 #include "../arguments/processors/nsk_option_palettes.h"
 #include "../arguments/processors/nsk_option_palsprites.h"
+#include "../arguments/processors/nsk_option_ppuctrl34.h"
 #include "../arguments/processors/nsk_option_quiet.h"
 #include "../arguments/processors/nsk_option_right.h"
 #include "../arguments/processors/nsk_option_template.h"
+#include "../arguments/processors/nsk_option_terminalansi.h"
 #include "../arguments/processors/nsk_option_version.h"
 #include "../utils/nsk_util_size.h"
 
@@ -229,6 +231,38 @@ struct nsk_options_entry nsk_options_table[] = {
         "\n"
         "    nesokia-chr-convert -p steve/palette.png image.png\n"
         "        Uses tile palettes from \"steve/palette.png\".\n"
+        "\n"
+    },
+    /* Settings */
+    {
+        "ppuctrl34", 'P', required_argument,
+        nsk_option_ppuctrl34,
+        "Set the tables order\n"
+        "\n"
+        "As the nametables can be rearranged via PPUCTRL 3th and 4th bits and the\n"
+        "palettes are always fixed this option controls the purpose of the nametables\n"
+        "\n"
+        "Allowed values\n"
+        "\n"
+        "|- value -|-  PPUCTRL  -|-               Meaning               -|\n"
+        "|  normal | ...0 1...   | Background at $0000, sprites at $1000 |\n"
+        "|  invert | ...1 0...   | Background at $1000, sprites at $0000 |\n"
+        "\n"
+        "See the nametable address on the template file for selection\n"
+        "\n"
+        "Notes\n"
+        " * This does not affect the real load address, just makes the clarification\n"
+        "   for this program's validator\n"
+        " * Default value is \"normal\"\n"
+        "\n"
+    },
+    {
+        "terminal-ansi", 'a', no_argument,
+        nsk_option_terminalansi,
+        "Use the ANSI codes to color the terminal output\n"
+        "\n"
+        "If the terminal supports the 24-bit ANSI foreground sequences this mode\n"
+        "allowes to show the real color along with the color hex-code\n"
         "\n"
     },
     /* Common options */

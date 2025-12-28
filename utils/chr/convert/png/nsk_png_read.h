@@ -9,6 +9,6 @@
  * \param[in] filename  The filename
  * \return Allocated image
  */
-struct nsk_image *nsk_png_read(const char *filename);
+struct nsk_type_image *nsk_png_read(const char *filename);
 
 #endif

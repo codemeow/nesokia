@@ -1,14 +1,14 @@
 #include "../process/nsk_process_vars.h"
 
 /*!
- * \brief  Global instance of the compiled input image
+ * \brief  Global input data
  */
-struct nsk_image *nsk_image_input = NULL;
+struct nsk_type_input nsk_input = { 0 };
 
 /*!
  * \brief  Module deinitializer
  */
 __attribute__((destructor))
 static void _fini(void) {
-    nsk_image_free(nsk_image_input);
+    nsk_image_free(nsk_input.image);
 }

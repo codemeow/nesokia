@@ -1,4 +1,5 @@
 #include <string.h>
+#include <nsk_util_meta.h>
 
 #include "../../queue/printers/nsk_printer_table.h"
 
@@ -6,10 +7,6 @@
 #include "../../types/entry/nsk_entry_storage.h"
 #include "../../types/header/nsk_header_data.h"
 #include "../../types/header/nsk_header_table.h"
-#include "../../utils/io/nsk_io_path.h"
-#include "../../utils/log/nsk_log_inf.h"
-#include "../../utils/nsk_util_max.h"
-#include "../../utils/strings/nsk_strings_columns.h"
 
 /*!
  * The longest filename

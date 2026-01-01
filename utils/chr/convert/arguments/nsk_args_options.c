@@ -1,14 +1,14 @@
 #include <getopt.h>
+#include <nsk_util_meta.h>
 
 #include "../arguments/nsk_args_options.h"
-#include "../arguments/processors/nsk_option_chr0000.h"
-#include "../arguments/processors/nsk_option_chr1000.h"
+#include "../arguments/processors/nsk_option_chrback.h"
+#include "../arguments/processors/nsk_option_chrsprites.h"
 #include "../arguments/processors/nsk_option_colors.h"
 #include "../arguments/processors/nsk_option_help.h"
 #include "../arguments/processors/nsk_option_left.h"
 #include "../arguments/processors/nsk_option_outdirectory.h"
 #include "../arguments/processors/nsk_option_palback.h"
-#include "../arguments/processors/nsk_option_paldirectory.h"
 #include "../arguments/processors/nsk_option_palettes.h"
 #include "../arguments/processors/nsk_option_palsprites.h"
 #include "../arguments/processors/nsk_option_ppuctrl34.h"
@@ -17,7 +17,6 @@
 #include "../arguments/processors/nsk_option_template.h"
 #include "../arguments/processors/nsk_option_terminalansi.h"
 #include "../arguments/processors/nsk_option_version.h"
-#include "../utils/nsk_util_size.h"
 
 /*!
  * Available options table
@@ -27,22 +26,23 @@ struct nsk_options_entry nsk_options_table[] = {
     {
         "output-directory", 'D', required_argument,
         nsk_option_outdirectory,
-        "Set output directory for CHR files\n"
+        "Set output directory for files\n"
         "\n"
-        "By default, all generated files are written to the directory of the input image.\n"
-        "When this option is specified, CHR output files are written to the given directory.\n"
+        "By default, all generated files are written to the current directory\n"
+        "When this option is specified, output files are written to the given directory.\n"
         "\n"
-        "This option affects only CHR files (left and right CHR tables).\n"
-        "Palette files may be redirected separately using the \"palette-directory\" option.\n"
+        "Notes"
+        "    * Be aware that using this option along with --name-* options will combine\n"
+        "      both components together even if the absolute path is given, for example:\n"
         "\n"
-        "Defaults\n"
-        "\n"
-        "    * If not specified, CHR output directory is the input image directory.\n"
-        "\n"
-        "Notes\n"
-        "\n"
-        "    * If explicit output file names are provided using --name-* options,\n"
-        "      this option becomes optional.\n"
+        "      nesokia-chr-convert -D out -B back.chr\n"
+        "          Will write the nametable to \"./out/back.chr\"\n"
+        "      nesokia-chr-convert -D out -B subdir/back.chr\n"
+        "          Will write the nametable to \"./out/subdir/back.chr\"\n"
+        "      nesokia-chr-convert -D out -B C:\\back.chr\"\n"
+        "          Will wrongly try to write the file as \".\\out\\C:\\back.chr\"\n"
+        "      nesokia-chr-convert -D C:\\out -B C:\\back.chr\n"
+        "          Will wrongly try to write the file as \"C:\\out\\C:\\back.chr\"\n"
         "\n"
         "Examples\n"
         "\n"
@@ -50,65 +50,46 @@ struct nsk_options_entry nsk_options_table[] = {
         "        Writes all files into \"chr\" directory.\n"
         "\n"
     },
-    {
-        "palette-directory", 'P', required_argument,
-        nsk_option_paldirectory,
-        "Set output directory for palette files\n"
-        "\n"
-        "By default, palette files are written to the same directory as CHR files.\n"
-        "When specified, background and sprite palettes are written to the given directory.\n"
-        "\n"
-        "Defaults\n"
-        "\n"
-        "    * If not specified, palette output directory matches CHR output directory.\n"
-        "\n"
-        "Notes\n"
-        "\n"
-        "    * If explicit palette file names are provided using --name-palette-* options,\n"
-        "      this option becomes optional.\n"
-        "\n"
-        "Examples\n"
-        "\n"
-        "    nesokia-chr-convert -D chr -P pal image.png\n"
-        "        Writes CHR files to \"chr\" and palettes to \"pal\".\n"
-        "\n"
-    },
 
     /* Explicit output file naming for generated artifacts */
     {
-        "name-chr-0000", '0', required_argument,
-        nsk_option_chr0000,
-        "Set output file name for CHR bank at $0000\n"
+        "name-chr-back", 'B', required_argument,
+        nsk_option_chrback,
+        "Set output file name for background CHR bank\n"
         "\n"
-        "When specified, the left CHR table will be written to the given file.\n"
+        "When specified, the background CHR table will be written to the given file.\n"
         "The directory part of the path is used as-is.\n"
         "\n"
         "Group semantics (applies to all --name-* options)\n"
         "\n"
         "    * If none of the --name-* options are used:\n"
         "        - All components are generated.\n"
-        "        - Output directories are controlled by -D and -P.\n"
         "\n"
         "    * If at least one --name-* option is used:\n"
         "        - Only explicitly specified components are generated.\n"
         "        - Validation for missing components is skipped.\n"
-        "        - Directory options (-D, -P) become optional.\n"
+        "        - --output-directory option become optional.\n"
+        "\n"
+        "Notes\n"
+        "    * As left and right nametables are not directly linked with background\n"
+        "      and sprites planes, the --ppuctrl34 option is used to control that\n"
+        "\n"
         "\n"
         "Examples\n"
         "\n"
-        "    nesokia-chr-convert -0 tiles.chr image.png\n"
+        "    nesokia-chr-convert -B tiles.chr image.png\n"
         "        Generates only the left CHR bank and writes it to \"tiles.chr\".\n"
         "\n"
     },
     {
-        "name-chr-1000", '1', required_argument,
-        nsk_option_chr1000,
-        "Set output file name for CHR bank at $1000\n"
+        "name-chr-sprites", 'S', required_argument,
+        nsk_option_chrsprites,
+        "Set output file name for CHR sprites bank\n"
         "\n"
-        "When specified, the right CHR table will be written to the given file.\n"
+        "When specified, the sprites CHR table will be written to the given file.\n"
         "The directory part of the path is used as-is.\n"
         "\n"
-        "See \"name-chr-0000\" for group semantics.\n"
+        "See \"name-chr-back\" for group semantics.\n"
         "\n"
         "Examples\n"
         "\n"
@@ -124,7 +105,7 @@ struct nsk_options_entry nsk_options_table[] = {
         "When specified, the background palette will be written to the given file.\n"
         "The directory part of the path is used as-is.\n"
         "\n"
-        "See \"name-chr-0000\" for group semantics.\n"
+        "See \"name-chr-back\" for group semantics.\n"
         "\n"
         "Examples\n"
         "\n"
@@ -140,7 +121,7 @@ struct nsk_options_entry nsk_options_table[] = {
         "When specified, the sprite palette will be written to the given file.\n"
         "The directory part of the path is used as-is.\n"
         "\n"
-        "See \"name-chr-0000\" for group semantics.\n"
+        "See \"name-chr-back\" for group semantics.\n"
         "\n"
         "Examples\n"
         "\n"

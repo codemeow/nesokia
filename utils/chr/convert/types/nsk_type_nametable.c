@@ -1,15 +1,13 @@
-#include <assert.h>
+#include <limits.h>
 #include <stdlib.h>
+
+#include <nsk_util_meta.h>
 
 #include "../types/nsk_type_nametable.h"
 #include "../arguments/nsk_args_options.h"
 #include "../process/nsk_process_vars.h"
 #include "../types/nsk_type_palette.h"
 #include "../types/nsk_type_planes.h"
-#include "../utils/log/nsk_log_err.h"
-#include "../utils/log/nsk_log_inf.h"
-#include "../utils/nsk_util_assert.h"
-#include "../utils/nsk_util_size.h"
 #include "../process/nsk_process_utils.h"
 
 /*!
@@ -223,7 +221,7 @@ static void _colors_errlist(
     for (size_t i = 0; i < count; i++) {
         nsk_err(
             "%s%s",
-            i == 0 ? ", " : "",
+            i != 0 ? ", " : "",
             nsk_string_color(
                 colors[i].rgb.r,
                 colors[i].rgb.g,
@@ -231,6 +229,40 @@ static void _colors_errlist(
             )
         );
     }
+}
+
+/*!
+ * \brief  Sets the index of the color the pixel uses
+ *
+ * \param     color   The color
+ * \param[in] palette The palete to use
+ * \param[in] group   The group
+ */
+static void _pixel_setcolor(
+    struct nsk_type_color         *color,
+    const struct nsk_type_palette *palette,
+    size_t                         group
+) {
+    for (size_t c = 0; c < NSK_PALETTE_COLORS; c++) {
+        if (palette->group[group].color[c].rgb.raw == color->rgb.raw) {
+            color->palette.color = c;
+            return;
+        }
+    }
+
+    nsk_err(
+        "Error: Cannot find the provided color in the palette: %s (",
+        nsk_string_color(
+            color->rgb.r,
+            color->rgb.g,
+            color->rgb.b
+        )
+    );
+    _colors_errlist(palette->group[group].color, NSK_PALETTE_COLORS);
+    nsk_err(
+        ")\n"
+    );
+    abort();
 }
 
 /*!
@@ -326,8 +358,14 @@ static void _validate_tile(
             nsk_conv_address2value(address)
         );
         _colors_errlist(colors, used);
-        nsk_err("\n");
+        nsk_err(".\n");
         exit(EXIT_FAILURE);
+    }
+
+    for (size_t h = 0; h < NSK_NAMETABLECELL_HEIGHT; h++) {
+        for (size_t w = 0; w < NSK_NAMETABLECELL_WIDTH; w++) {
+            _pixel_setcolor(&tile->pixel[h][w], palette, g);
+        }
     }
 }
 
@@ -368,5 +406,104 @@ void nsk_nametables_validate(void) {
             index,
             i
         );
+    }
+}
+
+/*!
+ * \brief  Saves one single tile into file
+ *
+ * \param[in]     filename   The filename to write to
+ * \param[in]     plane      The nametable plane
+ * \param[in,out] file        The file
+ * \param[in]     tile        The tile
+ * \param[in,out] byte        The accumulating byte to write
+ * \param[in,out] bitcounter  The counter of accumulated bits
+ */
+static void _tile_output(
+    const char                  *filename,
+    enum nsk_plane_list          plane,
+    FILE                        *file,
+    const struct nsk_type_tile  *tile,
+    uint8_t                     *byte,
+    size_t                      *bitcounter
+) {
+    /* The number of bits each tile occupies in the CHR data */
+    static const uint8_t bitsperpixel = 2;
+    /*
+     * Each tile is actually represented as two separated bits
+     *
+     *     "Normal"             Actual
+     * [AB][CD][EF][GH] -> [AC][EG][BD][FH]
+     *  ^^                  ^       ^
+     *
+     * Thus forcing us to either loop twice or construct the final value
+     * with shifts, separating both parts
+     */
+    static const uint8_t partssize = bitsperpixel / 2;
+
+    for (uint32_t shift = 0; shift < 2; shift++) {
+        for (size_t ty = 0; ty < NSK_NAMETABLECELL_HEIGHT; ty++) {
+            for (size_t tx = 0; tx < NSK_NAMETABLE_WIDTH; tx++) {
+                uint8_t value = tile->pixel[ty][tx].palette.color;
+                value = (value >> shift) & 1;
+
+                *byte = (*byte << partssize) | value;
+                *bitcounter = *bitcounter + partssize;
+
+                if (*bitcounter == CHAR_BIT) {
+                    if (fwrite(byte, sizeof(*byte), 1, file) != 1) {
+                        nsk_err(
+                            "Error: cannot write data to \"%s\" %s palette file\n",
+                            filename,
+                            nsk_conv_plane2string(plane)
+                        );
+                        exit(EXIT_FAILURE);
+                    }
+                    *bitcounter = 0;
+                }
+            }
+        }
+    }
+}
+
+/*!
+ * \brief  Writes the nametable to the selected filename
+ *
+ * \param[in]  filename   The filename to write to
+ * \param[in]  plane      The nametable plane
+ * \param[in]  ptr        The nametable as (struct nsk_type_nametable *)
+ */
+void nsk_nametable_output(
+    const char *filename,
+    enum nsk_plane_list plane,
+    const void *ptr
+) {
+    const mode_t mode = (S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    const struct nsk_type_nametable *nametable = ptr;
+    nsk_inf(
+        "# Saving %s nametable as %s\n",
+        nsk_conv_plane2string(plane),
+        filename
+    );
+
+    nsk_io_mkdirp(nsk_io_dirname(filename), mode);
+
+    nsk_auto_fclose FILE *file = nsk_io_fopen(filename, "wb");
+    if (!file) {
+        nsk_err(
+            "Error: cannot open file \"%s\" for %s nametable writing\n",
+            filename,
+            nsk_conv_plane2string(plane)
+        );
+        exit(EXIT_FAILURE);
+    }
+
+    for (size_t h = 0; h < NSK_NAMETABLE_HEIGHT; h++) {
+        for (size_t w = 0; w < NSK_NAMETABLE_WIDTH; w++) {
+            const struct nsk_type_tile *tile = &nametable->tile[h][w];
+            uint8_t byte = 0;
+            size_t  bitcounter = 0;
+            _tile_output(filename, plane, file, tile, &byte, &bitcounter);
+        }
     }
 }

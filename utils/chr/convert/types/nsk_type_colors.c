@@ -2,12 +2,12 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#include "../types/nsk_type_colors.h"
-#include "../utils/log/nsk_log_inf.h"
+#include <nsk_util_meta.h>
+
 #include "../process/nsk_process_utils.h"
 #include "../process/nsk_process_vars.h"
 #include "../types/nsk_type_color.h"
-#include "../utils/log/nsk_log_err.h"
+#include "../types/nsk_type_colors.h"
 
 /*!
  * \brief  Checks if this color is not marked as invalid

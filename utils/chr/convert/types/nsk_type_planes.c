@@ -1,7 +1,7 @@
 #include <stdlib.h>
+#include <nsk_util_meta.h>
 
 #include "../types/nsk_type_planes.h"
-#include "../utils/log/nsk_log_err.h"
 
 /*!
  * \brief  Converts the plane enum into string description

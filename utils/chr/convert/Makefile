@@ -6,14 +6,20 @@ VER_MAJOR := 0
 VER_MINOR := 1
 VER_BUILD := 1
 
+# Common root directory
+DIR_ROOT := ../../..
+
 # Build directory for object files
-DIR_BUILD := ../../../build/$(TARGET)
+DIR_BUILD := $(DIR_ROOT)/build/$(TARGET)
 # Output binary directory
-DIR_BIN := ../../../bin
+DIR_BIN := $(DIR_ROOT)/bin
 # Extra headers to cover platform-specific stuff
-DIR_INCLUDES := includes
-# Extra headers with XMacro consts
-DIR_ICOMMON := ../../common
+DIR_INCLUDES := $(DIR_ROOT)/utils/common/includes
+# Extra common sources
+DIR_COMMON := $(DIR_ROOT)/utils/common/utils
+# Extra headers access
+DIR_COMMON_X := $(DIR_ROOT)/utils/common/xmacro
+
 
 # Version defines
 VER_STRING := \
@@ -33,21 +39,26 @@ CC      := gcc
 #CC := x86_64-w64-mingw32-gcc -mno-ms-bitfields -static-libgcc
 
 # Compilation flags
-CFLAGS  := -std=c11 -Wall -Wextra -Werror -O0 -g $(VER_STRING) $(NAME_STRING) $(INCLUDE_HEADERS) -I$(DIR_ICOMMON)
+CFLAGS  := -std=c11 -Wall -Wextra -Werror -O0 -g \
+	$(VER_STRING) $(NAME_STRING) \
+	$(INCLUDE_HEADERS) -I$(DIR_COMMON_X) -I$(DIR_COMMON)
 # Linking flags
 LDFLAGS := -lm -lpng
 
 # List of source files
-SRCS := $(shell find . -type f -name '*.c')
+SRCS_COMMON  := $(shell find $(DIR_COMMON) -type f -name '*.c')
+SRCS_PROJECT := $(shell find . -type f -name '*.c')
 
 # Automatically derive object file paths inside build/
-OBJS := $(SRCS:%=$(DIR_BUILD)/%.o)
+OBJS_COMMON  := $(patsubst $(DIR_COMMON)/%.c,$(DIR_BUILD)/common/%.c.o,$(SRCS_COMMON))
+OBJS_PROJECT := $(SRCS_PROJECT:%=$(DIR_BUILD)/%.o)
+
 
 # Default target
 all: $(DIR_BIN)/$(TARGET)
 
 # Link final binary
-$(DIR_BIN)/$(TARGET): $(OBJS) | $(DIR_BIN)
+$(DIR_BIN)/$(TARGET): $(OBJS_COMMON) $(OBJS_PROJECT) | $(DIR_BIN)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 # Create build directory
@@ -60,6 +71,11 @@ $(DIR_BIN):
 
 # Compile rule — auto-create build subdirectories
 $(DIR_BUILD)/%.c.o: %.c | $(DIR_BUILD)
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Compile common files
+$(DIR_BUILD)/common/%.c.o: $(DIR_COMMON)/%.c | $(DIR_BUILD)
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 

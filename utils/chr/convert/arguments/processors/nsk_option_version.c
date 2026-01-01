@@ -1,6 +1,6 @@
-#include "../../arguments/processors/nsk_option_version.h"
+#include <nsk_util_meta.h>
 
-#include "../../utils/log/nsk_log_inf.h"
+#include "../../arguments/processors/nsk_option_version.h"
 
 #if !defined(NSK_PROGRAM_NAME)
     #error "NSK_PROGRAM_NAME should be defined with the program name"

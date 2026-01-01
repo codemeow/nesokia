@@ -70,4 +70,17 @@ void nsk_palettes_read(void);
  */
 void nsk_palettes_validate(void);
 
+/*!
+ * \brief  Writes the palette to the selected filename
+ *
+ * \param[in]  filename   The filename to write to
+ * \param[in]  plane      The palette plane
+ * \param[in]  ptr        The palette as (struct nsk_type_palette *)
+ */
+void nsk_palette_output(
+    const char *filename,
+    enum nsk_plane_list plane,
+    const void *ptr
+);
+
 #endif

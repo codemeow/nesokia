@@ -1,8 +1,8 @@
 #include <stddef.h>
+#include <nsk_util_meta.h>
 
 #include "../../../types/header/enums/nsk_enum_console.h"
 
-#include "../../../utils/nsk_util_multimap.h"
 
 /*!
  * \brief  Returns string description of the console type

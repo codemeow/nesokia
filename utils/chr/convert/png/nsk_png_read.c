@@ -3,13 +3,12 @@
 #include <stdlib.h>
 
 #include <libpng/png.h>
+#include <nsk_util_meta.h>
+
 
 #include "../png/nsk_png_read.h"
 
 #include "../types/nsk_type_image.h"
-#include "../utils/io/nsk_io_fopen.h"
-#include "../utils/log/nsk_log_err.h"
-#include "../utils/nsk_util_cleanup.h"
 
 /*!
  * \brief  Converts the PNG image to RGBA format

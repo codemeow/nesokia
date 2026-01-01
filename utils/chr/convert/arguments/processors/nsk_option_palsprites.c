@@ -7,5 +7,5 @@
  * \brief  Sets the ouput name for the sprites palette
  */
 void nsk_option_palsprites(void) {
-    nsk_options_program.output.palsprites = optarg;
+    nsk_options_program.output.palettes[NSK_PLANE_SPRITES] = optarg;
 }

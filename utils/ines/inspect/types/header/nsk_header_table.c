@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <nsk_util_meta.h>
 
 #include "../../types/header/nsk_header_table.h"
 
@@ -8,7 +9,6 @@
 #include "../../types/header/table/nsk_table_long.h"
 #include "../../types/header/table/nsk_table_raw.h"
 #include "../../types/header/table/nsk_table_short.h"
-#include "../../utils/nsk_util_size.h"
 
 /*!
  * \brief  Shortcut offsetof-macro

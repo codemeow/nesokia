@@ -1,8 +1,8 @@
 #include <string.h>
+#include <nsk_util_meta.h>
 
 #include "../../queue/printers/nsk_printer_yaml.h"
 
-#include "../../utils/log/nsk_log_inf.h"
 #include "../../types/entry/nsk_entry_type.h"
 #include "../../types/entry/nsk_entry_storage.h"
 #include "../../types/header/nsk_header_data.h"

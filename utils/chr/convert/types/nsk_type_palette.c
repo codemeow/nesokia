@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <threads.h>
+#include <sys/stat.h>
+
+#include <nsk_util_meta.h>
 
 #include "../types/nsk_type_palette.h"
 
@@ -10,9 +13,6 @@
 #include "../types/nsk_type_color.h"
 #include "../types/nsk_type_colors.h"
 #include "../types/nsk_type_planes.h"
-#include "../utils/log/nsk_log_err.h"
-#include "../utils/log/nsk_log_inf.h"
-#include "../utils/nsk_util_size.h"
 
 /*!
  * \brief  Number of static strings in functions, returning static strings
@@ -189,4 +189,52 @@ void nsk_palettes_validate(void) {
     }
 
     _palettes_validate();
+}
+
+/*!
+ * \brief  Writes the palette to the selected filename
+ *
+ * \param[in]  filename   The filename to write to
+ * \param[in]  plane      The palette plane
+ * \param[in]  ptr        The palette as (struct nsk_type_palette *)
+ */
+void nsk_palette_output(
+    const char *filename,
+    enum nsk_plane_list plane,
+    const void *ptr
+) {
+    const mode_t mode = (S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    const struct nsk_type_palette *palette = ptr;
+    nsk_inf(
+        "# Saving %s palette as %s\n",
+        nsk_conv_plane2string(plane),
+        filename
+    );
+
+    nsk_io_mkdirp(nsk_io_dirname(filename), mode);
+
+    nsk_auto_fclose FILE *file = nsk_io_fopen(filename, "wb");
+    if (!file) {
+        nsk_err(
+            "Error: cannot open file \"%s\" for %s palette writing\n",
+            filename,
+            nsk_conv_plane2string(plane)
+        );
+        exit(EXIT_FAILURE);
+    }
+
+    for (size_t g = 0; g < NSK_PALETTE_GROUPS; g++) {
+        for (size_t c = 0; c < NSK_PALETTE_COLORS; c++) {
+            uint8_t index = palette->group[g].color[c].palette.color;
+
+            if (fwrite(&index, sizeof(index), 1, file) != 1) {
+                nsk_err(
+                    "Error: cannot write data to \"%s\" %s palette file\n",
+                    filename,
+                    nsk_conv_plane2string(plane)
+                );
+                exit(EXIT_FAILURE);
+            }
+        }
+    }
 }

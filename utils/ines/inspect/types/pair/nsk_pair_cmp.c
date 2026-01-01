@@ -1,10 +1,8 @@
 #include <string.h>
 #include <stdlib.h>
+#include <nsk_util_meta.h>
 
 #include "../../types/pair/nsk_pair_cmp.h"
-
-#include "../../utils/log/nsk_log_err.h"
-#include "../../utils/nsk_util_size.h"
 
 /* Forward declaration */
 static bool _compare_equal      (uint64_t left, uint64_t right);

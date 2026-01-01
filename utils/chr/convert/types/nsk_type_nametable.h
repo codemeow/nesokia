@@ -75,4 +75,17 @@ void nsk_nametables_read(void);
  */
 void nsk_nametables_validate(void);
 
+/*!
+ * \brief  Writes the nametable to the selected filename
+ *
+ * \param[in]  filename   The filename to write to
+ * \param[in]  plane      The nametable plane
+ * \param[in]  ptr        The nametable as (struct nsk_type_nametable *)
+ */
+void nsk_nametable_output(
+    const char *filename,
+    enum nsk_plane_list plane,
+    const void *ptr
+);
+
 #endif

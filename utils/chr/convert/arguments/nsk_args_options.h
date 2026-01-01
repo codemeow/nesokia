@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include "../types/nsk_type_planes.h"
+
 /*!
  * \brief  The starting point of the short-option replacing value
  *
@@ -37,18 +39,13 @@ enum nsk_ppuctlr34_values {
  * \brief  Provided program options
  */
 struct nsk_options_program {
-    bool             quiet;                /*!< Show no output but errors     */
-
     struct {
         const char *output;                /*!< Global output directory       */
-        const char *palettes;              /*!< Palettes output directory     */
     } directory;
 
     struct {
-        const char *chr0000;               /*!< Left nametable output name    */
-        const char *chr1000;               /*!< Right nametable output name   */
-        const char *palback;               /*!< Back palettes output name     */
-        const char *palsprites;            /*!< Sprites palettes output name  */
+        const char *nametable[NSK_PLANES_COUNT]; /*!< Nametables output names */
+        const char *palettes [NSK_PLANES_COUNT]; /*!< Palettes output names   */
         bool        colored;               /*!< Enables ANSI 24bit color codes*/
     } output;
 

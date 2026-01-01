@@ -1,12 +1,12 @@
 #include <stdlib.h>
 #include <string.h>
+#include <nsk_util_meta.h>
 
 #include "../../types/entry/nsk_entry_match.h"
 
 #include "../../arguments/nsk_args_options.h"
 #include "../../types/header/nsk_header_table.h"
 #include "../../types/pair/nsk_pair_type.h"
-#include "../../utils/log/nsk_log_err.h"
 
 /*!
  * \brief  Matches against a single filter

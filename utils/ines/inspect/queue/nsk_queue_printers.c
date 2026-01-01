@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <nsk_util_meta.h>
 #include "../queue/nsk_queue_printers.h"
 
 #include "../queue/printers/nsk_printer_csv.h"
@@ -10,8 +11,6 @@
 #include "../queue/printers/nsk_printer_tree.h"
 #include "../queue/printers/nsk_printer_xml.h"
 #include "../queue/printers/nsk_printer_yaml.h"
-#include "../utils/log/nsk_log_err.h"
-#include "../utils/nsk_util_size.h"
 
 /*!
  * Printers table

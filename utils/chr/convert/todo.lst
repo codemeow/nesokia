@@ -1,0 +1,5 @@
+Program help:
+    - Add replacement "macros" as "$PROGRAMNAME", "$HEADER", "$SUBHEADER"
+       - Check if isatty
+       - Check if colors/ANSI supported (maybe not?)
+       - Disable ANSI-controls (bold/color) if not supported

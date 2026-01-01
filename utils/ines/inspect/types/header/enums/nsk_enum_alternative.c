@@ -1,8 +1,8 @@
 #include <stdlib.h>
+#include <nsk_util_meta.h>
 
 #include "../../../types/header/enums/nsk_enum_alternative.h"
 
-#include "../../../utils/nsk_util_multimap.h"
 
 /*!
  * \brief  Returns text description of the type

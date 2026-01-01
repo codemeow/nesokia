@@ -1,16 +1,12 @@
 #include <stddef.h>
 #include <string.h>
+#include <nsk_util_meta.h>
 
 #include "../types/nsk_type_image.h"
 
 #include "../arguments/nsk_args_options.h"
 #include "../png/nsk_png_read.h"
 #include "../process/nsk_process_vars.h"
-#include "../utils/log/nsk_log_err.h"
-#include "../utils/log/nsk_log_inf.h"
-#include "../utils/nsk_util_malloc.h"
-#include "../utils/nsk_util_size.h"
-#include "../utils/strings/nsk_strings_strdup.h"
 
 /*!
  * \brief  The sizes of the image/image components

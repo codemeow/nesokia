@@ -1,5 +1,6 @@
 #include <getopt.h>
 
+#include <nsk_util_meta.h>
 #include "../arguments/nsk_args_options.h"
 
 #include "../arguments/processors/nsk_option_filter.h"
@@ -11,7 +12,6 @@
 #include "../arguments/processors/nsk_option_recursive.h"
 #include "../arguments/processors/nsk_option_version.h"
 #include "../types/pair/nsk_pair_type.h"
-#include "../utils/nsk_util_size.h"
 
 /*!
  * Available options table

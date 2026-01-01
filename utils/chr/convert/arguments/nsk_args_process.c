@@ -1,13 +1,11 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <getopt.h>
+#include <nsk_util_meta.h>
 
 #include "../arguments/nsk_args_process.h"
 
 #include "../arguments/nsk_args_options.h"
-#include "../utils/log/nsk_log_err.h"
-#include "../utils/nsk_util_cleanup.h"
-#include "../utils/nsk_util_malloc.h"
 
 /*!
  * \brief  Disables system getopt-related messages

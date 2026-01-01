@@ -2,10 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <nsk_util_meta.h>
+
+
 #include "../../arguments/processors/nsk_option_ppuctrl34.h"
 #include "../../arguments/nsk_args_options.h"
-#include "../../utils/log/nsk_log_err.h"
-#include "../../utils/nsk_util_size.h"
 
 /*!
  * \brief  Sets the nametables purpose

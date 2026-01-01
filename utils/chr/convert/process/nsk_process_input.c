@@ -1,10 +1,10 @@
+#include <nsk_util_meta.h>
 #include "../process/nsk_process_input.h"
 
 #include "../types/nsk_type_image.h"
 #include "../types/nsk_type_colors.h"
 #include "../types/nsk_type_palette.h"
 #include "../types/nsk_type_nametable.h"
-#include "../utils/nsk_util_size.h"
 
 /*!
  * \brief  Processes and merges input files

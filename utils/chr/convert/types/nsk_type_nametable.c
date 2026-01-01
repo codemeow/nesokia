@@ -443,7 +443,7 @@ static void _tile_output(
 
     for (uint32_t shift = 0; shift < 2; shift++) {
         for (size_t ty = 0; ty < NSK_NAMETABLECELL_HEIGHT; ty++) {
-            for (size_t tx = 0; tx < NSK_NAMETABLE_WIDTH; tx++) {
+            for (size_t tx = 0; tx < NSK_NAMETABLECELL_WIDTH; tx++) {
                 uint8_t value = tile->pixel[ty][tx].palette.color;
                 value = (value >> shift) & 1;
 

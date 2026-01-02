@@ -1,9 +1,7 @@
 #include <getopt.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include <nsk_util_meta.h>
-
 
 #include "../../arguments/processors/nsk_option_ppuctrl34.h"
 #include "../../arguments/nsk_args_options.h"

@@ -2,7 +2,6 @@
 #define NSK_TYPE_IMAGE
 
 #include <stddef.h>
-
 #include <libpng/png.h>
 
 #include "../types/nsk_type_pixel.h"

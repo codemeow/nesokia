@@ -5,7 +5,6 @@
 #include <nsk_util_meta.h>
 
 #include "../process/nsk_process_output.h"
-
 #include "../arguments/nsk_args_options.h"
 #include "../process/nsk_process_vars.h"
 #include "../types/nsk_type_nametable.h"

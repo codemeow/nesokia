@@ -1,7 +1,6 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
-
 #include <nsk_util_meta.h>
 
 #include "../process/nsk_process_utils.h"

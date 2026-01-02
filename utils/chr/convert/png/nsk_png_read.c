@@ -1,13 +1,11 @@
 #include <setjmp.h>
 #include <stdint.h>
 #include <stdlib.h>
-
 #include <libpng/png.h>
 #include <nsk_util_meta.h>
 
 
 #include "../png/nsk_png_read.h"
-
 #include "../types/nsk_type_image.h"
 
 /*!

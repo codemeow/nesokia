@@ -1,14 +1,13 @@
 #include <limits.h>
 #include <stdlib.h>
-
 #include <nsk_util_meta.h>
 
 #include "../types/nsk_type_nametable.h"
 #include "../arguments/nsk_args_options.h"
+#include "../process/nsk_process_utils.h"
 #include "../process/nsk_process_vars.h"
 #include "../types/nsk_type_palette.h"
 #include "../types/nsk_type_planes.h"
-#include "../process/nsk_process_utils.h"
 
 /*!
  * \brief Nametables positioning

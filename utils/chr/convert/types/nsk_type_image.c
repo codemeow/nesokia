@@ -3,7 +3,6 @@
 #include <nsk_util_meta.h>
 
 #include "../types/nsk_type_image.h"
-
 #include "../arguments/nsk_args_options.h"
 #include "../png/nsk_png_read.h"
 #include "../process/nsk_process_vars.h"

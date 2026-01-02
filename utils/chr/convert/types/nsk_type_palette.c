@@ -1,13 +1,11 @@
 #include <stddef.h>
-#include <stdlib.h>
 #include <stdio.h>
-#include <threads.h>
+#include <stdlib.h>
 #include <sys/stat.h>
-
+#include <threads.h>
 #include <nsk_util_meta.h>
 
 #include "../types/nsk_type_palette.h"
-
 #include "../process/nsk_process_utils.h"
 #include "../process/nsk_process_vars.h"
 #include "../types/nsk_type_color.h"

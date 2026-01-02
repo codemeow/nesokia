@@ -1,4 +1,5 @@
 #include <nsk_util_meta.h>
+
 #include "../../arguments/processors/nsk_option_quiet.h"
 
 /*!

@@ -2,6 +2,7 @@
 #define NSK_TYPE_COLORS
 
 #include <stdbool.h>
+
 #include "../types/nsk_type_color.h"
 
 /*!

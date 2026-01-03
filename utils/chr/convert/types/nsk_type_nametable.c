@@ -265,24 +265,26 @@ static void _pixel_setcolor(
 }
 
 /*!
- * \brief  Validates single tile
+ * \brief  Counts the number of used colors in the tile and writes them to the
+ * provided list
  *
- * \param[in,out]   tile     The tile
- * \param[in]       plane    The plane
- * \param[in]       address  The nametableaddress
- * \param[in]       x        Tile X position
- * \param[in]       y        Tile Y position
+ * \param[in]  tile     The tile
+ * \param[in]  plane    The tile plane
+ * \param[in]  address  The nametable address
+ * \param[in]  x        Tile X position
+ * \param[in]  y        Tile Y position
+ * \param[out] colors   The list of used colors
+ * \return Number of used colors
  */
-static void _validate_tile(
-    struct nsk_type_tile *tile,
-    enum nsk_plane_list plane,
-    enum nsk_nametable_address address,
-    size_t x,
-    size_t y
+static size_t _tile_colors_used(
+    const struct nsk_type_tile *tile,
+    enum nsk_plane_list         plane,
+    enum nsk_nametable_address  address,
+    size_t                      x,
+    size_t                      y,
+    struct nsk_type_color       colors[NSK_PALETTE_COLORS]
 ) {
-    struct nsk_type_color colors[NSK_PALETTE_COLORS];
     size_t used = 0;
-
     for (size_t h = 0; h < NSK_NAMETABLECELL_HEIGHT; h++) {
         for (size_t w = 0; w < NSK_NAMETABLECELL_WIDTH; w++) {
             struct nsk_type_color color = tile->pixel[h][w];
@@ -321,8 +323,79 @@ static void _validate_tile(
             }
         }
     }
+    return used;
+}
 
-    struct nsk_type_palette *palette = &nsk_input.palettes.planes[plane];
+/*!
+ * \brief  Validates the group index of the selected palette
+ *
+ * \param[in] group    The group
+ * \param[in] plane    The plane
+ * \param[in] address  The nametable address
+ * \param[in] x        Tile X position
+ * \param[in] y        Tile Y position
+ * \param[in] colors   The colors
+ * \param[in] used     The number of used colors
+ */
+static void _tile_palette_validate(
+    size_t group,
+    enum nsk_plane_list plane,
+    enum nsk_nametable_address address,
+    size_t x,
+    size_t y,
+    const struct nsk_type_color colors[NSK_PALETTE_COLORS],
+    size_t used
+) {
+    if (group == NSK_PALETTE_GROUPS) {
+        nsk_err(
+            "Tile $%03zx%zx of the %s nametable ($%04x) does not match any "
+                "palette. Tile colors: ",
+            nsk_conv_address2value(address) / 0x10 + y,
+            x,
+            nsk_conv_plane2string(plane),
+            nsk_conv_address2value(address)
+        );
+        _colors_errlist(colors, used);
+        nsk_err(".\n");
+        exit(EXIT_FAILURE);
+    }
+}
+
+/*!
+ * \brief  Applies the selected palette to the tile pixels
+ *
+ * \param[in,out] tile     The tile
+ * \param[in]     palette  The palette
+ * \param[in]     group    The group
+ */
+static void _tile_palette_apply(
+    struct nsk_type_tile *tile,
+    const struct nsk_type_palette *palette,
+    size_t group
+) {
+    for (size_t h = 0; h < NSK_NAMETABLECELL_HEIGHT; h++) {
+        for (size_t w = 0; w < NSK_NAMETABLECELL_WIDTH; w++) {
+            _pixel_setcolor(&tile->pixel[h][w], palette, group);
+        }
+    }
+}
+
+/*!
+ * \brief  Finds the appropriate palette group for this tile
+ *
+ * \param[in,out] tile     The tile
+ * \param[in]     palette  The palette
+ * \param[in]     colors   The colors
+ * \param[in]     used     The number of used colors
+ * \return Index of the found palette or a value greater or equal
+ *         to NSK_PALETTE_COLORS
+ */
+static size_t _tile_palette_find(
+    struct nsk_type_tile *tile,
+    const struct nsk_type_palette *palette,
+    const struct nsk_type_color colors[NSK_PALETTE_COLORS],
+    size_t used
+) {
     size_t g;
     for (g = 0; g < NSK_PALETTE_GROUPS; g++) {
         bool match = true;
@@ -346,26 +419,31 @@ static void _validate_tile(
             break;
         }
     }
+    return g;
+}
 
-    if (g == NSK_PALETTE_GROUPS) {
-        nsk_err(
-            "Tile $%03zx%zx of the %s nametable ($%04x) does not match any "
-                "palette. Tile colors: ",
-            nsk_conv_address2value(address) / 0x10 + y,
-            x,
-            nsk_conv_plane2string(plane),
-            nsk_conv_address2value(address)
-        );
-        _colors_errlist(colors, used);
-        nsk_err(".\n");
-        exit(EXIT_FAILURE);
-    }
-
-    for (size_t h = 0; h < NSK_NAMETABLECELL_HEIGHT; h++) {
-        for (size_t w = 0; w < NSK_NAMETABLECELL_WIDTH; w++) {
-            _pixel_setcolor(&tile->pixel[h][w], palette, g);
-        }
-    }
+/*!
+ * \brief  Validates single tile
+ *
+ * \param[in,out]   tile     The tile
+ * \param[in]       plane    The plane
+ * \param[in]       address  The nametable address
+ * \param[in]       x        Tile X position
+ * \param[in]       y        Tile Y position
+ */
+static void _validate_tile(
+    struct nsk_type_tile *tile,
+    enum nsk_plane_list plane,
+    enum nsk_nametable_address address,
+    size_t x,
+    size_t y
+) {
+    struct nsk_type_color colors[NSK_PALETTE_COLORS];
+    size_t used = _tile_colors_used(tile, plane, address, x, y, colors);
+    struct nsk_type_palette *palette = &nsk_input.palettes.planes[plane];
+    size_t g = _tile_palette_find(tile, palette, colors, used);
+    _tile_palette_validate(g, plane, address, x, y, colors, used);
+    _tile_palette_apply(tile, palette, g);
 }
 
 /*!

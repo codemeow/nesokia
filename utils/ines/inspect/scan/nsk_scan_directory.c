@@ -25,7 +25,7 @@ static bool _entry_path(
         PATH_MAX,
         "%s%c%s",
         path,
-        NSK_IO_SEP,
+        nsk_path_delimeter,
         name
     );
 

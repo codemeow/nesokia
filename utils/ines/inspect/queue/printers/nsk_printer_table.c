@@ -19,7 +19,7 @@ static size_t filename_maxlen = 0;
  * \return Shifted string
  */
 static const char *_print_filename(const char *filename) {
-    const char *basename = strrchr(filename, NSK_IO_SEP);
+    const char *basename = strrchr(filename, nsk_path_delimeter);
     return basename ? basename + 1 : filename;
 }
 

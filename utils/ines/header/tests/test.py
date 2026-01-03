@@ -429,41 +429,6 @@ def test_final(cases: List[CaseSetup]) -> int:
 
     return 0 if passed == total else 1
 
-
-##
-## \brief  Builds the ROM reader program
-##
-## \param  setup  The setup
-##
-def build_printer(setup: BuildSetup) -> None:
-    print("# Building prerequisites")
-
-    cmd = [
-        str(setup.compiler.make),
-        "-C", str(setup.directory.reader)
-    ]
-    cmd_str = " ".join(cmd)
-
-    try:
-        proc = subprocess.run(
-            cmd,
-            text=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
-        )
-        if proc.returncode != 0:
-            print_failed(f"{cmd_str}")
-            print_test_output(proc.stderr)
-            sys.exit(1)
-        else:
-            print_passed(f"{cmd_str}")
-
-    except Exception as e:
-        print_failed(f"{cmd_str}: {e}")
-        sys.exit(1)
-
-    print()
-
 ##
 ## \brief  Main function
 ##
@@ -479,7 +444,6 @@ def main() -> int:
 
     setup = build_setup()
 
-    build_printer(setup)
     cases = cases_setup(setup)
 
     for step in TEST_STEPS:

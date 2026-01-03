@@ -7,7 +7,7 @@ The project is structured as a set of submodules, each dedicated to a specific t
 
 _Each module provides its own documentation inside its respective subdirectory._
 
-- **Header Reader** (`utils/ines/inspect/`)
+- **Header Reader** (`utils/ines/inspect`)
 
   iNES/NES 2.0 headers reader
 
@@ -19,7 +19,22 @@ _Each module provides its own documentation inside its respective subdirectory._
 
 - **Tiles converter** (`utils/chr/convert`)
 
-  Image to tiles converter
+  Image to CHR data/PAL data converter
+
+- **Palette converter** (`utils/chr/palette`)
+
+  Converts .pal files into composite component for `utils/chr/convert`
+  * PNG component output
+  * Terminal colored ANSI output
+  * Terminal text output
+
+- **Easing data generator** (`utils/math/ease`)
+
+  Generates the data tables for easing functions (ex. Doner tool)
+
+- Extract shared component
+
+Compile with rpath
 
 ## Authors
 

@@ -3,6 +3,7 @@
 *.o
 build
 bin
+.vscode
 
 # Utils/Create autotests configuration files
 utils/ines/header/tests/cases/*/nsk_header_config.inc

@@ -3,12 +3,11 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
+#include <nsk_util_meta.h>
 
 #include "../../types/pair/nsk_pair_parse.h"
-
 #include "../../types/header/nsk_header_table.h"
 #include "../../types/pair/nsk_pair_cmp.h"
-#include "../../utils/log/nsk_log_err.h"
 
 /*!
  * In case of error print no more than this number of characters

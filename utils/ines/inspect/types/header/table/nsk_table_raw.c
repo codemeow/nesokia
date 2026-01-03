@@ -1,8 +1,7 @@
 #include <stdint.h>
+#include <nsk_util_meta.h>
 
 #include "../../../types/header/table/nsk_table_raw.h"
-
-#include "../../../utils/nsk_util_expsize.h"
 
 /*!
  * \brief  Converts NES 2.0 signature

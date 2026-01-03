@@ -1,8 +1,7 @@
 #include <stdlib.h>
+#include <nsk_util_meta.h>
 
 #include "../../types/header/nsk_header_category.h"
-
-#include "../../utils/log/nsk_log_err.h"
 
 /*!
  * \brief  Returns the fancy name of the category

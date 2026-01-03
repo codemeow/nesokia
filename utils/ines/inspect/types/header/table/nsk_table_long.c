@@ -2,9 +2,9 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <inttypes.h>
+#include <nsk_util_meta.h>
 
 #include "../../../types/header/table/nsk_table_long.h"
-
 #include "../../../types/header/enums/nsk_enum_alternative.h"
 #include "../../../types/header/enums/nsk_enum_battery.h"
 #include "../../../types/header/enums/nsk_enum_console.h"
@@ -14,7 +14,6 @@
 #include "../../../types/header/enums/nsk_enum_trainer.h"
 #include "../../../types/header/enums/nsk_enum_vshardware.h"
 #include "../../../types/header/enums/nsk_enum_vsppu.h"
-#include "../../../utils/nsk_util_hrbytes.h"
 
 /*!
  * \brief  Converts bool into long description

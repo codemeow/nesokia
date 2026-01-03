@@ -1,7 +1,6 @@
 #include <string.h>
 
 #include "../../queue/printers/nsk_printer_match.h"
-
 #include "../../arguments/nsk_args_options.h"
 #include "../../types/pair/nsk_pair_type.h"
 

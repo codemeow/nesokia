@@ -1,7 +1,6 @@
-#include "../../types/entry/nsk_entry_type.h"
+#include <nsk_util_meta.h>
 
-#include "../../utils/nsk_util_malloc.h"
-#include "../../utils/strings/nsk_strings_strdup.h"
+#include "../../types/entry/nsk_entry_type.h"
 
 /*!
  * \brief  Creates and appends new entry to the provided optional parent

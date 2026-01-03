@@ -1,10 +1,10 @@
-#include "../../queue/printers/nsk_printer_tree.h"
+#include <nsk_util_meta.h>
 
+#include "../../queue/printers/nsk_printer_tree.h"
 #include "../../queue/printers/nsk_printer_match.h"
 #include "../../types/entry/nsk_entry_storage.h"
 #include "../../types/entry/nsk_entry_type.h"
 #include "../../types/header/nsk_header_table.h"
-#include "../../utils/log/nsk_log_inf.h"
 
 /*!
  * \brief  Fancy prints the header data

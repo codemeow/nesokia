@@ -1,10 +1,7 @@
 #include <string.h>
+#include <nsk_util_meta.h>
 
 #include "../../types/entry/nsk_entry_read.h"
-
-#include "../../utils/io/nsk_io_fopen.h"
-#include "../../utils/log/nsk_log_err.h"
-#include "../../utils/nsk_util_cleanup.h"
 
 /*!
  * \brief  Validates the read header over iNES/NES2.0 signature

@@ -1,10 +1,10 @@
-# nesokia-head
+# nesokia-ines-inspect
 
 Display information about NES ROMs (iNES / NES 2.0 headers).
 
 ## Overview
 
-`nesokia-head` scans one or more ROM files or directories and prints metadata extracted from their iNES or NES 2.0 headers.
+`nesokia-ines-inspect` scans one or more ROM files or directories and prints metadata extracted from their iNES or NES 2.0 headers.
 It supports multiple output formats (human-readable tree, table, JSON, XML, YAML, Markdown, CSV), selective field display,
 powerful filtering, and recursive directory traversal.
 
@@ -13,7 +13,7 @@ powerful filtering, and recursive directory traversal.
 ## Usage
 
 ```bash
-nesokia-head [options]... [file]...
+nesokia-ines-inspect [options]... [file]...
 ```
 
 * `file` can be one or more ROM files or directories.
@@ -468,25 +468,25 @@ Print program version and exit
 Just display ROM info (`tree` output is selected by default):
 
 ```bash
-nesokia-head snake.nes
+nesokia-ines-inspect snake.nes
 ```
 
 Scan a directory, filter by PRG RAM = 8192 bytes and CHR ROM > 4000 bytes, show only mapper, PRG/CHR ROM, PRG/CHR RAM and mirroring columns:
 
 ```bash
-nesokia-head -r -o "table" -f "prg_ram=8192&chr_rom>4000" -k "mapper&prg_rom&chr_rom&prg_ram&chr_ram&mirroring" ./path
+nesokia-ines-inspect -r -o "table" -f "prg_ram=8192&chr_rom>4000" -k "mapper&prg_rom&chr_rom&prg_ram&chr_ram&mirroring" ./path
 ```
 
 List only mapper and PRG ROM size, in JSON:
 
 ```bash
-nesokia-head -k "mapper&prg_rom" -o json "Super C (U) .nes" "Trog (U) .nes"
+nesokia-ines-inspect -k "mapper&prg_rom" -o json "Super C (U) .nes" "Trog (U) .nes"
 ```
 
 Follow symlinks, NES 2.0 only, pretty Markdown:
 
 ```bash
-nesokia-head -o md "Zen - Intergalactic Ninja (U) .nes"
+nesokia-ines-inspect -o md "Zen - Intergalactic Ninja (U) .nes"
 ```
 
 ## Known bugs

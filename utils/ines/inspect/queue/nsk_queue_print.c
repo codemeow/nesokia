@@ -1,5 +1,4 @@
 #include "../queue/nsk_queue_print.h"
-
 #include "../arguments/nsk_args_options.h"
 #include "../queue/nsk_queue_printers.h"
 

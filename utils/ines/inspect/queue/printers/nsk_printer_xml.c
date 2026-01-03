@@ -1,14 +1,11 @@
 #include <inttypes.h>
 #include <stdlib.h>
+#include <nsk_util_meta.h>
 
 #include "../../queue/printers/nsk_printer_xml.h"
-
 #include "../../types/entry/nsk_entry_storage.h"
 #include "../../types/entry/nsk_entry_type.h"
 #include "../../types/header/nsk_header_data.h"
-#include "../../utils/log/nsk_log_err.h"
-#include "../../utils/log/nsk_log_inf.h"
-#include "../../utils/nsk_util_size.h"
 
 /*!
  * \brief  Prints the XML header

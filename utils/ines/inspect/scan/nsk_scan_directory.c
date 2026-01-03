@@ -1,15 +1,11 @@
 #include <dirent.h>
 #include <stdio.h>
 #include <string.h>
+#include <nsk_util_meta.h>
 
 #include "../scan/nsk_scan_directory.h"
-
 #include "../arguments/nsk_args_options.h"
 #include "../scan/nsk_scan_entry.h"
-#include "../utils/io/nsk_io_opendir.h"
-#include "../utils/io/nsk_io_path.h"
-#include "../utils/io/nsk_io_readdir.h"
-#include "../utils/log/nsk_log_err.h"
 
 /*!
  * \brief  Constructs full path to the entry
@@ -29,7 +25,7 @@ static bool _entry_path(
         PATH_MAX,
         "%s%c%s",
         path,
-        NSK_IO_SEP,
+        nsk_path_delimeter,
         name
     );
 

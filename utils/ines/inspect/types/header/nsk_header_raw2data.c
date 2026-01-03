@@ -1,5 +1,4 @@
 #include "../../types/header/nsk_header_raw2data.h"
-
 #include "../../types/header/nsk_header_table.h"
 
 /*!

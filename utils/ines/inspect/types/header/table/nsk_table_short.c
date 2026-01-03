@@ -4,7 +4,6 @@
 #include <inttypes.h>
 
 #include "../../../types/header/table/nsk_table_short.h"
-
 #include "../../../types/header/nsk_header_table.h"
 #include "../../../types/header/enums/nsk_enum_console.h"
 #include "../../../types/header/enums/nsk_enum_device.h"

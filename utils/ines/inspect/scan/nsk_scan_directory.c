@@ -4,7 +4,6 @@
 #include <nsk_util_meta.h>
 
 #include "../scan/nsk_scan_directory.h"
-
 #include "../arguments/nsk_args_options.h"
 #include "../scan/nsk_scan_entry.h"
 

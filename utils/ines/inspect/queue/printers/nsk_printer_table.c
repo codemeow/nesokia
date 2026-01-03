@@ -2,7 +2,6 @@
 #include <nsk_util_meta.h>
 
 #include "../../queue/printers/nsk_printer_table.h"
-
 #include "../../queue/printers/nsk_printer_match.h"
 #include "../../types/entry/nsk_entry_storage.h"
 #include "../../types/header/nsk_header_data.h"

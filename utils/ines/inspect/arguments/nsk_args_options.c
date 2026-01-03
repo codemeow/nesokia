@@ -1,8 +1,7 @@
 #include <getopt.h>
-
 #include <nsk_util_meta.h>
-#include "../arguments/nsk_args_options.h"
 
+#include "../arguments/nsk_args_options.h"
 #include "../arguments/processors/nsk_option_filter.h"
 #include "../arguments/processors/nsk_option_follow.h"
 #include "../arguments/processors/nsk_option_help.h"

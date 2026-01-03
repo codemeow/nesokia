@@ -3,7 +3,6 @@
 
 #include "../../../types/header/table/nsk_table_raw.h"
 
-
 /*!
  * \brief  Converts NES 2.0 signature
  *

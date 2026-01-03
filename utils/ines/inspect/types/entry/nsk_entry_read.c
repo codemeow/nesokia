@@ -3,7 +3,6 @@
 
 #include "../../types/entry/nsk_entry_read.h"
 
-
 /*!
  * \brief  Validates the read header over iNES/NES2.0 signature
  *

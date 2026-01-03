@@ -1,10 +1,9 @@
 #include <getopt.h>
+#include <nsk_util_meta.h>
 
 #include "../../arguments/processors/nsk_option_output.h"
-
 #include "../../arguments/nsk_args_options.h"
 #include "../../queue/nsk_queue_printers.h"
-#include "../../utils/log/nsk_log_err.h"
 
 /*!
  * \brief  Selects the output type (tree, table, etc)

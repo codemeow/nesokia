@@ -1,5 +1,4 @@
 #include "../../types/entry/nsk_entry_process.h"
-
 #include "../../types/entry/nsk_entry_match.h"
 #include "../../types/entry/nsk_entry_push.h"
 #include "../../types/entry/nsk_entry_read.h"

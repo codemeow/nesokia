@@ -1,7 +1,6 @@
 #include <stdint.h>
 
 #include "../../../types/header/table/nsk_table_cmp.h"
-
 #include "../../../types/header/enums/nsk_enum_alternative.h"
 #include "../../../types/header/enums/nsk_enum_battery.h"
 #include "../../../types/header/enums/nsk_enum_console.h"

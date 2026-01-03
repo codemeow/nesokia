@@ -3,7 +3,6 @@
 
 #include "../../../types/header/enums/nsk_enum_trainer.h"
 
-
 /*!
  * \brief  Returns text description of the type
  *

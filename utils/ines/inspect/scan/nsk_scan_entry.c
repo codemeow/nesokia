@@ -2,7 +2,6 @@
 #include <nsk_util_meta.h>
 
 #include "../scan/nsk_scan_entry.h"
-
 #include "../scan/nsk_scan_directory.h"
 #include "../scan/nsk_scan_file.h"
 #include "../scan/nsk_scan_link.h"

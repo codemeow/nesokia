@@ -3,7 +3,6 @@
 
 #include "../../types/header/nsk_header_category.h"
 
-
 /*!
  * \brief  Returns the fancy name of the category
  *

@@ -2,7 +2,6 @@
 #include <nsk_util_meta.h>
 
 #include "../../types/header/nsk_header_table.h"
-
 #include "../../types/header/nsk_header_data.h"
 #include "../../types/header/table/nsk_table_cmp.h"
 #include "../../types/header/table/nsk_table_json.h"

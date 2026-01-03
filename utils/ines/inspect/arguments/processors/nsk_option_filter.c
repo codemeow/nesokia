@@ -2,7 +2,6 @@
 #include <inttypes.h>
 
 #include "../../arguments/processors/nsk_option_filter.h"
-
 #include "../../arguments/nsk_args_options.h"
 #include "../../types/pair/nsk_pair_parse.h"
 /*!

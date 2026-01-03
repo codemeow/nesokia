@@ -3,7 +3,6 @@
 
 #include "../../../types/header/enums/nsk_enum_vsppu.h"
 
-
 /*!
  * \brief  Returns string description of the Vs. PPU
  *

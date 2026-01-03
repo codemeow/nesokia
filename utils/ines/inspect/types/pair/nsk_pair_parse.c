@@ -6,7 +6,6 @@
 #include <nsk_util_meta.h>
 
 #include "../../types/pair/nsk_pair_parse.h"
-
 #include "../../types/header/nsk_header_table.h"
 #include "../../types/pair/nsk_pair_cmp.h"
 

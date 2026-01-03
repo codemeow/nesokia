@@ -2,7 +2,6 @@
 
 #include "../../types/entry/nsk_entry_type.h"
 
-
 /*!
  * \brief  Creates and appends new entry to the provided optional parent
  *

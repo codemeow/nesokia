@@ -3,7 +3,6 @@
 
 #include "../../types/pair/nsk_pair_type.h"
 
-
 /*!
  * \brief  Creates and appends new element to the provided optional list
  *

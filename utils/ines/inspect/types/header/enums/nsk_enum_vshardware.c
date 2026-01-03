@@ -3,7 +3,6 @@
 
 #include "../../../types/header/enums/nsk_enum_vshardware.h"
 
-
 /*!
  * \brief  Returns string description of the Vs. hardware
  *

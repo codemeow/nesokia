@@ -1,9 +1,8 @@
 #include <stdlib.h>
 #include <string.h>
-
 #include <nsk_util_meta.h>
-#include "../queue/nsk_queue_printers.h"
 
+#include "../queue/nsk_queue_printers.h"
 #include "../queue/printers/nsk_printer_csv.h"
 #include "../queue/printers/nsk_printer_json.h"
 #include "../queue/printers/nsk_printer_md.h"

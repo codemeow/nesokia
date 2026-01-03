@@ -1,7 +1,6 @@
 #include <stddef.h>
 
 #include "../../types/entry/nsk_entry_push.h"
-
 #include "../../types/entry/nsk_entry_storage.h"
 
 /*!

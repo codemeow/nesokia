@@ -1,10 +1,9 @@
-#include <stdlib.h>
-#include <stdbool.h>
 #include <getopt.h>
-
+#include <stdbool.h>
+#include <stdlib.h>
 #include <nsk_util_meta.h>
-#include "../arguments/nsk_args_process.h"
 
+#include "../arguments/nsk_args_process.h"
 #include "../arguments/nsk_args_options.h"
 
 /*!

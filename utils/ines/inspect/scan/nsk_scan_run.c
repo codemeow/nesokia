@@ -1,5 +1,4 @@
 #include "../scan/nsk_scan_run.h"
-
 #include "../arguments/nsk_args_options.h"
 #include "../scan/nsk_scan_entry.h"
 

@@ -20,6 +20,7 @@ DIR_COMMON := $(DIR_ROOT)/utils/common/utils
 # Extra headers access
 DIR_COMMON_X := $(DIR_ROOT)/utils/common/xmacro
 
+
 # Version defines
 VER_STRING := \
 	-DNSK_VERSION_MAJOR=$(VER_MAJOR)\
@@ -38,17 +39,20 @@ CC      := gcc
 #CC := x86_64-w64-mingw32-gcc -mno-ms-bitfields -static-libgcc
 
 # Compilation flags
-CFLAGS  := -std=c11 -Wall -Wextra -Werror -O0 -g $(VER_STRING) $(NAME_STRING) $(INCLUDE_HEADERS) -I$(DIR_COMMON_X) -I$(DIR_COMMON)
+CFLAGS  := -std=c11 -Wall -Wextra -Werror -O0 -g \
+	$(VER_STRING) $(NAME_STRING) \
+	$(INCLUDE_HEADERS) -I$(DIR_COMMON_X) -I$(DIR_COMMON)
 # Linking flags
-LDFLAGS := -lm
+LDFLAGS := -lm -lpng
 
 # List of source files
 SRCS_COMMON  := $(shell find $(DIR_COMMON) -type f -name '*.c')
 SRCS_PROJECT := $(shell find . -type f -name '*.c')
 
 # Automatically derive object file paths inside build/
-OBJS_COMMON  := $(SRCS_COMMON:%=$(DIR_BUILD)/%.o)
+OBJS_COMMON  := $(patsubst $(DIR_COMMON)/%.c,$(DIR_BUILD)/common/%.c.o,$(SRCS_COMMON))
 OBJS_PROJECT := $(SRCS_PROJECT:%=$(DIR_BUILD)/%.o)
+
 
 # Default target
 all: $(DIR_BIN)/$(TARGET)
@@ -67,6 +71,11 @@ $(DIR_BIN):
 
 # Compile rule — auto-create build subdirectories
 $(DIR_BUILD)/%.c.o: %.c | $(DIR_BUILD)
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Compile common files
+$(DIR_BUILD)/common/%.c.o: $(DIR_COMMON)/%.c | $(DIR_BUILD)
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 

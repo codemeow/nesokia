@@ -2,7 +2,6 @@
 #define NSK_TABLE_RAW
 
 #include "../../../types/header/nsk_header_raw.h"
-
 #include "../../../types/header/nsk_header_data.h"
 
 /*!

@@ -1,8 +1,7 @@
 #include <getopt.h>
-
 #include <nsk_util_meta.h>
-#include "../../arguments/processors/nsk_option_help.h"
 
+#include "../../arguments/processors/nsk_option_help.h"
 #include "../../arguments/nsk_args_options.h"
 
 #if !defined(NSK_PROGRAM_NAME)

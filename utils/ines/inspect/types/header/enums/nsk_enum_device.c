@@ -3,7 +3,6 @@
 
 #include "../../../types/header/enums/nsk_enum_device.h"
 
-
 /*!
  * \brief  Returns string description of the expansion device
  *

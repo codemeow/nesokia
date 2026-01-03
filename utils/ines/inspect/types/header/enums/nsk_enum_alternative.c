@@ -3,7 +3,6 @@
 
 #include "../../../types/header/enums/nsk_enum_alternative.h"
 
-
 /*!
  * \brief  Returns text description of the type
  *

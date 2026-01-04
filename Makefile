@@ -4,6 +4,7 @@ UTILS_DIR := utils
 UTIL_MODULES := \
   $(UTILS_DIR)/ines/header  \
   $(UTILS_DIR)/ines/inspect \
+  $(UTILS_DIR)/chr/colors   \
   $(UTILS_DIR)/chr/convert
 
 .DEFAULT_GOAL := all

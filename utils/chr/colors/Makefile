@@ -8,6 +8,9 @@ VER_BUILD := 1
 # Common root directory
 DIR_ROOT := ../../..
 
+# Common modules
+CFLAGS := -DNSK_MODULE_PNG -DNSK_MODULE_COMPOSE
+
 # Linking flags
 LDFLAGS := -lm -lpng
 

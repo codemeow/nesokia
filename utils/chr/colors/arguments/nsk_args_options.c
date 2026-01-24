@@ -35,7 +35,6 @@ struct nsk_options_entry nsk_options_table[] = {
         "    * As the purpose of this program is to convert the non-modified PPU colors list\n"
         "      into PNG file particularly for the `nsk-chr-convert` utility, only first 64\n"
         "      records are used.\n"
-        "    * Special value \"dummy\" could be provided to represent empty list\n"
         "\n"
     },
     {
@@ -56,8 +55,6 @@ struct nsk_options_entry nsk_options_table[] = {
         "Notes\n"
         "    * This file represents the bytes, that usually load at [$3f00..$3f0f]\n"
         "    * If this option is set, the `palette-sprites` option should also be set.\n"
-        "    * Special value \"dummy\" could be provided to represent empty palette. No checks\n"
-        "      will be made against the validity this way.\n"
         "    * This option conflicts with `palette-merged`\n"
         "\n"
     },
@@ -72,8 +69,6 @@ struct nsk_options_entry nsk_options_table[] = {
         "Notes\n"
         "    * This file represents the bytes, that usually load at [$3f10..$3f1f]\n"
         "    * If this option is set, the `palette-background` option should also be set.\n"
-        "    * Special value \"dummy\" could be provided to represent empty palette. No checks\n"
-        "      will be made against the validity this way.\n"
         "    * This option conflicts with `palette-merged`\n"
         "\n"
     },
@@ -89,8 +84,6 @@ struct nsk_options_entry nsk_options_table[] = {
         "\n"
         "Notes\n"
         "    * This file represents the bytes, that usually load at [$3f00..$3f1f]\n"
-        "    * Special value \"dummy\" could be provided to represent empty palette. No checks\n"
-        "      will be made against the validity this way.\n"
         "    * This options conflicts with `palette-background` and `palette-sprites`\n"
         "\n"
     },

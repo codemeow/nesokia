@@ -46,7 +46,6 @@ struct nsk_options_program {
     struct {
         const char *nametable[NSK_PLANES_COUNT]; /*!< Nametables output names */
         const char *palettes [NSK_PLANES_COUNT]; /*!< Palettes output names   */
-        bool        colored;               /*!< Enables ANSI 24bit color codes*/
     } output;
 
     struct {

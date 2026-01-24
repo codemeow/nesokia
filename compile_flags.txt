@@ -17,15 +17,18 @@
 -include windows/nsk_windows_mingw.h
 -include windows/nsk_windows_winver.h
 
+# Common
 -Iutils/common/xmacro
 -Iutils/common/utils
 -Iutils/common/includes
 
+# Common enabled modules
+-DNSK_MODULE_PNG
+-DNSK_MODULE_COMPOSE
+
 # OS
 -D__gnu_linux__
 # -D__WINDOWS__
-
--D NSK_COMPILEFLAG_TEST=1
 
 # Mingw-specific
 # -isystem-after/usr/x86_64-w64-mingw32/include

@@ -146,6 +146,8 @@ static void _arguments_unknown(char *const *argv) {
 void nsk_args_process(int argc, char *const *argv) {
     _getopt_messagesdisable();
 
+    nsk_args_program = argv[0];
+
     nsk_auto_free char            *options_short = _options_short();
     nsk_auto_free struct option   *options_long  = _options_long();
 

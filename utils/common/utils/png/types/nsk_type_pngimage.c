@@ -1,5 +1,3 @@
-#if defined(NSK_MODULE_COMPOSE) && defined(NSK_MODULE_PNG)
-
 #include <string.h>
 #include <libpng/png.h>
 
@@ -410,5 +408,3 @@ void nsk_pngimage_free(
     nsk_util_free(image->filename);
     nsk_util_free(image);
 }
-
-#endif

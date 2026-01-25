@@ -1,5 +1,3 @@
-#if defined(NSK_MODULE_COMPOSE) && defined(NSK_MODULE_PNG)
-
 #include "../../png/types/nsk_type_pngtile.h"
 
 /*!
@@ -46,5 +44,3 @@ void nsk_tile_convtopng(
         }
     }
 }
-
-#endif

@@ -1,5 +1,3 @@
-#if defined(NSK_MODULE_COMPOSE) && defined(NSK_MODULE_PNG)
-
 #include <stdlib.h>
 
 #include "../../png/types/nsk_type_pngpalettes.h"
@@ -172,5 +170,3 @@ void nsk_palettes_convfrompng(
         y + NSK_PALETTESTEMPLPOS_Y
     );
 }
-
-#endif

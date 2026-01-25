@@ -22,10 +22,6 @@
 -Iutils/common/utils
 -Iutils/common/includes
 
-# Common enabled modules
--DNSK_MODULE_PNG
--DNSK_MODULE_COMPOSE
-
 # OS
 -D__gnu_linux__
 # -D__WINDOWS__

@@ -1,5 +1,3 @@
-#if defined(NSK_MODULE_COMPOSE)
-
 #include <limits.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -375,5 +373,3 @@ void nsk_pattable_setaddress(
     table->address = address;
     table->init.address = true;
 }
-
-#endif

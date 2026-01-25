@@ -24,7 +24,7 @@ CC      := gcc
 #CC := x86_64-w64-mingw32-gcc -mno-ms-bitfields -static-libgcc
 
 # Compilation flags
-CFLAGS  := -std=c11 -Wall -Wextra -Werror -O0 -g \
+CFLAGS  += -std=c11 -Wall -Wextra -Werror -O0 -g \
 	$(VER_STRING) $(NAME_STRING) \
 	$(INCLUDE_HEADERS) -I$(DIR_COMMON_X) -I$(DIR_COMMON)
 

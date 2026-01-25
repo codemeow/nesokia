@@ -1,8 +1,6 @@
 #ifndef NSK_TYPE_PPUCOLORS
 #define NSK_TYPE_PPUCOLORS
 
-#if defined(NSK_MODULE_COMPOSE)
-
 #include <stdbool.h>
 #include <stddef.h>
 
@@ -21,11 +19,13 @@ enum {
  * Provides the routines to work with PPU colors list:
  *
  * ~~~
- *        format         │         reading          │        writing
- * ━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━
- *  NES emulator palette │ nsk_ppucolors_readpal    │ nsk_ppucolors_savepal
- *  GIMP palette         │                          │ nsk_ppucolors_savegpl
- *  Nesokia Colors PNG   │ nsk_ppucolors_readpng    │ nsk_ppucolors_savepng
+ *        format           │         reading          │        writing
+ * ━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━
+ *  NES emulator palette   │ nsk_ppucolors_readpal    │ nsk_ppucolors_savepal
+ *  GIMP palette           │                          │ nsk_ppucolors_savegpl
+ *  Nesokia Colors PNG     │ nsk_ppucolors_readpng    │ nsk_ppucolors_savepng
+ *  Adobe Swatch Exchange  |                          │ nsk_ppucolors_savease
+ *  Photoshop Color Swatch |                          │ nsk_ppucolors_saveaco
  * ~~~
  *
  * \note PNG related functions are separated to PNG submodule and require
@@ -53,37 +53,6 @@ struct nsk_type_ppucolors {
     union nsk_type_color4 colors[NSK_PPUCOLORSTABLE_COUNT]; /*!< List of colors */
     bool                 allowed[NSK_PPUCOLORSTABLE_COUNT]; /*!< Availability   */
 };
-
-/*!
- * \brief  Reads the PPU colors from the .pal file
- *
- * \param[in] filename  The filename
- * \return PPU colors
- */
-struct nsk_type_ppucolors nsk_ppucolors_readpal(
-    const char *filename
-);
-
-/*!
- * \brief  Saves the PPU colors as .pal file
- *
- * \param[in] filename  The filename
- * \param[in] colors    The colors
- */
-void nsk_ppucolors_savepal(
-    const char *filename,
-    const struct nsk_type_ppucolors *colors
-);
-
-/*!
- * \brief  Saves the PPU colors as .gpl (GIMP palette) file
- *
- * \param[in] filename  The filename
- * \param[in] colors    The colors */
-void nsk_ppucolors_savegpl(
-    const char *filename,
-    const struct nsk_type_ppucolors *colors
-);
 
 /*!
  * \brief  Shows the PPU colors as ANSI colored output
@@ -114,7 +83,5 @@ size_t nsk_ppucolors_lookup(
 void nsk_ppucolors_validate(
     const struct nsk_type_ppucolors *colors
 );
-
-#endif
 
 #endif

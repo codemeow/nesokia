@@ -1,8 +1,6 @@
 #ifndef NSK_TYPE_COLOR4
 #define NSK_TYPE_COLOR4
 
-#if defined(NSK_MODULE_COMPOSE)
-
 #include <stdint.h>
 
 /*!
@@ -17,7 +15,5 @@ union nsk_type_color4 {
         uint8_t a;
     };
 };
-
-#endif
 
 #endif

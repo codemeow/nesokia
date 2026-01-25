@@ -1,24 +1,51 @@
 # nesokia-chr-colors
 
-Converts .pal PPU palette and local palettes into PNG images for the composite input of the `nesokia-chr-convert` utility.
+PPU colors conversion tool
 
 ## Overview
 
+Converts PPU colors from and to different formats:
 
+From
+- .png file (Nesokia PNG template file)
+- .pal file ([format description](https://www.nesdev.org/wiki/.pal)
+
+To
+- ANSI-colored text output
+- .png file (Nesokia PNG template file)
+- .pal file ([format description](https://www.nesdev.org/wiki/.pal)
+- .gpl file (GIMP palette)
+- .ase file (Adobe Swatch Exchange)
+- .aco file (Photoshop Color Swatch)
 
 ---
 
 ## Usage
 
+`nesokia-chr-colors -i <inputfile> -o <outputfile>`
 
----
+By default the input and output formats are deduced by the file extension.
+This could be overrided with the `-I`/`--input-format` and `-O`/`--output-format` flags:
 
-## Options
-
----
-
-## Known bugs
-
+Input formats:
+```
+-I "png"
+-I "pal"
+```
+Output formats:
+```
+-O "png"
+-O "pal"
+-O "gpl"
+-O "ase"
+-O "aco"
+```
+For example:
+```
+nesokia-chr-colors -i input.palette -I pal -o output.gimp -O gpl
+```
+- Input file "input.palette" is interpreted as ".pal" file
+- Output file "output.gimp" is written in ".gpl" file format
 
 ---
 

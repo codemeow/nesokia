@@ -1,5 +1,3 @@
-#if defined(NSK_MODULE_COMPOSE)
-
 #include <stdlib.h>
 
 #include "../types/nsk_type_plane.h"
@@ -24,5 +22,3 @@ const char *nsk_conv_plane2string(enum nsk_plane_list value) {
             abort();
     }
 }
-
-#endif

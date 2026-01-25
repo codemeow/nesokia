@@ -8,11 +8,8 @@ VER_BUILD := 1
 # Common root directory
 DIR_ROOT := ../../..
 
-# Common modules
-CFLAGS := -DNSK_MODULE_PNG -DNSK_MODULE_COMPOSE
-
 # Linking flags
-LDFLAGS := -lm -lpng
+LDFLAGS += -lm -lpng
 
 include $(DIR_ROOT)/scripts/make/common.mk
 include $(DIR_ROOT)/scripts/make/lang/c.mk

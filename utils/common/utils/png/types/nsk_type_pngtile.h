@@ -1,8 +1,6 @@
 #ifndef NSK_TYPE_PNGTILE
 #define NSK_TYPE_PNGTILE
 
-#if defined(NSK_MODULE_COMPOSE) && defined(NSK_MODULE_PNG)
-
 #include "../../types/nsk_type_tile.h"
 #include "../../png/types/nsk_type_pngimage.h"
 
@@ -35,7 +33,5 @@ void nsk_tile_convtopng(
     size_t starty,
     struct nsk_type_pngimage *image
 );
-
-#endif
 
 #endif

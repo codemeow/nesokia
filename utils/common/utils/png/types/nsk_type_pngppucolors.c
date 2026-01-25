@@ -1,5 +1,3 @@
-#if defined(NSK_MODULE_COMPOSE) && defined(NSK_MODULE_PNG)
-
 #include <stdlib.h>
 
 #include "../../png/types/nsk_type_pngppucolors.h"
@@ -180,12 +178,14 @@ struct nsk_type_pngimage *nsk_ppucolors_convtopng(
 }
 
 /*!
- * \brief  Reads the PPU colors from Nesokia PNG template component
+ * \brief  Reads the PPU colors from the PNG template
  *
- * \param[in] filename  The filename
- * \return PPU colors
+ * \param[in]  image   The image
+ * \param[in]  x       Template start X position
+ * \param[in]  y       Template start Y position
+ * \param[out] colors  The colors
  */
-struct nsk_type_ppucolors nsk_ppucolors_convfrompng(
+void nsk_ppucolors_convfrompng(
     const struct nsk_type_pngimage *image,
     size_t x,
     size_t y,
@@ -197,5 +197,3 @@ struct nsk_type_ppucolors nsk_ppucolors_convfrompng(
         y + NSK_PPUCOLORSTEMPLPOS_Y
     );
 }
-
-#endif

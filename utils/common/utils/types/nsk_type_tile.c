@@ -1,5 +1,3 @@
-#if defined(NSK_MODULE_COMPOSE)
-
 #include <stdlib.h>
 
 #include "../types/nsk_type_tile.h"
@@ -273,5 +271,3 @@ void nsk_tile_savechr(
         exit(EXIT_FAILURE);
     }
 }
-
-#endif

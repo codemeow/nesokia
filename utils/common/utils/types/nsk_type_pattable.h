@@ -1,8 +1,6 @@
 #ifndef NSK_TYPE_PATTABLE
 #define NSK_TYPE_PATTABLE
 
-#if defined(NSK_MODULE_COMPOSE)
-
 #include <stdbool.h>
 
 #include "../types/nsk_type_plane.h"
@@ -206,7 +204,5 @@ void nsk_pattable_setaddress(
     struct nsk_type_pattable *table,
     enum nsk_pattable_address address
 );
-
-#endif
 
 #endif

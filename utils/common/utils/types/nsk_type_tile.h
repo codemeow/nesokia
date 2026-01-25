@@ -1,8 +1,6 @@
 #ifndef NSK_TYPE_TILE
 #define NSK_TYPE_TILE
 
-#if defined(NSK_MODULE_COMPOSE)
-
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -141,7 +139,5 @@ void nsk_tile_savechr(
     FILE                       *file,
     const char                 *filename
 );
-
-#endif
 
 #endif

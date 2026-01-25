@@ -1,8 +1,6 @@
 #ifndef NSK_TYPE_PNGPATTABLE
 #define NSK_TYPE_PNGPATTABLE
 
-#if defined(NSK_MODULE_COMPOSE) && defined(NSK_MODULE_PNG)
-
 #include "../../types/nsk_type_pattable.h"
 #include "../../png/types/nsk_type_pngimage.h"
 
@@ -40,7 +38,5 @@ void nsk_pattable_convfrompng(
     size_t y,
     struct nsk_type_pattable *pattable
 );
-
-#endif
 
 #endif

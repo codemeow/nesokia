@@ -1,8 +1,6 @@
 #ifndef NSK_TYPE_PNGPALETTES
 #define NSK_TYPE_PNGPALETTES
 
-#if defined(NSK_MODULE_COMPOSE) && defined(NSK_MODULE_PNG)
-
 #include "../../types/nsk_type_palettes.h"
 #include "../../png/types/nsk_type_pngimage.h"
 
@@ -40,7 +38,5 @@ void nsk_palettes_convfrompng(
     size_t y,
     struct nsk_type_palettes *palettes
 );
-
-#endif
 
 #endif

@@ -1,8 +1,6 @@
 #ifndef NSK_TYPE_PNGCOMPOSE
 #define NSK_TYPE_PNGCOMPOSE
 
-#if defined(NSK_MODULE_COMPOSE) && defined(NSK_MODULE_PNG)
-
 #include "../../png/types/nsk_type_pngimage.h"
 #include "../../types/nsk_type_ppucolors.h"
 #include "../../types/nsk_type_palettes.h"
@@ -37,7 +35,5 @@ void nsk_pngimage_composeread(
     struct nsk_type_palettes  *palettes,
     struct nsk_type_pattables *pattables
 );
-
-#endif
 
 #endif

@@ -1,5 +1,3 @@
-#if defined(NSK_MODULE_COMPOSE) && defined(NSK_MODULE_PNG)
-
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
@@ -323,5 +321,3 @@ void nsk_pngimage_composeread(
         );
     }
 }
-
-#endif

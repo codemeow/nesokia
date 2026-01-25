@@ -74,6 +74,12 @@ const char *nsk_ansi_reset(void) {
     return string;
 }
 
+static uint8_t _color_lumafg(uint8_t r, uint8_t g, uint8_t b) {
+    /* ITU-R BT.709 luma (sRGB-ish) */
+    uint8_t y = (0.2126 * r + 0.7152 * g + 0.0722 * b);
+    return (y < 150) ? 255 : 0;
+}
+
 /*!
  * \brief  Returns static string, containing (or not) the ANSI sequence
  * and the color code itself along with the closing sequence
@@ -93,6 +99,7 @@ const char *nsk_string_color(uint8_t r, uint8_t g, uint8_t b) {
     }
 
     if (nsk_ansi_support) {
+        uint8_t fg = _color_lumafg(r, g, b);
         snprintf(
             string[index],
             sizeof(string[index]),
@@ -104,7 +111,7 @@ const char *nsk_string_color(uint8_t r, uint8_t g, uint8_t b) {
              * We will invert the foreground
              * color to mostly solve it
              */
-            nsk_ansi_24bit(255 - r, 255 - g, 255 - b, false),
+            nsk_ansi_24bit(fg, fg, fg, false),
             r,
             g,
             b,

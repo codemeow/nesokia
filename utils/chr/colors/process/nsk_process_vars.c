@@ -1,6 +1,6 @@
 #include "../process/nsk_process_vars.h"
 
 /*!
- * \brief  Global input data
+ * \brief  The PPU colors from the input
  */
-struct nsk_type_input nsk_input = { 0 };
+struct nsk_type_ppucolors nsk_input_ppucolors = { 0 };

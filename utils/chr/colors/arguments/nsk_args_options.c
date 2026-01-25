@@ -1,15 +1,14 @@
 #include <getopt.h>
+#include <string.h>
+#include <assert.h>
 #include <nsk_util_meta.h>
 
 #include "../arguments/nsk_args_options.h"
-#include "../arguments/processors/nsk_option_ansi.h"
+#include "../arguments/processors/nsk_option_input.h"
+#include "../arguments/processors/nsk_option_input_format.h"
+#include "../arguments/processors/nsk_option_output.h"
+#include "../arguments/processors/nsk_option_output_format.h"
 #include "../arguments/processors/nsk_option_help.h"
-#include "../arguments/processors/nsk_option_palback.h"
-#include "../arguments/processors/nsk_option_palmerged.h"
-#include "../arguments/processors/nsk_option_palpng.h"
-#include "../arguments/processors/nsk_option_palsprites.h"
-#include "../arguments/processors/nsk_option_colors.h"
-#include "../arguments/processors/nsk_option_ppupng.h"
 #include "../arguments/processors/nsk_option_quiet.h"
 #include "../arguments/processors/nsk_option_version.h"
 
@@ -19,93 +18,59 @@
 struct nsk_options_entry nsk_options_table[] = {
     /* Input options */
     {
-        "ppu-colors", 'c', required_argument,
-        nsk_option_colors,
-        "Provides input PPU file as .pal palette file.\n"
-        "\n"
-        "Format\n"
-        "    For the format description visit https://www.nesdev.org/wiki/.pal \n"
-        "    In short, it should be 192-1536 bytes long binary file, containing at least\n"
-        "    64 3-bytes entries where each entry is an intesity of the color components as follows:\n"
-        "     - red   [unsigned 8-bit value: 0..255]\n"
-        "     - green [unsigned 8-bit value: 0..255]\n"
-        "     - blue  [unsigned 8-bit value: 0..255]\n"
+        "input", 'i', required_argument,
+        nsk_option_input,
+        "Provides input file.\n"
         "\n"
         "Notes\n"
-        "    * As the purpose of this program is to convert the non-modified PPU colors list\n"
-        "      into PNG file particularly for the `nsk-chr-convert` utility, only first 64\n"
-        "      records are used.\n"
+        "    * By default the input format is deduced from the file extension.\n"
+        "    * This behavior can be overridden with the `-I` option.\n"
         "\n"
     },
     {
-        "pallette-background", 'b', required_argument,
-        nsk_option_palback,
-        "Provides input palette file for the background palette.\n"
+        "input-format", 'I', required_argument,
+        nsk_option_input_format,
+        "Forces input file format.\n"
         "\n"
         "Format\n"
-        "    The list of the colors, picked from the PPU palette in the following order:\n"
-        "    - Palette0: color 0, color 1, color 2, color 3\n"
-        "    - Palette1: color 0, color 1, color 2, color 3\n"
-        "    - Palette2: color 0, color 1, color 2, color 3\n"
-        "    - Palette3: color 0, color 1, color 2, color 3\n"
-        "    Thus having 16 records, where the very first record is also a backdrop color.\n"
-        "    Each record is an unsigned 8-bit value, representing an index from the `ppu-colors`\n"
-        "    palette. Thus requiring `ppu-colors` option to be set.\n"
+        "    Supported input formats:\n"
+        "     - png\n"
+        "     - pal\n"
         "\n"
         "Notes\n"
-        "    * This file represents the bytes, that usually load at [$3f00..$3f0f]\n"
-        "    * If this option is set, the `palette-sprites` option should also be set.\n"
-        "    * This option conflicts with `palette-merged`\n"
+        "    * Overrides automatic format detection based on file extension.\n"
         "\n"
     },
-    {
-        "pallette-sprites", 's', required_argument,
-        nsk_option_palsprites,
-        "Provides input palette file for the sprites palette.\n"
-        "\n"
-        "Format\n"
-        "    See the description of `pallette-background` for the format details.\n"
-        "\n"
-        "Notes\n"
-        "    * This file represents the bytes, that usually load at [$3f10..$3f1f]\n"
-        "    * If this option is set, the `palette-background` option should also be set.\n"
-        "    * This option conflicts with `palette-merged`\n"
-        "\n"
-    },
-    {
-        "palette-merged", 'm', required_argument,
-        nsk_option_palmerged,
-        "Provides input palette file for both background and sprites palette\n"
-        "\n"
-        "Format\n"
-        "    See the description of `pallette-background` for the format details.\n"
-        "    This option allows to load both background and sprites palettes with one\n"
-        "    merged 32-bytes file\n"
-        "\n"
-        "Notes\n"
-        "    * This file represents the bytes, that usually load at [$3f00..$3f1f]\n"
-        "    * This options conflicts with `palette-background` and `palette-sprites`\n"
-        "\n"
-    },
+
     /* Output options */
     {
-        "output-ppu-png", 'C', required_argument,
-        nsk_option_ppupng,
-        "Save the PPU palette as PNG file.\n"
+        "output", 'o', required_argument,
+        nsk_option_output,
+        "Provides output file.\n"
+        "\n"
+        "Notes\n"
+        "    * By default the output format is deduced from the file extension.\n"
+        "    * This behavior can be overridden with the `-O` option.\n"
         "\n"
     },
     {
-        "output-palette-png", 'P', required_argument,
-        nsk_option_palpng,
-        "Save the local background and sprites palette as PNG file.\n"
+        "output-format", 'O', required_argument,
+        nsk_option_output_format,
+        "Forces output file format.\n"
+        "\n"
+        "Format\n"
+        "    Supported output formats:\n"
+        "     - png\n"
+        "     - pal\n"
+        "     - gpl\n"
+        "     - ase\n"
+        "     - aco\n"
+        "\n"
+        "Notes\n"
+        "    * Overrides automatic format detection based on file extension.\n"
         "\n"
     },
-    {
-        "ansi", 'A', no_argument,
-        nsk_option_ansi,
-        "Show the provided .pal file as ANSI-colored output.\n"
-        "\n"
-    },
+
     /* Common options */
     {
         "quiet", 'q', no_argument,
@@ -129,7 +94,6 @@ struct nsk_options_entry nsk_options_table[] = {
     }
 };
 
-
 /*!
  * Available options table size
  */
@@ -140,3 +104,63 @@ size_t nsk_options_count = NSK_SIZE(nsk_options_table);
  */
 struct nsk_options_program nsk_options_program = { 0 };
 
+/*!
+ * \brief  Provides the input format by string definition
+ *
+ * \param[in] string  The string
+ * \return format or _AUTO
+ */
+enum nsk_option_inputs nsk_input_format(const char *string) {
+    static const struct {
+        enum nsk_option_inputs format;
+        const char *string;
+    } _table[] = {
+        { NSK_OPTION_INPUT_PAL, "pal" },
+        { NSK_OPTION_INPUT_PNG, "png" },
+    };
+
+    static_assert(
+        NSK_SIZE(_table) == NSK_OPTION_INPUTS_COUNT - 1,
+        "Invalid number of elements in `nsk_input_format`"
+    );
+
+    for (size_t i = 0; i < NSK_SIZE(_table); i++) {
+        if (strcmp(string, _table[i].string) == 0) {
+            return _table[i].format;
+        }
+    }
+
+    return NSK_OPTION_INPUT_AUTO;
+}
+
+/*!
+ * \brief  Provides the output format by string definition
+ *
+ * \param[in] string  The string
+ * \return format or _AUTO
+ */
+enum nsk_option_outputs nsk_output_format(const char *string) {
+    static const struct {
+        enum nsk_option_outputs format;
+        const char *string;
+    } _table[] = {
+        { NSK_OPTION_OUTPUT_ACO, "aco" },
+        { NSK_OPTION_OUTPUT_ASE, "ase" },
+        { NSK_OPTION_OUTPUT_GPL, "gpl" },
+        { NSK_OPTION_OUTPUT_PAL, "pal" },
+        { NSK_OPTION_OUTPUT_PNG, "png" },
+    };
+
+    static_assert(
+        NSK_SIZE(_table) == NSK_OPTION_OUTPUTS_COUNT - 1,
+        "Invalid number of elements in `nsk_output_format`"
+    );
+
+    for (size_t i = 0; i < NSK_SIZE(_table); i++) {
+        if (strcmp(string, _table[i].string) == 0) {
+            return _table[i].format;
+        }
+    }
+
+    return NSK_OPTION_OUTPUT_AUTO;
+}

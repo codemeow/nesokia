@@ -1,8 +1,6 @@
 #ifndef NSK_TYPE_PLANE
 #define NSK_TYPE_PLANE
 
-#if defined(NSK_MODULE_COMPOSE)
-
 /*!
  * \brief  Types of planes for palettes, nametables, etc
  */
@@ -20,7 +18,5 @@ enum nsk_plane_list {
  * \return Static string
  */
 const char *nsk_conv_plane2string(enum nsk_plane_list value);
-
-#endif
 
 #endif

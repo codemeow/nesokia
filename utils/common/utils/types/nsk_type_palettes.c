@@ -1,5 +1,3 @@
-#if defined(NSK_MODULE_COMPOSE)
-
 #include <errno.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -524,5 +522,3 @@ size_t nsk_palette_getindex(
     );
     exit(EXIT_FAILURE);
 }
-
-#endif

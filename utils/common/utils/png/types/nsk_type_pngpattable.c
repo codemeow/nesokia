@@ -1,5 +1,3 @@
-#if defined(NSK_MODULE_COMPOSE) && defined(NSK_MODULE_PNG)
-
 #include <stdlib.h>
 
 #include "../../png/types/nsk_type_pngpattable.h"
@@ -146,5 +144,3 @@ void nsk_pattable_convfrompng(
         y + NSK_PATTABLETEMPLPOS_Y
     );
 }
-
-#endif

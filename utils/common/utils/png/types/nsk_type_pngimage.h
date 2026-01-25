@@ -1,8 +1,6 @@
 #ifndef NSK_TYPE_PNGIMAGE
 #define NSK_TYPE_PNGIMAGE
 
-#if defined(NSK_MODULE_COMPOSE) && defined(NSK_MODULE_PNG)
-
 #include <stddef.h>
 #include "../../types/nsk_type_color4.h"
 
@@ -113,7 +111,5 @@ void nsk_pngimage_cellmark(
  * \param[in, out]  image
  */
 void nsk_pngimage_free(struct nsk_type_pngimage *image);
-
-#endif
 
 #endif

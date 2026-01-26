@@ -1,4 +1,3 @@
-#include <threads.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -7,11 +6,6 @@
 #include "../../nsk_util_cleanup.h"
 #include "../../types/ppucolors/nsk_ppucolors_common.h"
 #include "../../math/nsk_math_endianness.h"
-
-/*!
- * \brief  Number of static strings available in one function call
- */
-#define _STATIC_CAROUSEL_SIZE (5)
 
 /*!
  * \brief  ASE block types
@@ -40,50 +34,6 @@ enum nsk_formatase_colortype {
     NSK_FORMATASE_COLORTYPE_SPOT   = 1,
     NSK_FORMATASE_COLORTYPE_NORMAL = 2
 };
-
-/*!
- * \brief  Converts name value to UTF16-BE format
- *
- * \warning Only supports ASCII-characters (codes < 128)
- *
- * \param[in]  name  The ASCII name
- * \param[out] size  The result size in bytes
- * \return Static zero-terminated UTF16-BE "string"
- */
-static const uint8_t *_name_toUTF16(const char *name, uint16_t *size) {
-    static thread_local uint8_t string[_STATIC_CAROUSEL_SIZE][1024];
-    static thread_local size_t index;
-
-    if (++index >= _STATIC_CAROUSEL_SIZE) {
-        index = 0;
-    }
-
-    size_t namelen = strlen(name);
-    if ((namelen * 2) >= sizeof(string[0])) {
-        nsk_err(
-            "UTF16 name buffer: overflow"
-        );
-        abort();
-    }
-
-    *size = (namelen + 1);
-    for (size_t i = 0; i < namelen; i++) {
-        uint8_t c = name[i];
-        if (c >= 0x80) {
-            nsk_err(
-                "UTF16 name buffer: unsupported character"
-            );
-            abort();
-        }
-        string[index][i * 2 + 0] = 0;
-        string[index][i * 2 + 1] = c;
-    }
-
-    string[index][2 * namelen + 0] = 0;
-    string[index][2 * namelen + 1] = 1;
-
-    return string[index];
-}
 
 /*!
  * \brief  Saves ASE signature to the file
@@ -163,19 +113,22 @@ static void _savease_blockname(
     );
     /* Note: After changing the name change the block length */
 
-    uint16_t utf16len;
-    const uint8_t *utf16name = _name_toUTF16(name, &utf16len);
-    uint16_t utf16lenbe = nsk_math_tobe16(utf16len);
+    size_t utf16lenraw;
+    const uint8_t *utf16name = nsk_ppucolors_toUTF16be(
+        name,
+        &utf16lenraw
+    );
+    uint16_t utf16len = nsk_math_tobe16(utf16lenraw);
 
     nsk_ppucolors_fwrite(
-        &utf16lenbe,
-        sizeof(utf16lenbe),
+        &utf16len,
+        sizeof(utf16len),
         file,
         filename
     );
     nsk_ppucolors_fwrite(
         utf16name,
-        utf16len * sizeof(uint16_t),
+        utf16lenraw * sizeof(uint16_t),
         file,
         filename
     );

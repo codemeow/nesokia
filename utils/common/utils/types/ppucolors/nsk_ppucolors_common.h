@@ -1,6 +1,7 @@
 #ifndef NSK_PPUCOLORS_COMMON
 #define NSK_PPUCOLORS_COMMON
 
+#include <stdint.h>
 #include <stdio.h>
 
 /*!
@@ -43,6 +44,20 @@ void nsk_ppucolors_fread(
     size_t size,
     FILE *file,
     const char *filename
+);
+
+/*!
+ * \brief  Converts name value to UTF16-BE format
+ *
+ * \warning Only supports ASCII-characters (codes < 128)
+ *
+ * \param[in]  name  The ASCII name
+ * \param[out] size  The result size in bytes
+ * \return Static zero-terminated UTF16-BE "string"
+ */
+const uint8_t *nsk_ppucolors_toUTF16be(
+    const char *str,
+    size_t *size
 );
 
 #endif

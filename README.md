@@ -15,26 +15,22 @@ _Each module provides its own documentation inside its respective subdirectory._
 
   NES 2.0 ROM header generator
 
-### Todo
-
 - **Tiles converter** (`utils/chr/convert`)
 
   Image to CHR data/PAL data converter
 
-- **Palette converter** (`utils/chr/palette`)
+- **Palette converter** (`utils/chr/colors`)
 
   Converts .pal files into composite component for `utils/chr/convert`
   * PNG component output
   * Terminal colored ANSI output
   * Terminal text output
 
+### Todo
+
 - **Easing data generator** (`utils/math/ease`)
 
   Generates the data tables for easing functions (ex. Doner tool)
-
-- Extract shared component
-
-Compile with rpath
 
 ## Authors
 
@@ -42,5 +38,6 @@ Compile with rpath
 
 ## License
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)  
 This project is licensed under the **MIT License**.  
-See the [LICENSE](LICENSE) file for details.
+See the [LICENSE](LICENSE) file for details. Some exceptions apply.

@@ -9,7 +9,7 @@ VER_BUILD := 13
 DIR_ROOT := ../../..
 
 # Linking flags
-LDFLAGS := -lm
+LDFLAGS := -lm -lpng
 
 include $(DIR_ROOT)/scripts/make/common.mk
 include $(DIR_ROOT)/scripts/make/lang/c.mk

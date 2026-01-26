@@ -23,6 +23,27 @@ void *nsk_util_malloc(size_t size) {
 }
 
 /*!
+ * \brief  Reallocates the provided region
+ *
+ * \param[in] ptr   The pointer
+ * \param[in] size  The size
+ * \return Reallocated memory block
+ */
+void *nsk_util_realloc(void *ptr, size_t size) {
+    void *old = ptr;
+    ptr = realloc(ptr, size);
+    if (!ptr) {
+        nsk_util_free(old);
+        nsk_err(
+            "Error: cannot reallocate %zu bytes\n",
+            size
+        );
+        abort();
+    }
+    return ptr;
+}
+
+/*!
  * \brief  Deallocated provided memory pointer
  *
  * \param  ptr  The pointer

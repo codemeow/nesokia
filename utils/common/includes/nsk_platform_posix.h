@@ -9,7 +9,7 @@
 /*!
  * Sets the extended list of functions, using the GNU-extensions
  *
- * \note Some functions will change the behavior or signature (ex. )
+ * \note Some functions will change the behavior or signature (ex. basename)
  */
 #define _GNU_SOURCE
 

@@ -29,6 +29,11 @@
 #define NSK_ANSI_FOREGROUND_COLOR "38"
 
 /*!
+ * \brief Declares the support of ANSI codes
+ */
+bool nsk_ansi_support = true;
+
+/*!
  * \brief  Returns the static string, containing ANSI-sequence to set the
  * current background or foreground color as 24-bit color
  *
@@ -67,4 +72,62 @@ const char *nsk_ansi_24bit(uint8_t r, uint8_t g, uint8_t b, bool back) {
 const char *nsk_ansi_reset(void) {
     static const char string[] = NSK_ANSI_OPEN "0" NSK_ANSI_CLOSE;
     return string;
+}
+
+static uint8_t _color_lumafg(uint8_t r, uint8_t g, uint8_t b) {
+    /* ITU-R BT.709 luma (sRGB-ish) */
+    uint8_t y = (0.2126 * r + 0.7152 * g + 0.0722 * b);
+    return (y < 150) ? 255 : 0;
+}
+
+/*!
+ * \brief  Returns static string, containing (or not) the ANSI sequence
+ * and the color code itself along with the closing sequence
+ *
+ * \param[in] r   Red component
+ * \param[in] g   Green component
+ * \param[in] b   Blue component
+ *
+ * \return Static string
+ */
+const char *nsk_string_color(uint8_t r, uint8_t g, uint8_t b) {
+    static thread_local char string[_STATIC_CAROUSEL_SIZE][128];
+    static thread_local size_t index;
+
+    if (++index >= _STATIC_CAROUSEL_SIZE) {
+        index = 0;
+    }
+
+    if (nsk_ansi_support) {
+        uint8_t fg = _color_lumafg(r, g, b);
+        snprintf(
+            string[index],
+            sizeof(string[index]),
+            "%s" "%s" "%02x%02x%02x" "%s",
+            nsk_ansi_24bit(r, g, b, true),
+            /*
+             * Most of the colors will make the
+             * default text color unreadable.
+             * We will invert the foreground
+             * color to mostly solve it
+             */
+            nsk_ansi_24bit(fg, fg, fg, false),
+            r,
+            g,
+            b,
+            nsk_ansi_reset()
+        );
+
+    } else {
+        snprintf(
+            string[index],
+            sizeof(string[index]),
+            "%02x%02x%02x",
+            r,
+            g,
+            b
+        );
+    }
+
+    return string[index];
 }

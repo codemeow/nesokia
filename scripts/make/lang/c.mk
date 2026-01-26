@@ -24,7 +24,7 @@ CC      := gcc
 #CC := x86_64-w64-mingw32-gcc -mno-ms-bitfields -static-libgcc
 
 # Compilation flags
-CFLAGS  := -std=c11 -Wall -Wextra -Werror -O0 -g \
+CFLAGS  += -std=c11 -Wall -Wextra -Werror -O0 -g \
 	$(VER_STRING) $(NAME_STRING) \
 	$(INCLUDE_HEADERS) -I$(DIR_COMMON_X) -I$(DIR_COMMON)
 
@@ -38,33 +38,29 @@ OBJS_PROJECT := $(SRCS_PROJECT:%=$(DIR_BUILD)/%.o)
 
 # Linking
 $(DIR_BIN):
-	@mkdir -p $@
+	@$(CMD_MKDIR) -p $@
 
 $(DIR_BIN)/$(PROJECT_NAME): $(OBJS_COMMON) $(OBJS_PROJECT) | $(DIR_BIN)
 	@$(call print_category,Linking)
 	@$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 	@$(call print_entry,Linking $@)
 
-# Compile
-#.PHONY: compile-pre
-#compile-pre:
-#	@$(call print_category,Compiling)
-
+# Bug: doesn't show "Compiling" in case of incremental
 COMPILE_STAMP := $(DIR_BUILD)/.compile-stamp
 
 $(COMPILE_STAMP): | $(DIR_BUILD)
 	@$(call print_category,Compiling)
-	@touch $@
+	@$(CMD_TOUCH) $@
 
 $(DIR_BUILD):
-	@mkdir -p $@
+	@$(CMD_MKDIR) -p $@
 
 $(DIR_BUILD)/%.c.o: %.c | $(DIR_BUILD)
-	@mkdir -p $(dir $@)
+	@$(CMD_MKDIR) -p $(dir $@)
 	@$(CC) $(CFLAGS) -c $< -o $@
 	@$(call print_entry,Compiling $<)
 
 $(DIR_BUILD)/common/%.c.o: $(DIR_COMMON)/%.c $(COMPILE_STAMP) | $(DIR_BUILD)
-	@mkdir -p $(dir $@)
+	@$(CMD_MKDIR) -p $(dir $@)
 	@$(CC) $(CFLAGS) -c $< -o $@
 	@$(call print_entry,Compiling $<)

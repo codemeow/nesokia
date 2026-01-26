@@ -30,15 +30,35 @@ define print_entry
 printf "%b    %s\n" "$(MSG_OK)" "$(1)"
 endef
 
+CMD_CP := cp -fp
+CMD_RM := rm -rf
+CMD_MKDIR := mkdir -p
+CMD_TOUCH := touch
+CMD_FIND := find
+
 # Default target
 .DEFAULT_GOAL := all
+
+# Templates
+DIR_TEMPLATES_PROJECT := templates
+DIR_TEMPLATES_TARGET := $(DIR_BIN)/templates
+
+TEMPLATE_FILES := $(shell [ -d "$(DIR_TEMPLATES_PROJECT)" ] && $(CMD_FIND) "$(DIR_TEMPLATES_PROJECT)" -type f -print || true)
+TEMPLATE_TARGET := $(patsubst $(DIR_TEMPLATES_PROJECT)/%, $(DIR_TEMPLATES_TARGET)/%, $(TEMPLATE_FILES))
+
+.PHONY: templates
+$(DIR_TEMPLATES_TARGET)/%: $(DIR_TEMPLATES_PROJECT)/% |
+	@$(CMD_MKDIR) $(dir $@)
+	@$(CMD_CP) $< $@
+	@$(call print_entry,Copying $<)
+
 
 # Targets
 .PHONY: all                             test      clean
 .PHONY: $(DIR_BIN)/$(PROJECT_NAME)-pre  test-pre  clean-pre
 .PHONY:                                 test-post clean-post
 
-all: $(DIR_BIN)/$(PROJECT_NAME)-pre $(DIR_BIN)/$(PROJECT_NAME)
+all: $(DIR_BIN)/$(PROJECT_NAME)-pre $(TEMPLATE_TARGET) $(DIR_BIN)/$(PROJECT_NAME)
 clean: clean-pre clean-post
 test: test-pre test-post
 
@@ -47,7 +67,6 @@ $(DIR_BIN)/$(PROJECT_NAME)-pre:
 	@$(call print_project,$(PROJECT_NAME))
 
 # Clean build artifacts
-RM := rm -rf
 
 clean-pre: $(DIR_BIN)/$(PROJECT_NAME)-pre
 	@$(call print_category,Cleaning)
@@ -56,7 +75,7 @@ CLEAN_ENTRIES := $(DIR_BUILD) $(DIR_BIN)/$(PROJECT_NAME)
 
 clean-post:
 	@$(foreach p,$(CLEAN_ENTRIES), \
-		$(RM) "$(p)" &&            \
+		$(CMD_RM) "$(p)" &&            \
 		$(call print_entry,$(p));  \
 	)
 

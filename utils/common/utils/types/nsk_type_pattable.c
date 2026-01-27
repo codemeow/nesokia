@@ -67,7 +67,7 @@ void nsk_pattable_validate_address(const struct nsk_type_pattable *table) {
 }
 
 /*!
- * \brief  Reads single pattern table from .chr/.chrs file
+ * \brief  Reads single pattern table from .pat/.pats file
  *
  * \param[in]  file      The file
  * \param[in]  filename  The filename
@@ -113,7 +113,7 @@ static void _pattable_savepat(
 }
 
 /*!
- * \brief  Reads pattern table from .chr file
+ * \brief  Reads pattern table from .pat file
  * (binary $0000..$0fff/$1000..$1fff)
  *
  * \param[in] filename  The filename
@@ -140,7 +140,7 @@ struct nsk_type_pattable nsk_pattable_readpat(
 }
 
 /*!
- * \brief  Reads pattern tables from .chrs file
+ * \brief  Reads pattern tables from .pats file
  * (binary $0000..$1fff)
  *
  * \param[in] filename  The filename
@@ -169,7 +169,7 @@ struct nsk_type_pattables nsk_pattables_readpats(
 }
 
 /*!
- * \brief  Saves selected pattern table as .chr file
+ * \brief  Saves selected pattern table as .pat file
  *
  * \note The palette indexes should be applied first with
  * nsk_pattable_apply
@@ -196,7 +196,7 @@ void nsk_pattable_savepat(
 }
 
 /*!
- * \brief  Saves pattern tables as .chrs file
+ * \brief  Saves pattern tables as .pats file
  *
  * \note The palette indexes should be applied first with
  * nsk_pattable_apply

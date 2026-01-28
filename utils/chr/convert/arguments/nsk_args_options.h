@@ -4,8 +4,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "../types/nsk_type_planes.h"
-
 /*!
  * \brief  The starting point of the short-option replacing value
  *
@@ -29,10 +27,17 @@ struct nsk_options_entry {
  * \brief  PPUCTRL 3th and 4th bits values
  */
 enum nsk_ppuctlr34_values {
-    NSK_PPUCTRL34_NORMAL, /*!< Left is background  */
-    NSK_PPUCTRL34_INVERT, /*!< Right is background */
+    NSK_PPUCTRL34_BACK0000, /*!< Left is background  */
+    NSK_PPUCTRL34_BACK1000, /*!< Right is background */
 
     NSK_PPUCTRL34S_COUNT, /*!< Number of elements  */
+};
+
+enum nsk_mode_values {
+    NSK_MODE_TEMPLATE2CHR, /*!< PNG template to CHR conversion */
+    NSK_MODE_CHR2TEMPLATE, /*!< CHR to PNG template conversion */
+
+    NSK_MODES_COUNT, /*!< Number of modes */
 };
 
 /*!
@@ -40,22 +45,36 @@ enum nsk_ppuctlr34_values {
  */
 struct nsk_options_program {
     struct {
-        const char *output;                /*!< Global output directory       */
-    } directory;
-
-    struct {
-        const char *nametable[NSK_PLANES_COUNT]; /*!< Nametables output names */
-        const char *palettes [NSK_PLANES_COUNT]; /*!< Palettes output names   */
-    } output;
-
-    struct {
-        const char *template;              /*!< Template input name           */
-        const char *left;                  /*!< Left nametable input name     */
-        const char *right;                 /*!< Right nametable input name    */
-        const char *colors;                /*!< Global colors input name      */
-        const char *palettes;              /*!< Local colors input name       */
+        const char *full;           /*!< Full PNG template (PNG only)   */
+        const char *ppucolors;      /*!< PPU colors (PNG/CHR)           */
+        struct {
+            const char *both;       /*!< Palettes (PNG/CHR)             */
+            const char *back;       /*!< Background palette (CHR only)  */
+            const char *sprites;    /*!< Sprites palette (CHR only)     */
+        } palettes;
+        struct {
+            const char *both;       /*!< Both pattern tables (CHR only) */
+            const char *left;       /*!< Left pattern table (PNG/CHR)   */
+            const char *right;      /*!< Right pattern table (PNG/CHR)  */
+        } pattables;
     } input;
 
+    struct {
+        const char *full;           /*!< Full PNG template (PNG only)   */
+        const char *ppucolors;      /*!< PPU colors (PNG/CHR)           */
+        struct {
+            const char *both;       /*!< Palettes (PNG/CHR)             */
+            const char *back;       /*!< Background palette (CHR only)  */
+            const char *sprites;    /*!< Sprites palette (CHR only)     */
+        } palettes;
+        struct {
+            const char *both;       /*!< Both pattern tables (CHR only) */
+            const char *left;       /*!< Left pattern table (PNG/CHR)   */
+            const char *right;      /*!< Right pattern table (PNG/CHR)  */
+        } pattables;
+    } output;
+
+    enum nsk_mode_values      mode;        /*!< Selected mode                 */
     enum nsk_ppuctlr34_values ppuctrl34;   /*!< Nametables purpose            */
 
     char *const     *files;                /*!< Null-terminated files list    */

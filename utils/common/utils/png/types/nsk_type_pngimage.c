@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <string.h>
 #include <libpng/png.h>
 
@@ -71,10 +72,30 @@ static void _pngimage_validate(FILE *file, const char *filename) {
 /*!
  * \brief  Creates new PNG struct pointer
  *
+ * \param[in] write Is this PNG supposed to write into file?
+ *
  * \return The png structp.
  */
-static png_structp _pngimage_create_png(void) {
-    png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+static png_structp _pngimage_create_png(bool write) {
+    png_structp png_ptr;
+
+    if (write) {
+        png_ptr = png_create_write_struct(
+            PNG_LIBPNG_VER_STRING,
+            NULL,
+            NULL,
+            NULL
+        );
+
+    } else {
+        png_ptr = png_create_read_struct(
+            PNG_LIBPNG_VER_STRING,
+            NULL,
+            NULL,
+            NULL
+        );
+    }
+
     if (!png_ptr) {
         nsk_err(
             "Out of memory while creating PNG ptr\n"
@@ -88,12 +109,25 @@ static png_structp _pngimage_create_png(void) {
  * \brief  Creates PNG info struct
  *
  * \param[in] png_ptr  The png pointer
+ * \param[in] write Is this PNG supposed to write into file?
  * \return    The png infop.
  */
-static png_infop _pngimage_create_info(png_structp png_ptr) {
+static png_infop _pngimage_create_info(png_structp png_ptr, bool write) {
     png_infop   info_ptr = png_create_info_struct(png_ptr);
     if (!info_ptr) {
-        png_destroy_read_struct(&png_ptr, NULL, NULL);
+        if (write) {
+            png_destroy_write_struct(
+                &png_ptr,
+                &info_ptr
+            );
+
+        } else {
+            png_destroy_read_struct(
+                &png_ptr,
+                NULL,
+                NULL
+            );
+        }
         nsk_err(
             "Out of memory while creating PNG info\n"
         );
@@ -183,8 +217,8 @@ struct nsk_type_pngimage *nsk_pngimage_read(
 
     nsk_auto_fclose FILE *file = _pngimage_openfile(filename);
     _pngimage_validate(file, filename);
-    png_ptr  = _pngimage_create_png();
-    info_ptr = _pngimage_create_info(png_ptr);
+    png_ptr  = _pngimage_create_png(false);
+    info_ptr = _pngimage_create_info(png_ptr, false);
 
     /* Cannot be legally exported to static function */
     if (setjmp(png_jmpbuf(png_ptr))) {
@@ -248,12 +282,12 @@ void nsk_pngimage_write(
         exit(EXIT_FAILURE);
     }
 
-    png_ptr  = _pngimage_create_png();
-    info_ptr = _pngimage_create_info(png_ptr);
+    png_ptr  = _pngimage_create_png(true);
+    info_ptr = _pngimage_create_info(png_ptr, true);
 
     /* Cannot be legally exported to static function */
     if (setjmp(png_jmpbuf(png_ptr))) {
-        png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+        png_destroy_write_struct(&png_ptr, &info_ptr);
         nsk_err(
             "setjmp unexpectedly failed\n"
         );

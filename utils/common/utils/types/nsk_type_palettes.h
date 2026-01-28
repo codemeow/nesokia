@@ -112,12 +112,12 @@ struct nsk_type_palettes nsk_palettes_readspals(
 );
 
 /*!
- * \brief  Saves selected palettes as binary .spals file
+ * \brief  Saves both palettes as binary .spals file
  *
  * \param[in] filename  The filename
  * \param[in] palette   The palette
  */
-void nsk_palette_savespals(
+void nsk_palettes_savespals(
     const char *filename,
     const struct nsk_type_palettes *palettes
 );
@@ -180,6 +180,28 @@ void nsk_palette_setcolors(
  * \param[in,out]   palettes  The palettes
  */
 void nsk_palettes_setcolors(
+    const struct nsk_type_ppucolors *colors,
+    struct nsk_type_palettes *palettes
+);
+
+/*!
+ * \brief  Assigns palette indexes by colors
+ *
+ * \param[in]     colors    The colors
+ * \param[in,out] palette   The palette
+ */
+void nsk_palette_setindexes(
+    const struct nsk_type_ppucolors *colors,
+    struct nsk_type_palette *palette
+);
+
+/*!
+ * \brief  Assigns palettes indexes by colors
+ *
+ * \param[in]     colors    The colors
+ * \param[in,out] palettes  The palettes
+ */
+void nsk_palettes_setindexes(
     const struct nsk_type_ppucolors *colors,
     struct nsk_type_palettes *palettes
 );

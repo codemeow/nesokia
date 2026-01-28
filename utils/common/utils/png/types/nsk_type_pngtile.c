@@ -19,6 +19,8 @@ void nsk_tile_readpng(
             tile->pixel[h][w].color = image->data[starty + h][startx + w];
         }
     }
+
+    tile->init.colors = true;
 }
 
 /*!

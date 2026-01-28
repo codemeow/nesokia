@@ -53,7 +53,7 @@ static void _palette_validate(
 ) {
     if (!flag) {
         nsk_err(
-            "Error: Palette field \"%s\"is not initialized\n",
+            "Error: Palette field \"%s\" is not initialized\n",
             message
         );
         abort();
@@ -105,6 +105,8 @@ static void _palette_readspal(
             palette->group[g].index[c] = index;
         }
     }
+
+    palette->init.indexes = true;
 }
 
 /*!
@@ -225,12 +227,12 @@ struct nsk_type_palettes nsk_palettes_readspals(
 }
 
 /*!
- * \brief  Saves selected palettes as binary .spals file
+ * \brief  Saves both palettes as binary .spals file
  *
  * \param[in] filename  The filename
  * \param[in] palette   The palette
  */
-void nsk_palette_savespals(
+void nsk_palettes_savespals(
     const char *filename,
     const struct nsk_type_palettes *palettes
 ) {
@@ -413,6 +415,8 @@ void nsk_palette_setcolors(
             palette->group[g].color[c].raw = colors->colors[index].raw;
         }
     }
+
+    palette->init.colors = true;
 }
 
 /*!

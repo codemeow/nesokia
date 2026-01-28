@@ -118,11 +118,6 @@ These options are **mutually exclusive**.
 
 ### Output Options
 
-#### Palettes
-
-Palette output must be specified **either** as a combined file **or** as separate planes.
-These options are **mutually exclusive**.
-
 ##### Combined palette output
 
 ```
@@ -137,9 +132,6 @@ These options are **mutually exclusive**.
 ```
 
 #### Pattern tables
-
-Pattern table output must be specified **either** as a combined file **or** as separate tables.
-These options are **mutually exclusive**.
 
 ##### Combined pattern tables
 
@@ -220,9 +212,6 @@ PPU color input:
 ---
 
 ### Output Options
-
-Output must be provided **either** as a single PNG template **or** as separate template components.
-These options are **mutually exclusive**.
 
 #### Combined template output
 
@@ -398,11 +387,11 @@ matter of workflow and project organization.
 | :-------------------------------- | :------------ | :------------------------------------ |
 | `-C, --output-ppu-colors`         | `<file>`      | Output PPU colors (`.pal`)            |
 | `-P, --output-palettes`           | `<file>`      | Output palettes `$3f00–$3f1f`         |
-| `-B, --output-palette-back`       | `<file>`      | Output palettes `$3f00–$3f0f`         |
-| `-S, --output-palette-sprites`    | `<file>`      | Output palettes `$3f10–$3f1f`         |
+| `-B, --output-palette-back`       | `<file>`      | Output palette  `$3f00–$3f0f`         |
+| `-S, --output-palette-sprites`    | `<file>`      | Output palette  `$3f10–$3f1f`         |
 | `-T, --output-pattern-tables`     | `<file>`      | Output pattern tables `$0000–$1fff`   |
-| `-L, --output-left-table`         | `<file>`      | Output pattern table `$0000–$0fff`    |
-| `-R, --output-right-table`        | `<file>`      | Output pattern table `$1000–$1fff`    |
+| `-L, --output-left-table`         | `<file>`      | Output pattern table  `$0000–$0fff`   |
+| `-R, --output-right-table`        | `<file>`      | Output pattern table  `$1000–$1fff`   |
 
 ### CHR to PNG template
 
@@ -412,20 +401,22 @@ matter of workflow and project organization.
 | :-------------------------------- | :------------ | :------------------------------------ |
 | `-M, --mode`                      | `c2t`         | Select CHR to template mode           |
 | `-c, --input-ppu-colors`          | `<file>`      | Input PPU colors (`.pal`)             |
-| `-p, --input-palettes`            | `<file>`      | Input palettes table                  |
-| `-l, --input-left-table`          | `<file>`      | Input left table                      |
-| `-r, --input-right-table`         | `<file>`      | Input right table                     |
+| `-p, --input-palettes`            | `<file>`      | Input palettes `$3f00–$3f1f`          |
+| `-b, --input-palette-back`        | `<file>`      | Input palette  `$3f00–$3f0f`          |
+| `-s, --input-palette-sprites`     | `<file>`      | Input palette  `$3f10–$3f1f`          |
+| `-t, --input-pattern-tables`      | `<file>`      | Input pattern tables `$0000–$1fff`    |
+| `-l, --input-left-table`          | `<file>`      | Input pattern table  `$0000–$0fff`    |
+| `-r, --input-right-table`         | `<file>`      | Input pattern table  `$1000–$1fff`    |
 
 #### Output (PNG)
 
 | Option                            | Argument      | Description                           |
 | :-------------------------------- | :------------ | :------------------------------------ |
 | `-O, --output`                    | `<file.png>`  | Output combined PNG template          |
-| `-C, --output-ppu-colors`         | `<file.png>`  | Output PPU colors                     |
-| `-P, --output-palettes`           | `<file.png>`  | Output palettes                       |
-| `-T, --output-pattern-tables`     | `<file.png>`  | Output pattern tables                 |
-| `-L, --output-left-table`         | `<file.png>`  | Output left pattern table             |
-| `-R, --output-right-table`        | `<file.png>`  | Output right pattern table            |
+| `-C, --output-ppu-colors`         | `<file.png>`  | Output PNG PPU colors                 |
+| `-P, --output-palettes`           | `<file.png>`  | Output PNG palettes                   |
+| `-L, --output-left-table`         | `<file.png>`  | Output PNG left pattern table         |
+| `-R, --output-right-table`        | `<file.png>`  | Output PNG right pattern table        |
 
 ---
 

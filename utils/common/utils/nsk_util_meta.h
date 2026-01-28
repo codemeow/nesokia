@@ -40,6 +40,7 @@
 #include "types/nsk_type_plane.h"                   // IWYU pragma: export
 #include "types/nsk_type_ppucolors.h"               // IWYU pragma: export
 #include "types/nsk_type_tile.h"                    // IWYU pragma: export
+#include "types/pattables/nsk_pattables_tiles.h"    // IWYU pragma: export
 #include "types/ppucolors/nsk_ppucolors_common.h"   // IWYU pragma: export
 #include "types/ppucolors/nsk_ppucolors_readpal.h"  // IWYU pragma: export
 #include "types/ppucolors/nsk_ppucolors_saveaco.h"  // IWYU pragma: export

@@ -4,8 +4,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "../types/nsk_type_planes.h"
-
 /*!
  * \brief  The starting point of the short-option replacing value
  *
@@ -40,7 +38,7 @@ enum nsk_mode_values {
     NSK_MODE_CHR2TEMPLATE, /*!< CHR to PNG template conversion */
 
     NSK_MODES_COUNT, /*!< Number of modes */
-}
+};
 
 /*!
  * \brief  Provided program options

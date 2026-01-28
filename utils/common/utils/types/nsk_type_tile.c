@@ -3,6 +3,7 @@
 #include "../types/nsk_type_tile.h"
 #include "../log/nsk_log_err.h"
 #include "../nsk_util_malloc.h"
+#include "../strings/nsk_strings_ansi.h"
 
 /*!
  * \brief  Generic validator
@@ -16,7 +17,7 @@ static void _tile_validate(
 ) {
     if (!flag) {
         nsk_err(
-            "Error: Tile field \"%s\"is not initialized\n",
+            "Error: Tile field \"%s\" is not initialized\n",
             message
         );
         abort();
@@ -168,14 +169,15 @@ union nsk_type_color4 *nsk_tile_getcolors(
  * \param[in,out] tile     The tile
  * \param[in]     palette  The palette
  */
-void nsk_tile_setpalette(
+bool nsk_tile_setpalette(
     struct nsk_type_tile *tile,
     const struct nsk_type_palette *palette
 ) {
     size_t count;
     union nsk_type_color4 *list = nsk_tile_getcolors(tile, &count);
 
-    for (size_t g = 0; g < NSK_PALETTESIZE_GROUPS; g++) {
+    size_t g;
+    for (g = 0; g < NSK_PALETTESIZE_GROUPS; g++) {
         bool match = true;
 
         for (size_t i = 0; i < count; i++) {
@@ -198,7 +200,27 @@ void nsk_tile_setpalette(
         }
     }
 
+    if (g == NSK_PALETTESIZE_GROUPS) {
+        nsk_err(
+            "Cannot assign palette to the tile\n"
+        );
+        nsk_err(
+            "Used colors:\n"
+        );
+        for (size_t i = 0; i < count; i++) {
+            nsk_err(
+                "  - %s\n",
+                nsk_string_color(list[i].r, list[i].g, list[i].b)
+            );
+        }
+        return false;
+    }
+
+    tile->init.palette = true;
+
     nsk_util_free(list);
+
+    return true;
 }
 
 /*!

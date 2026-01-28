@@ -5,7 +5,6 @@
 
 #include "../types/nsk_type_plane.h"
 #include "../types/nsk_type_tile.h"
-#include "../types/nsk_type_palettes.h"
 
 /*!
  * \brief  Pattern tables addresses
@@ -150,28 +149,6 @@ void nsk_pattables_show(
 );
 
 /*!
- * \brief  Assigns the tiles properties to the selected pattern table
- *
- * \param[in] palette  The palette
- * \param[in] table    The table
- */
-void nsk_pattable_settiles(
-    const struct nsk_type_palette  *palette,
-    struct nsk_type_pattable *table
-);
-
-/*!
- * \brief  Assigns the tiles properties to the patter tables
- *
- * \param[in] palettes  The palettes
- * \param[in] tables    The tables
- */
-void nsk_pattables_settiles(
-    const struct nsk_type_palettes  *palettes,
-    struct nsk_type_pattables *tables
-);
-
-/*!
  * \brief  By address accessor
  *
  * \param[in] tables   The tables
@@ -203,6 +180,15 @@ void nsk_pattable_setplane(
 void nsk_pattable_setaddress(
     struct nsk_type_pattable *table,
     enum nsk_pattable_address address
+);
+
+/*!
+ * \brief  Swaps the addresses between tables (change PPUCTRL 3/4 bits)
+ *
+ * \param[in,out]  tables  The tables
+ */
+void nsk_pattable_swapaddress(
+    struct nsk_type_pattables *tables
 );
 
 #endif

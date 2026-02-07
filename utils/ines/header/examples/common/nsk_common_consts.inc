@@ -317,6 +317,39 @@
 
             SIZE    = $10   ; Single palette size in bytes
         .endscope
+
+        ; @brief Sprites related constants for OAM
+        .scope SPRITES
+            ; @brief Max sprites slots
+            MAXCOUNT = 64
+
+            ; @brief Attributes
+            .scope ATTRIBUTE
+                PALETTEMASK = %11 ; First two bits represent the palette
+
+                ; @brief Sprite priority
+                .scope PRIORITY
+                    FOREGROUND = 0 ; Above the background
+                    BACKGROUND = 1 ; Under the background
+                .endscope
+
+                ; @brief Flip attributes
+                .scope FLIP
+
+                    ; @brief Horizontally
+                    .scope HOR
+                        NO     = 0 ; Do not flip
+                        YES    = 1 ; Flip
+                    .endscope
+
+                    ; @brief Vertically
+                    .scope VER
+                        NO     = 0 ; Do not flip
+                        YES    = 1 ; Flip
+                    .endscope
+                .endscope
+            .endscope
+        .endscope
     .endscope
 .endscope
 

@@ -32,19 +32,45 @@
 ;     .byte %00, %00              ; Palettes (pw,ph) = (w/2,h/2)
 ; ~~~
 
-.ifndef ::__NSK_ASSET_OBJECTS_ASM__
-; @brief Ground object
-.import nsk_object_ground
-.endif
 
 .ifndef ::__NSK_ASSET_OBJECTS_ASM__
-; @brief Counter object
-.import nsk_object_counter
-.endif
+.import nsk_object_skybox0
+.import nsk_object_skybox1
+.import nsk_object_skybox2
+.import nsk_object_skybox3
+.import nsk_object_skybox4
 
-.ifndef ::__NSK_ASSET_OBJECTS_ASM__
-; @brief Tree object
-.import nsk_object_tree
+.import nsk_object_base_a
+.import nsk_object_base_b
+.import nsk_object_base_c
+
+.import nsk_object_tube_4v
+.import nsk_object_tube_4h
+
+.import nsk_object_tophat
+.import nsk_object_branch_l
+.import nsk_object_branch_r
+
+.import nsk_object_hills_l
+.import nsk_object_hills_r
+
+.import nsk_object_platform_l
+.import nsk_object_platform_r
+
+.import nsk_object_cave_l
+.import nsk_object_cave_r
+.import nsk_object_cave_c
+.import nsk_object_cave_b
+
+.import nsk_object_glass_8
+.import nsk_object_glass_4
+
+.import nsk_object_bg_line
+.import nsk_object_bg_up
+.import nsk_object_bg_down
+
+.import nsk_object_void
+
 .endif
 
 .endif

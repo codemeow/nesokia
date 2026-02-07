@@ -13,20 +13,12 @@
 ; @brief Background palette
 .export nsk_palette_back
 nsk_palette_back:
-    .incbin "../../../chrrom/pal/pal-0.pal"
-;    .byte $21, $07, $17, $27
-;    .byte $21, $0b, $17, $1b
-;    .byte $0c, $1c, $2c, $3c
-;    .byte $06, $16, $26, $36
+    .incbin "build/pal/back.pal"
 
 
 ; @brief Sprites palette
 .export nsk_palette_sprites
 nsk_palette_sprites:
-    .incbin "../../../chrrom/pal/pal-1.pal"
-;    .byte $21, $07, $17, $27
-;    .byte $21, $11, $21, $31
-;    .byte $0c, $1c, $2c, $3c
-;    .byte $06, $16, $26, $36
+    .incbin "build/pal/sprites.pal"
 
 .endif

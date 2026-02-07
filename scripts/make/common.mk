@@ -14,6 +14,7 @@ ifeq ($(and $(filter 1,$(COLOR_TTY)),$(filter-out dumb,$(TERM)),$(if $(NO_COLOR)
 else
   COLOR_RESET :=
   COLOR_GREEN :=
+  COLOR_WHITE :=
 endif
 
 MSG_OK := [$(COLOR_GREEN)OK$(COLOR_RESET)]

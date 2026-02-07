@@ -16,6 +16,13 @@ SOURCE_DIR := source
 BUILD_DIR  := build
 # Common examples files dir
 COMMON_DIR := ../common
+# Nesokia root dir
+ROOT_DIR   := ../../../../..
+# Nesokia utilities bin
+ROOT_BIN_DIR := $(ROOT_DIR)/bin
+
+# Nesokiad utilities
+NSK_UTIL_CONVERT := $(ROOT_BIN_DIR)/nesokia-chr-convert
 
 # Nesokia source
 NSK_SOURCE := ../../nsk_header_code.asm
@@ -40,10 +47,38 @@ CFLAGS := -I $(COMMON_DIR)
 LDFLAGS :=
 
 # Target: all
+.PHONY: all
 all: $(TARGET)
 
+# Target: convert CHRs
+# @todo: Make this one non-phony target with deps of.png and add .chrsas deps for asm
+# to fix the "changed png -> including asm wasn't rebuilt"
+.PHONY: chr
+chr:
+	$(MKDIR) $(BUILD_DIR)/pal
+	$(MKDIR) $(BUILD_DIR)/chr
+	$(NSK_UTIL_CONVERT) \
+		-i chrrom/png/bank-0.png \
+		-L $(BUILD_DIR)/chr/bank-0.0000.chr \
+		-R $(BUILD_DIR)/chr/bank-0.1000.chr \
+		-B $(BUILD_DIR)/pal/back.pal \
+		-S $(BUILD_DIR)/pal/sprites.pal
+	$(NSK_UTIL_CONVERT) \
+		-i chrrom/png/bank-1.png \
+		-L $(BUILD_DIR)/chr/bank-1.0000.chr \
+		-R $(BUILD_DIR)/chr/bank-1.1000.chr
+	$(NSK_UTIL_CONVERT) \
+		-i chrrom/png/bank-2.png \
+		-L $(BUILD_DIR)/chr/bank-2.0000.chr \
+		-R $(BUILD_DIR)/chr/bank-2.1000.chr
+	$(NSK_UTIL_CONVERT) \
+		-i chrrom/png/bank-3.png \
+		-L $(BUILD_DIR)/chr/bank-3.0000.chr \
+		-R $(BUILD_DIR)/chr/bank-3.1000.chr
+
+
 # Target: ROM
-$(TARGET): $(NSK_OBJECT) $(GAME_OBJECT)
+$(TARGET): chr $(NSK_OBJECT) $(GAME_OBJECT)
 	$(LD) -C $(GAME_MEMORY) -o $@ $(NSK_OBJECT) $(GAME_OBJECT) $(LDFLAGS)
 
 # Target: Nesokia header object
@@ -60,13 +95,11 @@ $(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.asm
 	$(CA) $(CFLAGS) $< -o $@
 
 # Target: clean
+.PHONY: clean
 clean:
 	$(RM) $(NSK_OBJECT)
 	$(RM) $(GAME_OBJECT)
 	$(RM) $(TARGET)
-
-# Target list
-.PHONY: all clean
 
 # Default target
 .DEFAULT_GOAL := all

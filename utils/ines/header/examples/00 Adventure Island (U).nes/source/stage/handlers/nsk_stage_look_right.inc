@@ -11,4 +11,9 @@
 .import nsk_stage_look_right
 .endif
 
+.ifndef ::__NSK_STAGE_LOOK_RIGHT_ASM__
+; @brief Init this stage
+.import nsk_stage_look_right_init
+.endif
+
 .endif

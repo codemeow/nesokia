@@ -308,6 +308,10 @@ _nsk_render_quadrant_value:
         and #$01
         sta _nsk_render_quadrant_posy
 
+        ; Save the Qx position
+        lda _nsk_render_quadrant_posx
+        pha
+
         ; Save offset position, as the `width` loop will roll it ahead
         lda _nsk_render_offs
         pha
@@ -393,6 +397,9 @@ _nsk_render_quadrant_value:
         pla
         sta _nsk_render_offs
 
+        pla
+        sta _nsk_render_quadrant_posx
+
         ; Increase the offset by the attribute table width:
         lda _nsk_render_quadrant_posy
         beq :+
@@ -402,12 +409,15 @@ _nsk_render_quadrant_value:
             sta _nsk_render_offs
         :
 
-        ; Nex Y quadrant
+        ; Next Y quadrant
         inc _nsk_render_quadrant_posy
 
         ; Height check
         dec _nsk_render_height
-        bne height
+        beq done
+        jmp height
+
+    done:
 
     rts
 .endproc
@@ -433,6 +443,8 @@ _nsk_render_quadrant_value:
 
     ldy #$00
     lda (_nsk_render_mapdata), y
+    beq done
+
     tax
     iny
 
@@ -456,6 +468,8 @@ _nsk_render_quadrant_value:
         dex
         bne loop
 
+    done:
+
     pull a, x, y
     rts
 .endproc
@@ -466,7 +480,6 @@ _nsk_render_quadrant_value:
 .proc _nsk_render_map
     jsr _render_attrbuf_clear
     jsr _render_nametable_clear
-    ;jsr _render_attributes_clear
 
     jsr _render_map
 

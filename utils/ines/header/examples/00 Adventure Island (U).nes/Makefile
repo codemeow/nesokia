@@ -42,9 +42,9 @@ GAME_MEMORY := memory/config.cfg
 GAME_DIRS   := $(sort $(dir $(GAME_OBJECTS)))
 
 # Additional compiler flags
-CFLAGS := -I $(COMMON_DIR)
+CFLAGS := -I $(COMMON_DIR) -g
 # Additional linker flags
-LDFLAGS :=
+LDFLAGS := --dbgfile $(TARGET:.nes=.dbg)
 
 # Target: all
 .PHONY: all

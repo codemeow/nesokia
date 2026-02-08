@@ -25,6 +25,17 @@ stage_jump_ptr:
 
 .segment "RODATA"
 
+nsk_todo "Tables might be placed into scope with the size"
+; .scope GAME_STAGE
+;    TABLE:
+;         .addr x, y, z
+;    _TABLE_END:
+;
+;    SIZE = (GAME_STAGE::_TABLE_END - GAME_STAGE::TABLE) / 2
+; .endscope
+;
+; Also don't use the lowercase for the constants
+
 ; @brief Stage handlers list
 game_stage_table:
     .addr nsk_stage_look_right

@@ -164,26 +164,125 @@ union nsk_type_color4 *nsk_tile_getcolors(
 }
 
 /*!
- * \brief  Sets the tile palette by colors
+ * \brief  Sets the tile palette by explicitly provided index
  *
- * \param[in,out] tile     The tile
- * \param[in]     palette  The palette
+ * \param     tile       The tile
+ * \param[in] count      Number of colors used in the tile
+ * \param[in] colors     The colors
+ * \param[in] palette    The palette
+ * \param[in] explicit   The explicitly requested palette index
+ *
+ * \return True if the palette is applied
  */
-bool nsk_tile_setpalette(
-    struct nsk_type_tile *tile,
+static bool _setpalette_explicitly(
+    struct nsk_type_tile          *tile,
+    size_t                         count,
+    const union nsk_type_color4   *colors,
+    const struct nsk_type_palette *palette,
+    ssize_t                        explicit
+) {
+    for (size_t i = 0; i < count; i++) {
+        size_t c;
+        for (c = 0; c < NSK_PALETTESIZE_COLORS; c++) {
+            if (palette->group[explicit].color[c].raw == colors[i].raw) {
+                break;
+            }
+        }
+        if (c == NSK_PALETTESIZE_COLORS) {
+            nsk_err(
+                "Requested tile palette #%zd does not contain the tile color %s\n",
+                explicit,
+                nsk_string_color(colors[i].r, colors[i].g, colors[i].b)
+            );
+            return false;
+        }
+    }
+
+    tile->palette = explicit;
+    return true;
+}
+
+/*!
+ * \brief  Checks if both palettes has the same indexes for the tile
+ * colors
+ *
+ * \param[in] count   The count of tile colors
+ * \param[in] colors  The tile colors
+ * \param[in] cand0   The candidate 0
+ * \param[in] cand1   The candidate 1
+ * \return True if all the colors has the same positions
+ */
+static bool _palettes_match(
+    size_t                         count,
+    const union nsk_type_color4   *colors,
+    const union nsk_type_color4   *cand0,
+    const union nsk_type_color4   *cand1
+) {
+    for (size_t i = 0; i < count; i++) {
+        for (size_t c = 0; c < NSK_PALETTESIZE_COLORS; c++) {
+            if (colors[i].raw == cand0[c].raw) {
+                if (cand0[c].raw != cand1[c].raw) {
+                    return false;
+                }
+                break;
+            }
+        }
+    }
+    return true;
+}
+
+/*!
+ * \brief  Pretty prints the color list
+ *
+ * \param[in] name    The name of the list
+ * \param[in] count   The number of colors
+ * \param[in] colors  The color list
+ */
+static void _palette_print(
+    const char                    *name,
+    size_t                         count,
+    const union nsk_type_color4   *colors
+) {
+    nsk_err("   - %s:\n", name);
+    for (size_t i = 0; i < count; i++) {
+        nsk_err(
+            "%s%s%s",
+            i == 0 ? "        " : ", ",
+            nsk_string_color(
+                colors[i].r,
+                colors[i].g,
+                colors[i].b
+            ),
+            i == count - 1 ? "\n" : ""
+        );
+    }
+}
+
+/*!
+ * \brief  Sets the tile palette by heuristic analysis
+ *
+ * \param     tile       The tile
+ * \param[in] count      Number of colors used in the tile
+ * \param[in] colors     The colors
+ * \param[in] palette    The palette
+ * \param[in] explicit   The explicitly requested palette index
+ *
+ * \return True if the palette is applied
+ */
+static bool _setpalette_heuristically(
+    struct nsk_type_tile          *tile,
+    size_t                         count,
+    const union nsk_type_color4   *colors,
     const struct nsk_type_palette *palette
 ) {
-    size_t count;
-    union nsk_type_color4 *list = nsk_tile_getcolors(tile, &count);
-
-    size_t g;
-    for (g = 0; g < NSK_PALETTESIZE_GROUPS; g++) {
+    bool selected = false;
+    for (size_t g = 0; g < NSK_PALETTESIZE_GROUPS; g++) {
         bool match = true;
 
         for (size_t i = 0; i < count; i++) {
             size_t c;
             for (c = 0; c < NSK_PALETTESIZE_COLORS; c++) {
-                if (palette->group[g].color[c].raw == list[i].raw) {
+                if (palette->group[g].color[c].raw == colors[i].raw) {
                     break;
                 }
             }
@@ -195,32 +294,115 @@ bool nsk_tile_setpalette(
         }
 
         if (match) {
+            if (selected) {
+                bool ret = _palettes_match(
+                    count,
+                    colors,
+                    palette->group[tile->palette].color,
+                    palette->group[g].color
+                );
+
+                if (ret) {
+                    continue;
+
+                } else {
+                    nsk_err(
+                        "Two matching palettes have different tile colors positions:\n"
+                    );
+                    _palette_print(
+                        "Candidate 1",
+                        NSK_PALETTESIZE_COLORS,
+                        palette->group[tile->palette].color
+                    );
+                    _palette_print(
+                        "Candidate 2",
+                        NSK_PALETTESIZE_COLORS,
+                        palette->group[g].color
+                    );
+                    _palette_print(
+                        "Tile colors",
+                        count,
+                        colors
+                    );
+                    nsk_err(
+                        "\n"
+                        "Suggested solutions:\n"
+                        "   - Change the tile or tile colors to match exactly one palette\n"
+                        "   - Provide \"--explicit-palettes\" option to explicitly set\n"
+                        "     the tile's palette index\n"
+                        "\n"
+                    );
+                    return false;
+                }
+            }
+
             tile->palette = g;
-            break;
+            selected = true;
         }
     }
 
-    if (g == NSK_PALETTESIZE_GROUPS) {
+    if (!selected) {
         nsk_err(
-            "Cannot assign palette to the tile\n"
+            "Cannot find matching palette for the tile\n"
         );
-        nsk_err(
-            "Used colors:\n"
-        );
+        nsk_err("   - Tile colors:\n");
         for (size_t i = 0; i < count; i++) {
             nsk_err(
-                "  - %s\n",
-                nsk_string_color(list[i].r, list[i].g, list[i].b)
+                "%s%s%s",
+                i == 0 ? "        " : ", ",
+                nsk_string_color(
+                    colors[i].r,
+                    colors[i].g,
+                    colors[i].b
+                ),
+                i == count - 1 ? "\n" : ""
             );
         }
         return false;
+    }
+
+    return true;
+}
+
+/*!
+ * \brief  Sets the tile palette by colors
+ *
+ * \param[in,out] tile     The tile
+ * \param[in]     palette  The palette
+ * \param[in]     explicit The explicitly requested palette index or -1
+ */
+bool nsk_tile_setpalette(
+    struct nsk_type_tile          *tile,
+    const struct nsk_type_palette *palette,
+    ssize_t                        explicit
+) {
+    size_t count;
+    union nsk_type_color4 *list = nsk_tile_getcolors(tile, &count);
+    bool result;
+
+    if (explicit != -1) {
+        result = _setpalette_explicitly(
+            tile,
+            count,
+            list,
+            palette,
+            explicit
+        );
+
+    } else {
+        result = _setpalette_heuristically(
+            tile,
+            count,
+            list,
+            palette
+        );
     }
 
     tile->init.palette = true;
 
     nsk_util_free(list);
 
-    return true;
+    return result;
 }
 
 /*!

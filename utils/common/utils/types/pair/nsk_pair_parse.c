@@ -6,7 +6,6 @@
 #include <nsk_util_meta.h>
 
 #include "../../types/pair/nsk_pair_parse.h"
-#include "../../types/header/nsk_header_table.h"
 #include "../../types/pair/nsk_pair_cmp.h"
 
 /*!
@@ -22,20 +21,46 @@ static const int nsk_output_limit = 20;
  *
  * \param[in]  start  The string
  * \param[out] size   The size
+ * \param[in]  keys   List of string values representing valid keys or NULL
  * \return True if the string starts with the correct key
  */
-static bool _is_valid_key(const char *start, size_t *size) {
-    for (size_t i = 0; i < nsk_header_tablesize; i++) {
-        int cmp = strncmp(
-            nsk_header_table[i].shortcut,
-            start,
-            strlen(nsk_header_table[i].shortcut)
-        );
+static bool _is_valid_key(
+    const char *start,
+    size_t *size,
+    const char *const keys[]
+) {
+    if (keys) {
+        const char *key;
+        while ((key = *keys)) {
+            int cmp = strncmp(
+                key,
+                start,
+                strlen(key)
+            );
 
-        if (cmp == 0) {
-            *size = strlen(nsk_header_table[i].shortcut);
-            return true;
+            if (cmp == 0) {
+                *size = strlen(key);
+                return true;
+            }
+
+            keys++;
         }
+
+    } else {
+        const char *p = start;
+
+        if (!(isalpha(*p) || *p == '_')) {
+            return false;
+        }
+
+        p++;
+
+        while (isalpha(*p) || *p == '_') {
+            p++;
+        }
+
+        *size = p - start;
+        return true;
     }
 
     return false;
@@ -116,12 +141,18 @@ static bool _is_valid_value(const char *start, size_t *size, uint64_t *value) {
  * \param[in]  string  The string
  * \param[out] keylen  The key length
  * \param[out] key     The key
+ * \param[in]  keys    List of string values representing valid keys or NULL
  * \return String, shifted to the new (next) position
  */
-static const char *_parse_key(const char *string, size_t *keylen, const char **key) {
+static const char *_parse_key(
+    const char *string,
+    size_t *keylen,
+    const char **key,
+    const char *const keys[]
+) {
     const char *value = string;
     size_t      size;
-    if (!_is_valid_key(value, &size)) {
+    if (!_is_valid_key(value, &size, keys)) {
         nsk_err(
             "Error: bad key at \"...%.*s\"\n",
             nsk_output_limit,
@@ -183,12 +214,14 @@ static const char *_parse_value(const char *string, uint64_t *value) {
  * \param[in] string  The string
  * \param     parent  The parent
  * \param[in] fields  The combination of nsk_pair_fields
+ * \param[in] keys    List of string values representing valid keys or NULL
  * \return    Allocated list of pairs
  */
 static struct nsk_pair *_parse_pair(
     const char      *string,
     struct nsk_pair *parent,
-    unsigned         fields
+    unsigned         fields,
+    const char *const keys[]
 ) {
     const char             *key      = "";
     size_t                  keylen   = 0;
@@ -196,7 +229,7 @@ static struct nsk_pair *_parse_pair(
     uint64_t                value    = 0;
 
     if ((fields & NSK_PAIR_NAME) > 0) {
-        string = _parse_key(string, &keylen, &key);
+        string = _parse_key(string, &keylen, &key, keys);
         if (!string) {
             return NULL;
         }
@@ -225,7 +258,7 @@ static struct nsk_pair *_parse_pair(
     );
 
     if (*string == '&') {
-        if (!_parse_pair(string + 1, pair, fields)) {
+        if (!_parse_pair(string + 1, pair, fields, keys)) {
             pair->list.next = NULL;
             nsk_pair_free(pair);
             return NULL;
@@ -273,10 +306,15 @@ static struct nsk_pair *_parse_pair(
  * \param[in] string  The input string
  * \param[in] fields  The combination of nsk_pair_fields to indicate which
  *                    fields to parse
+ * \param[in] keys    List of string values representing valid keys or NULL
  * \return  Allocated list of pairs
  */
-struct nsk_pair *nsk_pair_parse(const char *string, unsigned fields) {
-    struct nsk_pair *pair = _parse_pair(string, NULL, fields);
+struct nsk_pair *nsk_pair_parse(
+    const char *string,
+    unsigned fields,
+    const char *const keys[]
+) {
+    struct nsk_pair *pair = _parse_pair(string, NULL, fields, keys);
     if (!pair) {
         nsk_err("Error: cannot parse list string: \"%s\"\n", string);
         exit(EXIT_FAILURE);

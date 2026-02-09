@@ -1,8 +1,9 @@
 #ifndef NSK_ENTRY_TYPE
 #define NSK_ENTRY_TYPE
 
+#include <nsk_util_meta.h>
+
 #include "../../types/header/nsk_header_data.h"
-#include "../../types/list/nsk_list_type.h"
 
 /*!
  * \brief  Parsed entry data list

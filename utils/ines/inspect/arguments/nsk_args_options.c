@@ -10,7 +10,6 @@
 #include "../arguments/processors/nsk_option_quiet.h"
 #include "../arguments/processors/nsk_option_recursive.h"
 #include "../arguments/processors/nsk_option_version.h"
-#include "../types/pair/nsk_pair_type.h"
 
 /*!
  * Available options table

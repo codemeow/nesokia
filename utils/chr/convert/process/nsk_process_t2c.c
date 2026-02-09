@@ -6,7 +6,7 @@
 /*!
  * \brief  Validate input combinations
  */
-static void _input_validate(void) {
+static void _options_validate(void) {
     if (nsk_options_program.input.full) {
         if (nsk_options_program.input.ppucolors         ||
             nsk_options_program.input.palettes.both     ||
@@ -134,7 +134,11 @@ static void _input_load(
         ppucolors,
         palettes
     );
-    nsk_pattables_settilespalettes(pattables, palettes);
+    nsk_pattables_settilespalettes(
+        pattables,
+        palettes,
+        nsk_options_program.input.explicit
+    );
     nsk_pattables_settilesindexes (pattables, palettes);
 }
 
@@ -145,7 +149,7 @@ static void _input_load(
  * \param[out]  palettes   The palettes
  * \param[out]  pattables  The pattables
  */
-static void _input_valdate(
+static void _input_validate(
     struct nsk_type_ppucolors *ppucolors,
     struct nsk_type_palettes  *palettes,
     struct nsk_type_pattables *pattables __attribute__((unused))
@@ -255,7 +259,7 @@ static void _output_save(
  * \brief  Processes t2c mode
  */
 void nsk_process_t2c(void) {
-    _input_validate();
+    _options_validate();
 
     struct nsk_type_ppucolors ppucolors = { 0 };
     struct nsk_type_palettes  palettes  = { 0 };
@@ -267,7 +271,7 @@ void nsk_process_t2c(void) {
         &pattables
     );
 
-    _input_valdate(
+    _input_validate(
         &ppucolors,
         &palettes,
         &pattables

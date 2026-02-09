@@ -5,10 +5,11 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include <nsk_util_meta.h>
+
 #include "../../types/header/nsk_header_category.h"
 #include "../../types/header/nsk_header_data.h"
 #include "../../types/header/nsk_header_raw.h"
-#include "../../types/pair/nsk_pair_cmp.h"
 
 /*!
  * "Not applicable" value

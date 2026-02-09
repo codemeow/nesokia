@@ -1,8 +1,9 @@
 #include <string.h>
 
+#include <nsk_util_meta.h>
+
 #include "../../queue/printers/nsk_printer_match.h"
 #include "../../arguments/nsk_args_options.h"
-#include "../../types/pair/nsk_pair_type.h"
 
 /*!
  * \brief  Checks if the field should be printed

@@ -10,7 +10,6 @@
 #include "../../../types/header/enums/nsk_enum_trainer.h"
 #include "../../../types/header/enums/nsk_enum_vshardware.h"
 #include "../../../types/header/enums/nsk_enum_vsppu.h"
-#include "../../../types/pair/nsk_pair_cmp.h"
 
 /*!
  * \brief  Directly compares the field value with the reference value

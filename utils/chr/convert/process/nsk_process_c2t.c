@@ -4,9 +4,9 @@
 #include "../arguments/nsk_args_options.h"
 
 /*!
- * \brief  Validates inputcombinations
+ * \brief  Validates input combinations
  */
-static void _input_validate(void) {
+static void _options_validate(void) {
     if (nsk_options_program.input.full) {
         nsk_err(
             "Invalid input: full input cannot be used in this mode\n"
@@ -119,7 +119,11 @@ static void _input_load(
         nsk_pattable_swapaddress(pattables);
     }
 
-    nsk_pattables_settilespalettes(pattables, palettes);
+    nsk_pattables_settilespalettes(
+        pattables,
+        palettes,
+        NULL
+    );
     nsk_pattables_settilescolors  (pattables, palettes);
 }
 
@@ -130,7 +134,7 @@ static void _input_load(
  * \param[out]  palettes   The palettes
  * \param[out]  pattables  The pattables
  */
-static void _input_valdate(
+static void _input_validate(
     struct nsk_type_ppucolors *ppucolors,
     struct nsk_type_palettes  *palettes,
     struct nsk_type_pattables *pattables __attribute__((unused))
@@ -254,7 +258,7 @@ static void _output_save(
  * \brief  Processes c2t mode
  */
 void nsk_process_c2t(void) {
-    _input_validate();
+    _options_validate();
 
     struct nsk_type_ppucolors ppucolors = { 0 };
     struct nsk_type_palettes  palettes  = { 0 };
@@ -266,7 +270,7 @@ void nsk_process_c2t(void) {
         &pattables
     );
 
-    _input_valdate(
+    _input_validate(
         &ppucolors,
         &palettes,
         &pattables

@@ -20,9 +20,14 @@ COMMON_DIR := ../common
 ROOT_DIR   := ../../../../..
 # Nesokia utilities bin
 ROOT_BIN_DIR := $(ROOT_DIR)/bin
+# Nesokia scripts bin
+ROOT_SCRIPTS_DIR := $(ROOT_DIR)/scripts
 
 # Nesokiad utilities
+# CHR converter
 NSK_UTIL_CONVERT := $(ROOT_BIN_DIR)/nesokia-chr-convert
+# CFG to explicit palette list converter
+NSK_UTIL_CFG2EXP := $(ROOT_SCRIPTS_DIR)/conv/nsk_conv_file2exp.sh
 
 # Nesokia source
 NSK_SOURCE := ../../nsk_header_code.asm
@@ -62,19 +67,23 @@ chr:
 		-L $(BUILD_DIR)/chr/bank-0.0000.chr \
 		-R $(BUILD_DIR)/chr/bank-0.1000.chr \
 		-B $(BUILD_DIR)/pal/back.pal \
-		-S $(BUILD_DIR)/pal/sprites.pal
+		-S $(BUILD_DIR)/pal/sprites.pal \
+		-e "$(shell $(NSK_UTIL_CFG2EXP) chrrom/png/bank-0.cfg)"
 	$(NSK_UTIL_CONVERT) \
 		-i chrrom/png/bank-1.png \
 		-L $(BUILD_DIR)/chr/bank-1.0000.chr \
-		-R $(BUILD_DIR)/chr/bank-1.1000.chr
+		-R $(BUILD_DIR)/chr/bank-1.1000.chr \
+		-e "$(shell $(NSK_UTIL_CFG2EXP) chrrom/png/bank-1.cfg)"
 	$(NSK_UTIL_CONVERT) \
 		-i chrrom/png/bank-2.png \
 		-L $(BUILD_DIR)/chr/bank-2.0000.chr \
-		-R $(BUILD_DIR)/chr/bank-2.1000.chr
+		-R $(BUILD_DIR)/chr/bank-2.1000.chr \
+		-e "$(shell $(NSK_UTIL_CFG2EXP) chrrom/png/bank-2.cfg)"
 	$(NSK_UTIL_CONVERT) \
 		-i chrrom/png/bank-3.png \
 		-L $(BUILD_DIR)/chr/bank-3.0000.chr \
-		-R $(BUILD_DIR)/chr/bank-3.1000.chr
+		-R $(BUILD_DIR)/chr/bank-3.1000.chr \
+		-e "$(shell $(NSK_UTIL_CFG2EXP) chrrom/png/bank-3.cfg)"
 
 
 # Target: ROM

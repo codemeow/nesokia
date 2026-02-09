@@ -149,4 +149,10 @@ _souls_digits:
     rts
 .endproc
 
+; @brief Init module
+.export nsk_sprites_hud_counter_init
+.proc nsk_sprites_hud_counter_init
+    rts
+.endproc
+
 .endif

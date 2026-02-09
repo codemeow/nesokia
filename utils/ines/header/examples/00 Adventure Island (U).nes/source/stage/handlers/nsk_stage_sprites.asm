@@ -14,6 +14,7 @@
 .include "../../stage/handlers/nsk_stage_sprites.inc"
 .include "../../stage/handlers/sprites/nsk_sprites_hud_fixed.inc"
 .include "../../stage/handlers/sprites/nsk_sprites_hud_counter.inc"
+.include "../../stage/handlers/sprites/nsk_sprites_character.inc"
 .include "../../stage/handlers/sprites/nsk_sprites_common.inc"
 
 .segment "RODATA"
@@ -23,6 +24,18 @@
     TABLE:
         .addr nsk_sprites_hud_fixed
         .addr nsk_sprites_hud_counter
+        .addr nsk_sprites_character
+    _TABLE_END:
+
+    COUNT = (STEPS::_TABLE_END - STEPS::TABLE) / 2
+.endscope
+
+; @brief Table of steps init functions
+.scope INITS
+    TABLE:
+        .addr nsk_sprites_hud_fixed_init
+        .addr nsk_sprites_hud_counter_init
+        .addr nsk_sprites_character_init
     _TABLE_END:
 
     COUNT = (STEPS::_TABLE_END - STEPS::TABLE) / 2
@@ -100,14 +113,28 @@ _sprites_step_jumper:
     rts
 .endproc
 
+; @brief Init modules
 .export nsk_stage_sprites_draw_init
 .proc nsk_stage_sprites_draw_init
-    push a
+    push a, x
 
     lda #$00
     sta _sprites_step_start
+    sta _sprites_step_index
 
-    pull a
+    ldx #INITS::COUNT
+
+    loop:
+        jai \
+            _sprites_step_jumper,   \
+            INITS::TABLE,           \
+            _sprites_step_index
+
+        inc _sprites_step_index
+        dex
+        bne loop
+
+    pull a, x
     rts
 .endproc
 

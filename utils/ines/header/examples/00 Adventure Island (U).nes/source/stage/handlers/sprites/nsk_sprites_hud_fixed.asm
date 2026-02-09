@@ -63,4 +63,11 @@
     rts
 .endproc
 
+
+; @brief Init module
+.export nsk_sprites_hud_fixed_init
+.proc nsk_sprites_hud_fixed_init
+    rts
+.endproc
+
 .endif

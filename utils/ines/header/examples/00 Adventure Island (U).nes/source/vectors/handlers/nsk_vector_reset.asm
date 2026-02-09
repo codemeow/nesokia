@@ -43,7 +43,7 @@
 .macro init_ppu_values
     lda #( \
         NSK::CPU::PPU::BITS::PPUMASK::GRAYSCALE_OFF       | \
-        NSK::CPU::PPU::BITS::PPUMASK::LEFTMOST_BACK_ON    | \
+        NSK::CPU::PPU::BITS::PPUMASK::LEFTMOST_BACK_OFF   | \
         NSK::CPU::PPU::BITS::PPUMASK::LEFTMOST_SPRITE_OFF | \
         NSK::CPU::PPU::BITS::PPUMASK::RENDER_BACK_OFF     | \
         NSK::CPU::PPU::BITS::PPUMASK::RENDER_SPRITES_OFF  | \

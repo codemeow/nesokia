@@ -11,6 +11,9 @@
 ; @brief Draws the counter part of the HUD
 .import nsk_sprites_hud_counter
 
+; @brief Init module
+.import nsk_sprites_hud_counter_init
+
 .endif
 
 .endif

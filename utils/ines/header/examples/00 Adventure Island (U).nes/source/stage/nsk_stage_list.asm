@@ -46,37 +46,38 @@ game_stage_table_end:
 STAGE_TABLE_SIZE = (game_stage_table_end - game_stage_table) / 2
 
 ; @brief Stage initialization list
-game_init_table:
-    .addr nsk_stage_look_right_init
-    .addr nsk_stage_look_left_init
-    .addr nsk_stage_sprites_draw_init
-game_init_table_end:
+.scope INITS
+    TABLE:
+        .addr nsk_stage_look_right_init
+        .addr nsk_stage_look_left_init
+        .addr nsk_stage_sprites_draw_init
+    _TABLE_END:
 
-; @brief Number of elements in the init table
-INIT_TABLE_SIZE = (game_init_table_end - game_init_table) / 2
+    COUNT = (INITS::_TABLE_END - INITS::TABLE) / 2
+.endscope
 
 .segment "CODE"
 
 ; @brief Inits the current stage index
 .export nsk_stage_init
 .proc nsk_stage_init
-    push a
+    push a, x
 
     lda #$00
     sta game_stage_num
+    ldx #INITS::COUNT
 
     loop:
-        jai stage_jump_ptr, game_init_table, game_stage_num
+        jai stage_jump_ptr, INITS::TABLE, game_stage_num
         inc game_stage_num
-        lda game_stage_num
-        cmp #INIT_TABLE_SIZE
+        dex
         bne loop
 
 
     lda #GAMESTAGE_START
     sta game_stage_num
 
-    pull a
+    pull a, x
     rts
 .endproc
 

@@ -11,6 +11,9 @@
 ; @brief Draws the fixed part of the HUD
 .import nsk_sprites_hud_fixed
 
+; @brief Init module
+.import nsk_sprites_hud_fixed_init
+
 .endif
 
 .endif

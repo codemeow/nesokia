@@ -57,6 +57,9 @@ struct nsk_options_program {
             const char *left;       /*!< Left pattern table (PNG/CHR)   */
             const char *right;      /*!< Right pattern table (PNG/CHR)  */
         } pattables;
+
+        struct nsk_pair *explicit;  /*!< Explicit list of the PT's tile
+                                     *   palette selection (PNG)        */
     } input;
 
     struct {

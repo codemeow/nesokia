@@ -28,8 +28,13 @@
  * \param[in] string  The input string
  * \param[in] fields  The combination of nsk_pair_fields to indicate which
  *                    fields to parse
+ * \param[in] keys    List of string values representing valid keys or NULL
  * \return  Allocated list of pairs
  */
-struct nsk_pair *nsk_pair_parse(const char *string, unsigned fields);
+struct nsk_pair *nsk_pair_parse(
+    const char *string,
+    unsigned fields,
+    const char *const keys[]
+);
 
 #endif

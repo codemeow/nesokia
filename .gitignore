@@ -1,6 +1,7 @@
 *.sublime-workspace
 *.elf
 *.o
+*.dbg
 build
 bin
 .vscode

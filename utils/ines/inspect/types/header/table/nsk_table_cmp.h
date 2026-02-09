@@ -1,7 +1,7 @@
 #ifndef NSK_TABLE_CMP
 #define NSK_TABLE_CMP
 
-#include "../../../types/pair/nsk_pair_cmp.h"
+#include <nsk_util_meta.h>
 
 /*!
  * \brief  Compares the field value with the reference value

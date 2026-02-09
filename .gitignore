@@ -1,19 +1,29 @@
-*.sublime-workspace
-*.elf
-*.o
-*.dbg
+# Global match
+*/*.elf
+*/*.o
+*/*.dbg
+*/*.nes
+
+# Root directories
 build
 bin
+
+# Editors files
 .vscode
+*.sublime-workspace
 
-# Utils/Create autotests configuration files
+# utils/ines/header autotests configuration files
 utils/ines/header/tests/cases/*/nsk_header_config.inc
-# Utils/Create autotests object files
-utils/ines/header/tests/cases/*/test.o
-# Utils/Create autotests binary files
-utils/ines/header/tests/cases/*/test.nes
+# utils/ines/header autotests object files
+utils/ines/header/tests/cases/*/*.o
+# utils/ines/header autotests binary files
+utils/ines/header/tests/cases/*/*.nes
+# utils/ines/header autotests debug files
+utils/ines/header/tests/cases/*/*.dbg
 
-# Utils/Create examples build directory
+# utils/ines/header examples build directory
 utils/ines/header/examples/*/bin
-# Utils/Create examples binary files
+# utils/ines/header examples binary files
 utils/ines/header/examples/*/*.nes
+# utils/ines/header examples debug files
+utils/ines/header/examples/*/*.dbg

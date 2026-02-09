@@ -7,6 +7,7 @@
 
 #include "../types/nsk_type_color4.h"
 #include "../types/nsk_type_palettes.h"
+#include "../types/pair/nsk_pair_type.h"
 
 /*!
  * \brief  Tile sizes configuration
@@ -108,11 +109,13 @@ union nsk_type_color4 *nsk_tile_getcolors(
  *
  * \param[in,out] tile     The tile
  * \param[in]     palette  The palette
+ * \param[in]     explicit The explicitly requested palette index or -1
  */
 __attribute__((warn_unused_result))
 bool nsk_tile_setpalette(
-    struct nsk_type_tile *tile,
-    const struct nsk_type_palette *palette
+    struct nsk_type_tile          *tile,
+    const struct nsk_type_palette *palette,
+    ssize_t                        explicit
 );
 
 /*!

@@ -27,7 +27,7 @@ static const int nsk_output_limit = 20;
 static bool _is_valid_key(
     const char *start,
     size_t *size,
-    const char *keys[]
+    const char *const keys[]
 ) {
     if (keys) {
         const char *key;
@@ -148,7 +148,7 @@ static const char *_parse_key(
     const char *string,
     size_t *keylen,
     const char **key,
-    const char *keys[]
+    const char *const keys[]
 ) {
     const char *value = string;
     size_t      size;
@@ -221,7 +221,7 @@ static struct nsk_pair *_parse_pair(
     const char      *string,
     struct nsk_pair *parent,
     unsigned         fields,
-    const char *keys[]
+    const char *const keys[]
 ) {
     const char             *key      = "";
     size_t                  keylen   = 0;
@@ -312,7 +312,7 @@ static struct nsk_pair *_parse_pair(
 struct nsk_pair *nsk_pair_parse(
     const char *string,
     unsigned fields,
-    const char *keys[]
+    const char *const keys[]
 ) {
     struct nsk_pair *pair = _parse_pair(string, NULL, fields, keys);
     if (!pair) {

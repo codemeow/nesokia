@@ -34,7 +34,7 @@
 struct nsk_pair *nsk_pair_parse(
     const char *string,
     unsigned fields,
-    const char *keys[]
+    const char *const keys[]
 );
 
 #endif

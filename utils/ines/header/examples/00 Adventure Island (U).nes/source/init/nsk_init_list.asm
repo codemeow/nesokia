@@ -15,12 +15,14 @@
 .include "../init/list/nsk_init_sprites_draw.inc"
 .include "../init/list/nsk_init_tiles_draw.inc"
 .include "../init/list/nsk_init_ppu_flush.inc"
+.include "../utils/nsk_util_rand8.inc"
 
 .segment "RODATA"
 
 ; @brief Init stages list
 .export nsk_init_list
 nsk_init_list:
+    .addr nsk_util_srand8
     .addr nsk_init_ppu_disable
     .addr nsk_init_tiles_draw
     .addr nsk_init_sprites_draw

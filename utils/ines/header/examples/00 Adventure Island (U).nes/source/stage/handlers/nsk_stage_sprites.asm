@@ -12,10 +12,11 @@
 
 .include "../../ppu/nsk_ppu_vars.inc"
 .include "../../stage/handlers/nsk_stage_sprites.inc"
-.include "../../stage/handlers/sprites/nsk_sprites_hud_fixed.inc"
-.include "../../stage/handlers/sprites/nsk_sprites_hud_counter.inc"
 .include "../../stage/handlers/sprites/nsk_sprites_character.inc"
 .include "../../stage/handlers/sprites/nsk_sprites_common.inc"
+.include "../../stage/handlers/sprites/nsk_sprites_debris.inc"
+.include "../../stage/handlers/sprites/nsk_sprites_hud_counter.inc"
+.include "../../stage/handlers/sprites/nsk_sprites_hud_fixed.inc"
 
 .segment "RODATA"
 
@@ -25,6 +26,7 @@
         .addr nsk_sprites_hud_fixed
         .addr nsk_sprites_hud_counter
         .addr nsk_sprites_character
+        .addr nsk_sprites_debris
     _TABLE_END:
 
     COUNT = (STEPS::_TABLE_END - STEPS::TABLE) / 2
@@ -36,6 +38,7 @@
         .addr nsk_sprites_hud_fixed_init
         .addr nsk_sprites_hud_counter_init
         .addr nsk_sprites_character_init
+        .addr nsk_sprites_debris_init
     _TABLE_END:
 
     COUNT = (STEPS::_TABLE_END - STEPS::TABLE) / 2

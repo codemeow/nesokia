@@ -48,7 +48,7 @@ _character_isvisible:
 _character_screen_x:
     .res 1
 
-; Temp ar for Y camera pos
+; Temp var for Y camera pos
 _temp_posy:
     .res 1
 
@@ -60,7 +60,7 @@ _calc_world_x:
 
 ; @brief Calculates the character visibility and screen position
 ;
-; @param _character_world_x Character's world X pos
+; @param _calc_world_x Character's world X pos
 ;
 ; @param [out] _character_isvisible Character is visible
 ; @param [out] _character_screen_x  Character's screen X pos (if visible)

@@ -100,8 +100,13 @@
                     SPRITE_8x8        = %00000000 ; Sprite size is 8x8
                     SPRITE_8x16       = %00100000 ; Sprite size is 8x16
 
-                    PPU_SLAVE         = %00000000 ; PPU reads backdrop from EXT pins
-                    PPU_MASTER        = %01000000 ; PPU emits backdrop to EXT pins
+; These values are commented out on purpose.
+;
+; Accidentally setting SLAVE mode can possible damage your console.
+; And as the "safe" value is 0 it it safer to not to use this bit at all
+;
+;                    PPU_MASTER        = %00000000 ; PPU reads backdrop from EXT pins
+;                    PPU_SLAVE         = %01000000 ; PPU emits backdrop to EXT pins
 
                     NMI_DISABLE       = %00000000 ; NMI interrupt is disabled
                     NMI_ENABLE        = %10000000 ; NMI interrupt is enabled
@@ -329,8 +334,8 @@
 
                 ; @brief Sprite priority
                 .scope PRIORITY
-                    FOREGROUND = 0 ; Above the background
-                    BACKGROUND = 1 ; Under the background
+                    FOREGROUND = %00000000 ; Above the background
+                    BACKGROUND = %00100000 ; Under the background
                 .endscope
 
                 ; @brief Flip attributes
@@ -338,14 +343,14 @@
 
                     ; @brief Horizontally
                     .scope HOR
-                        NO     = 0 ; Do not flip
-                        YES    = 1 ; Flip
+                        NO     = %00000000 ; Do not flip
+                        YES    = %01000000 ; Flip
                     .endscope
 
                     ; @brief Vertically
                     .scope VER
-                        NO     = 0 ; Do not flip
-                        YES    = 1 ; Flip
+                        NO     = %00000000 ; Do not flip
+                        YES    = %10000000 ; Flip
                     .endscope
                 .endscope
             .endscope

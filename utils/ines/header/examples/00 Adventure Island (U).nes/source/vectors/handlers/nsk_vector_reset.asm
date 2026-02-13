@@ -60,7 +60,6 @@
         NSK::CPU::PPU::BITS::PPUCTRL::SPRITE_TABLE_1000   | \
         NSK::CPU::PPU::BITS::PPUCTRL::TILES_TABLE_0000    | \
         NSK::CPU::PPU::BITS::PPUCTRL::SPRITE_8x8          | \
-        NSK::CPU::PPU::BITS::PPUCTRL::PPU_SLAVE           | \
         NSK::CPU::PPU::BITS::PPUCTRL::NMI_DISABLE           \
     )
     sta ppu_temp_control

@@ -10,6 +10,8 @@
 
 .segment "ZEROPAGE"
 
+nsk_todo "Rewrite as simple loop with table"
+
 ; @brief Address for the selected init functions list
 .exportzp _nsk_init_funcs
 _nsk_init_funcs:

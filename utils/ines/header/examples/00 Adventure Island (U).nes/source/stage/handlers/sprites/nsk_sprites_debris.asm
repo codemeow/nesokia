@@ -37,7 +37,6 @@ _DEBRIS_TOTAL = \
         ; 0 - The farthest
         SPRITE:
             .byte $bf, $bf, $be, $be
-            ;.byte $13, $14, $15, $16
 
         ; Number of sprites per layer
         SIZE:
@@ -117,51 +116,6 @@ _debris_inlayer_index:
 
 .segment "CODE"
 
-nsk_todo "Move _pos_calc to common along with character code"
-
-; @brief Calculates the debris visibility and screen position
-;
-; @param _calc_world_x Debris's world X pos
-;
-; @param [out] _debris_isvisible Debris is visible
-; @param [out] _debris_screen_x  Debris's screen X pos (if visible)
-.proc _debris_pos_calc
-    push a
-
-    ; Camera = _calc_world_x - ppu_temp_scroll_x
-    sec
-    lda _calc_world_x
-    sbc ppu_temp_scroll_x
-    pha ; Screen position if visible
-
-    lda _calc_world_x + 1
-    sbc #00 ; In this demo we don't use additional nametables,
-            ; thus limiting camera to 0..255. The value here
-            ; represents the "page", for instance: camera 256..512
-            ; is "page" 1.
-
-    ; visible = ([page] == 0)
-    bne not_visible
-
-    visible:
-        pla
-        sta _debris_screen_x
-        lda #1
-        sta _debris_isvisible
-        jmp done
-
-    not_visible:
-        pla ; Restore anyway
-        lda #0
-        sta _debris_isvisible
-
-    done:
-
-    pull a
-
-    rts
-.endproc
-
 ; @brief Respawns current debris
 ;
 ; param[in] X  Debris index
@@ -189,17 +143,25 @@ nsk_todo "Move _pos_calc to common along with character code"
     rts
 .endproc
 
-; @brief Updates debris coordinates or respawn them
+; @brief Process single debris
 ;
-; param[in] X  Debris index
-; param[in] Y  Layer index
+; @param[in] X                      Index of the debris (total)
+; @param[in] Y                      Layer index
+; @param[in] _debris_inlayer_index  Index of the debris in the current layer
 .proc _debris_update
-    ; Wind updates
+    ; United logic within one proc as separate procs require too much of API
+    ; connection between them that consumes too much (in my view) time
+
+    push a, x, y
+
+    ; # Constant wind
+    ; @note Could be splitted between frames later
     sec
     lda _debris_world_x_frac, x
     sbc DEBRIS::LAYERS::WIND, y
     sta _debris_world_x_frac, x
 
+    ; In case of splitting the low part could also be coded in the DEBRIS::
     lda _debris_world_x_lo, x
     sbc #0
     sta _debris_world_x_lo, x
@@ -208,14 +170,14 @@ nsk_todo "Move _pos_calc to common along with character code"
     sbc #0
     sta _debris_world_x_hi, x
 
-    ; Respawn check
     cmp #$ff
     bne :+
         jsr _debris_respawn
         jmp done
     :
 
-    ; Gravity updates
+    ; # Constant gravity
+    ; @note Could also be splitted between frames later
     clc
     lda _debris_world_y_frac, x
     adc DEBRIS::LAYERS::GRAVITY, y
@@ -225,32 +187,45 @@ nsk_todo "Move _pos_calc to common along with character code"
     adc #0
     sta _debris_world_y, x
 
-    ; Respawn check
+    ; Could also be "clamped" here by the values in DEBRIS::LAYERS::MAXY
     cmp #$ff
     bne :+
         jsr _debris_respawn
         jmp done
     :
 
-    done:
-
-    rts
-.endproc
-
-; @brief Draws or skips the debris element
-;
-; param[in] X                       Debris index
-; param[in] Y                       Layer index
-.proc _debris_draw
+    ; # Visibility
+    ; @note The calculation itself could also be splitted between frames
     lda _debris_world_x_lo, x
-    sta _calc_world_x
+    sec
+    sbc ppu_temp_scroll_x
+    sta _debris_screen_x
+
+    ; Carry flag meanings after SBC:
+    ;   C = 1 : no borrow : world_x >= scroll_x
+    ;   C = 0 : borrow    : world_x <  scroll_x
     lda _debris_world_x_hi, x
-    sta _calc_world_x + 1
 
-    jsr _debris_pos_calc
-    lda _debris_isvisible
-    beq not_visible
+    beq hi0
 
+    ; hi != 0:
+    ;   world_x is either far right of screen,
+    ;   or slightly left but hi-byte was already non-zero
+    hi1:
+        ; No borrow : world_x > visible area (right)
+        bcs not_visible
+        ; Borrow: within visible area
+        jmp visible
+
+    ; hi == 0:
+    ;   world_x is within or left of screen
+    hi0:
+        ; Borrow : world_x < scroll_x (left of screen)
+        bcc not_visible
+        ; No borrow: within visible area
+
+    ; # Drawing the sprites
+    ; This is the only block that cannot be splitted
     visible:
         nsk_sprite_draw \
             { DEBRIS::LAYERS::SPRITE, y  }, \
@@ -260,6 +235,11 @@ nsk_todo "Move _pos_calc to common along with character code"
             { _debris_world_y, x         }
 
     not_visible:
+        ; Doing nothing
+
+    done:
+
+    pull a, x, y
 
     rts
 .endproc
@@ -278,7 +258,6 @@ nsk_todo "Move _pos_calc to common along with character code"
 
     loop:
         jsr _debris_update
-        jsr _debris_draw
 
         inc _debris_inlayer_index
         lda _debris_inlayer_index

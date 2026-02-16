@@ -133,8 +133,8 @@ _calc_world_x:
 
             nsk_sprite_draw \
                 { CHARACTER::SPRITE, x  }, \
-                { #CHARACTER::PALETTE   }, \
                 { #CHARACTER::ATTRS     }, \
+                { #CHARACTER::PALETTE   }, \
                 { _character_screen_x   }, \
                 { _temp_posy            }
 

@@ -254,8 +254,8 @@ nsk_todo "Move _pos_calc to common along with character code"
     visible:
         nsk_sprite_draw \
             { DEBRIS::LAYERS::SPRITE, y  }, \
-            { DEBRIS::LAYERS::PALETTE, y }, \
             { DEBRIS::LAYERS::ATTRS, y   }, \
+            { DEBRIS::LAYERS::PALETTE, y }, \
             { _debris_screen_x           }, \
             { _debris_world_y, x         }
 
@@ -264,9 +264,8 @@ nsk_todo "Move _pos_calc to common along with character code"
     rts
 .endproc
 
-; @brief Draws the debris
-.export nsk_sprites_debris
-.proc nsk_sprites_debris
+; @brief Debug function to track time
+.proc _debug_sprites_debris
     push a, x, y
 
     lda #0
@@ -295,6 +294,19 @@ nsk_todo "Move _pos_calc to common along with character code"
         bne loop
 
     pull a, x, y
+
+    rts
+.endproc
+
+; @brief Draws the debris
+.export nsk_sprites_debris
+.proc nsk_sprites_debris
+
+    ;===
+    jsr _debug_sprites_debris
+    ;===
+
+
 
     rts
 .endproc
@@ -338,10 +350,6 @@ nsk_todo "Move _pos_calc to common along with character code"
         bne loop
 
     pull a, x
-
-nsk_todo "Update 1 layer per frame"
-nsk_todo "draw всё грузануть в lda, убрать .asm вообще"
-nsk_todo "Уже потом попробовать тут объединить update/draw"
 
     rts
 .endproc

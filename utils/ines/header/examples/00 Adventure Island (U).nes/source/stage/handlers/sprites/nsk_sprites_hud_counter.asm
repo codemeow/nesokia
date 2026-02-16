@@ -101,14 +101,14 @@ _souls_digits:
         ldy nsk_bcd_outh
         nsk_sprite_draw \
             { HUD::COUNTER::sprite_top, y       }, \
-            { #HUD::COUNTER::PALETTE            }, \
             { #HUD::COUNTER::ATTRS              }, \
+            { #HUD::COUNTER::PALETTE            }, \
             { HUD::COUNTER::posx, x             }, \
             { #HUD::COUNTER::POSY_TOP           }
         nsk_sprite_draw \
             { HUD::COUNTER::sprite_bottom, y    }, \
-            { #HUD::COUNTER::PALETTE            }, \
             { #HUD::COUNTER::ATTRS              }, \
+            { #HUD::COUNTER::PALETTE            }, \
             { HUD::COUNTER::posx, x             }, \
             { #HUD::COUNTER::POSY_BOTTOM        }
         inx
@@ -117,14 +117,14 @@ _souls_digits:
         ldy nsk_bcd_outt
         nsk_sprite_draw \
             { HUD::COUNTER::sprite_top, y       }, \
-            { #HUD::COUNTER::PALETTE            }, \
             { #HUD::COUNTER::ATTRS              }, \
+            { #HUD::COUNTER::PALETTE            }, \
             { HUD::COUNTER::posx, x             }, \
             { #HUD::COUNTER::POSY_TOP           }
         nsk_sprite_draw \
             { HUD::COUNTER::sprite_bottom, y    }, \
-            { #HUD::COUNTER::PALETTE            }, \
             { #HUD::COUNTER::ATTRS              }, \
+            { #HUD::COUNTER::PALETTE            }, \
             { HUD::COUNTER::posx, x             }, \
             { #HUD::COUNTER::POSY_BOTTOM        }
         inx
@@ -133,14 +133,14 @@ _souls_digits:
         ldy nsk_bcd_outu
         nsk_sprite_draw \
             { HUD::COUNTER::sprite_top, y       }, \
-            { #HUD::COUNTER::PALETTE            }, \
             { #HUD::COUNTER::ATTRS              }, \
+            { #HUD::COUNTER::PALETTE            }, \
             { HUD::COUNTER::posx, x             }, \
             { #HUD::COUNTER::POSY_TOP           }
         nsk_sprite_draw \
             { HUD::COUNTER::sprite_bottom, y    }, \
-            { #HUD::COUNTER::PALETTE            }, \
             { #HUD::COUNTER::ATTRS              }, \
+            { #HUD::COUNTER::PALETTE            }, \
             { HUD::COUNTER::posx, x             }, \
             { #HUD::COUNTER::POSY_BOTTOM        }
 

@@ -100,7 +100,7 @@ _sprites_step_jumper:
 
 
     ; Hide the rest of the sprites (if any)
-    jsr nsk_sprites_hide
+    nsk_sprites_hide
 
     ; Rotate starting step for the next frame
     inc _sprites_step_start

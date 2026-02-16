@@ -49,11 +49,11 @@
     ldy #$00
     draw:
         nsk_sprite_draw \
-            {HUD::CAPTION::sprite, y}, \
-            {HUD::CAPTION::palette,y}, \
-            {#HUD::CAPTION::ATTRS   }, \
-            {HUD::CAPTION::posx, y  }, \
-            {HUD::CAPTION::posy, y  }
+            {::HUD::CAPTION::sprite, y}, \
+            {#::HUD::CAPTION::ATTRS   }, \
+            {::HUD::CAPTION::palette,y}, \
+            {::HUD::CAPTION::posx, y  }, \
+            {::HUD::CAPTION::posy, y  }
 
         iny
         cpy #HUD::CAPTION::COUNT

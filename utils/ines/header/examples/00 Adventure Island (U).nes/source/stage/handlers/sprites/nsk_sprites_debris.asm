@@ -152,8 +152,6 @@ _debris_inlayer_index:
     ; United logic within one proc as separate procs require too much of API
     ; connection between them that consumes too much (in my view) time
 
-    push a, x, y
-
     ; # Constant wind
     ; @note Could be splitted between frames later
     sec
@@ -239,13 +237,12 @@ _debris_inlayer_index:
 
     done:
 
-    pull a, x, y
-
     rts
 .endproc
 
-; @brief Debug function to track time
-.proc _debug_sprites_debris
+; @brief Draws the debris
+.export nsk_sprites_debris
+.proc nsk_sprites_debris
     push a, x, y
 
     lda #0
@@ -273,19 +270,6 @@ _debris_inlayer_index:
         bne loop
 
     pull a, x, y
-
-    rts
-.endproc
-
-; @brief Draws the debris
-.export nsk_sprites_debris
-.proc nsk_sprites_debris
-
-    ;===
-    jsr _debug_sprites_debris
-    ;===
-
-
 
     rts
 .endproc

@@ -57,7 +57,7 @@
 .macro jai ramptr, table, index
 .scope
     init:
-        push a, x, y
+        push a, y
 
     address:
         .if     (.xmatch({index}, x))
@@ -79,8 +79,7 @@
         lda table + 1, y
         sta ramptr + 1
 
-    check:
-        lda ramptr + 1
+        ; Failsafe
         ora ramptr + 0
         beq done
 
@@ -94,7 +93,7 @@
         jmp (ramptr)
 
     done:
-        pull a, x, y
+        pull a, y
 .endscope
 .endmacro
 

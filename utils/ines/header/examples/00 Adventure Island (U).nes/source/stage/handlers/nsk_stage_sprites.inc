@@ -11,8 +11,6 @@
 ; @note In this demo no other levels are planned, so this
 ;    function is a common sprites drawer
 .import nsk_stage_sprites_draw
-; @brief Initialization routine
-.import nsk_stage_sprites_draw_init
 .endif
 
 .endif

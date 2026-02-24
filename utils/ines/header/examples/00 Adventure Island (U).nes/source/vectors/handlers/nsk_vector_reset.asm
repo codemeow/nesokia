@@ -9,13 +9,13 @@
 
 .include "nsk_common_meta.inc"
 
-.include "../../vectors/handlers/nsk_vector_reset.inc"
-.include "../../vectors/handlers/nsk_vector_nmi.inc"
-.include "../../stage/nsk_stage_list.inc"
-.include "../../ppu/nsk_ppu_vars.inc"
+.include "nsk_vector_reset.inc"
+
+.include "nsk_vector_nmi.inc"
 .include "../../nsk_main.inc"
-.include "../../init/nsk_init_loop.inc"
-.include "../../init/nsk_init_list.inc"
+.include "../../ppu/nsk_ppu_vars.inc"
+.include "../../stage/init/nsk_stage_init.inc"
+.include "../../utils/nsk_util_rand8.inc"
 
 .segment "CODE"
 
@@ -129,7 +129,8 @@
 
     init_vblank_wait
 
-    nsk_init_loop nsk_init_list
+    jsr nsk_util_srand8
+    jsr nsk_stage_init
 
     jmp nsk_main
 .endproc

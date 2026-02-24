@@ -8,10 +8,10 @@
 
 .include "nsk_common_meta.inc"
 
+.include "nsk_stage_look_left.inc"
 .include "../../ppu/nsk_ppu_vars.inc"
-.include "../../stage/handlers/nsk_stage_look_left.inc"
-.include "../../stage/handlers/nsk_stage_sprites.inc"
-.include "../../stage/nsk_stage_list.inc"
+.include "../nsk_stage_control.inc"
+.include "nsk_stage_sprites.inc"
 
 ; Module settings
 .scope NSK_LOCAL_SETTINGS

@@ -10,7 +10,7 @@
 .include "nsk_common_meta.inc"
 
 .include "nsk_main.inc"
-.include "stage/nsk_stage_list.inc"
+.include "stage/nsk_stage_control.inc"
 .include "vectors/handlers/nsk_vector_nmi.inc"
 
 .segment "CODE"

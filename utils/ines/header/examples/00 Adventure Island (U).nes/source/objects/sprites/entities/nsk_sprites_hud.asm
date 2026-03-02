@@ -140,13 +140,15 @@ _hud_screeny:
 ; @brief Inits the HUD in the object pool
 .export nsk_hud_init
 .proc nsk_hud_init
-    ;nsk_pool_add \
-    ;    { #OBJECTSLIST::HUD         }, \
-    ;    { #POOL::FLAGS::FIXED       }, \
-    ;    { #HUD::CAPTION::SCREENX    }, \
-    ;    { #HUD::CAPTION::SCREENY    }, \
-    ;    { #0                        }, \
-    ;    { #0                        }
+    nsk_pool_add \
+        { #SPRITELIST::HUD          }, \
+        { #POOL::FLAGS::FIXED       }, \
+        { #0                        }, \
+        { #HUD::CAPTION::SCREENX    }, \
+        { #HUD::CAPTION::SCREENY    }, \
+        { #0                        }, \
+        { #0                        }, \
+        { #0                        }
     rts
 .endproc
 

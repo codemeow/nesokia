@@ -13,7 +13,7 @@
 .include "../stage/handlers/nsk_stage_look_right.inc"
 .include "../stage/handlers/nsk_stage_sprites.inc"
 
-.segment "ZEROPAGE"
+.segment "BSS"
 
 ; @brief Current stage of the game
 .export game_stage_num

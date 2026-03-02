@@ -7,6 +7,7 @@
 ::__NSK_DRAW_HELPERS__ = 1
 
 .linecont +
+.listbytes unlimited
 
 .include "nsk_draw_vars.inc"
 

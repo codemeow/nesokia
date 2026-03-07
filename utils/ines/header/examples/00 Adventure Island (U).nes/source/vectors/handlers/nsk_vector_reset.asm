@@ -98,8 +98,6 @@
 .endmacro
 
 .macro init_zeropage_reset
-    jsr nsk_stage_init
-
     lda #$00
     sta ppu_temp_scroll_x
     sta ppu_temp_scroll_y

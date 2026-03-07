@@ -19,4 +19,9 @@ _NSK_POOL_ATTRS _NSK_POOL_EXPORT_ONE
 nsk_pool_size:
     .res 1
 
+; @brief Current X position of the current object on the screen
+.export nsk_pool_screenx
+nsk_pool_screenx:
+    .res 1
+
 .endif

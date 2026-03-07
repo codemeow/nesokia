@@ -15,7 +15,7 @@
 .segment "RODATA"
 
 ; @brief List of the draw routines
-;.export nsk_objects_table_draw
+.export nsk_sprites_table_draw
 nsk_sprites_table_draw:
     _NSK_TABLE_START
     _NSK_TABLE_LINE  SPRITELIST::HUD,   nsk_hud_draw

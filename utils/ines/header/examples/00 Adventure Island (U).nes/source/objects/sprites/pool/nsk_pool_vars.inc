@@ -15,6 +15,9 @@
 
     ; @brief Number of occupied cells
     .import nsk_pool_size
+
+    ; @brief Current X position of the current object on the screen
+    .import nsk_pool_screenx
 .endif
 
 .endif

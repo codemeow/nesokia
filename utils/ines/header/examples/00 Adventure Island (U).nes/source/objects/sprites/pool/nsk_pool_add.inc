@@ -88,9 +88,7 @@ _PA_OBJECTS_COUNT   = nsk_pool_size
 ; @brief Pushes the index of the selected type to stack
 ;
 ; @param argtype Argument type
-.macro _PA_INDEX_PUSH  \
-    argtype
-
+.macro _PA_INDEX_PUSH argtype
     .if argtype = _PA_ARG_TYPE_ABSINDX
         txa
         pha
@@ -158,7 +156,6 @@ _PA_OBJECTS_COUNT   = nsk_pool_size
 ;       use Y for indexing the register could be used "as is" without
 ;       clobbering
 .macro _PA_Y_PUSH
-
     .if _xclobbered = 1
         tya
         pha
@@ -173,7 +170,6 @@ _PA_OBJECTS_COUNT   = nsk_pool_size
 ;       use Y for indexing the register could be used "as is" without
 ;       clobbering
 .macro _PA_Y_PULL
-
     .if _xclobbered = 1
         pla
         tay
@@ -218,12 +214,9 @@ _PA_OBJECTS_COUNT   = nsk_pool_size
         _PA_SWITCH_ADD i
     .endrep
 
-    .repeat _NSK_POOL_ATTRSCOUNT - 1, i
-        _checkindex .set _NSK_POOL_ATTRSCOUNT - 1 - i
-
-        .if _checkindex > 0 && _switchcount <= _checkindex
-            _PA_INDEX_PUSH _NSK_VAR_SWITCH_  { _checkindex - 1 }
-        .endif
+    .repeat _switchcount, i
+        _checkindex .set _switchcount - 1 - i
+        _PA_INDEX_PUSH _NSK_VAR_SWITCH_  { _checkindex }
     .endrep
 .endmacro
 
@@ -279,6 +272,8 @@ _PA_OBJECTS_COUNT   = nsk_pool_size
 
     _argindex    .set 0
     _currenttype .set _PA_ARG_TYPE_ABSINDY
+
+    ldx _PA_OBJECTS_COUNT
 
     _NSK_POOL_ATTRS \
         _PA_ARG_WRITE,  \

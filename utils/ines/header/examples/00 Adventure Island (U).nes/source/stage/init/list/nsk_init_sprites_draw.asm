@@ -18,7 +18,7 @@
 ; @brief Init stage for sprites drawing
 .export nsk_init_sprites_draw
 .proc nsk_init_sprites_draw
-    nsk_palette_spritesset nsk_sprites_palette
+    nsk_palette_spritesset #nsk_sprites_palette
 
     rts
 .endproc

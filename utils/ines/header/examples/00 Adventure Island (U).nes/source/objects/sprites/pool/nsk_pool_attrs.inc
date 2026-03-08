@@ -69,9 +69,9 @@
     _NSK_OP_LIST_ENTRY OP, "worldy_frac",   { worldy_frac   },   0
 
     _NSK_OP_LIST_ENTRY OP, "vectorx_lo",    { vectorx_lo    },   1
-    _NSK_OP_LIST_ENTRY OP, "vectorx_frac",  { vectorx_frac  },   0
+    _NSK_OP_LIST_ENTRY OP, "vectorx_frac",  { vectorx_frac  },   1
     _NSK_OP_LIST_ENTRY OP, "vectory_lo",    { vectory_lo    },   1
-    _NSK_OP_LIST_ENTRY OP, "vectory_frac",  { vectory_frac  },   0
+    _NSK_OP_LIST_ENTRY OP, "vectory_frac",  { vectory_frac  },   1
 
     _NSK_OP_LIST_ENTRY OP, "timer_a",       { timer_a       },   1
     _NSK_OP_LIST_CHECK .paramcount
@@ -106,10 +106,12 @@ _NSK_POOL_ATTRS _NSK_POOL_ATTRSCOUNT_OP
         ; If so, the nsk_pool_worldy and nsk_pool_worldx are used as
         ; screen coordinates
         FIXED     = 1 << 0
+        ; Is this object affected by force vectors
+        VECTORS   = 1 << 1
         ; Is this object affected by gravity?
-        GRAVITY   = 1 << 1
+        GRAVITY   = 1 << 2
         ; Is this object has a collision box?
-        COLLISION = 1 << 2
+        COLLISION = 1 << 3
     .endscope
 .endscope
 

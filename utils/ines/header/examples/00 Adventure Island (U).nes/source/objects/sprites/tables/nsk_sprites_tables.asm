@@ -9,6 +9,7 @@
 .include "nsk_sprites_tables.inc"
 
 .include "../entities/nsk_sprites_hud.inc"
+.include "../entities/nsk_sprites_debris.inc"
 .include "../nsk_sprites_list.inc"
 .include "nsk_tables_helpers.inc"
 
@@ -18,7 +19,23 @@
 .export nsk_sprites_table_draw
 nsk_sprites_table_draw:
     _NSK_TABLE_START
-    _NSK_TABLE_LINE  SPRITELIST::HUD,   nsk_hud_draw
+    _NSK_TABLE_LINE  SPRITELIST::HUD,       nsk_hud_draw
+    _NSK_TABLE_LINE  SPRITELIST::DEBRIS_0,  nsk_debris_draw
+    _NSK_TABLE_LINE  SPRITELIST::DEBRIS_1,  nsk_debris_draw
+    _NSK_TABLE_LINE  SPRITELIST::DEBRIS_2,  nsk_debris_draw
+    _NSK_TABLE_LINE  SPRITELIST::DEBRIS_3,  nsk_debris_draw
+    _NSK_TABLE_COUNT SPRITELIST::COUNT
+
+
+; @brief List of the Out-of-bounds routines
+.export nsk_sprites_table_oob
+nsk_sprites_table_oob:
+    _NSK_TABLE_START
+    _NSK_TABLE_LINE  SPRITELIST::HUD,       $0000
+    _NSK_TABLE_LINE  SPRITELIST::DEBRIS_0,  nsk_debris_oob
+    _NSK_TABLE_LINE  SPRITELIST::DEBRIS_1,  nsk_debris_oob
+    _NSK_TABLE_LINE  SPRITELIST::DEBRIS_2,  nsk_debris_oob
+    _NSK_TABLE_LINE  SPRITELIST::DEBRIS_3,  nsk_debris_oob
     _NSK_TABLE_COUNT SPRITELIST::COUNT
 
 .endif

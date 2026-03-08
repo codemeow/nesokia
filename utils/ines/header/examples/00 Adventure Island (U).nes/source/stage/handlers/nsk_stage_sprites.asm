@@ -12,6 +12,7 @@
 
 .include "../../stage/handlers/nsk_stage_sprites.inc"
 .include "../../objects/sprites/pool/nsk_pool_tick.inc"
+.include "../../objects/sprites/draw/nsk_sprites_reset.inc"
 
 .segment "CODE"
 
@@ -20,6 +21,7 @@
 ;    function is a common sprites drawer
 .export nsk_stage_sprites_draw
 .proc nsk_stage_sprites_draw
+    jsr nsk_sprites_reset
     jsr nsk_pool_tick
     rts
 .endproc

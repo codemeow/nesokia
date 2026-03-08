@@ -9,6 +9,9 @@
 .ifndef ::__NSK_SPRITES_TABLES_ASM__
     ; @brief List of the draw routines
     .import nsk_sprites_table_draw
+
+    ; @brief List of the Out-of-bounds routines
+    .import nsk_sprites_table_oob
 .endif
 
 .endif

@@ -8,10 +8,11 @@
 
 .ifndef ::__NSK_SPRITES_HUD_ASM__
     ; @brief Routine to draw the HUD
+    ;
+    ; @param[in] X the index of the object in the nsk_pool_*
     .import nsk_hud_draw
     ; @brief Inits the HUD in the object pool
     .import nsk_hud_init
 .endif
-
 
 .endif

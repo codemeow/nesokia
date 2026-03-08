@@ -21,17 +21,66 @@
 ; where the size/callbacks are located
 
 ; @brief Jump pointer
-_table_draw_ptr:
+_table_ptr:
     .res 2
 
 .segment "CODE"
 
-; @brief Ticks fixed element
+; @brief Ticks vector forces
 ;
 ; @param[in] X Current element index
-.proc _pool_tick_fixed
-    ; No need to do anything, it's good to go
+.proc _pool_tick_vectors
+    ; world_x += vector_x
+    clc
+    lda nsk_pool_worldx_frac, x
+    adc nsk_pool_vectorx_frac, x
+    sta nsk_pool_worldx_frac, x
+
+    lda nsk_pool_worldx_lo, x
+    adc nsk_pool_vectorx_lo, x
+    sta nsk_pool_worldx_lo, x
+
+    lda nsk_pool_worldx_hi, x
+    adc #0
+    tay
+    lda nsk_pool_vectorx_lo, x
+    bpl :+
+        dey
+    :
+    tya
+    sta nsk_pool_worldx_hi, x
+
+    ; world_y += vector_y
+    clc
+    lda nsk_pool_worldy_frac, x
+    adc nsk_pool_vectory_frac, x
+    sta nsk_pool_worldy_frac, x
+
+    lda nsk_pool_worldy_lo, x
+    adc nsk_pool_vectory_lo, x
+    sta nsk_pool_worldy_lo, x
+    lda nsk_pool_vectory_lo, x
+    bpl :+
+        bcc oob
+        jmp y_ok
+    :
+        bcs oob
+    y_ok:
+
+    ; Out-of-bounds checks
+    lda nsk_pool_worldx_hi, x
+    bmi oob
+    cmp #2
+    bcs oob
+
+    ; Y is unsigned: bounds are handled by carry/borrow above
+
     rts
+
+    oob:
+        ldy nsk_pool_object, x
+        jai _table_ptr, nsk_sprites_table_oob, y
+        rts
 .endproc
 
 ; @brief Ticks gravity-affected element
@@ -58,17 +107,20 @@ _table_draw_ptr:
 ;
 ; @param[in] X Current element index
 .proc _pool_tick_element
-    lda nsk_pool_flags
-    and #POOL::FLAGS::FIXED
+    ; FLAGS::FIXED skipped on purpose,
+    ; there's nothing to do there
+
+    lda nsk_pool_flags, x
+    and #POOL::FLAGS::VECTORS
     beq :+
-        jsr _pool_tick_fixed
+        jsr _pool_tick_vectors
     :
-    lda nsk_pool_flags
+    lda nsk_pool_flags, x
     and #POOL::FLAGS::GRAVITY
     beq :+
         jsr _pool_tick_gravity
     :
-    lda nsk_pool_flags
+    lda nsk_pool_flags, x
     and #POOL::FLAGS::COLLISION
     beq :+
         jsr _pool_tick_collision
@@ -82,6 +134,15 @@ _table_draw_ptr:
 ; @param[in] X Current element index
 .proc _pool_draw_element
     push y
+
+    ; Fixed objects are always visible
+    lda nsk_pool_flags, x
+    and #POOL::FLAGS::FIXED
+    beq :+
+        ; Also no saving screenx, as fixed objects
+        ; use nsk_pool_worldx_lo directly
+        jmp visible
+    :
 
     ; screen_x = world_x_lo - scroll_x
     lda nsk_pool_worldx_lo, x
@@ -113,9 +174,8 @@ _table_draw_ptr:
         ; No borrow: within visible area
 
     visible:
-        lda nsk_pool_object, x
-        tay
-        jai _table_draw_ptr, nsk_sprites_table_draw, y
+        ldy nsk_pool_object, x
+        jai _table_ptr, nsk_sprites_table_draw, y
 
     not_visible:
 

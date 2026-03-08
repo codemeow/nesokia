@@ -230,7 +230,9 @@ _PA_OBJECTS_COUNT   = nsk_pool_size
     worldx_lo,      \
     worldy_lo,      \
     vectorx_lo,     \
+    vectorx_frac,   \
     vectory_lo,     \
+    vectory_frac,   \
     timer_a
 
     _NSK_POOL_ADD_ARGS_START
@@ -251,19 +253,19 @@ _PA_OBJECTS_COUNT   = nsk_pool_size
     _argindex   .set 0
 
     _NSK_POOL_ATTRS \
-        _PA_ARG_CHECK,  \
-        { object     }, \
-        { flags      }, \
-        { worldx_hi  }, \
-        { worldx_lo  }, \
-        { #0         }, \
-        { worldy_lo  }, \
-        { #0         }, \
-        { vectorx_lo }, \
-        { #0         }, \
-        { vectory_lo }, \
-        { #0         }, \
-        { timer_a    }
+        _PA_ARG_CHECK,     \
+        { object        }, \
+        { flags         }, \
+        { worldx_hi     }, \
+        { worldx_lo     }, \
+        { #0            }, \
+        { worldy_lo     }, \
+        { #0            }, \
+        { vectorx_lo    }, \
+        { vectorx_frac  }, \
+        { vectory_lo    }, \
+        { vectory_frac  }, \
+        { timer_a       }
 
     _PA_X_PUSH
     _PA_Y_PUSH
@@ -276,19 +278,19 @@ _PA_OBJECTS_COUNT   = nsk_pool_size
     ldx _PA_OBJECTS_COUNT
 
     _NSK_POOL_ATTRS \
-        _PA_ARG_WRITE,  \
-        { object     }, \
-        { flags      }, \
-        { worldx_hi  }, \
-        { worldx_lo  }, \
-        { #0         }, \
-        { worldy_lo  }, \
-        { #0         }, \
-        { vectorx_lo }, \
-        { #0         }, \
-        { vectory_lo }, \
-        { #0         }, \
-        { timer_a    }
+        _PA_ARG_WRITE,     \
+        { object        }, \
+        { flags         }, \
+        { worldx_hi     }, \
+        { worldx_lo     }, \
+        { #0            }, \
+        { worldy_lo     }, \
+        { #0            }, \
+        { vectorx_lo    }, \
+        { vectorx_frac  }, \
+        { vectory_lo    }, \
+        { vectory_frac  }, \
+        { timer_a       }
 
     inc _PA_OBJECTS_COUNT
 

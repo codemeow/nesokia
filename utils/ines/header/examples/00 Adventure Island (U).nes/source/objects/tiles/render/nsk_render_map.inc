@@ -23,6 +23,11 @@
 .import _nsk_render_map
 .endif
 
+.ifndef ::__NSK_RENDER_MAP_ASM__
+; @brief Clears the collision grid
+.import _nsk_render_collision_clear
+.endif
+
 ; @brief Renders the selected map on the selected nametable
 ; @param [in] nametable Nametable's address ($2000, $2400, $2800 or $2c00)
 ; @param [in] mapdata   NSK simple map data's address

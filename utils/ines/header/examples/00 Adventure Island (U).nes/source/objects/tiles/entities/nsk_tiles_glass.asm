@@ -13,15 +13,23 @@
 .export nsk_object_glass_8
 nsk_object_glass_8:
     .byte 8,2
+
     .byte $a0,$a1,$a3,$a2, $a3,$a1,$a2,$a4
     .byte $00,$00,$00,$00, $00,$00,$00,$00
-    .byte 0,0,0,0
+
+    .byte %00,%00,%00,%00
+
+    .byte 1,1,1,1
 
 .export nsk_object_glass_4
 nsk_object_glass_4:
     .byte 4,2
+
     .byte $a0,$a1,$a3,$a4
     .byte $00,$00,$00,$00
-    .byte 0,0
+
+    .byte %00,%00
+
+    .byte 1,1
 
 .endif

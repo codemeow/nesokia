@@ -55,7 +55,7 @@
     ; @brief Gravity per layer
     ;
     ; @note Not the engine's gravity is used, but the vector
-    GRAVITY:
+    GRAVITY_FRAC:
         .byte 10, 17, 31, 90
 
     ; @brief Number of layers
@@ -158,16 +158,16 @@ _debris_worldy_lo:
             sta _debris_worldy_lo
 
             nsk_pool_add \
-                { DEBRIS::OBJECT, y  }, \
-                { #DEBRIS::FLAGS     }, \
-                { _debris_worldx_hi  }, \
-                { _debris_worldx_lo  }, \
-                { _debris_worldy_lo  }, \
-                { DEBRIS::WIND_LO, y }, \
-                { DEBRIS::WIND_FRAC, y }, \
-                { #0                 }, \
-                { DEBRIS::GRAVITY, y }, \
-                { #0                 }
+                { DEBRIS::OBJECT, y         }, \
+                { #DEBRIS::FLAGS            }, \
+                { _debris_worldx_hi         }, \
+                { _debris_worldx_lo         }, \
+                { _debris_worldy_lo         }, \
+                { DEBRIS::WIND_LO, y        }, \
+                { DEBRIS::WIND_FRAC, y      }, \
+                { #0                        }, \
+                { DEBRIS::GRAVITY_FRAC, y   }, \
+                { #0                        }
 
             inx
             txa

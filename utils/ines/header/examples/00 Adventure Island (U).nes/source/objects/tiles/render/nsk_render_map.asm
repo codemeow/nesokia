@@ -9,6 +9,7 @@
 .include "nsk_common_meta.inc"
 
 .include "nsk_render_map.inc"
+.include "../maps/nsk_map_vars.inc"
 
 nsk_todo "Use common constant"
 
@@ -21,6 +22,14 @@ _nsk_render_mapdata:
 
 ; @brief Object address
 _nsk_render_object:
+    .res 2
+
+; @brief Collision data pointer
+_nsk_render_collisionptr:
+    .res 2
+
+; @brief Collision map pointer
+_nsk_render_mapptr:
     .res 2
 
 .segment "BSS"
@@ -114,6 +123,37 @@ _nsk_render_quadrant_value:
     rts
 .endproc
 
+; @brief Resets the collision data
+.export _nsk_render_collision_clear
+.proc _nsk_render_collision_clear
+    push a, x
+
+    .assert \
+        ::MAP::SCREEN::PAGE <= 256, \
+        error,                      \
+        "::MAP::SCREEN::PAGE should be less or equal to 256"
+
+    lda #0
+    ldx #0
+
+    :
+        .repeat MAP::SCREEN::PAGES, i
+            _shift .set i * ::MAP::SCREEN::PAGE
+
+            sta nsk_map_grid + _shift, x
+        .endrep
+
+        inx
+        .if ::MAP::SCREEN::PAGE < 256
+            cpx #::MAP::SCREEN::PAGE
+        .endif
+        bne :-
+
+    pull a, x
+
+    rts
+.endproc
+
 ; @brief Writes the _nsk_render_attrbuf buffer to the PPU
 .proc _render_attributes_write
     push a, x
@@ -130,6 +170,7 @@ _nsk_render_quadrant_value:
         bne loop
 
     pull a, x
+
     rts
 .endproc
 
@@ -244,6 +285,15 @@ _nsk_render_quadrant_value:
 ; @param[in] _nsk_render_height    Object height
 ; @warning Clobbers A, X, Y
 .proc _render_object_palettes
+
+    lda _nsk_render_objx
+    pha
+    lda _nsk_render_objy
+    pha
+    lda _nsk_render_width
+    pha
+    lda _nsk_render_height
+    pha
 
     ; The attribute table cell encodes the palettes of 16 different nametable
     ; cells:
@@ -419,6 +469,133 @@ _nsk_render_quadrant_value:
 
     done:
 
+    pla
+    sta _nsk_render_height
+    pla
+    sta _nsk_render_width
+    pla
+    sta _nsk_render_objy
+    pla
+    sta _nsk_render_objx
+
+    rts
+.endproc
+
+; @brief Assign the object collision to the global map
+;
+; @param[in] Y                     Pointer position in the object
+; @param[in] _nsk_render_objx      Object X position
+; @param[in] _nsk_render_objy      Object Y position
+; @param[in] _nsk_render_object    Object data address
+; @param[in] _nsk_render_nametable Base target nametable address
+; @param[in] _nsk_render_width     Object width
+; @param[in] _nsk_render_height    Object height
+.proc _render_object_collision
+    push a, x, y
+
+    ; --- Preserve object size ---
+    lda _nsk_render_width
+    pha
+    lda _nsk_render_height
+    pha
+
+    ; --- Convert to metablocks (2x2 tiles) ---
+    lda _nsk_render_width
+    lsr
+    sta _nsk_render_width
+    lda _nsk_render_height
+    lsr
+    sta _nsk_render_height
+
+    ; --- Base offset ---
+    lda _nsk_render_objy
+    lsr
+    sta _nsk_render_quadrant_posy
+    lda _nsk_render_objx
+    lsr
+    sta _nsk_render_quadrant_posx
+
+    lda _nsk_render_quadrant_posy
+    asl
+    asl
+    asl
+    asl
+    clc
+    adc _nsk_render_quadrant_posx
+    sta _nsk_render_offs
+    lda #$00
+    sta _nsk_render_offs + 1
+
+    ; --- Page select ---
+    lda _nsk_render_nametable + 1
+    cmp #>NSK::PPU::NAMETABLE::TABLE1
+    bne :+
+        lda _nsk_render_offs
+        clc
+        adc #::MAP::SCREEN::PAGE
+        sta _nsk_render_offs
+        bcc :+
+            inc _nsk_render_offs + 1
+    :
+
+    ; --- Pointers ---
+    lda #<nsk_map_grid
+    clc
+    adc _nsk_render_offs
+    sta _nsk_render_mapptr
+    lda #>nsk_map_grid
+    adc _nsk_render_offs + 1
+    sta _nsk_render_mapptr + 1
+
+    tya
+    clc
+    adc _nsk_render_object
+    sta _nsk_render_collisionptr
+    lda _nsk_render_object + 1
+    adc #0
+    sta _nsk_render_collisionptr + 1
+
+    ; --- Copy rows ---
+    lda _nsk_render_height
+    sta _nsk_render_quadrant_mask
+    beq done
+
+    row:
+        ldy #$00
+        col:
+            lda (_nsk_render_collisionptr), y
+            sta (_nsk_render_mapptr), y
+            iny
+            cpy _nsk_render_width
+            bne col
+
+        lda _nsk_render_collisionptr
+        clc
+        adc _nsk_render_width
+        sta _nsk_render_collisionptr
+        lda _nsk_render_collisionptr + 1
+        adc #0
+        sta _nsk_render_collisionptr + 1
+
+        lda _nsk_render_mapptr
+        clc
+        adc #::MAP::SCREEN::WIDTH
+        sta _nsk_render_mapptr
+        bcc :+
+            inc _nsk_render_mapptr + 1
+        :
+
+        dec _nsk_render_quadrant_mask
+        bne row
+
+    done:
+    ; --- Restore object size ---
+    pla
+    sta _nsk_render_height
+    pla
+    sta _nsk_render_width
+
+    pull a, x, y
     rts
 .endproc
 
@@ -431,6 +608,7 @@ _nsk_render_quadrant_value:
     push a, x, y
     jsr _render_object_tiles
     jsr _render_object_palettes
+    jsr _render_object_collision
     pull a, x, y
     rts
 .endproc

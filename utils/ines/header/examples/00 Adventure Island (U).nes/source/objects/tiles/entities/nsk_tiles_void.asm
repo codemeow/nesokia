@@ -13,8 +13,12 @@
 .export nsk_object_void
 nsk_object_void:
     .byte 2,2
+
     .byte $00,$00
     .byte $00,$00
-    .byte 2
+
+    .byte %10
+
+    .byte 0
 
 .endif

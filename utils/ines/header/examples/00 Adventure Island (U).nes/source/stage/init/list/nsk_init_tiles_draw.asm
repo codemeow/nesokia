@@ -21,6 +21,7 @@
 ; @warning Uses raw OAM access, requires rendering/NMI to be disabled
 .export nsk_init_tiles_draw
 .proc nsk_init_tiles_draw
+    jsr _nsk_render_collision_clear
     nsk_render_map #NSK::PPU::NAMETABLE::TABLE0, nsk_map_left
     nsk_render_map #NSK::PPU::NAMETABLE::TABLE1, nsk_map_right
     nsk_palette_tilesset #nsk_tiles_palette

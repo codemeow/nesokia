@@ -7,6 +7,6 @@
 ::__NSK_POOL_SETTINGS__ = 1
 
 ; @brief Max number of objects in the pool
-_NSK_POOL_MAX = 64
+_NSK_POOL_MAX = 40
 
 .endif

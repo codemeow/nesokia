@@ -16,10 +16,17 @@
 ;            .byte x ; Tile
 ;        ] × w
 ;    ] × h
+;
 ;    [
 ;        [
 ;            .byte p ; Palette data (%00..%11)
 ;        ] × w / 2
+;    ] × h / 2
+;
+;    [
+;        [
+;            .byte  c ; Collision data (MAP::COLLISION)
+;        ]  × w / 2
 ;    ] × h / 2
 ; ~~~
 ;
@@ -29,7 +36,10 @@
 ;     .byte $04, $02              ; (w,h) = (4x2)
 ;     .byte $e0, $e1, $e0, $e1    ; Data
 ;     .byte $f0, $f1, $f0, $f1    ; Data
+;
 ;     .byte %00, %00              ; Palettes (pw,ph) = (w/2,h/2)
+;
+;     .byte 0, 1                  ; Collision
 ; ~~~
 
 .include "entities/nsk_tiles_base.inc"

@@ -6,6 +6,8 @@
 .ifndef ::__NSK_MAP_DATA_ASM__
 ::__NSK_MAP_DATA_ASM__ = 1
 
+.include "nsk_common_meta.inc"
+
 .include "nsk_map_data.inc"
 .include "../nsk_tiles_list.inc"
 
@@ -36,6 +38,32 @@ nsk_map_left:
     .addr nsk_object_skybox2
     .byte 24, 8 ; X, Y
     .addr nsk_object_skybox1
+
+    ; Bg
+    .byte 0,24
+    .addr nsk_object_bg_line
+    .byte 2,22
+    .addr nsk_object_bg_up
+    .byte 4,20
+    .addr nsk_object_bg_up
+
+    .byte 10,14
+    .addr nsk_object_bg_up
+    .byte 12,12
+    .addr nsk_object_bg_up
+    .byte 14,12
+    .addr nsk_object_bg_line
+    .byte 18,12
+    .addr nsk_object_bg_line
+    .byte 22,12
+    .addr nsk_object_bg_down
+    .byte 24,14
+    .addr nsk_object_bg_down
+
+    .byte 26,16
+    .addr nsk_object_bg_line
+    .byte 30,16
+    .addr nsk_object_bg_down
 
     ; Floor
     .byte 0,28
@@ -79,32 +107,6 @@ nsk_map_left:
     .byte 18,20
     .addr nsk_object_glass_8
 
-    ; Bg
-    .byte 0,24
-    .addr nsk_object_bg_line
-    .byte 2,22
-    .addr nsk_object_bg_up
-    .byte 4,20
-    .addr nsk_object_bg_up
-
-    .byte 10,14
-    .addr nsk_object_bg_up
-    .byte 12,12
-    .addr nsk_object_bg_up
-    .byte 14,12
-    .addr nsk_object_bg_line
-    .byte 18,12
-    .addr nsk_object_bg_line
-    .byte 22,12
-    .addr nsk_object_bg_down
-    .byte 24,14
-    .addr nsk_object_bg_down
-
-    .byte 26,16
-    .addr nsk_object_bg_line
-    .byte 30,16
-    .addr nsk_object_bg_down
-
     ; Stars remover
     .byte 18,14
     .addr nsk_object_void
@@ -134,6 +136,28 @@ nsk_map_right:
     .addr nsk_object_skybox0
     .byte 24, 8 ; X, Y
     .addr nsk_object_skybox1
+
+    ; Bg
+    .byte 0,18
+    .addr nsk_object_bg_line
+    .byte 4,18
+    .addr nsk_object_bg_line
+    .byte 8,16
+    .addr nsk_object_bg_up
+    .byte 10,16
+    .addr nsk_object_bg_line
+    .byte 14,16
+    .addr nsk_object_bg_line
+    .byte 18,14
+    .addr nsk_object_bg_up
+    .byte 20,12
+    .addr nsk_object_bg_up
+    .byte 22,12
+    .addr nsk_object_bg_line
+    .byte 26,12
+    .addr nsk_object_bg_line
+    .byte 30,12
+    .addr nsk_object_bg_down
 
     ; Floor
     .byte 0,28
@@ -168,33 +192,11 @@ nsk_map_right:
     .byte 24,16
     .addr nsk_object_glass_4
 
-    ; Bg
-    .byte 0,18
-    .addr nsk_object_bg_line
-    .byte 4,18
-    .addr nsk_object_bg_line
-    .byte 8,16
-    .addr nsk_object_bg_up
-    .byte 10,16
-    .addr nsk_object_bg_line
-    .byte 14,16
-    .addr nsk_object_bg_line
-    .byte 18,14
-    .addr nsk_object_bg_up
-    .byte 20,12
-    .addr nsk_object_bg_up
-    .byte 22,12
-    .addr nsk_object_bg_line
-    .byte 26,12
-    .addr nsk_object_bg_line
-    .byte 30,12
-    .addr nsk_object_bg_down
-
     ; Stars remover
     .byte 24,14
     .addr nsk_object_void
 
-; Todo: animated small meteors in the sky
+    nsk_todo "animated small meteors in the sky"
 
 
 .endif

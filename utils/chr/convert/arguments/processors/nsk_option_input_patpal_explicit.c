@@ -15,7 +15,7 @@ static void _explicit_read(void) {
     const size_t partscount = 2;
     const size_t list_size  = partsize * partscount;
 
-    char **list = malloc(sizeof(*list) * list_size);
+    char **list = nsk_util_malloc(sizeof(*list) * list_size);
     for (size_t p = 0; p < partscount; p++) {
         for (size_t i = 0; i < partsize; i++) {
             int res = asprintf(

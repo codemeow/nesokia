@@ -38,7 +38,7 @@ nsk_bcd_outu:
 
 .segment "CODE"
 
-; @brief ; @brief Bin to BCD 8 bits converter
+; @brief Bin to BCD 8 bits converter
 ;
 ; Implements "Double dabble" algo: https://en.wikipedia.org/wiki/Double_dabble
 ;

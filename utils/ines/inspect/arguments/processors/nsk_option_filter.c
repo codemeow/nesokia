@@ -11,7 +11,7 @@
  * \brief  Sets the filter string for the scan process
  */
 void nsk_option_filter(void) {
-    const char **shorts = malloc(sizeof(*shorts) * nsk_header_tablesize);
+    const char **shorts = nsk_util_malloc(sizeof(*shorts) * nsk_header_tablesize);
     for (size_t i = 0; i < nsk_header_tablesize; i++) {
         shorts[i] = nsk_header_table[i].shortcut;
     }

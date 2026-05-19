@@ -549,7 +549,7 @@ Main macro:
     _PA_ARG_WRITE "object",  { prop1 }
     _PA_ARG_WRITE "flags",   { prop2 }
     _PA_ARG_WRITE "timer_a", { prop3 }
-    ; ... остальные свойства
+    ; ...
 
     inc nsk_pool_size
 

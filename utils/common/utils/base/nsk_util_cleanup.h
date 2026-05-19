@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 /*!
- * Automatically free the allocated memory on exit
+ * Automatically free the allocated memory on block exit
  */
 #define nsk_auto_free __attribute__((cleanup(_nsk_auto_free)))
 
@@ -16,7 +16,7 @@
 void _nsk_auto_free(void *ptr);
 
 /*!
- * Automatically close the opened file on exit
+ * Automatically close the opened file on block exit
  */
 #define nsk_auto_fclose __attribute__((cleanup(_nsk_auto_fclose)))
 

@@ -4,6 +4,7 @@
 /*!
  * Minimal Windows API version.
  *
+ * Reference values:
  * ~~~
  * #define _WIN32_WINNT_NT4                    0x0400 // Windows NT 4.0
  * #define _WIN32_WINNT_WIN2K                  0x0500 // Windows 2000

@@ -3,6 +3,8 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+
+#include "base/nsk_util_attributes.h"
 #include "types/nsk_type_color4.h"
 
 /*!
@@ -33,7 +35,10 @@ void _nsk_auto_pifree(struct nsk_type_pngimage **image);
  * \param[in] filename  Original filename
  * \return Allocated image, or NULL on error
  */
-struct nsk_type_pngimage *nsk_pngimage_read(const char *filename);
+nsk_attr_result_unused
+struct nsk_type_pngimage *nsk_pngimage_read(
+    const char *filename
+);
 
 /*!
  * \brief  Saves the provided image to file
@@ -42,6 +47,7 @@ struct nsk_type_pngimage *nsk_pngimage_read(const char *filename);
  * \param[in] filename  The filename
  * \return True if the image was written, false otherwise
  */
+nsk_attr_result_unused
 bool nsk_pngimage_write(
     const struct nsk_type_pngimage *image,
     const char *filename
@@ -54,7 +60,11 @@ bool nsk_pngimage_write(
  * \param[in] height  The height
  * \return Allocated image
  */
-struct nsk_type_pngimage *nsk_pngimage_empty(size_t width, size_t height);
+nsk_attr_result_unused
+struct nsk_type_pngimage *nsk_pngimage_empty(
+    size_t width,
+    size_t height
+);
 
 /*!
  * \brief  Combines the target and component images at X,Y

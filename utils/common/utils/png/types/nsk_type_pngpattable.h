@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 
+#include "base/nsk_util_attributes.h"
 #include "types/nsk_type_pattable.h"
 #include "png/types/nsk_type_pngimage.h"
 
@@ -13,6 +14,7 @@
  * \param[out] pattable  The pattern table
  * \return True if the pattern table was read, false otherwise
  */
+nsk_attr_result_unused
 bool nsk_pattable_readpng(
     const char *filename,
     struct nsk_type_pattable *pattable
@@ -24,6 +26,7 @@ bool nsk_pattable_readpng(
  * \param[in] pattable  The pattern table
  * \return Nesokia PNG component image, or NULL on error
  */
+nsk_attr_result_unused
 struct nsk_type_pngimage *nsk_pattable_convtopng(
     const struct nsk_type_pattable *pattable
 );

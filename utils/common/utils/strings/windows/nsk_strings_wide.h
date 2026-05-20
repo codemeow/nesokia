@@ -5,6 +5,8 @@
 
 #include <windows.h>
 
+#include "base/nsk_util_attributes.h"
+
 /*!
  * \brief  Converts provided string to Windows Wide String using the provided
  * encoding
@@ -14,7 +16,13 @@
  * \param[in] flags  MultiByteToWideChar flags
  * \return Allocated wide string, or NULL on conversion error
  */
-LPWSTR nsk_string_a2w_enc(const char *str, UINT enc, DWORD flags);
+nsk_attr_result_unused
+nsk_attr_args_nonnull(1)
+LPWSTR nsk_string_a2w_enc(
+    const char *str,
+    UINT enc,
+    DWORD flags
+);
 
 /*!
  * \brief  Converts provided Windows Wide String to string using the provided
@@ -25,7 +33,13 @@ LPWSTR nsk_string_a2w_enc(const char *str, UINT enc, DWORD flags);
  * \param[in] flags  WideCharToMultiByte flags
  * \return  Allocated string, or NULL on conversion error
  */
-char *nsk_string_w2a_enc(LPCWSTR wstr, UINT enc, DWORD flags);
+nsk_attr_result_unused
+nsk_attr_args_nonnull(1)
+char *nsk_string_w2a_enc(
+    LPCWSTR wstr,
+    UINT enc,
+    DWORD flags
+);
 
 /*!
  * \brief  Converts string into Windows Wide String
@@ -33,7 +47,11 @@ char *nsk_string_w2a_enc(LPCWSTR wstr, UINT enc, DWORD flags);
  * \param[in] str  The string
  * \return Allocated Windows Wide String, or NULL on conversion error
  */
-LPWSTR nsk_string_a2w(const char *str);
+nsk_attr_result_unused
+nsk_attr_args_nonnull(1)
+LPWSTR nsk_string_a2w(
+    const char *str
+);
 
 /*!
  * \brief  Converts Windows Wide String to string
@@ -41,7 +59,11 @@ LPWSTR nsk_string_a2w(const char *str);
  * \param[in] wstr  The Windows Wide String
  * \return Allocated string, or NULL on conversion error
  */
-char *nsk_string_w2a(LPCWSTR wstr);
+nsk_attr_result_unused
+nsk_attr_args_nonnull(1)
+char *nsk_string_w2a(
+    LPCWSTR wstr
+);
 
 #endif
 

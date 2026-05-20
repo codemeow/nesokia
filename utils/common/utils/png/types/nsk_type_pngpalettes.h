@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 
+#include "base/nsk_util_attributes.h"
 #include "types/nsk_type_palettes.h"
 #include "png/types/nsk_type_pngimage.h"
 
@@ -13,6 +14,7 @@
  * \param[out] palettes  The local palettes
  * \return True if the palettes were read, false otherwise
  */
+nsk_attr_result_unused
 bool nsk_palettes_readpng(
     const char *filename,
     struct nsk_type_palettes *palettes
@@ -24,6 +26,7 @@ bool nsk_palettes_readpng(
  * \param[in] palettes  The palettes
  * \return Nesokia PNG component image, or NULL on validation error
  */
+nsk_attr_result_unused
 struct nsk_type_pngimage *nsk_palettes_convtopng(
     const struct nsk_type_palettes *palettes
 );

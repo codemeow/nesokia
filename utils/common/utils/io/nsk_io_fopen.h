@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 
+#include "base/nsk_util_attributes.h"
+
 /*!
  * \brief  Platform-specific version of fopen
  *
@@ -10,6 +12,11 @@
  * \param[in] mode      The mode
  * \return Opened file or NULL
  */
-FILE *nsk_io_fopen(const char *filename, const char *mode);
+nsk_attr_result_unused
+nsk_attr_args_nonnull(1, 2)
+FILE *nsk_io_fopen(
+    const char *filename,
+    const char *mode
+);
 
 #endif

@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 
+#include "base/nsk_util_attributes.h"
 #include "png/types/nsk_type_pngimage.h"
 #include "types/nsk_type_ppucolors.h"
 #include "types/nsk_type_palettes.h"
@@ -17,6 +18,7 @@
  * \param[in]  patright  The pattern tables
  * \return Composite (full) image, or NULL on error
  */
+nsk_attr_result_unused
 struct nsk_type_pngimage *nsk_pngimage_composesave(
     const struct nsk_type_ppucolors *colors,
     const struct nsk_type_palettes  *palettes,
@@ -34,6 +36,7 @@ struct nsk_type_pngimage *nsk_pngimage_composesave(
  *
  * \note Arguments cannot be NULL.
  */
+nsk_attr_result_unused
 bool nsk_pngimage_composeread(
     const char *filename,
     struct nsk_type_ppucolors *colors,

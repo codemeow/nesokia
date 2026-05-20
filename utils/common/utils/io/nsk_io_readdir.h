@@ -3,12 +3,18 @@
 
 #include <dirent.h>
 
+#include "base/nsk_util_attributes.h"
+
 /*!
  * \brief  Return next element of the directory
  *
  * \param[in]  dir  The dir
  * \return Next element or NULL
  */
-struct dirent *nsk_io_readdir(DIR *dir);
+nsk_attr_result_unused
+nsk_attr_args_nonnull(1)
+struct dirent *nsk_io_readdir(
+    DIR *dir
+);
 
 #endif

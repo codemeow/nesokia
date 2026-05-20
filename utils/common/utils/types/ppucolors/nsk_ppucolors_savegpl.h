@@ -1,6 +1,7 @@
 #ifndef NSK_PPUCOLORS_SAVEGPL
 #define NSK_PPUCOLORS_SAVEGPL
 
+#include "base/nsk_util_attributes.h"
 #include "types/nsk_type_ppucolors.h"
 
 /*!
@@ -10,6 +11,7 @@
  * \param[in] colors    The colors
  * \return True if the PPU colors were saved, false otherwise
  */
+nsk_attr_result_unused
 bool nsk_ppucolors_savegpl(
     const char *filename,
     const struct nsk_type_ppucolors *colors

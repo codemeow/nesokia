@@ -3,6 +3,8 @@
 
 #include <stdlib.h>
 
+#include "base/nsk_util_attributes.h"
+
 /*!
  * \brief  Allocates the required amount of memory and fills it with zeroes
  *
@@ -12,6 +14,7 @@
  * \note This function never returns NULL. It either returns allocated memory
  *       or terminates the process.
  */
+nsk_attr_result_unused
 void *nsk_util_malloc(size_t size);
 
 /*!
@@ -24,6 +27,7 @@ void *nsk_util_malloc(size_t size);
  * \note This function never returns NULL. It either returns reallocated memory
  *       or terminates the process.
  */
+nsk_attr_result_unused
 void *nsk_util_realloc(void *ptr, size_t size);
 
 /*!

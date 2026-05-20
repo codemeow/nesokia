@@ -1,6 +1,7 @@
 #ifndef NSK_PAIR_PARSE
 #define NSK_PAIR_PARSE
 
+#include "base/nsk_util_attributes.h"
 #include "types/pair/nsk_pair_type.h"
 
 /*!
@@ -31,6 +32,7 @@
  * \param[in] keys    List of string values representing valid keys or NULL
  * \return  Allocated list of pairs or NULL on parse error
  */
+nsk_attr_result_unused
 struct nsk_pair *nsk_pair_parse(
     const char *string,
     unsigned fields,

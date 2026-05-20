@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 
+#include "base/nsk_util_attributes.h"
 #include "types/nsk_type_ppucolors.h"
 #include "png/types/nsk_type_pngimage.h"
 /*!
@@ -12,6 +13,7 @@
  * \param[out] colors    The colors
  * \return True if the PPU colors were read, false otherwise
  */
+nsk_attr_result_unused
 bool nsk_ppucolors_readpng(
     const char *filename,
     struct nsk_type_ppucolors *colors
@@ -23,6 +25,7 @@ bool nsk_ppucolors_readpng(
  * \param[in] colors  The colors
  * \return Nesokia PNG component image, or NULL on error
  */
+nsk_attr_result_unused
 struct nsk_type_pngimage *nsk_ppucolors_convtopng(
     const struct nsk_type_ppucolors *colors
 );

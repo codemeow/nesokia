@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 
+#include "base/nsk_util_attributes.h"
 #include "types/nsk_type_plane.h"
 #include "types/nsk_type_tile.h"
 
@@ -97,6 +98,7 @@ unsigned nsk_conv_pataddress2value(enum nsk_pattable_address address);
  * \param[out] table     The resulting pattern table
  * \return True if the pattern table was read, false otherwise
  */
+nsk_attr_result_unused
 bool nsk_pattable_readpat(
     const char *filename,
     struct nsk_type_pattable *table
@@ -110,6 +112,7 @@ bool nsk_pattable_readpat(
  * \param[out] tables    The resulting pattern tables
  * \return True if the pattern tables were read, false otherwise
  */
+nsk_attr_result_unused
 bool nsk_pattables_readpats(
     const char *filename,
     struct nsk_type_pattables *tables
@@ -122,6 +125,7 @@ bool nsk_pattables_readpats(
  * \param[in] table     The table
  * \return True if the pattern table was saved, false otherwise
  */
+nsk_attr_result_unused
 bool nsk_pattable_savepat(
     const char *filename,
     const struct nsk_type_pattable *table
@@ -137,6 +141,7 @@ bool nsk_pattable_savepat(
  * \param[in] tables    The tables
  * \return True if the pattern tables were saved, false otherwise
  */
+nsk_attr_result_unused
 bool nsk_pattables_savepats(
     const char *filename,
     const struct nsk_type_pattables *tables

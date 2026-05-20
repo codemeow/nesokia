@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include "base/nsk_util_attributes.h"
 #include "types/nsk_type_plane.h"
 #include "types/nsk_type_color4.h"
 #include "types/nsk_type_ppucolors.h"
@@ -66,7 +67,10 @@ struct nsk_type_palettes {
  *
  * \return True if the field is initialized, false otherwise
  */
-bool nsk_palette_validate_colors(const struct nsk_type_palette *palette);
+nsk_attr_result_unused
+bool nsk_palette_validate_colors(
+    const struct nsk_type_palette *palette
+);
 
 /*!
  * \brief  Validates palette's indexes field
@@ -89,6 +93,7 @@ void nsk_palette_validate_indexes(const struct nsk_type_palette *palette);
  * \param[out] palette   The palette
  * \return True if the palette was read, false otherwise
  */
+nsk_attr_result_unused
 bool nsk_palette_readspal(
     const char *filename,
     struct nsk_type_palette *palette
@@ -101,6 +106,7 @@ bool nsk_palette_readspal(
  * \param[in] palette   The palette
  * \return True if the palette was saved, false otherwise
  */
+nsk_attr_result_unused
 bool nsk_palette_savespal(
     const char *filename,
     const struct nsk_type_palette *palette
@@ -117,6 +123,7 @@ bool nsk_palette_savespal(
  * \param[out] palettes  The palettes
  * \return True if the palettes were read, false otherwise
  */
+nsk_attr_result_unused
 bool nsk_palettes_readspals(
     const char *filename,
     struct nsk_type_palettes *palettes
@@ -129,6 +136,7 @@ bool nsk_palettes_readspals(
  * \param[in] palettes  The palettes
  * \return True if the palettes were saved, false otherwise
  */
+nsk_attr_result_unused
 bool nsk_palettes_savespals(
     const char *filename,
     const struct nsk_type_palettes *palettes
@@ -140,6 +148,7 @@ bool nsk_palettes_savespals(
  * \param[in] palette  The palette
  * \return True if the palette was shown, false otherwise
  */
+nsk_attr_result_unused
 bool nsk_palette_show(
     const struct nsk_type_palette *palette
 );
@@ -150,6 +159,7 @@ bool nsk_palette_show(
  * \param[in] palettes  The palettes
  * \return True if the palettes were shown, false otherwise
  */
+nsk_attr_result_unused
 bool nsk_palettes_show(
     const struct nsk_type_palettes *palettes
 );
@@ -161,6 +171,7 @@ bool nsk_palettes_show(
  * \param[in] palette  The palette
  * \return True if the palette is valid, false otherwise
  */
+nsk_attr_result_unused
 bool nsk_palette_validate(
     const struct nsk_type_ppucolors *colors,
     const struct nsk_type_palette   *palette
@@ -173,6 +184,7 @@ bool nsk_palette_validate(
  * \param[in] palettes  The palettes
  * \return True if the palettes are valid, false otherwise
  */
+nsk_attr_result_unused
 bool nsk_palettes_validate(
     const struct nsk_type_ppucolors *colors,
     const struct nsk_type_palettes  *palettes
@@ -185,6 +197,7 @@ bool nsk_palettes_validate(
  * \param[in,out]   palette  The palette
  * \return True if colors were assigned, false otherwise
  */
+nsk_attr_result_unused
 bool nsk_palette_setcolors(
     const struct nsk_type_ppucolors *colors,
     struct nsk_type_palette *palette
@@ -197,6 +210,7 @@ bool nsk_palette_setcolors(
  * \param[in,out]   palettes  The palettes
  * \return True if colors were assigned, false otherwise
  */
+nsk_attr_result_unused
 bool nsk_palettes_setcolors(
     const struct nsk_type_ppucolors *colors,
     struct nsk_type_palettes *palettes
@@ -209,6 +223,7 @@ bool nsk_palettes_setcolors(
  * \param[in,out] palette   The palette
  * \return True if indexes were assigned, false otherwise
  */
+nsk_attr_result_unused
 bool nsk_palette_setindexes(
     const struct nsk_type_ppucolors *colors,
     struct nsk_type_palette *palette
@@ -221,6 +236,7 @@ bool nsk_palette_setindexes(
  * \param[in,out] palettes  The palettes
  * \return True if indexes were assigned, false otherwise
  */
+nsk_attr_result_unused
 bool nsk_palettes_setindexes(
     const struct nsk_type_ppucolors *colors,
     struct nsk_type_palettes *palettes

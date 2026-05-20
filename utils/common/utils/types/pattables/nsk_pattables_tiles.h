@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 
+#include "base/nsk_util_attributes.h"
 #include "types/nsk_type_pattable.h"
 #include "types/nsk_type_palettes.h"
 #include "types/pair/nsk_pair_type.h"
@@ -15,6 +16,7 @@
  * \param[in] explicit  The list of explici palette indexes
  * \return True if palettes were assigned, false otherwise
  */
+nsk_attr_result_unused
 bool nsk_pattable_settilespalettes(
     struct nsk_type_pattable        *table,
     const struct nsk_type_palette   *palette,
@@ -28,6 +30,7 @@ bool nsk_pattable_settilespalettes(
  * \param[in] palette   The palette
  * \return True if indexes were assigned, false otherwise
  */
+nsk_attr_result_unused
 bool nsk_pattable_settilesindexes(
     struct nsk_type_pattable        *table,
     const struct nsk_type_palette   *palette
@@ -52,6 +55,7 @@ void nsk_pattable_settilescolors(
  * \param[in] explicit  The list of explici palette indexes
  * \return True if palettes were assigned, false otherwise
  */
+nsk_attr_result_unused
 bool nsk_pattables_settilespalettes(
     struct nsk_type_pattables       *tables,
     const struct nsk_type_palettes  *palettes,
@@ -65,6 +69,7 @@ bool nsk_pattables_settilespalettes(
  * \param[in] palettes  The palettes
  * \return True if indexes were assigned, false otherwise
  */
+nsk_attr_result_unused
 bool nsk_pattables_settilesindexes(
     struct nsk_type_pattables       *tables,
     const struct nsk_type_palettes  *palettes

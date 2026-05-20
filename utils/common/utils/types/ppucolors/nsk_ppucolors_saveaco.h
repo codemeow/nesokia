@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 
+#include "base/nsk_util_attributes.h"
 #include "types/nsk_type_ppucolors.h"
 
 /*!
@@ -12,6 +13,7 @@
  * \param[in] colors    The colors
  * \return True if the PPU colors were saved, false otherwise
  */
+nsk_attr_result_unused
 bool nsk_ppucolors_saveaco(
     const char *filename,
     const struct nsk_type_ppucolors *colors

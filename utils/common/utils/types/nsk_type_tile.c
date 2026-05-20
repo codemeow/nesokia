@@ -27,7 +27,10 @@ static void _tile_validate(
 /*!
  * \brief  Validates tile's palette field
  *
- * \param[in]  table  The table
+ * \param[in]  tile  The tile
+ *
+ * \note This is a fatal workflow invariant check. It returns only when the
+ *       field is initialized; otherwise it terminates the process.
  */
 void nsk_tile_validate_palette(const struct nsk_type_tile *tile) {
     _tile_validate(tile->init.palette, "palette");
@@ -36,7 +39,10 @@ void nsk_tile_validate_palette(const struct nsk_type_tile *tile) {
 /*!
  * \brief  Validates tile's index field
  *
- * \param[in]  table  The table
+ * \param[in]  tile  The tile
+ *
+ * \note This is a fatal workflow invariant check. It returns only when the
+ *       field is initialized; otherwise it terminates the process.
  */
 void nsk_tile_validate_index(const struct nsk_type_tile *tile) {
     _tile_validate(tile->init.index, "index");
@@ -45,7 +51,10 @@ void nsk_tile_validate_index(const struct nsk_type_tile *tile) {
 /*!
  * \brief  Validates tile's colors field
  *
- * \param[in]  table  The table
+ * \param[in]  tile  The tile
+ *
+ * \note This is a fatal workflow invariant check. It returns only when the
+ *       field is initialized; otherwise it terminates the process.
  */
 void nsk_tile_validate_colors(const struct nsk_type_tile *tile) {
     _tile_validate(tile->init.colors, "colors");
@@ -78,8 +87,9 @@ bool nsk_tile_isempty(
  *
  * \param[in,out]  tile  The tile
  * \param[in]  palette Palette data
+ * \return True if the index was assigned, false otherwise
  */
-void nsk_tile_setindex(
+bool nsk_tile_setindex(
     struct nsk_type_tile *tile,
     const struct nsk_type_palette *palette
 ) {
@@ -88,15 +98,21 @@ void nsk_tile_setindex(
 
     for (size_t h = 0; h < NSK_TILESIZE_HEIGHT; h++) {
         for (size_t w = 0; w < NSK_TILESIZE_WIDTH; w++) {
-            tile->pixel[h][w].index = nsk_palette_getindex(
+            size_t index = nsk_palette_getindex(
                 palette,
                 tile->palette,
                 &tile->pixel[h][w].color
             );
+            if (index == (size_t)-1) {
+                return false;
+            }
+
+            tile->pixel[h][w].index = index;
         }
     }
 
     tile->init.index = true;
+    return true;
 }
 
 /*!

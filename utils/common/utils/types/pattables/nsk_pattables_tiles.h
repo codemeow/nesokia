@@ -1,6 +1,8 @@
 #ifndef NSK_PATTABLES_TILES
 #define NSK_PATTABLES_TILES
 
+#include <stdbool.h>
+
 #include "types/nsk_type_pattable.h"
 #include "types/nsk_type_palettes.h"
 #include "types/pair/nsk_pair_type.h"
@@ -23,8 +25,9 @@ void nsk_pattable_settilespalettes(
  *
  * \param[in] table     The table
  * \param[in] palette   The palette
+ * \return True if indexes were assigned, false otherwise
  */
-void nsk_pattable_settilesindexes(
+bool nsk_pattable_settilesindexes(
     struct nsk_type_pattable        *table,
     const struct nsk_type_palette   *palette
 );
@@ -58,8 +61,9 @@ void nsk_pattables_settilespalettes(
  *
  * \param[in] tables    The tables
  * \param[in] palettes  The palettes
+ * \return True if indexes were assigned, false otherwise
  */
-void nsk_pattables_settilesindexes(
+bool nsk_pattables_settilesindexes(
     struct nsk_type_pattables       *tables,
     const struct nsk_type_palettes  *palettes
 );

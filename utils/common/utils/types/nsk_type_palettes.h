@@ -1,6 +1,7 @@
 #ifndef NSK_TYPE_PALETTES
 #define NSK_TYPE_PALETTES
 
+#include <stdbool.h>
 #include <stddef.h>
 
 #include "types/nsk_type_plane.h"
@@ -61,14 +62,19 @@ struct nsk_type_palettes {
 /*!
  * \brief  Validates palette's colors field
  *
- * \param[in]  table  The table
+ * \param[in]  palette  The palette
+ *
+ * \return True if the field is initialized, false otherwise
  */
-void nsk_palette_validate_colors(const struct nsk_type_palette *palette);
+bool nsk_palette_validate_colors(const struct nsk_type_palette *palette);
 
 /*!
  * \brief  Validates palette's indexes field
  *
- * \param[in]  table  The table
+ * \param[in]  palette  The palette
+ *
+ * \note This is a fatal workflow invariant check. It returns only when the
+ *       field is initialized; otherwise it terminates the process.
  */
 void nsk_palette_validate_indexes(const struct nsk_type_palette *palette);
 
@@ -126,8 +132,9 @@ void nsk_palettes_savespals(
  * \brief  Shows selected palette as ANSI colored output
  *
  * \param[in] palette  The palette
+ * \return True if the palette was shown, false otherwise
  */
-void nsk_palette_show(
+bool nsk_palette_show(
     const struct nsk_type_palette *palette
 );
 
@@ -135,8 +142,9 @@ void nsk_palette_show(
  * \brief  Shows selected palettes as ANSI colored output
  *
  * \param[in] palettes  The palettes
+ * \return True if the palettes were shown, false otherwise
  */
-void nsk_palettes_show(
+bool nsk_palettes_show(
     const struct nsk_type_palettes *palettes
 );
 
@@ -145,8 +153,9 @@ void nsk_palettes_show(
  *
  * \param[in] colors   The colors
  * \param[in] palette  The palette
+ * \return True if the palette is valid, false otherwise
  */
-void nsk_palette_validate(
+bool nsk_palette_validate(
     const struct nsk_type_ppucolors *colors,
     const struct nsk_type_palette   *palette
 );
@@ -156,8 +165,9 @@ void nsk_palette_validate(
  *
  * \param[in] colors   The colors
  * \param[in] palettes  The palettes
+ * \return True if the palettes are valid, false otherwise
  */
-void nsk_palettes_validate(
+bool nsk_palettes_validate(
     const struct nsk_type_ppucolors *colors,
     const struct nsk_type_palettes  *palettes
 );
@@ -189,8 +199,9 @@ void nsk_palettes_setcolors(
  *
  * \param[in]     colors    The colors
  * \param[in,out] palette   The palette
+ * \return True if indexes were assigned, false otherwise
  */
-void nsk_palette_setindexes(
+bool nsk_palette_setindexes(
     const struct nsk_type_ppucolors *colors,
     struct nsk_type_palette *palette
 );
@@ -200,8 +211,9 @@ void nsk_palette_setindexes(
  *
  * \param[in]     colors    The colors
  * \param[in,out] palettes  The palettes
+ * \return True if indexes were assigned, false otherwise
  */
-void nsk_palettes_setindexes(
+bool nsk_palettes_setindexes(
     const struct nsk_type_ppucolors *colors,
     struct nsk_type_palettes *palettes
 );
@@ -211,7 +223,7 @@ void nsk_palettes_setindexes(
  *
  * \param[in] palette  The palette
  * \param[in] group The colors group
- * \return The color index
+ * \return The color index, or (size_t)-1 on error
  */
 size_t nsk_palette_getindex(
     const struct nsk_type_palette *palette,

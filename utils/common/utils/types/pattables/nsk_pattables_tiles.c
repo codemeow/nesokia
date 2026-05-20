@@ -85,16 +85,21 @@ void nsk_pattable_settilespalettes(
  *
  * \param[in] table     The table
  * \param[in] palette   The palette
+ * \return True if indexes were assigned, false otherwise
  */
-void nsk_pattable_settilesindexes(
+bool nsk_pattable_settilesindexes(
     struct nsk_type_pattable        *table,
     const struct nsk_type_palette   *palette
 ) {
     for (size_t h = 0; h < NSK_PATTABLETABLE_HEIGHT; h++) {
         for (size_t w = 0; w < NSK_PATTABLETABLE_WIDTH; w++) {
-            nsk_tile_setindex(&table->tile[h][w], palette);
+            if (!nsk_tile_setindex(&table->tile[h][w], palette)) {
+                return false;
+            }
         }
     }
+
+    return true;
 }
 
 /*!
@@ -140,17 +145,22 @@ void nsk_pattables_settilespalettes(
  *
  * \param[in] tables    The tables
  * \param[in] palettes  The palettes
+ * \return True if indexes were assigned, false otherwise
  */
-void nsk_pattables_settilesindexes(
+bool nsk_pattables_settilesindexes(
     struct nsk_type_pattables       *tables,
     const struct nsk_type_palettes  *palettes
 ) {
     for (size_t p = 0; p < NSK_PLANES_COUNT; p++) {
-        nsk_pattable_settilesindexes(
+        if (!nsk_pattable_settilesindexes(
             &tables->plane[p],
             &palettes->plane[p]
-        );
+        )) {
+            return false;
+        }
     }
+
+    return true;
 }
 
 /*!

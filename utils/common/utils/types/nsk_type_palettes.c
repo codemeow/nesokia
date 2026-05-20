@@ -63,16 +63,29 @@ static void _palette_validate(
 /*!
  * \brief  Validates palette's colors field
  *
- * \param[in]  table  The table
+ * \param[in]  palette  The palette
+ *
+ * \return True if the field is initialized, false otherwise
  */
-void nsk_palette_validate_colors(const struct nsk_type_palette *palette) {
-    _palette_validate(palette->init.colors, "colors");
+bool nsk_palette_validate_colors(const struct nsk_type_palette *palette) {
+    if (!palette->init.colors) {
+        nsk_err(
+            "Error: Palette field \"%s\" is not initialized\n",
+            "colors"
+        );
+        return false;
+    }
+
+    return true;
 }
 
 /*!
  * \brief  Validates palette's indexes field
  *
- * \param[in]  table  The table
+ * \param[in]  palette  The palette
+ *
+ * \note This is a fatal workflow invariant check. It returns only when the
+ *       field is initialized; otherwise it terminates the process.
  */
 void nsk_palette_validate_indexes(const struct nsk_type_palette *palette) {
     _palette_validate(palette->init.indexes, "indexes");
@@ -256,11 +269,14 @@ void nsk_palettes_savespals(
  * \brief  Shows selected palette as ANSI colored output
  *
  * \param[in] palette  The palette
+ * \return True if the palette was shown, false otherwise
  */
-void nsk_palette_show(
+bool nsk_palette_show(
     const struct nsk_type_palette *palette
 ) {
-    nsk_palette_validate_colors(palette);
+    if (!nsk_palette_validate_colors(palette)) {
+        return false;
+    }
 
     nsk_inf(
         "# %s palette ($3f-)\n",
@@ -285,19 +301,26 @@ void nsk_palette_show(
         nsk_inf("\n");
     }
     nsk_inf("\n");
+
+    return true;
 }
 
 /*!
  * \brief  Shows selected palettes as ANSI colored output
  *
  * \param[in] palettes  The palettes
+ * \return True if the palettes were shown, false otherwise
  */
-void nsk_palettes_show(
+bool nsk_palettes_show(
     const struct nsk_type_palettes *palettes
 ) {
     for (size_t p = 0; p < NSK_PLANES_COUNT; p++) {
-        nsk_palette_show(&palettes->plane[p]);
+        if (!nsk_palette_show(&palettes->plane[p])) {
+            return false;
+        }
     }
+
+    return true;
 }
 
 /*!
@@ -306,7 +329,7 @@ void nsk_palettes_show(
  * \param[in] colors   The colors
  * \param[in] palette  The palette
  */
-void nsk_palette_validate(
+bool nsk_palette_validate(
     const struct nsk_type_ppucolors *colors,
     const struct nsk_type_palette   *palette
 ) {
@@ -322,7 +345,7 @@ void nsk_palette_validate(
                     c,
                     palette->group[g].index[c]
                 );
-                exit(EXIT_FAILURE);
+                return false;
             }
 
             if (!colors->allowed[palette->group[g].index[c]]) {
@@ -332,10 +355,12 @@ void nsk_palette_validate(
                     g,
                     c
                 );
-                exit(EXIT_FAILURE);
+                return false;
             }
         }
     }
+
+    return true;
 }
 
 /*!
@@ -344,15 +369,19 @@ void nsk_palette_validate(
  * \param[in] colors   The colors
  * \param[in] palettes  The palettes
  */
-void nsk_palettes_validate(
+bool nsk_palettes_validate(
     const struct nsk_type_ppucolors *colors,
     const struct nsk_type_palettes  *palettes
 ) {
-    nsk_palette_validate_colors(&palettes->plane[NSK_PLANE_BACKGROUND]);
-    nsk_palette_validate_colors(&palettes->plane[NSK_PLANE_SPRITES]);
+    if (!nsk_palette_validate_colors(&palettes->plane[NSK_PLANE_BACKGROUND]) ||
+        !nsk_palette_validate_colors(&palettes->plane[NSK_PLANE_SPRITES])) {
+        return false;
+    }
 
     for (size_t p = 0; p < NSK_PLANES_COUNT; p++) {
-        nsk_palette_validate(colors, &palettes->plane[p]);
+        if (!nsk_palette_validate(colors, &palettes->plane[p])) {
+            return false;
+        }
     }
 
     for (size_t g = 0; g < NSK_PALETTESIZE_GROUPS; g++) {
@@ -368,9 +397,11 @@ void nsk_palettes_validate(
                 nsk_string_color(cb->r, cb->g, cb->b),
                 nsk_string_color(cs->r, cs->g, cs->b)
             );
-            exit(EXIT_FAILURE);
+            return false;
         }
     }
+
+    return true;
 }
 
 /*!
@@ -440,11 +471,13 @@ void nsk_palettes_setcolors(
  * \param[in]     colors    The colors
  * \param[in,out] palette   The palette
  */
-void nsk_palette_setindexes(
+bool nsk_palette_setindexes(
     const struct nsk_type_ppucolors *colors,
     struct nsk_type_palette *palette
 ) {
-    nsk_palette_validate_colors(palette);
+    if (!nsk_palette_validate_colors(palette)) {
+        return false;
+    }
 
     for (size_t g = 0; g < NSK_PALETTESIZE_GROUPS; g++) {
         for (size_t c = 0; c < NSK_PALETTESIZE_COLORS; c++) {
@@ -468,12 +501,13 @@ void nsk_palette_setindexes(
                         palette->group[g].color[c].b
                     )
                 );
-                exit(EXIT_FAILURE);
+                return false;
             }
         }
     }
 
     palette->init.indexes = true;
+    return true;
 }
 
 /*!
@@ -482,16 +516,20 @@ void nsk_palette_setindexes(
  * \param[in]     colors    The colors
  * \param[in,out] palettes  The palettes
  */
-void nsk_palettes_setindexes(
+bool nsk_palettes_setindexes(
     const struct nsk_type_ppucolors *colors,
     struct nsk_type_palettes *palettes
 ) {
     for (size_t p = 0; p < NSK_PLANES_COUNT; p++) {
-        nsk_palette_setindexes(
+        if (!nsk_palette_setindexes(
             colors,
             &palettes->plane[p]
-        );
+        )) {
+            return false;
+        }
     }
+
+    return true;
 }
 
 /*!
@@ -499,14 +537,16 @@ void nsk_palettes_setindexes(
  *
  * \param[in] palette  The palette
  * \param[in] group The colors group
- * \return The color index
+ * \return The color index, or (size_t)-1 on error
  */
 size_t nsk_palette_getindex(
     const struct nsk_type_palette *palette,
     size_t group,
     const union nsk_type_color4 *color
 ) {
-    nsk_palette_validate_colors(palette);
+    if (!nsk_palette_validate_colors(palette)) {
+        return (size_t)-1;
+    }
 
     for (size_t i = 0; i < NSK_PALETTESIZE_COLORS; i++) {
         if (palette->group[group].color[i].raw == color->raw) {
@@ -524,5 +564,5 @@ size_t nsk_palette_getindex(
         group,
         nsk_conv_plane2string(palette->plane)
     );
-    exit(EXIT_FAILURE);
+    return (size_t)-1;
 }

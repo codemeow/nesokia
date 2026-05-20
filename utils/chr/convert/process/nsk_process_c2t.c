@@ -140,7 +140,9 @@ static void _input_validate(
     struct nsk_type_pattables *pattables __attribute__((unused))
 ) {
     nsk_ppucolors_validate(ppucolors);
-    nsk_palettes_validate(ppucolors, palettes);
+    if (!nsk_palettes_validate(ppucolors, palettes)) {
+        exit(EXIT_FAILURE);
+    }
 }
 
 /*!
@@ -156,7 +158,9 @@ static void _input_show(
     struct nsk_type_pattables *pattables
 ) {
     nsk_ppucolors_show(ppucolors);
-    nsk_palettes_show (palettes);
+    if (!nsk_palettes_show(palettes)) {
+        exit(EXIT_FAILURE);
+    }
     nsk_pattables_show(pattables);
 }
 
@@ -201,6 +205,9 @@ static void _output_save(
             palettes,
             pattables
         );
+        if (!image) {
+            exit(EXIT_FAILURE);
+        }
         nsk_pngimage_write(
             image,
             nsk_options_program.output.full
@@ -221,6 +228,9 @@ static void _output_save(
         nsk_auto_pifree struct nsk_type_pngimage *image = nsk_palettes_convtopng(
             palettes
         );
+        if (!image) {
+            exit(EXIT_FAILURE);
+        }
         nsk_pngimage_write(
             image,
             nsk_options_program.output.palettes.both

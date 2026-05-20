@@ -246,6 +246,9 @@ struct nsk_type_pngimage *nsk_pngimage_composesave(
 
         nsk_auto_pifree struct nsk_type_pngimage *component =
             _compose_info[i].conv_o2i(objects[i]);
+        if (!component) {
+            return NULL;
+        }
 
         nsk_pngimage_combine(
             image,

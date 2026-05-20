@@ -107,7 +107,7 @@ struct nsk_type_palettes nsk_palettes_readpng(
  * \brief  Converts local palettes into composite component
  *
  * \param[in] palettes  The palettes
- * \return Nesokia PNG component image
+ * \return Nesokia PNG component image, or NULL on validation error
  */
 struct nsk_type_pngimage *nsk_palettes_convtopng(
     const struct nsk_type_palettes *palettes
@@ -119,7 +119,9 @@ struct nsk_type_pngimage *nsk_palettes_convtopng(
     );
 
     for (size_t p = 0; p < NSK_PLANES_COUNT; p++) {
-        nsk_palette_validate_colors(&palettes->plane[p]);
+        if (!nsk_palette_validate_colors(&palettes->plane[p])) {
+            return NULL;
+        }
 
         for (size_t g = 0; g < NSK_PALETTESIZE_GROUPS; g++) {
             for (size_t c = 0; c < NSK_PALETTESIZE_COLORS; c++) {

@@ -130,16 +130,20 @@ static void _input_load(
         nsk_pattable_swapaddress(pattables);
     }
 
-    nsk_palettes_setindexes(
+    if (!nsk_palettes_setindexes(
         ppucolors,
         palettes
-    );
+    )) {
+        exit(EXIT_FAILURE);
+    }
     nsk_pattables_settilespalettes(
         pattables,
         palettes,
         nsk_options_program.input.explicit
     );
-    nsk_pattables_settilesindexes (pattables, palettes);
+    if (!nsk_pattables_settilesindexes(pattables, palettes)) {
+        exit(EXIT_FAILURE);
+    }
 }
 
 /*!
@@ -155,7 +159,9 @@ static void _input_validate(
     struct nsk_type_pattables *pattables __attribute__((unused))
 ) {
     nsk_ppucolors_validate(ppucolors);
-    nsk_palettes_validate(ppucolors, palettes);
+    if (!nsk_palettes_validate(ppucolors, palettes)) {
+        exit(EXIT_FAILURE);
+    }
 }
 
 /*!
@@ -171,7 +177,9 @@ static void _input_show(
     struct nsk_type_pattables *pattables
 ) {
     nsk_ppucolors_show(ppucolors);
-    nsk_palettes_show (palettes);
+    if (!nsk_palettes_show(palettes)) {
+        exit(EXIT_FAILURE);
+    }
     nsk_pattables_show(pattables);
 }
 

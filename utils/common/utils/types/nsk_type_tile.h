@@ -42,21 +42,30 @@ struct nsk_type_tile {
 /*!
  * \brief  Validates tile's palette field
  *
- * \param[in]  table  The table
+ * \param[in]  tile  The tile
+ *
+ * \note This is a fatal workflow invariant check. It returns only when the
+ *       field is initialized; otherwise it terminates the process.
  */
 void nsk_tile_validate_palette(const struct nsk_type_tile *tile);
 
 /*!
  * \brief  Validates tile's index field
  *
- * \param[in]  table  The table
+ * \param[in]  tile  The tile
+ *
+ * \note This is a fatal workflow invariant check. It returns only when the
+ *       field is initialized; otherwise it terminates the process.
  */
 void nsk_tile_validate_index(const struct nsk_type_tile *tile);
 
 /*!
  * \brief  Validates tile's colors field
  *
- * \param[in]  table  The table
+ * \param[in]  tile  The tile
+ *
+ * \note This is a fatal workflow invariant check. It returns only when the
+ *       field is initialized; otherwise it terminates the process.
  */
 void nsk_tile_validate_colors(const struct nsk_type_tile *tile);
 
@@ -75,8 +84,9 @@ bool nsk_tile_isempty(
  *
  * \param[in,out]  tile  The tile
  * \param[in]  palette Palette data
+ * \return True if the index was assigned, false otherwise
  */
-void nsk_tile_setindex(
+bool nsk_tile_setindex(
     struct nsk_type_tile *tile,
     const struct nsk_type_palette *palette
 );

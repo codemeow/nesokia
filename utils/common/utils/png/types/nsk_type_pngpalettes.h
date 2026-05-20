@@ -18,7 +18,7 @@ struct nsk_type_palettes nsk_palettes_readpng(
  * \brief  Converts local palettes into composite component
  *
  * \param[in] palettes  The palettes
- * \return Nesokia PNG component image
+ * \return Nesokia PNG component image, or NULL on validation error
  */
 struct nsk_type_pngimage *nsk_palettes_convtopng(
     const struct nsk_type_palettes *palettes

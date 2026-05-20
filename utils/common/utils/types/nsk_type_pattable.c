@@ -47,6 +47,9 @@ static void _pattable_validate(
  * \brief  Validates pattern table's plane field
  *
  * \param[in]  table  The table
+ *
+ * \note This is a fatal workflow invariant check. It returns only when the
+ *       field is initialized; otherwise it terminates the process.
  */
 void nsk_pattable_validate_plane(const struct nsk_type_pattable *table) {
     _pattable_validate(table->init.plane, "plane");
@@ -56,6 +59,9 @@ void nsk_pattable_validate_plane(const struct nsk_type_pattable *table) {
  * \brief  Validates pattern table's address field
  *
  * \param[in]  table  The table
+ *
+ * \note This is a fatal workflow invariant check. It returns only when the
+ *       field is initialized; otherwise it terminates the process.
  */
 void nsk_pattable_validate_address(const struct nsk_type_pattable *table) {
     _pattable_validate(table->init.address, "address");
@@ -286,6 +292,9 @@ void nsk_pattables_show(
  * \param[in] tables   The tables
  * \param[in] address  The address
  * \return Matching pattern table
+ *
+ * \note This is a fatal workflow invariant check. It returns only when a
+ *       matching table exists; otherwise it terminates the process.
  */
 const struct nsk_type_pattable *nsk_pattables_getbyaddress(
     const struct nsk_type_pattables *tables,

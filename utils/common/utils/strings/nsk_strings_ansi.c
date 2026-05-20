@@ -1,7 +1,7 @@
 #include <threads.h>
 #include <stdio.h>
 
-#include "../strings/nsk_strings_ansi.h"
+#include "strings/nsk_strings_ansi.h"
 
 /*!
  * \brief  Number of static strings available in one function call

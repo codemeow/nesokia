@@ -1,9 +1,9 @@
 #include <stdlib.h>
 
-#include "../../types/ppucolors/nsk_ppucolors_savepal.h"
-#include "../../nsk_util_cleanup.h"
-#include "../../nsk_util_size.h"
-#include "../../types/ppucolors/nsk_ppucolors_common.h"
+#include "types/ppucolors/nsk_ppucolors_savepal.h"
+#include "base/nsk_util_cleanup.h"
+#include "base/nsk_util_size.h"
+#include "types/ppucolors/nsk_ppucolors_common.h"
 
 /*!
  * \brief  Saves the PPU colors as .pal (NES emulator palette) file

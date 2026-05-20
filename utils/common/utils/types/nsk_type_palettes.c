@@ -3,14 +3,14 @@
 #include <stdio.h>
 #include <threads.h>
 
-#include "../types/nsk_type_palettes.h"
-#include "../log/nsk_log_err.h"
-#include "../strings/nsk_strings_ansi.h"
-#include "../log/nsk_log_inf.h"
-#include "../io/nsk_io_fopen.h"
-#include "../error/nsk_util_errno.h"
-#include "../nsk_util_cleanup.h"
-#include "../nsk_util_size.h"
+#include "types/nsk_type_palettes.h"
+#include "log/nsk_log_err.h"
+#include "strings/nsk_strings_ansi.h"
+#include "log/nsk_log_inf.h"
+#include "io/nsk_io_fopen.h"
+#include "error/nsk_util_errno.h"
+#include "base/nsk_util_cleanup.h"
+#include "base/nsk_util_size.h"
 
 /*!
  * \brief  Number of static strings in functions, returning static strings

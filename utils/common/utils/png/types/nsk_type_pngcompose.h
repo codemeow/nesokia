@@ -1,10 +1,10 @@
 #ifndef NSK_TYPE_PNGCOMPOSE
 #define NSK_TYPE_PNGCOMPOSE
 
-#include "../../png/types/nsk_type_pngimage.h"
-#include "../../types/nsk_type_ppucolors.h"
-#include "../../types/nsk_type_palettes.h"
-#include "../../types/nsk_type_pattable.h"
+#include "png/types/nsk_type_pngimage.h"
+#include "types/nsk_type_ppucolors.h"
+#include "types/nsk_type_palettes.h"
+#include "types/nsk_type_pattable.h"
 
 /*!
  * \brief  Creates full Nesokia PNG image from separate components

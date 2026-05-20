@@ -1,5 +1,5 @@
-#include "../io/nsk_io_testd.h"
-#include "../io/nsk_io_stat.h"
+#include "io/nsk_io_testd.h"
+#include "io/nsk_io_stat.h"
 
 /*!
  * \brief  Tests the directory for existence.

@@ -1,6 +1,6 @@
 #include <string.h>
 
-#include "nsk_util_malloc.h"
+#include "base/nsk_util_malloc.h"
 
 #include "log/nsk_log_err.h"
 
@@ -51,4 +51,3 @@ void *nsk_util_realloc(void *ptr, size_t size) {
 void nsk_util_free(void *ptr) {
     free(ptr);
 }
-

@@ -1,10 +1,10 @@
 #include <stdlib.h>
 
-#include "../types/nsk_type_ppucolors.h"
-#include "../log/nsk_log_err.h"
-#include "../log/nsk_log_inf.h"
-#include "../nsk_util_size.h"
-#include "../strings/nsk_strings_ansi.h"
+#include "types/nsk_type_ppucolors.h"
+#include "log/nsk_log_err.h"
+#include "log/nsk_log_inf.h"
+#include "base/nsk_util_size.h"
+#include "strings/nsk_strings_ansi.h"
 
 /*!
  * \brief  Shows the PPU colors as ANSI colored output

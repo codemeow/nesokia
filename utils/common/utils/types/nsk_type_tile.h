@@ -5,9 +5,9 @@
 #include <stddef.h>
 #include <stdio.h>
 
-#include "../types/nsk_type_color4.h"
-#include "../types/nsk_type_palettes.h"
-#include "../types/pair/nsk_pair_type.h"
+#include "types/nsk_type_color4.h"
+#include "types/nsk_type_palettes.h"
+#include "types/pair/nsk_pair_type.h"
 
 /*!
  * \brief  Tile sizes configuration

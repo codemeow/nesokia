@@ -7,10 +7,10 @@
 #include <stdlib.h>
 #include <wchar.h>
 
-#include "../../strings/nsk_strings_columns.h"
+#include "strings/nsk_strings_columns.h"
 
-#include "../../nsk_util_cleanup.h"
-#include "../../nsk_util_malloc.h"
+#include "base/nsk_util_cleanup.h"
+#include "base/nsk_util_malloc.h"
 
 /*!
  * \brief  Module initializer

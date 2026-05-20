@@ -3,8 +3,8 @@
 
 #include <stdbool.h>
 
-#include "../types/nsk_type_plane.h"
-#include "../types/nsk_type_tile.h"
+#include "types/nsk_type_plane.h"
+#include "types/nsk_type_tile.h"
 
 /*!
  * \brief  Pattern tables addresses

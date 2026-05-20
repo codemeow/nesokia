@@ -2,9 +2,9 @@
 #include <limits.h>
 #include <stdio.h>
 
-#include "../io/nsk_io_fullpath.h"
-#include "../io/nsk_io_dirname.h"
-#include "../io/nsk_io_path.h"
+#include "io/nsk_io_fullpath.h"
+#include "io/nsk_io_dirname.h"
+#include "io/nsk_io_path.h"
 
 /*!
  * \brief  Number of static strings in functions, returning static strings

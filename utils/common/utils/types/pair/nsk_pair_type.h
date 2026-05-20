@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-#include "../../types/list/nsk_list_type.h"
-#include "../../types/pair/nsk_pair_cmp.h"
+#include "types/list/nsk_list_type.h"
+#include "types/pair/nsk_pair_cmp.h"
 
 /*!
  * \brief  List of fields, used in particular pair instance

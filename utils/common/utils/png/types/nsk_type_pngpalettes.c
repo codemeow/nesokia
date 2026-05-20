@@ -1,8 +1,8 @@
 #include <stdlib.h>
 
-#include "../../png/types/nsk_type_pngpalettes.h"
-#include "../../io/nsk_io_fullpath.h"
-#include "../../log/nsk_log_err.h"
+#include "png/types/nsk_type_pngpalettes.h"
+#include "io/nsk_io_fullpath.h"
+#include "log/nsk_log_err.h"
 
 /*!
  * \brief  Positioning of the global palette in the template image

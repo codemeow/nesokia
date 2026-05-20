@@ -1,8 +1,8 @@
 #ifndef NSK_TYPE_PNGTILE
 #define NSK_TYPE_PNGTILE
 
-#include "../../types/nsk_type_tile.h"
-#include "../../png/types/nsk_type_pngimage.h"
+#include "types/nsk_type_tile.h"
+#include "png/types/nsk_type_pngimage.h"
 
 /*!
  * \brief  Reads the selected tile from Nesokia PNG from selected position

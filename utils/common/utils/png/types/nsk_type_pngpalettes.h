@@ -1,8 +1,8 @@
 #ifndef NSK_TYPE_PNGPALETTES
 #define NSK_TYPE_PNGPALETTES
 
-#include "../../types/nsk_type_palettes.h"
-#include "../../png/types/nsk_type_pngimage.h"
+#include "types/nsk_type_palettes.h"
+#include "png/types/nsk_type_pngimage.h"
 
 /*!
  * \brief  Reads local palettes from Nesokia PNG component

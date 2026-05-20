@@ -2,12 +2,12 @@
 #include <errno.h>
 #include <stdlib.h>
 
-#include "../types/nsk_type_pattable.h"
-#include "../log/nsk_log_err.h"
-#include "../utils/nsk_util_cleanup.h"
-#include "../utils/io/nsk_io_fopen.h"
-#include "../error/nsk_util_errno.h"
-#include "../utils/log/nsk_log_inf.h"
+#include "types/nsk_type_pattable.h"
+#include "log/nsk_log_err.h"
+#include "base/nsk_util_cleanup.h"
+#include "io/nsk_io_fopen.h"
+#include "error/nsk_util_errno.h"
+#include "log/nsk_log_inf.h"
 
 /*!
  * \brief  Converts the enum value to the raw value

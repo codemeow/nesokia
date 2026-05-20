@@ -1,7 +1,7 @@
 #ifndef NSK_PAIR_PARSE
 #define NSK_PAIR_PARSE
 
-#include "../../types/pair/nsk_pair_type.h"
+#include "types/pair/nsk_pair_type.h"
 
 /*!
  * \brief  Parse the string into a list of pairs

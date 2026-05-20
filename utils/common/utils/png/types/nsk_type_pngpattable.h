@@ -1,8 +1,8 @@
 #ifndef NSK_TYPE_PNGPATTABLE
 #define NSK_TYPE_PNGPATTABLE
 
-#include "../../types/nsk_type_pattable.h"
-#include "../../png/types/nsk_type_pngimage.h"
+#include "types/nsk_type_pattable.h"
+#include "png/types/nsk_type_pngimage.h"
 
 /*!
  * \brief  Reads pattern table from Nesokia PNG component

@@ -1,7 +1,7 @@
 #ifndef NSK_PPUCOLORS_READPAL
 #define NSK_PPUCOLORS_READPAL
 
-#include "../../types/nsk_type_ppucolors.h"
+#include "types/nsk_type_ppucolors.h"
 
 /*!
  * \brief  Reads the PPU colors from the .pal file

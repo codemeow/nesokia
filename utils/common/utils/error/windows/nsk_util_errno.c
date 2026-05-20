@@ -2,7 +2,7 @@
 
 #include <string.h>
 
-#include "../../error/nsk_util_errno.h"
+#include "error/nsk_util_errno.h"
 
 /*!
  * \brief  Returns the text message related to the provided code

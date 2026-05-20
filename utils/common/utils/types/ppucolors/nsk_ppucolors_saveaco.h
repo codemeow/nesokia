@@ -1,7 +1,7 @@
 #ifndef NSK_PPUCOLORS_SAVEACO
 #define NSK_PPUCOLORS_SAVEACO
 
-#include "../../types/nsk_type_ppucolors.h"
+#include "types/nsk_type_ppucolors.h"
 
 /*!
  * \brief  Saves the PPU colors as .aco (Photoshop Color Swatch) file

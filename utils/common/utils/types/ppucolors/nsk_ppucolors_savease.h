@@ -1,7 +1,7 @@
 #ifndef NSK_PPUCOLORS_SAVEASE
 #define NSK_PPUCOLORS_SAVEASE
 
-#include "../../types/nsk_type_ppucolors.h"
+#include "types/nsk_type_ppucolors.h"
 
 /*!
  * \brief  Saves the PPU colors as .ase (Adobe Swatch Exchange) file

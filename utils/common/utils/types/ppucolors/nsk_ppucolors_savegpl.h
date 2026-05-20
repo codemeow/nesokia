@@ -1,7 +1,7 @@
 #ifndef NSK_PPUCOLORS_SAVEGPL
 #define NSK_PPUCOLORS_SAVEGPL
 
-#include "../../types/nsk_type_ppucolors.h"
+#include "types/nsk_type_ppucolors.h"
 
 /*!
  * \brief  Saves the PPU colors as .gpl (GIMP palette) file

@@ -1,9 +1,9 @@
 #include <inttypes.h>
 #include <stdio.h>
 
-#include "nsk_util_hrbytes.h"
+#include "base/nsk_util_hrbytes.h"
 
-#include "nsk_util_size.h"
+#include "base/nsk_util_size.h"
 
 /*!
  * \brief  Converts bytes into human-readable format (KB/MB/GB + raw value)

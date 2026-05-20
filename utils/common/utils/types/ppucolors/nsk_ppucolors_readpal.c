@@ -1,7 +1,7 @@
-#include "../../types/ppucolors/nsk_ppucolors_readpal.h"
-#include "../../types/ppucolors/nsk_ppucolors_common.h"
-#include "../../nsk_util_size.h"
-#include "../../nsk_util_cleanup.h"
+#include "types/ppucolors/nsk_ppucolors_readpal.h"
+#include "types/ppucolors/nsk_ppucolors_common.h"
+#include "base/nsk_util_size.h"
+#include "base/nsk_util_cleanup.h"
 
 /*!
  * \brief  Reads the PPU colors from the .pal file

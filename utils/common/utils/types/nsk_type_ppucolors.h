@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include "../types/nsk_type_color4.h"
+#include "types/nsk_type_color4.h"
 
 /*!
  * \brief Common constants

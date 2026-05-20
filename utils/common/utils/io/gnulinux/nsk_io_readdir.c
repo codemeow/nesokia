@@ -3,7 +3,7 @@
 #include <dirent.h>
 #include <sys/types.h>
 
-#include "../../io/nsk_io_readdir.h"
+#include "io/nsk_io_readdir.h"
 
 /*!
  * \brief  Return next element of the directory

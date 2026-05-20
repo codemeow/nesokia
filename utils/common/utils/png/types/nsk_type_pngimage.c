@@ -2,12 +2,12 @@
 #include <string.h>
 #include <libpng/png.h>
 
-#include "../../png/types/nsk_type_pngimage.h"
-#include "../../io/nsk_io_fopen.h"
-#include "../../log/nsk_log_err.h"
-#include "../../nsk_util_cleanup.h"
-#include "../../nsk_util_malloc.h"
-#include "../../strings/nsk_strings_strdup.h"
+#include "png/types/nsk_type_pngimage.h"
+#include "io/nsk_io_fopen.h"
+#include "log/nsk_log_err.h"
+#include "base/nsk_util_cleanup.h"
+#include "base/nsk_util_malloc.h"
+#include "strings/nsk_strings_strdup.h"
 
 /*!
  * Size of the PNG signature

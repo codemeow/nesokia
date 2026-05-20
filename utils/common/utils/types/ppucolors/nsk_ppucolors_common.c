@@ -3,10 +3,10 @@
 #include <string.h>
 #include <threads.h>
 
-#include "../../types/ppucolors/nsk_ppucolors_common.h"
-#include "../../log/nsk_log_err.h"
-#include "../../error/nsk_util_errno.h"
-#include "../../io/nsk_io_fopen.h"
+#include "types/ppucolors/nsk_ppucolors_common.h"
+#include "log/nsk_log_err.h"
+#include "error/nsk_util_errno.h"
+#include "io/nsk_io_fopen.h"
 
 /*!
  * \brief  Number of static strings available in one function call

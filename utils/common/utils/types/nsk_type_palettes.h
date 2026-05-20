@@ -3,9 +3,9 @@
 
 #include <stddef.h>
 
-#include "../types/nsk_type_plane.h"
-#include "../types/nsk_type_color4.h"
-#include "../types/nsk_type_ppucolors.h"
+#include "types/nsk_type_plane.h"
+#include "types/nsk_type_color4.h"
+#include "types/nsk_type_ppucolors.h"
 
 /*!
  * \brief  Palettes sizes

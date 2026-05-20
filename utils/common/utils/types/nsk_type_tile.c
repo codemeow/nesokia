@@ -1,9 +1,9 @@
 #include <stdlib.h>
 
-#include "../types/nsk_type_tile.h"
-#include "../log/nsk_log_err.h"
-#include "../nsk_util_malloc.h"
-#include "../strings/nsk_strings_ansi.h"
+#include "types/nsk_type_tile.h"
+#include "log/nsk_log_err.h"
+#include "base/nsk_util_malloc.h"
+#include "strings/nsk_strings_ansi.h"
 
 /*!
  * \brief  Generic validator

@@ -1,9 +1,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../../types/pattables/nsk_pattables_tiles.h"
-#include "../../types/nsk_type_tile.h"
-#include "../../log/nsk_log_err.h"
+#include "types/pattables/nsk_pattables_tiles.h"
+#include "types/nsk_type_tile.h"
+#include "log/nsk_log_err.h"
 
 /*!
  * \brief  Finds the tile's requested explicit palette in the list

@@ -1,9 +1,9 @@
 #include <stdlib.h>
 
-#include "../../png/types/nsk_type_pngpattable.h"
-#include "../../png/types/nsk_type_pngtile.h"
-#include "../../log/nsk_log_err.h"
-#include "../../io/nsk_io_fullpath.h"
+#include "png/types/nsk_type_pngpattable.h"
+#include "png/types/nsk_type_pngtile.h"
+#include "log/nsk_log_err.h"
+#include "io/nsk_io_fullpath.h"
 
 /*!
  * \brief  Positioning of the global palette in the template image

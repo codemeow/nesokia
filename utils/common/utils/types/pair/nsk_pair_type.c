@@ -1,7 +1,8 @@
 #include <string.h>
-#include <nsk_util_meta.h>
 
-#include "../../types/pair/nsk_pair_type.h"
+#include "types/pair/nsk_pair_type.h"
+#include "base/nsk_util_malloc.h"
+#include "strings/nsk_strings_strdup.h"
 
 /*!
  * \brief  Creates and appends new element to the provided optional list

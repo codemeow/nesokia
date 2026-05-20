@@ -1,8 +1,8 @@
 #ifndef NSK_TYPE_PNGPPUCOLORS
 #define NSK_TYPE_PNGPPUCOLORS
 
-#include "../../types/nsk_type_ppucolors.h"
-#include "../../png/types/nsk_type_pngimage.h"
+#include "types/nsk_type_ppucolors.h"
+#include "png/types/nsk_type_pngimage.h"
 /*!
  * \brief  Reads the PPU colors from Nesokia PNG component
  *

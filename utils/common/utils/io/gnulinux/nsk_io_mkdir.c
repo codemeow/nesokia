@@ -2,7 +2,7 @@
 
 #include <sys/stat.h>
 
-#include "../../io/nsk_io_mkdir.h"
+#include "io/nsk_io_mkdir.h"
 
 /*!
  * \brief  Creates the path

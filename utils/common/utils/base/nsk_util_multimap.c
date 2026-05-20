@@ -1,7 +1,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#include "nsk_util_multimap.h"
+#include "base/nsk_util_multimap.h"
 
 /*!
  * \brief  Lookups the values from the multimap

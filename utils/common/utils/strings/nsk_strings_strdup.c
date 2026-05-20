@@ -1,10 +1,10 @@
 #include <stddef.h>
 #include <string.h>
 
-#include "../strings/nsk_strings_strdup.h"
+#include "strings/nsk_strings_strdup.h"
 
-#include "../log/nsk_log_err.h"
-#include "../nsk_util_malloc.h"
+#include "log/nsk_log_err.h"
+#include "base/nsk_util_malloc.h"
 
 /*!
  * \brief  Dupes the string value

@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 
-#include "../../io/nsk_io_fopen.h"
+#include "io/nsk_io_fopen.h"
 
 /*!
  * \brief  Platform-specific version of fopen

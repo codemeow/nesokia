@@ -5,12 +5,12 @@
 #include <time.h>
 #include <windows.h>
 
-#include "../../io/nsk_io_stat.h"
+#include "io/nsk_io_stat.h"
 
-#include "../../log/nsk_log_err.h"
-#include "../../strings/windows/nsk_strings_wide.h"
-#include "../../nsk_util_cleanup.h"
-#include "../../nsk_util_malloc.h"
+#include "log/nsk_log_err.h"
+#include "strings/windows/nsk_strings_wide.h"
+#include "base/nsk_util_cleanup.h"
+#include "base/nsk_util_malloc.h"
 
 /*!
  * \brief  Executes platform-specific `stat`

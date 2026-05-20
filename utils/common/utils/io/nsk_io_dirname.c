@@ -1,9 +1,9 @@
 #include <libgen.h>
 #include <limits.h>
 #include <stdio.h>
-#include "../io/nsk_io_dirname.h"
-#include "../nsk_util_cleanup.h"
-#include "../strings/nsk_strings_strdup.h"
+#include "io/nsk_io_dirname.h"
+#include "base/nsk_util_cleanup.h"
+#include "strings/nsk_strings_strdup.h"
 
 /*!
  * \brief  Number of static strings in functions, returning static strings

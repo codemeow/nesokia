@@ -1,9 +1,9 @@
 #ifndef NSK_PATTABLES_TILES
 #define NSK_PATTABLES_TILES
 
-#include "../../types/nsk_type_pattable.h"
-#include "../../types/nsk_type_palettes.h"
-#include "../../types/pair/nsk_pair_type.h"
+#include "types/nsk_type_pattable.h"
+#include "types/nsk_type_palettes.h"
+#include "types/pair/nsk_pair_type.h"
 
 /*!
  * \brief  Assigns the tiles palettes to the pattern table

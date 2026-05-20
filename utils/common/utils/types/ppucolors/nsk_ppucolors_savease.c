@@ -1,11 +1,11 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "../../types/ppucolors/nsk_ppucolors_savease.h"
-#include "../../log/nsk_log_err.h"
-#include "../../nsk_util_cleanup.h"
-#include "../../types/ppucolors/nsk_ppucolors_common.h"
-#include "../../math/nsk_math_endianness.h"
+#include "types/ppucolors/nsk_ppucolors_savease.h"
+#include "log/nsk_log_err.h"
+#include "base/nsk_util_cleanup.h"
+#include "types/ppucolors/nsk_ppucolors_common.h"
+#include "math/nsk_math_endianness.h"
 
 /*!
  * \brief  ASE block types

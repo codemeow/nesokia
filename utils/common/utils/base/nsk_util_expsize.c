@@ -1,6 +1,6 @@
 #include <math.h>
 
-#include "nsk_util_expsize.h"
+#include "base/nsk_util_expsize.h"
 
 /*!
  * \brief  Converts hi and low parts (MSB/LSB) to size in bytes:

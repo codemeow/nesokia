@@ -3,11 +3,11 @@
 #include <stdlib.h>
 #include <windows.h>
 
-#include "../../strings/windows/nsk_strings_wide.h"
+#include "strings/windows/nsk_strings_wide.h"
 
-#include "../../log/nsk_log_err.h"
-#include "../../nsk_util_cleanup.h"
-#include "../../nsk_util_malloc.h"
+#include "log/nsk_log_err.h"
+#include "base/nsk_util_cleanup.h"
+#include "base/nsk_util_malloc.h"
 
 /*!
  * \brief  Converts provided string to Windows Wide String using the provided

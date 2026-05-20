@@ -1,6 +1,6 @@
-#include "nsk_util_cleanup.h"
+#include "base/nsk_util_cleanup.h"
 
-#include "nsk_util_malloc.h"
+#include "base/nsk_util_malloc.h"
 
 /*!
  * \brief  Autocleaner for memory pointers

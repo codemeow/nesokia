@@ -2,12 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../../png/types/nsk_type_pngcompose.h"
-#include "../../nsk_util_size.h"
-#include "../../png/types/nsk_type_pngppucolors.h"
-#include "../../png/types/nsk_type_pngpalettes.h"
-#include "../../png/types/nsk_type_pngpattable.h"
-#include "../../log/nsk_log_err.h"
+#include "png/types/nsk_type_pngcompose.h"
+#include "base/nsk_util_size.h"
+#include "png/types/nsk_type_pngppucolors.h"
+#include "png/types/nsk_type_pngpalettes.h"
+#include "png/types/nsk_type_pngpattable.h"
+#include "log/nsk_log_err.h"
 
 /*!
  * \brief  Sizes of components

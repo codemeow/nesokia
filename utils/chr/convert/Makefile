@@ -9,12 +9,10 @@ VER_BUILD := 10
 DIR_ROOT := ../../..
 
 # Common modules
-CFLAGS := -DNSK_MODULE_PNG -DNSK_MODULE_COMPOSE
+COMMON_MODULES := png types
 
-# Linking flags
-LDFLAGS := -lm -lpng
+# Compilation flags
+CFLAGS := -DNSK_MODULE_PNG -DNSK_MODULE_COMPOSE
 
 include $(DIR_ROOT)/scripts/make/common.mk
 include $(DIR_ROOT)/scripts/make/lang/c.mk
-
-

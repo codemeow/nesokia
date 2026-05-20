@@ -8,10 +8,8 @@ VER_BUILD := 13
 # Common root directory
 DIR_ROOT := ../../..
 
-# Linking flags
-LDFLAGS := -lm -lpng
+# Common modules
+COMMON_MODULES := base error io log math strings types
 
 include $(DIR_ROOT)/scripts/make/common.mk
 include $(DIR_ROOT)/scripts/make/lang/c.mk
-
-

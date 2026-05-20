@@ -55,11 +55,12 @@ $(DIR_TEMPLATES_TARGET)/%: $(DIR_TEMPLATES_PROJECT)/% |
 
 
 # Targets
-.PHONY: all                             test      clean
+.PHONY: all build                       test      clean
 .PHONY: $(DIR_BIN)/$(PROJECT_NAME)-pre  test-pre  clean-pre
 .PHONY:                                 test-post clean-post
 
 all: $(DIR_BIN)/$(PROJECT_NAME)-pre $(TEMPLATE_TARGET) $(DIR_BIN)/$(PROJECT_NAME)
+build: all
 clean: clean-pre clean-post
 test: test-pre test-post
 

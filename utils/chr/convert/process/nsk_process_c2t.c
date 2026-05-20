@@ -61,21 +61,30 @@ static void _input_load(
     );
 
     if (nsk_options_program.input.palettes.both) {
-        *palettes = nsk_palettes_readspals(
-            nsk_options_program.input.palettes.both
-        );
+        if (!nsk_palettes_readspals(
+            nsk_options_program.input.palettes.both,
+            palettes
+        )) {
+            exit(EXIT_FAILURE);
+        }
     }
 
     if (nsk_options_program.input.palettes.back) {
-        palettes->plane[NSK_PLANE_BACKGROUND] = nsk_palette_readspal(
-            nsk_options_program.input.palettes.back
-        );
+        if (!nsk_palette_readspal(
+            nsk_options_program.input.palettes.back,
+            &palettes->plane[NSK_PLANE_BACKGROUND]
+        )) {
+            exit(EXIT_FAILURE);
+        }
     }
 
     if (nsk_options_program.input.palettes.sprites) {
-        palettes->plane[NSK_PLANE_SPRITES] = nsk_palette_readspal(
-            nsk_options_program.input.palettes.sprites
-        );
+        if (!nsk_palette_readspal(
+            nsk_options_program.input.palettes.sprites,
+            &palettes->plane[NSK_PLANE_SPRITES]
+        )) {
+            exit(EXIT_FAILURE);
+        }
     }
 
     if (nsk_options_program.input.pattables.both) {
@@ -96,7 +105,9 @@ static void _input_load(
         );
     }
 
-    nsk_palettes_setcolors(ppucolors, palettes);
+    if (!nsk_palettes_setcolors(ppucolors, palettes)) {
+        exit(EXIT_FAILURE);
+    }
 
     nsk_pattable_setplane(
         &pattables->plane[NSK_PLANE_BACKGROUND],

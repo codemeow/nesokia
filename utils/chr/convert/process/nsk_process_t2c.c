@@ -220,24 +220,30 @@ static void _output_save(
     }
 
     if (nsk_options_program.output.palettes.both) {
-        nsk_palettes_savespals(
+        if (!nsk_palettes_savespals(
             nsk_options_program.output.palettes.both,
             palettes
-        );
+        )) {
+            exit(EXIT_FAILURE);
+        }
     }
 
     if (nsk_options_program.output.palettes.back) {
-        nsk_palette_savespal(
+        if (!nsk_palette_savespal(
             nsk_options_program.output.palettes.back,
             &palettes->plane[NSK_PLANE_BACKGROUND]
-        );
+        )) {
+            exit(EXIT_FAILURE);
+        }
     }
 
     if (nsk_options_program.output.palettes.sprites) {
-        nsk_palette_savespal(
+        if (!nsk_palette_savespal(
             nsk_options_program.output.palettes.sprites,
             &palettes->plane[NSK_PLANE_SPRITES]
-        );
+        )) {
+            exit(EXIT_FAILURE);
+        }
     }
 
     if (nsk_options_program.output.pattables.both) {

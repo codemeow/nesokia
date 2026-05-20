@@ -80,16 +80,18 @@ void nsk_palette_validate_indexes(const struct nsk_type_palette *palette);
 
 /*!
  * \brief  Reads .spal file ("Selected palette")
- * (binary $3f00..$3f0f/$f10..$3f1f)
+ * (binary $3f00..$3f0f/$3f10..$3f1f)
  *
- * \note Reads only `index` fiels. Call `nsk_palette_apply` function
+ * \note Reads only `index` fields. Call `nsk_palette_apply` function
  *       to fill the actual colors
  *
- * \param[in] filename  The filename
- * \return Palette
+ * \param[in]  filename  The filename
+ * \param[out] palette   The palette
+ * \return True if the palette was read, false otherwise
  */
-struct nsk_type_palette nsk_palette_readspal(
-    const char *filename
+bool nsk_palette_readspal(
+    const char *filename,
+    struct nsk_type_palette *palette
 );
 
 /*!
@@ -97,8 +99,9 @@ struct nsk_type_palette nsk_palette_readspal(
  *
  * \param[in] filename  The filename
  * \param[in] palette   The palette
+ * \return True if the palette was saved, false otherwise
  */
-void nsk_palette_savespal(
+bool nsk_palette_savespal(
     const char *filename,
     const struct nsk_type_palette *palette
 );
@@ -107,23 +110,26 @@ void nsk_palette_savespal(
  * \brief  Reads .spals file ("Selected palettes")
  * (binary $3f00..$3f1f)
  *
- * \note Reads only `index` fiels. Call `nsk_palette_apply` function
+ * \note Reads only `index` fields. Call `nsk_palette_apply` function
  *       to fill the actual colors
  *
- * \param[in] filename  The filename
- * \return Palettes
+ * \param[in]  filename  The filename
+ * \param[out] palettes  The palettes
+ * \return True if the palettes were read, false otherwise
  */
-struct nsk_type_palettes nsk_palettes_readspals(
-    const char *filename
+bool nsk_palettes_readspals(
+    const char *filename,
+    struct nsk_type_palettes *palettes
 );
 
 /*!
  * \brief  Saves both palettes as binary .spals file
  *
  * \param[in] filename  The filename
- * \param[in] palette   The palette
+ * \param[in] palettes  The palettes
+ * \return True if the palettes were saved, false otherwise
  */
-void nsk_palettes_savespals(
+bool nsk_palettes_savespals(
     const char *filename,
     const struct nsk_type_palettes *palettes
 );
@@ -177,8 +183,9 @@ bool nsk_palettes_validate(
  *
  * \param[in]       colors   The colors
  * \param[in,out]   palette  The palette
+ * \return True if colors were assigned, false otherwise
  */
-void nsk_palette_setcolors(
+bool nsk_palette_setcolors(
     const struct nsk_type_ppucolors *colors,
     struct nsk_type_palette *palette
 );
@@ -188,8 +195,9 @@ void nsk_palette_setcolors(
  *
  * \param[in]       colors    The colors
  * \param[in,out]   palettes  The palettes
+ * \return True if colors were assigned, false otherwise
  */
-void nsk_palettes_setcolors(
+bool nsk_palettes_setcolors(
     const struct nsk_type_ppucolors *colors,
     struct nsk_type_palettes *palettes
 );

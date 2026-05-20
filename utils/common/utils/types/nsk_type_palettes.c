@@ -97,8 +97,9 @@ void nsk_palette_validate_indexes(const struct nsk_type_palette *palette) {
  * \param[in]      file     The file
  * \param[in]      filename File's filename
  * \param[in,out]  palette  The palette
+ * \return True if the palette was read, false otherwise
  */
-static void _palette_readspal(
+static bool _palette_readspal(
     FILE *file,
     const char *filename,
     struct nsk_type_palette *palette
@@ -113,13 +114,14 @@ static void _palette_readspal(
                     filename,
                     nsk_util_strerror(errno)
                 );
-                exit(EXIT_FAILURE);
+                return false;
             }
             palette->group[g].index[c] = index;
         }
     }
 
     palette->init.indexes = true;
+    return true;
 }
 
 /*!
@@ -128,8 +130,9 @@ static void _palette_readspal(
  * \param[in]       file      The file
  * \param[in]       filename  The filename
  * \param[in,out]   palette   The palette
+ * \return True if the palette was saved, false otherwise
  */
-static void _palette_savespal(
+static bool _palette_savespal(
     FILE *file,
     const char *filename,
     const struct nsk_type_palette *palette
@@ -146,26 +149,30 @@ static void _palette_savespal(
                     filename,
                     nsk_util_strerror(errno)
                 );
-                exit(EXIT_FAILURE);
+                return false;
             }
         }
     }
+
+    return true;
 }
 
 /*!
  * \brief  Reads .spal file ("Selected palette")
- * (binary $3f00..$3f0f/$f10..$3f1f)
+ * (binary $3f00..$3f0f/$3f10..$3f1f)
  *
- * \note Reads only `index` fiels. Call `nsk_palette_apply` function
+ * \note Reads only `index` fields. Call `nsk_palette_apply` function
  *       to fill the actual colors
  *
- * \param[in] filename  The filename
- * \return Palette
+ * \param[in]  filename  The filename
+ * \param[out] palette   The palette
+ * \return True if the palette was read, false otherwise
  */
-struct nsk_type_palette nsk_palette_readspal(
-    const char *filename
+bool nsk_palette_readspal(
+    const char *filename,
+    struct nsk_type_palette *palette
 ) {
-    struct nsk_type_palette palette = { 0 };
+    *palette = (struct nsk_type_palette){ 0 };
 
     nsk_auto_fclose FILE *file = nsk_io_fopen(filename, "rb");
     if (!file) {
@@ -175,11 +182,10 @@ struct nsk_type_palette nsk_palette_readspal(
             filename,
             nsk_util_strerror(errno)
         );
-        exit(EXIT_FAILURE);
+        return false;
     }
 
-    _palette_readspal(file, filename, &palette);
-    return palette;
+    return _palette_readspal(file, filename, palette);
 }
 
 /*!
@@ -187,39 +193,42 @@ struct nsk_type_palette nsk_palette_readspal(
  *
  * \param[in] filename  The filename
  * \param[in] palette   The palette
+ * \return True if the palette was saved, false otherwise
  */
-void nsk_palette_savespal(
+bool nsk_palette_savespal(
     const char *filename,
     const struct nsk_type_palette *palette
 ) {
     nsk_auto_fclose FILE *file = nsk_io_fopen(filename, "wb");
-        if (!file) {
+    if (!file) {
         nsk_err(
             "Error: cannot open file \"%s\" for palette colors writing.\n"
             "Possible reason: %s\n",
             filename,
             nsk_util_strerror(errno)
         );
-        exit(EXIT_FAILURE);
+        return false;
     }
 
-    _palette_savespal(file, filename, palette);
+    return _palette_savespal(file, filename, palette);
 }
 
 /*!
  * \brief  Reads .spals file ("Selected palettes")
  *
- * \note Reads only `index` fiels. Call `nsk_palette_apply` function
+ * \note Reads only `index` fields. Call `nsk_palette_apply` function
  *       to fill the actual colors
  * (binary $3f00..$3f1f)
  *
- * \param[in] filename  The filename
- * \return Palettes
+ * \param[in]  filename  The filename
+ * \param[out] palettes  The palettes
+ * \return True if the palettes were read, false otherwise
  */
-struct nsk_type_palettes nsk_palettes_readspals(
-    const char *filename
+bool nsk_palettes_readspals(
+    const char *filename,
+    struct nsk_type_palettes *palettes
 ) {
-    struct nsk_type_palettes palettes = { 0 };
+    *palettes = (struct nsk_type_palettes){ 0 };
 
     nsk_auto_fclose FILE *file = nsk_io_fopen(filename, "rb");
     if (!file) {
@@ -229,40 +238,47 @@ struct nsk_type_palettes nsk_palettes_readspals(
             filename,
             nsk_util_strerror(errno)
         );
-        exit(EXIT_FAILURE);
+        return false;
     }
 
-    for (size_t p = 0; p < NSK_SIZE(palettes.plane); p++) {
-        _palette_readspal(file, filename, &palettes.plane[p]);
+    for (size_t p = 0; p < NSK_SIZE(palettes->plane); p++) {
+        if (!_palette_readspal(file, filename, &palettes->plane[p])) {
+            return false;
+        }
     }
 
-    return palettes;
+    return true;
 }
 
 /*!
  * \brief  Saves both palettes as binary .spals file
  *
  * \param[in] filename  The filename
- * \param[in] palette   The palette
+ * \param[in] palettes  The palettes
+ * \return True if the palettes were saved, false otherwise
  */
-void nsk_palettes_savespals(
+bool nsk_palettes_savespals(
     const char *filename,
     const struct nsk_type_palettes *palettes
 ) {
     nsk_auto_fclose FILE *file = nsk_io_fopen(filename, "wb");
-        if (!file) {
+    if (!file) {
         nsk_err(
             "Error: cannot open file \"%s\" for palette colors writing.\n"
             "Possible reason: %s\n",
             filename,
             nsk_util_strerror(errno)
         );
-        exit(EXIT_FAILURE);
+        return false;
     }
 
     for (size_t p = 0; p < NSK_SIZE(palettes->plane); p++) {
-        _palette_savespal(file, filename, &palettes->plane[p]);
+        if (!_palette_savespal(file, filename, &palettes->plane[p])) {
+            return false;
+        }
     }
+
+    return true;
 }
 
 /*!
@@ -409,8 +425,9 @@ bool nsk_palettes_validate(
  *
  * \param[in]       colors   The colors
  * \param[in,out]   palette  The palette
+ * \return True if colors were assigned, false otherwise
  */
-void nsk_palette_setcolors(
+bool nsk_palette_setcolors(
     const struct nsk_type_ppucolors *colors,
     struct nsk_type_palette *palette
 ) {
@@ -428,7 +445,7 @@ void nsk_palette_setcolors(
                     c,
                     index
                 );
-                exit(EXIT_FAILURE);
+                return false;
             }
 
             if (!colors->allowed[index]) {
@@ -440,7 +457,7 @@ void nsk_palette_setcolors(
                     g,
                     c
                 );
-                exit(EXIT_FAILURE);
+                return false;
             }
 
             palette->group[g].color[c].raw = colors->colors[index].raw;
@@ -448,6 +465,7 @@ void nsk_palette_setcolors(
     }
 
     palette->init.colors = true;
+    return true;
 }
 
 /*!
@@ -455,14 +473,19 @@ void nsk_palette_setcolors(
  *
  * \param[in]       colors    The colors
  * \param[in,out]   palettes  The palettes
+ * \return True if colors were assigned, false otherwise
  */
-void nsk_palettes_setcolors(
+bool nsk_palettes_setcolors(
     const struct nsk_type_ppucolors *colors,
     struct nsk_type_palettes *palettes
 ) {
     for (size_t p = 0; p < NSK_PLANES_COUNT; p++) {
-        nsk_palette_setcolors(colors, &palettes->plane[p]);
+        if (!nsk_palette_setcolors(colors, &palettes->plane[p])) {
+            return false;
+        }
     }
+
+    return true;
 }
 
 /*!

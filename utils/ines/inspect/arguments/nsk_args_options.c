@@ -27,7 +27,7 @@ struct nsk_options_entry nsk_options_table[] = {
         "\n"
         "    expr  ::= pair ('&' pair)*\n"
         "    pair  ::= key op value\n"
-        "    op    ::= '=' | '!=' | '<>' | <' | '>' | '<=' | '>='\n"
+        "    op    ::= '=' | '!=' | '<>' | '<' | '>' | '<=' | '>='\n"
         "    key   ::= [A-Za-z0-9_]+\n"
         "    value ::= uint64 (decimal)\n"
         "\n"

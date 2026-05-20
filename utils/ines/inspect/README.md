@@ -33,7 +33,7 @@ joined by `&`. Only ROMs that satisfy all specified conditions will be displayed
 
     expr  ::= pair ('&' pair)*
     pair  ::= key op value
-    op    ::= '=' | '!=' | '<>' | <' | '>' | '<=' | '>='
+    op    ::= '=' | '!=' | '<>' | '<' | '>' | '<=' | '>='
     key   ::= [A-Za-z0-9_]+
     value ::= uint64 (decimal)
 

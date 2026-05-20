@@ -28,6 +28,8 @@ struct nsk_type_pngimage *nsk_pngimage_composesave(
  * \param[out] colors     The colors
  * \param[out] palettes   The palettes
  * \param[out] pattables  The pattern tables
+ *
+ * \note Arguments cannot be NULL.
  */
 void nsk_pngimage_composeread(
     const char *filename,

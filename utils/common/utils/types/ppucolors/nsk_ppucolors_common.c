@@ -1,45 +1,29 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
-#include <threads.h>
 
 #include "types/ppucolors/nsk_ppucolors_common.h"
 #include "log/nsk_log_err.h"
 #include "error/nsk_util_errno.h"
 #include "io/nsk_io_fopen.h"
-
-/*!
- * \brief  Number of static strings available in one function call
- */
-#define _STATIC_CAROUSEL_SIZE (5)
+#include "base/nsk_util_malloc.h"
 
 /*!
  * \brief  Converts name value to UTF16-BE format
  *
  * \warning Only supports ASCII-characters (codes < 128)
  *
- * \param[in]  name  The ASCII name
- * \param[out] size  The result size in bytes
- * \return Static zero-terminated UTF16-BE "string"
+ * \param[in]  str   The ASCII string
+ * \param[out] size  The result size in 16-bit code units
+ * \return Allocated UTF16-BE buffer
+ *
+ * \note Arguments cannot be NULL.
  */
-const uint8_t *nsk_ppucolors_toUTF16be(
+uint8_t *nsk_ppucolors_toUTF16be(
     const char *str,
     size_t *size
 ) {
-    static thread_local uint8_t string[_STATIC_CAROUSEL_SIZE][1024];
-    static thread_local size_t index;
-
-    if (++index >= _STATIC_CAROUSEL_SIZE) {
-        index = 0;
-    }
-
     size_t namelen = strlen(str);
-    if ((namelen * 2) >= sizeof(string[0])) {
-        nsk_err(
-            "UTF16 str buffer: overflow"
-        );
-        abort();
-    }
 
     *size = (namelen + 1);
     for (size_t i = 0; i < namelen; i++) {
@@ -50,14 +34,19 @@ const uint8_t *nsk_ppucolors_toUTF16be(
             );
             abort();
         }
-        string[index][i * 2 + 0] = 0;
-        string[index][i * 2 + 1] = c;
     }
 
-    string[index][2 * namelen + 0] = 0;
-    string[index][2 * namelen + 1] = 1;
+    uint8_t *string = nsk_util_malloc(*size * sizeof(uint16_t));
 
-    return string[index];
+    for (size_t i = 0; i < namelen; i++) {
+        string[i * 2 + 0] = 0;
+        string[i * 2 + 1] = str[i];
+    }
+
+    string[2 * namelen + 0] = 0;
+    string[2 * namelen + 1] = 1;
+
+    return string;
 }
 
 /*!

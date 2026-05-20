@@ -1,5 +1,4 @@
 #include <assert.h>
-#include <stdlib.h>
 #include <string.h>
 
 #include "png/types/nsk_type_pngcompose.h"
@@ -7,7 +6,6 @@
 #include "png/types/nsk_type_pngppucolors.h"
 #include "png/types/nsk_type_pngpalettes.h"
 #include "png/types/nsk_type_pngpattable.h"
-#include "log/nsk_log_err.h"
 
 /*!
  * \brief  Sizes of components
@@ -267,6 +265,8 @@ struct nsk_type_pngimage *nsk_pngimage_composesave(
  * \param[out] colors     The colors
  * \param[out] palettes   The palettes
  * \param[out] pattables  The pattern tables
+ *
+ * \note Arguments cannot be NULL.
  */
 void nsk_pngimage_composeread(
     const char *filename,
@@ -274,14 +274,6 @@ void nsk_pngimage_composeread(
     struct nsk_type_palettes  *palettes,
     struct nsk_type_pattables *pattables
 ) {
-    if (!filename || !colors || !palettes || !pattables) {
-        nsk_err(
-            "Error: invalid input at %s",
-            __PRETTY_FUNCTION__
-        );
-        abort();
-    }
-
     memset(colors,    0, sizeof(*colors));
     memset(palettes,  0, sizeof(*palettes));
     memset(pattables, 0, sizeof(*pattables));

@@ -93,7 +93,7 @@ static void _saveaco_name_v2(
     const char *name_ascii
 ) {
     size_t utf16lenraw;
-    const uint8_t *utf16 = nsk_ppucolors_toUTF16be(
+    nsk_auto_free uint8_t *utf16 = nsk_ppucolors_toUTF16be(
         name_ascii,
         &utf16lenraw
     );

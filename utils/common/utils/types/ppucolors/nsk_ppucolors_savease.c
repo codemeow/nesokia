@@ -114,7 +114,7 @@ static void _savease_blockname(
     /* Note: After changing the name change the block length */
 
     size_t utf16lenraw;
-    const uint8_t *utf16name = nsk_ppucolors_toUTF16be(
+    nsk_auto_free uint8_t *utf16name = nsk_ppucolors_toUTF16be(
         name,
         &utf16lenraw
     );

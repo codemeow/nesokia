@@ -51,11 +51,13 @@ void nsk_ppucolors_fread(
  *
  * \warning Only supports ASCII-characters (codes < 128)
  *
- * \param[in]  name  The ASCII name
- * \param[out] size  The result size in bytes
- * \return Static zero-terminated UTF16-BE "string"
+ * \param[in]  str   The ASCII string
+ * \param[out] size  The result size in 16-bit code units
+ * \return Allocated UTF16-BE buffer
+ *
+ * \note Arguments cannot be NULL.
  */
-const uint8_t *nsk_ppucolors_toUTF16be(
+uint8_t *nsk_ppucolors_toUTF16be(
     const char *str,
     size_t *size
 );

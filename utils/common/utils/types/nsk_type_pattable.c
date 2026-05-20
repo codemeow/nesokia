@@ -19,14 +19,9 @@ unsigned nsk_conv_pataddress2value(enum nsk_pattable_address address) {
     switch (address) {
         case NSK_PATTABLEADDR_0000: return 0x0000;
         case NSK_PATTABLEADDR_1000: return 0x1000;
-
-        default:
-            nsk_err(
-                "Error: Unknown address value: %d\n",
-                (int)address
-            );
-            abort();
     }
+
+    __builtin_unreachable();
 }
 
 /*!

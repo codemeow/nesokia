@@ -159,7 +159,9 @@ static void _input_validate(
     struct nsk_type_palettes  *palettes,
     struct nsk_type_pattables *pattables __attribute__((unused))
 ) {
-    nsk_ppucolors_validate(ppucolors);
+    if (!nsk_ppucolors_validate(ppucolors)) {
+        exit(EXIT_FAILURE);
+    }
     if (!nsk_palettes_validate(ppucolors, palettes)) {
         exit(EXIT_FAILURE);
     }

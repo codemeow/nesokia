@@ -74,18 +74,19 @@ size_t nsk_ppucolors_lookup(
  * \brief  Validates the PPU colors list
  *
  * \param[in] colors  The colors
+ * \return True if the colors are valid, false otherwise
  */
-void nsk_ppucolors_validate(
+bool nsk_ppucolors_validate(
     const struct nsk_type_ppucolors *colors
 ) {
     for (size_t i = 0; i < NSK_PPUCOLORSTABLE_COUNT; i++) {
         if (colors->allowed[i]) {
-            return;
+            return true;
         }
     }
 
     nsk_err(
         "Invalid PPU palette: at least one allowed color is required"
     );
-    exit(EXIT_FAILURE);
+    return false;
 }

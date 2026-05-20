@@ -79,8 +79,9 @@ size_t nsk_ppucolors_lookup(
  * \brief  Validates the PPU colors list
  *
  * \param[in] colors  The colors
+ * \return True if the colors are valid, false otherwise
  */
-void nsk_ppucolors_validate(
+bool nsk_ppucolors_validate(
     const struct nsk_type_ppucolors *colors
 );
 

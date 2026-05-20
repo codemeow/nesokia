@@ -21,6 +21,9 @@
  */
 int nsk_io_stat(const char *path, struct stat *statbuf) {
     nsk_auto_free LPWSTR wpath = nsk_string_a2w(path);
+    if (!wpath) {
+        return -1;
+    }
 
     int result = wstat(wpath, statbuf);
 

@@ -19,6 +19,10 @@ int nsk_io_mkdir(
     mode_t mode         __attribute__((unused))
 ) {
     nsk_auto_free LPWSTR wpath = nsk_string_a2w(path);
+    if (!wpath) {
+        return -1;
+    }
+
     return _wmkdir(wpath);
 }
 

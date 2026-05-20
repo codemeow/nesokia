@@ -29,7 +29,14 @@ struct dirent *nsk_io_readdir(DIR *dir) {
         CP_ACP,
         MB_ERR_INVALID_CHARS
     );
+    if (!wname) {
+        return NULL;
+    }
+
     nsk_auto_free char * name = nsk_string_w2a(wname);
+    if (!name) {
+        return NULL;
+    }
 
     int ret = snprintf(result->d_name, sizeof(result->d_name), "%s", name);
 

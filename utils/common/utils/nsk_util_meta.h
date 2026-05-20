@@ -18,6 +18,7 @@ END {
  */
 
 #include "./base/nsk_util_assert.h"                  // IWYU pragma: export
+#include "./base/nsk_util_attributes.h"              // IWYU pragma: export
 #include "./base/nsk_util_cleanup.h"                 // IWYU pragma: export
 #include "./base/nsk_util_expsize.h"                 // IWYU pragma: export
 #include "./base/nsk_util_hrbytes.h"                 // IWYU pragma: export

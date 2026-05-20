@@ -16,6 +16,9 @@
 FILE *nsk_io_fopen(const char *filename, const char *mode) {
     nsk_auto_free LPWSTR wpath = nsk_string_a2w(filename);
     nsk_auto_free LPWSTR wmode = nsk_string_a2w(mode);
+    if (!wpath || !wmode) {
+        return NULL;
+    }
 
     FILE * stream = _wfopen(wpath, wmode);
 

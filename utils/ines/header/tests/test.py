@@ -10,7 +10,7 @@ import textwrap
 from colorama import init, Fore, Style
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Union, List
+from typing import Optional, Union, List
 
 # Colorama's init
 init(autoreset=True)
@@ -171,7 +171,7 @@ def test_passed(case: CaseSetup) -> None:
 ##
 ## \param  case  The test case
 ##
-def test_failed(case: CaseSetup, e: Exception = None) -> None:
+def test_failed(case: CaseSetup, e: Optional[Exception] = None) -> None:
     if e is None:
         print_failed(case.root.name)
     else:
@@ -308,7 +308,7 @@ def test_source_compile(setup: BuildSetup, cases: List[CaseSetup]) -> None:
             str(setup.compiler.ca65),
             "-I", str(case.root),
             "-o", str(case.object),
-            setup.config.source
+            str(setup.config.source)
         ]
 
         try:

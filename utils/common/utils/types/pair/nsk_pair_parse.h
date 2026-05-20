@@ -29,7 +29,7 @@
  * \param[in] fields  The combination of nsk_pair_fields to indicate which
  *                    fields to parse
  * \param[in] keys    List of string values representing valid keys or NULL
- * \return  Allocated list of pairs
+ * \return  Allocated list of pairs or NULL on parse error
  */
 struct nsk_pair *nsk_pair_parse(
     const char *string,

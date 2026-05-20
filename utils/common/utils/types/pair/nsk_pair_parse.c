@@ -307,7 +307,7 @@ static struct nsk_pair *_parse_pair(
  * \param[in] fields  The combination of nsk_pair_fields to indicate which
  *                    fields to parse
  * \param[in] keys    List of string values representing valid keys or NULL
- * \return  Allocated list of pairs
+ * \return  Allocated list of pairs or NULL on parse error
  */
 struct nsk_pair *nsk_pair_parse(
     const char *string,
@@ -317,7 +317,7 @@ struct nsk_pair *nsk_pair_parse(
     struct nsk_pair *pair = _parse_pair(string, NULL, fields, keys);
     if (!pair) {
         nsk_err("Error: cannot parse list string: \"%s\"\n", string);
-        exit(EXIT_FAILURE);
+        return NULL;
     }
     return pair;
 }

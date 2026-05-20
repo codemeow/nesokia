@@ -1,6 +1,8 @@
 #ifndef NSK_PPUCOLORS_SAVEACO
 #define NSK_PPUCOLORS_SAVEACO
 
+#include <stdbool.h>
+
 #include "types/nsk_type_ppucolors.h"
 
 /*!
@@ -8,8 +10,9 @@
  *
  * \param[in] filename  The filename
  * \param[in] colors    The colors
+ * \return True if the PPU colors were saved, false otherwise
  */
-void nsk_ppucolors_saveaco(
+bool nsk_ppucolors_saveaco(
     const char *filename,
     const struct nsk_type_ppucolors *colors
 );

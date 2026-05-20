@@ -217,10 +217,12 @@ static void _output_save(
     struct nsk_type_pattables *pattables
 ) {
     if (nsk_options_program.output.ppucolors) {
-        nsk_ppucolors_savepal(
+        if (!nsk_ppucolors_savepal(
             nsk_options_program.output.ppucolors,
             ppucolors
-        );
+        )) {
+            exit(EXIT_FAILURE);
+        }
     }
 
     if (nsk_options_program.output.palettes.both) {

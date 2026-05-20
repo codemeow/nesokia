@@ -51,8 +51,7 @@ static bool _ppucolors_readpal(
     const char *filename,
     struct nsk_type_ppucolors *colors
 ) {
-    *colors = nsk_ppucolors_readpal(filename);
-    return true;
+    return nsk_ppucolors_readpal(filename, colors);
 }
 
 static void _input_file_read(void) {

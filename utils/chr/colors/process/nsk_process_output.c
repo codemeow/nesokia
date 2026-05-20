@@ -44,7 +44,7 @@ static void _output_format_assign(void) {
     nsk_options_program.output.format = format;
 }
 
-static void _ppucolors_savepng(
+static bool _ppucolors_savepng(
     const char *filename,
     const struct nsk_type_ppucolors *colors
 ) {
@@ -55,14 +55,16 @@ static void _ppucolors_savepng(
         image,
         filename
     )) {
-        exit(EXIT_FAILURE);
+        return false;
     }
+
+    return true;
 }
 
 static void _output_file_write(void) {
     static const struct {
         enum nsk_option_outputs format;
-        void (*writer)(
+        bool (*writer)(
             const char *filename,
             const struct nsk_type_ppucolors *colors
         );
@@ -81,10 +83,12 @@ static void _output_file_write(void) {
 
     for (size_t i = 0; i < NSK_SIZE(_table); i++) {
         if (nsk_options_program.output.format == _table[i].format) {
-            _table[i].writer(
+            if (!_table[i].writer(
                 nsk_options_program.output.file,
                 &nsk_input_ppucolors
-            );
+            )) {
+                exit(EXIT_FAILURE);
+            }
             break;
         }
     }

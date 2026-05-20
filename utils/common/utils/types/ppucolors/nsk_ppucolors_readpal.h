@@ -6,11 +6,13 @@
 /*!
  * \brief  Reads the PPU colors from the .pal file
  *
- * \param[in] filename  The filename
- * \return PPU colors
+ * \param[in]  filename  The filename
+ * \param[out] colors    The PPU colors
+ * \return True if the PPU colors were read, false otherwise
  */
-struct nsk_type_ppucolors nsk_ppucolors_readpal(
-    const char *filename
+bool nsk_ppucolors_readpal(
+    const char *filename,
+    struct nsk_type_ppucolors *colors
 );
 
 #endif

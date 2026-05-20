@@ -11,8 +11,9 @@
  *
  * \param[in] filename  The filename
  * \param[in] colors    The colors
+ * \return True if the PPU colors were saved, false otherwise
  */
-void nsk_ppucolors_savegpl(
+bool nsk_ppucolors_savegpl(
     const char *filename,
     const struct nsk_type_ppucolors *colors
 ) {
@@ -22,6 +23,9 @@ void nsk_ppucolors_savegpl(
     char buffer[1024];
 
     nsk_auto_fclose FILE *file = nsk_ppucolors_fopen(filename, "wb");
+    if (!file) {
+        return false;
+    }
 
     snprintf(
         buffer,
@@ -29,7 +33,9 @@ void nsk_ppucolors_savegpl(
         "%s\n",
         gpl_magic
     );
-    nsk_ppucolors_fwrite(buffer, strlen(buffer), file, filename);
+    if (!nsk_ppucolors_fwrite(buffer, strlen(buffer), file, filename)) {
+        return false;
+    }
 
     snprintf(
         buffer,
@@ -38,7 +44,9 @@ void nsk_ppucolors_savegpl(
         gpl_name,
         basename(filename)
     );
-    nsk_ppucolors_fwrite(buffer, strlen(buffer), file, filename);
+    if (!nsk_ppucolors_fwrite(buffer, strlen(buffer), file, filename)) {
+        return false;
+    }
 
     snprintf(
         buffer,
@@ -47,7 +55,9 @@ void nsk_ppucolors_savegpl(
         gpl_columns,
         (int)NSK_PPUCOLORSTABLE_WIDTH
     );
-    nsk_ppucolors_fwrite(buffer, strlen(buffer), file, filename);
+    if (!nsk_ppucolors_fwrite(buffer, strlen(buffer), file, filename)) {
+        return false;
+    }
 
     for (size_t i = 0; i < NSK_SIZE(colors->colors); i++) {
         if (!colors->allowed[i]) {
@@ -62,6 +72,10 @@ void nsk_ppucolors_savegpl(
             colors->colors[i].g,
             colors->colors[i].b
         );
-        nsk_ppucolors_fwrite(buffer, strlen(buffer), file, filename);
+        if (!nsk_ppucolors_fwrite(buffer, strlen(buffer), file, filename)) {
+            return false;
+        }
     }
+
+    return true;
 }

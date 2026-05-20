@@ -10,31 +10,37 @@
  *
  * \param[in] filename  The filename
  * \param[in] colors    The colors
+ * \return True if the PPU colors were saved, false otherwise
  */
-void nsk_ppucolors_savepal(
+bool nsk_ppucolors_savepal(
     const char *filename,
     const struct nsk_type_ppucolors *colors
 ) {
     nsk_auto_fclose FILE *file = nsk_ppucolors_fopen(filename, "wb");
+    if (!file) {
+        return false;
+    }
 
     for (size_t i = 0; i < NSK_SIZE(colors->colors); i++) {
-        nsk_ppucolors_fwrite(
+        if (!nsk_ppucolors_fwrite(
             &colors->colors[i].r,
             sizeof(colors->colors[i].r),
             file,
             filename
-        );
-        nsk_ppucolors_fwrite(
+        ) || !nsk_ppucolors_fwrite(
             &colors->colors[i].g,
             sizeof(colors->colors[i].g),
             file,
             filename
-        );
-        nsk_ppucolors_fwrite(
+        ) || !nsk_ppucolors_fwrite(
             &colors->colors[i].b,
             sizeof(colors->colors[i].b),
             file,
             filename
-        );
+        )) {
+            return false;
+        }
     }
+
+    return true;
 }

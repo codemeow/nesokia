@@ -1,6 +1,7 @@
 #ifndef NSK_PPUCOLORS_COMMON
 #define NSK_PPUCOLORS_COMMON
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 
@@ -9,7 +10,7 @@
  *
  * \param[in] filename  The filename
  * \param[in] mode      The mode
- * \return  file descriptor
+ * \return  File descriptor, or NULL on open error
  */
 FILE *nsk_ppucolors_fopen(
     const char *filename,
@@ -23,8 +24,9 @@ FILE *nsk_ppucolors_fopen(
  * \param[in]     size     The size
  * \param[in,out] file     The file
  * \param[in]     filename The file's filename
+ * \return True if the data was written, false otherwise
  */
-void nsk_ppucolors_fwrite(
+bool nsk_ppucolors_fwrite(
     const void *buffer,
     size_t size,
     FILE *file,
@@ -38,8 +40,9 @@ void nsk_ppucolors_fwrite(
  * \param[in]     size     The size
  * \param[in,out] file     The file
  * \param[in]     filename The file's filename
+ * \return True if the data was read, false otherwise
  */
-void nsk_ppucolors_fread(
+bool nsk_ppucolors_fread(
     void *buffer,
     size_t size,
     FILE *file,

@@ -56,9 +56,12 @@ static void _input_load(
     struct nsk_type_palettes  *palettes,
     struct nsk_type_pattables *pattables
 ) {
-    *ppucolors = nsk_ppucolors_readpal(
-        nsk_options_program.input.ppucolors
-    );
+    if (!nsk_ppucolors_readpal(
+        nsk_options_program.input.ppucolors,
+        ppucolors
+    )) {
+        exit(EXIT_FAILURE);
+    }
 
     if (nsk_options_program.input.palettes.both) {
         if (!nsk_palettes_readspals(

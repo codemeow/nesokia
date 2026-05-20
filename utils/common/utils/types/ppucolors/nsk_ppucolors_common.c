@@ -9,13 +9,13 @@
 #include "base/nsk_util_malloc.h"
 
 /*!
- * \brief  Converts name value to UTF16-BE format
+ * \brief  Converts string value to UTF16-BE format
  *
  * \warning Only supports ASCII-characters (codes < 128)
  *
  * \param[in]  str   The ASCII string
  * \param[out] size  The result size in 16-bit code units
- * \return Allocated UTF16-BE buffer
+ * \return Allocated UTF16-BE buffer, or NULL if conversion fails
  *
  * \note Arguments cannot be NULL.
  */
@@ -29,10 +29,7 @@ uint8_t *nsk_ppucolors_toUTF16be(
     for (size_t i = 0; i < namelen; i++) {
         uint8_t c = str[i];
         if (c >= 0x80) {
-            nsk_err(
-                "UTF16 str buffer: unsupported character"
-            );
-            abort();
+            return NULL;
         }
     }
 
@@ -44,7 +41,7 @@ uint8_t *nsk_ppucolors_toUTF16be(
     }
 
     string[2 * namelen + 0] = 0;
-    string[2 * namelen + 1] = 1;
+    string[2 * namelen + 1] = 0;
 
     return string;
 }

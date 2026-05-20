@@ -47,13 +47,13 @@ void nsk_ppucolors_fread(
 );
 
 /*!
- * \brief  Converts name value to UTF16-BE format
+ * \brief  Converts string value to UTF16-BE format
  *
  * \warning Only supports ASCII-characters (codes < 128)
  *
  * \param[in]  str   The ASCII string
  * \param[out] size  The result size in 16-bit code units
- * \return Allocated UTF16-BE buffer
+ * \return Allocated UTF16-BE buffer, or NULL if conversion fails
  *
  * \note Arguments cannot be NULL.
  */

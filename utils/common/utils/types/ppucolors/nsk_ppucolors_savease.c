@@ -118,6 +118,14 @@ static void _savease_blockname(
         name,
         &utf16lenraw
     );
+    if (!utf16name) {
+        nsk_err(
+            "Error: cannot convert ASE color name \"%s\" to UTF16-BE\n",
+            name
+        );
+        exit(EXIT_FAILURE);
+    }
+
     uint16_t utf16len = nsk_math_tobe16(utf16lenraw);
 
     nsk_ppucolors_fwrite(

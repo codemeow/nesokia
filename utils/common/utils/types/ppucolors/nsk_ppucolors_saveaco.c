@@ -1,6 +1,8 @@
+#include <stdlib.h>
 #include <threads.h>
 
 #include "types/ppucolors/nsk_ppucolors_saveaco.h"
+#include "log/nsk_log_err.h"
 #include "base/nsk_util_cleanup.h"
 #include "types/ppucolors/nsk_ppucolors_common.h"
 #include "math/nsk_math_endianness.h"
@@ -97,6 +99,14 @@ static void _saveaco_name_v2(
         name_ascii,
         &utf16lenraw
     );
+    if (!utf16) {
+        nsk_err(
+            "Error: cannot convert ACO color name \"%s\" to UTF16-BE\n",
+            name_ascii
+        );
+        exit(EXIT_FAILURE);
+    }
+
     uint32_t utf16len = nsk_math_tobe32(utf16lenraw);
 
     nsk_ppucolors_fwrite(

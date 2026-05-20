@@ -13,8 +13,9 @@
  * \param[in] table     The table
  * \param[in] palette   The palette
  * \param[in] explicit  The list of explici palette indexes
+ * \return True if palettes were assigned, false otherwise
  */
-void nsk_pattable_settilespalettes(
+bool nsk_pattable_settilespalettes(
     struct nsk_type_pattable        *table,
     const struct nsk_type_palette   *palette,
     const struct nsk_pair           *explicit
@@ -49,8 +50,9 @@ void nsk_pattable_settilescolors(
  * \param[in] tables    The tables
  * \param[in] palettes  The palettes
  * \param[in] explicit  The list of explici palette indexes
+ * \return True if palettes were assigned, false otherwise
  */
-void nsk_pattables_settilespalettes(
+bool nsk_pattables_settilespalettes(
     struct nsk_type_pattables       *tables,
     const struct nsk_type_palettes  *palettes,
     const struct nsk_pair           *explicit

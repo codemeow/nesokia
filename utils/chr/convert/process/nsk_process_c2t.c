@@ -139,11 +139,13 @@ static void _input_load(
         nsk_pattable_swapaddress(pattables);
     }
 
-    nsk_pattables_settilespalettes(
+    if (!nsk_pattables_settilespalettes(
         pattables,
         palettes,
         NULL
-    );
+    )) {
+        exit(EXIT_FAILURE);
+    }
     nsk_pattables_settilescolors  (pattables, palettes);
 }
 

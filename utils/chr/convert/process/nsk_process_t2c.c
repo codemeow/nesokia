@@ -141,11 +141,13 @@ static void _input_load(
     )) {
         exit(EXIT_FAILURE);
     }
-    nsk_pattables_settilespalettes(
+    if (!nsk_pattables_settilespalettes(
         pattables,
         palettes,
         nsk_options_program.input.explicit
-    );
+    )) {
+        exit(EXIT_FAILURE);
+    }
     if (!nsk_pattables_settilesindexes(pattables, palettes)) {
         exit(EXIT_FAILURE);
     }

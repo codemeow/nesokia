@@ -12,14 +12,14 @@ bin
 .vscode
 *.sublime-workspace
 
-# utils/ines/header autotests configuration files
-utils/ines/header/tests/cases/*/nsk_header_config.inc
-# utils/ines/header autotests object files
-utils/ines/header/tests/cases/*/*.o
-# utils/ines/header autotests binary files
-utils/ines/header/tests/cases/*/*.nes
-# utils/ines/header autotests debug files
-utils/ines/header/tests/cases/*/*.dbg
+# NES test cases generated configuration files
+tests/nes/*/nsk_header_config.inc
+# NES test cases generated object files
+tests/nes/*/*.o
+# NES test cases generated binary files
+tests/nes/*/test.nes
+# NES test cases generated debug files
+tests/nes/*/*.dbg
 
 # utils/ines/header examples build directory
 utils/ines/header/examples/*/bin

@@ -127,7 +127,7 @@ def build_setup() -> BuildSetup:
             make = resolve_program("make")
         ),
         directory = BuildSetup.BuildDirectories(
-            cases   = resolve_dir(here / "cases"),
+            cases   = resolve_dir(root / "tests/nes"),
             helpers = resolve_dir(here / "subroutines"),
             reader  = resolve_dir(root / "utils/ines/inspect")
         ),

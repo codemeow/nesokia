@@ -11,6 +11,10 @@
  *
  * \param[in] value  The value
  * \return Allocated copied string
+ *
+ * \note This function never returns NULL. It either returns an allocated copy
+ *       or terminates the process.
+ * \note Passing NULL terminates the process.
  */
 char *nsk_strings_strdup(const char *value) {
     if (!value) {

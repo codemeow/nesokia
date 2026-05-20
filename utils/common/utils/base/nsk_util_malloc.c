@@ -5,10 +5,13 @@
 #include "log/nsk_log_err.h"
 
 /*!
- * \brief  Allocates the required amount of memory and fill it with zeroes
+ * \brief  Allocates the required amount of memory and fills it with zeroes
  *
  * \param[in] size  The size
  * \return Allocated memory
+ *
+ * \note This function never returns NULL. It either returns allocated memory
+ *       or terminates the process.
  */
 void *nsk_util_malloc(size_t size) {
     void *ptr = calloc(size, 1);
@@ -28,6 +31,9 @@ void *nsk_util_malloc(size_t size) {
  * \param[in] ptr   The pointer
  * \param[in] size  The size
  * \return Reallocated memory block
+ *
+ * \note This function never returns NULL. It either returns reallocated memory
+ *       or terminates the process.
  */
 void *nsk_util_realloc(void *ptr, size_t size) {
     void *old = ptr;

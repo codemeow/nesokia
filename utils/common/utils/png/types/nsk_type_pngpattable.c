@@ -2,6 +2,7 @@
 #include "png/types/nsk_type_pngtile.h"
 #include "log/nsk_log_err.h"
 #include "io/nsk_io_fullpath.h"
+#include "base/nsk_util_cleanup.h"
 
 /*!
  * \brief  Positioning of the global palette in the template image
@@ -108,7 +109,7 @@ struct nsk_type_pngimage *nsk_pattable_convtopng(
 
     nsk_pattable_validate_address(pattable);
 
-    const char *template_fullpath = nsk_io_fullpath(
+    nsk_auto_free char *template_fullpath = nsk_io_fullpath(
         template_path[pattable->address]
     );
     struct nsk_type_pngimage *image = nsk_pngimage_read(

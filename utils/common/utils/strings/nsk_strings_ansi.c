@@ -1,12 +1,8 @@
-#include <threads.h>
 #include <stdio.h>
 
 #include "strings/nsk_strings_ansi.h"
-
-/*!
- * \brief  Number of static strings available in one function call
- */
-#define _STATIC_CAROUSEL_SIZE (5)
+#include "base/nsk_util_cleanup.h"
+#include "base/nsk_util_malloc.h"
 
 /*!
  * \brief Opens the ANSI sequence
@@ -34,26 +30,21 @@
 bool nsk_ansi_support = true;
 
 /*!
- * \brief  Returns the static string, containing ANSI-sequence to set the
+ * \brief  Returns an allocated string, containing ANSI-sequence to set the
  * current background or foreground color as 24-bit color
  *
  * \param[in] r     Red component
  * \param[in] g     Green component
  * \param[in] b     Blue component
  * \param[in] back  True if background code required, false otherwise
- * \return Static string
+ * \return Allocated string
  */
-const char *nsk_ansi_24bit(uint8_t r, uint8_t g, uint8_t b, bool back) {
-    static thread_local char string[_STATIC_CAROUSEL_SIZE][128];
-    static thread_local size_t index;
-
-    if (++index >= _STATIC_CAROUSEL_SIZE) {
-        index = 0;
-    }
+char *nsk_ansi_24bit(uint8_t r, uint8_t g, uint8_t b, bool back) {
+    char *string = nsk_util_malloc(128);
 
     snprintf(
-        string[index],
-        sizeof(string[index]),
+        string,
+        128,
         NSK_ANSI_OPEN "%s;2;%u;%u;%u" NSK_ANSI_CLOSE,
         back ? NSK_ANSI_BACKGROUND_COLOR : NSK_ANSI_FOREGROUND_COLOR,
         r,
@@ -61,7 +52,7 @@ const char *nsk_ansi_24bit(uint8_t r, uint8_t g, uint8_t b, bool back) {
         b
     );
 
-    return string[index];
+    return string;
 }
 
 /*!
@@ -81,37 +72,35 @@ static uint8_t _color_lumafg(uint8_t r, uint8_t g, uint8_t b) {
 }
 
 /*!
- * \brief  Returns static string, containing (or not) the ANSI sequence
+ * \brief  Returns allocated string, containing (or not) the ANSI sequence
  * and the color code itself along with the closing sequence
  *
  * \param[in] r   Red component
  * \param[in] g   Green component
  * \param[in] b   Blue component
  *
- * \return Static string
+ * \return Allocated string
  */
-const char *nsk_string_color(uint8_t r, uint8_t g, uint8_t b) {
-    static thread_local char string[_STATIC_CAROUSEL_SIZE][128];
-    static thread_local size_t index;
-
-    if (++index >= _STATIC_CAROUSEL_SIZE) {
-        index = 0;
-    }
+char *nsk_string_color(uint8_t r, uint8_t g, uint8_t b) {
+    char *string = nsk_util_malloc(128);
 
     if (nsk_ansi_support) {
         uint8_t fg = _color_lumafg(r, g, b);
+        nsk_auto_free char *bg = nsk_ansi_24bit(r, g, b, true);
+        nsk_auto_free char *text = nsk_ansi_24bit(fg, fg, fg, false);
+
         snprintf(
-            string[index],
-            sizeof(string[index]),
+            string,
+            128,
             "%s" "%s" "%02x%02x%02x" "%s",
-            nsk_ansi_24bit(r, g, b, true),
+            bg,
             /*
              * Most of the colors will make the
              * default text color unreadable.
              * We will invert the foreground
              * color to mostly solve it
              */
-            nsk_ansi_24bit(fg, fg, fg, false),
+            text,
             r,
             g,
             b,
@@ -120,8 +109,8 @@ const char *nsk_string_color(uint8_t r, uint8_t g, uint8_t b) {
 
     } else {
         snprintf(
-            string[index],
-            sizeof(string[index]),
+            string,
+            128,
             "%02x%02x%02x",
             r,
             g,
@@ -129,5 +118,5 @@ const char *nsk_string_color(uint8_t r, uint8_t g, uint8_t b) {
         );
     }
 
-    return string[index];
+    return string;
 }

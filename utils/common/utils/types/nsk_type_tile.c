@@ -2,6 +2,7 @@
 
 #include "types/nsk_type_tile.h"
 #include "log/nsk_log_err.h"
+#include "base/nsk_util_cleanup.h"
 #include "base/nsk_util_malloc.h"
 #include "strings/nsk_strings_ansi.h"
 
@@ -205,10 +206,15 @@ static bool _setpalette_explicitly(
             }
         }
         if (c == NSK_PALETTESIZE_COLORS) {
+            nsk_auto_free char *color = nsk_string_color(
+                colors[i].r,
+                colors[i].g,
+                colors[i].b
+            );
             nsk_err(
                 "Requested tile palette #%zd does not contain the tile color %s\n",
                 explicit,
-                nsk_string_color(colors[i].r, colors[i].g, colors[i].b)
+                color
             );
             return false;
         }
@@ -261,14 +267,15 @@ static void _palette_print(
 ) {
     nsk_err("   - %s:\n", name);
     for (size_t i = 0; i < count; i++) {
+        nsk_auto_free char *color = nsk_string_color(
+            colors[i].r,
+            colors[i].g,
+            colors[i].b
+        );
         nsk_err(
             "%s%s%s",
             i == 0 ? "        " : ", ",
-            nsk_string_color(
-                colors[i].r,
-                colors[i].g,
-                colors[i].b
-            ),
+            color,
             i == count - 1 ? "\n" : ""
         );
     }
@@ -363,14 +370,15 @@ static bool _setpalette_heuristically(
         );
         nsk_err("   - Tile colors:\n");
         for (size_t i = 0; i < count; i++) {
+            nsk_auto_free char *color = nsk_string_color(
+                colors[i].r,
+                colors[i].g,
+                colors[i].b
+            );
             nsk_err(
                 "%s%s%s",
                 i == 0 ? "        " : ", ",
-                nsk_string_color(
-                    colors[i].r,
-                    colors[i].g,
-                    colors[i].b
-                ),
+                color,
                 i == count - 1 ? "\n" : ""
             );
         }

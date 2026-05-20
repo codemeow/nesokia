@@ -1,15 +1,11 @@
-#include <threads.h>
-#include <limits.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "io/nsk_io_fullpath.h"
 #include "io/nsk_io_dirname.h"
 #include "io/nsk_io_path.h"
-
-/*!
- * \brief  Number of static strings in functions, returning static strings
- */
-#define _STATIC_CAROUSEL_SIZE (5)
+#include "base/nsk_util_cleanup.h"
+#include "base/nsk_util_malloc.h"
 
 /*!
  * \brief Program name passed to as argv[0]
@@ -21,24 +17,21 @@ const char *nsk_args_program = NULL;
  * binary position
  *
  * \param[in] path  The relative path
- * \return Static string with full resolved path
+ * \return Allocated string with full resolved path
  */
-const char *nsk_io_fullpath(const char *path) {
-    static thread_local char string[_STATIC_CAROUSEL_SIZE][PATH_MAX];
-    static thread_local size_t index;
-
-    if (++index >= _STATIC_CAROUSEL_SIZE) {
-        index = 0;
-    }
+char *nsk_io_fullpath(const char *path) {
+    nsk_auto_free char *dir = nsk_io_dirname(nsk_args_program);
+    const size_t size = strlen(dir) + 1 + strlen(path) + 1;
+    char *string = nsk_util_malloc(size);
 
     snprintf(
-        string[index],
-        sizeof(string[index]),
+        string,
+        size,
         "%s%c%s",
-        nsk_io_dirname(nsk_args_program),
+        dir,
         nsk_path_delimeter,
         path
     );
 
-    return string[index];
+    return string;
 }

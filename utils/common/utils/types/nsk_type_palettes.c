@@ -1,7 +1,6 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <threads.h>
 
 #include "types/nsk_type_palettes.h"
 #include "log/nsk_log_err.h"
@@ -10,35 +9,26 @@
 #include "io/nsk_io_fopen.h"
 #include "error/nsk_util_errno.h"
 #include "base/nsk_util_cleanup.h"
+#include "base/nsk_util_malloc.h"
 #include "base/nsk_util_size.h"
-
-/*!
- * \brief  Number of static strings in functions, returning static strings
- */
-#define _STATIC_CAROUSEL_SIZE (5)
 
 /*!
  * \brief  Returns the binary string representation (00 .. 11)
  *
  * \param[in] value  The value
- * \return Static string
+ * \return Allocated string
  */
-static const char *_string_binary(size_t value) {
-    static thread_local char string[_STATIC_CAROUSEL_SIZE][8];
-    static thread_local size_t index;
-
-    if (++index >= _STATIC_CAROUSEL_SIZE) {
-        index = 0;
-    }
+static char *_string_binary(size_t value) {
+    char *string = nsk_util_malloc(8);
 
     snprintf(
-        string[index],
-        sizeof(string[index]),
+        string,
+        8,
         "%zu%zu",
         (value & (1 << 1)) >> 1,
         (value & (1 << 0)) >> 0
     );
-    return string[index];
+    return string;
 }
 
 /*!
@@ -301,17 +291,24 @@ bool nsk_palette_show(
 
     nsk_inf("           ");
     for (size_t c = 0; c < NSK_PALETTESIZE_COLORS; c++) {
-        nsk_inf("   -%s ", _string_binary(c));
+        nsk_auto_free char *binary = _string_binary(c);
+        nsk_inf("   -%s ", binary);
     }
     nsk_inf("\n");
 
     for (size_t g = 0; g < NSK_PALETTESIZE_GROUPS; g++) {
-        nsk_inf("  %%%04d %s- ", (int)palette->plane, _string_binary(g));
+        nsk_auto_free char *binary = _string_binary(g);
+        nsk_inf("  %%%04d %s- ", (int)palette->plane, binary);
         for (size_t c = 0; c < NSK_PALETTESIZE_COLORS; c++) {
             const union nsk_type_color4 *color = &palette->group[g].color[c];
+            nsk_auto_free char *string = nsk_string_color(
+                color->r,
+                color->g,
+                color->b
+            );
             nsk_inf(
                 "%s ",
-                nsk_string_color(color->r, color->g, color->b)
+                string
             );
         }
         nsk_inf("\n");
@@ -407,11 +404,13 @@ bool nsk_palettes_validate(
             &palettes->plane[NSK_PLANE_SPRITES].group[g].color[0];
 
         if (cb->raw != cs->raw) {
+            nsk_auto_free char *b = nsk_string_color(cb->r, cb->g, cb->b);
+            nsk_auto_free char *s = nsk_string_color(cs->r, cs->g, cs->b);
             nsk_err(
                 "Error: first colors of the %zu groups does not match: %s ≠ %s\n",
                 g,
-                nsk_string_color(cb->r, cb->g, cb->b),
-                nsk_string_color(cs->r, cs->g, cs->b)
+                b,
+                s
             );
             return false;
         }
@@ -514,15 +513,16 @@ bool nsk_palette_setindexes(
                 }
             }
             if (i == NSK_PPUCOLORSTABLE_COUNT) {
+                nsk_auto_free char *color = nsk_string_color(
+                    palette->group[g].color[c].r,
+                    palette->group[g].color[c].g,
+                    palette->group[g].color[c].b
+                );
                 nsk_err(
                     "Error: invalid color in the palette [%zu:%zu]: %s",
                     g,
                     c,
-                    nsk_string_color(
-                        palette->group[g].color[c].r,
-                        palette->group[g].color[c].g,
-                        palette->group[g].color[c].b
-                    )
+                    color
                 );
                 return false;
             }
@@ -577,13 +577,14 @@ size_t nsk_palette_getindex(
         }
     }
 
+    nsk_auto_free char *string = nsk_string_color(
+        color->r,
+        color->g,
+        color->b
+    );
     nsk_err(
         "Error: color %s is not found in the %zu group of the %s palette\n",
-        nsk_string_color(
-            color->r,
-            color->g,
-            color->b
-        ),
+        string,
         group,
         nsk_conv_plane2string(palette->plane)
     );

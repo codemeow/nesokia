@@ -1,38 +1,30 @@
 #include <libgen.h>
-#include <limits.h>
 #include <stdio.h>
+#include <string.h>
+
 #include "io/nsk_io_dirname.h"
 #include "base/nsk_util_cleanup.h"
+#include "base/nsk_util_malloc.h"
 #include "strings/nsk_strings_strdup.h"
-
-/*!
- * \brief  Number of static strings in functions, returning static strings
- */
-#define _STATIC_CAROUSEL_SIZE (5)
 
 /*!
  * \brief  Returns the directory path of the provided filename
  *
  * \param[in] filename  The filename
- * \return Static string
+ * \return Allocated string
  */
-const char *nsk_io_dirname(const char *filename) {
-    static char string[_STATIC_CAROUSEL_SIZE][PATH_MAX];
-    static size_t index;
-
-    if (++index >= _STATIC_CAROUSEL_SIZE) {
-        index = 0;
-    }
-
+char *nsk_io_dirname(const char *filename) {
     nsk_auto_free char *copy = nsk_strings_strdup(filename);
     const char *path = dirname(copy);
+    const size_t size = strlen(path) + 1;
+    char *string = nsk_util_malloc(size);
 
     snprintf(
-        string[index],
-        sizeof(string[index]),
+        string,
+        size,
         "%s",
         path
     );
 
-    return string[index];
+    return string;
 }

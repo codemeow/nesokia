@@ -3,6 +3,7 @@
 #include "types/nsk_type_ppucolors.h"
 #include "log/nsk_log_err.h"
 #include "log/nsk_log_inf.h"
+#include "base/nsk_util_cleanup.h"
 #include "base/nsk_util_size.h"
 #include "strings/nsk_strings_ansi.h"
 
@@ -28,13 +29,14 @@ void nsk_ppucolors_show(
             const size_t index = y * NSK_PPUCOLORSTABLE_WIDTH + x;
 
             if (colors->allowed[index]) {
+                nsk_auto_free char *color = nsk_string_color(
+                    colors->colors[index].r,
+                    colors->colors[index].g,
+                    colors->colors[index].b
+                );
                 nsk_inf(
                     "%s ",
-                    nsk_string_color(
-                        colors->colors[index].r,
-                        colors->colors[index].g,
-                        colors->colors[index].b
-                    )
+                    color
                 );
             } else {
                 nsk_inf(

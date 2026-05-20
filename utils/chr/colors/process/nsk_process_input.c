@@ -47,12 +47,23 @@ static void _input_format_assign(void) {
 /*!
  * \brief  Reads the PPU colors from the provided file
  */
+static bool _ppucolors_readpal(
+    const char *filename,
+    struct nsk_type_ppucolors *colors
+) {
+    *colors = nsk_ppucolors_readpal(filename);
+    return true;
+}
+
 static void _input_file_read(void) {
     static const struct {
         enum nsk_option_inputs format;
-        struct nsk_type_ppucolors (*reader)(const char *filename);
+        bool (*reader)(
+            const char *filename,
+            struct nsk_type_ppucolors *colors
+        );
     } _table[] = {
-        { NSK_OPTION_INPUT_PAL, nsk_ppucolors_readpal },
+        { NSK_OPTION_INPUT_PAL, _ppucolors_readpal },
         { NSK_OPTION_INPUT_PNG, nsk_ppucolors_readpng }
     };
 
@@ -63,9 +74,12 @@ static void _input_file_read(void) {
 
     for (size_t i = 0; i < NSK_SIZE(_table); i++) {
         if (nsk_options_program.input.format == _table[i].format) {
-            nsk_input_ppucolors = _table[i].reader(
-                nsk_options_program.input.file
-            );
+            if (!_table[i].reader(
+                nsk_options_program.input.file,
+                &nsk_input_ppucolors
+            )) {
+                exit(EXIT_FAILURE);
+            }
             break;
         }
     }

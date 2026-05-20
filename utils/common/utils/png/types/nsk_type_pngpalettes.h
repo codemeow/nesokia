@@ -1,17 +1,21 @@
 #ifndef NSK_TYPE_PNGPALETTES
 #define NSK_TYPE_PNGPALETTES
 
+#include <stdbool.h>
+
 #include "types/nsk_type_palettes.h"
 #include "png/types/nsk_type_pngimage.h"
 
 /*!
  * \brief  Reads local palettes from Nesokia PNG component
  *
- * \param[in] filename  The filename
- * \return Local palettes
+ * \param[in]  filename  The filename
+ * \param[out] palettes  The local palettes
+ * \return True if the palettes were read, false otherwise
  */
-struct nsk_type_palettes nsk_palettes_readpng(
-    const char *filename
+bool nsk_palettes_readpng(
+    const char *filename,
+    struct nsk_type_palettes *palettes
 );
 
 /*!

@@ -1,5 +1,3 @@
-#include <stdlib.h>
-
 #include "png/types/nsk_type_pngppucolors.h"
 #include "types/nsk_type_color4.h"
 #include "io/nsk_io_fullpath.h"
@@ -101,15 +99,20 @@ struct nsk_type_ppucolors _ppucolors_readpng(
 /*!
  * \brief  Reads the PPU colors from Nesokia PNG component
  *
- * \param[in] filename  The filename
- * \return PPU colors
+ * \param[in]  filename  The filename
+ * \param[out] colors    The colors
+ * \return True if the PPU colors were read, false otherwise
  */
-struct nsk_type_ppucolors nsk_ppucolors_readpng(
-    const char *filename
+bool nsk_ppucolors_readpng(
+    const char *filename,
+    struct nsk_type_ppucolors *colors
 ) {
     nsk_auto_pifree struct nsk_type_pngimage *image = nsk_pngimage_read(
         filename
     );
+    if (!image) {
+        return false;
+    }
 
     if (image->width  != NSK_PPUCOLORSSIZE_WIDTH ||
         image->height != NSK_PPUCOLORSSIZE_HEIGHT) {
@@ -117,21 +120,23 @@ struct nsk_type_ppucolors nsk_ppucolors_readpng(
             "Provided file \"%s\" is not a palettes template component",
             filename
         );
-        exit(EXIT_FAILURE);
+        return false;
     }
 
-    return _ppucolors_readpng(
+    *colors = _ppucolors_readpng(
         image,
         NSK_PPUCOLORSTEMPLPOS_X,
         NSK_PPUCOLORSTEMPLPOS_Y
     );
+
+    return true;
 }
 
 /*!
  * \brief  Converts PPU colors into composite component
  *
  * \param[in] colors  The colors
- * \return Nesokia PNG component image
+ * \return Nesokia PNG component image, or NULL on error
  */
 struct nsk_type_pngimage *nsk_ppucolors_convtopng(
     const struct nsk_type_ppucolors *colors
@@ -141,6 +146,9 @@ struct nsk_type_pngimage *nsk_ppucolors_convtopng(
     struct nsk_type_pngimage *image = nsk_pngimage_read(
         template_fullpath
     );
+    if (!image) {
+        return NULL;
+    }
 
     for (size_t y = 0; y < NSK_PPUCOLORSTABLE_HEIGHT; y++) {
         for (size_t x = 0; x < NSK_PPUCOLORSTABLE_WIDTH; x++) {

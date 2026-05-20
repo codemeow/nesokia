@@ -51,10 +51,12 @@ static void _ppucolors_savepng(
     nsk_auto_pifree struct nsk_type_pngimage *image = nsk_ppucolors_convtopng(
         colors
     );
-    nsk_pngimage_write(
+    if (!image || !nsk_pngimage_write(
         image,
         filename
-    );
+    )) {
+        exit(EXIT_FAILURE);
+    }
 }
 
 static void _output_file_write(void) {

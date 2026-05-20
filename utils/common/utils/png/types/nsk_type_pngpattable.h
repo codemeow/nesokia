@@ -1,24 +1,28 @@
 #ifndef NSK_TYPE_PNGPATTABLE
 #define NSK_TYPE_PNGPATTABLE
 
+#include <stdbool.h>
+
 #include "types/nsk_type_pattable.h"
 #include "png/types/nsk_type_pngimage.h"
 
 /*!
  * \brief  Reads pattern table from Nesokia PNG component
  *
- * \param[in] filename  The filename
- * \return Local palettes
+ * \param[in]  filename  The filename
+ * \param[out] pattable  The pattern table
+ * \return True if the pattern table was read, false otherwise
  */
-struct nsk_type_pattable nsk_pattable_readpng(
-    const char *filename
+bool nsk_pattable_readpng(
+    const char *filename,
+    struct nsk_type_pattable *pattable
 );
 
 /*!
  * \brief  Converts pattern table into composite component
  *
  * \param[in] pattable  The pattern table
- * \return Nesokia PNG component image
+ * \return Nesokia PNG component image, or NULL on error
  */
 struct nsk_type_pngimage *nsk_pattable_convtopng(
     const struct nsk_type_pattable *pattable

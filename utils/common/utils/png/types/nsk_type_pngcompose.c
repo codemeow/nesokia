@@ -194,7 +194,7 @@ static const struct {
  * \param[in]  palettes  The local palettes
  * \param[in]  patleft   The left pattern table
  * \param[in]  patright  The pattern tables
- * \return Composite (full) image
+ * \return Composite (full) image, or NULL on error
  */
 struct nsk_type_pngimage *nsk_pngimage_composesave(
     const struct nsk_type_ppucolors *colors,
@@ -268,10 +268,11 @@ struct nsk_type_pngimage *nsk_pngimage_composesave(
  * \param[out] colors     The colors
  * \param[out] palettes   The palettes
  * \param[out] pattables  The pattern tables
+ * \return True if the image was read, false otherwise
  *
  * \note Arguments cannot be NULL.
  */
-void nsk_pngimage_composeread(
+bool nsk_pngimage_composeread(
     const char *filename,
     struct nsk_type_ppucolors *colors,
     struct nsk_type_palettes  *palettes,
@@ -306,6 +307,9 @@ void nsk_pngimage_composeread(
     nsk_auto_pifree struct nsk_type_pngimage *image = nsk_pngimage_read(
         filename
     );
+    if (!image) {
+        return false;
+    }
 
     for (size_t i = 0; i < NSK_COMPOSECOMPS_COUNT; i++) {
         _compose_info[i].conv_i2o(
@@ -315,4 +319,6 @@ void nsk_pngimage_composeread(
             objects[i]
         );
     }
+
+    return true;
 }

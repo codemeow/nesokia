@@ -1,6 +1,7 @@
 #ifndef NSK_TYPE_PNGIMAGE
 #define NSK_TYPE_PNGIMAGE
 
+#include <stdbool.h>
 #include <stddef.h>
 #include "types/nsk_type_color4.h"
 
@@ -30,7 +31,7 @@ void _nsk_auto_pifree(struct nsk_type_pngimage **image);
  * \brief  Creates image in local format
  *
  * \param[in] filename  Original filename
- * \return Allocated image
+ * \return Allocated image, or NULL on error
  */
 struct nsk_type_pngimage *nsk_pngimage_read(const char *filename);
 
@@ -39,8 +40,9 @@ struct nsk_type_pngimage *nsk_pngimage_read(const char *filename);
  *
  * \param[in] image     The image
  * \param[in] filename  The filename
+ * \return True if the image was written, false otherwise
  */
-void nsk_pngimage_write(
+bool nsk_pngimage_write(
     const struct nsk_type_pngimage *image,
     const char *filename
 );

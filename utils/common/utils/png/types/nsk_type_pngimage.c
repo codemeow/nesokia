@@ -40,7 +40,7 @@ static FILE *_pngimage_openfile(const char *filename) {
             "Cannot open file \"%s\"\n",
             filename
         );
-        exit(EXIT_FAILURE);
+        return NULL;
     }
     return file;
 }
@@ -51,22 +51,24 @@ static FILE *_pngimage_openfile(const char *filename) {
  * \param[in,out]  file  The file
  * \param[in] filename  Original filename
  */
-static void _pngimage_validate(FILE *file, const char *filename) {
+static bool _pngimage_validate(FILE *file, const char *filename) {
     uint8_t sig[NSK_PNG_SIG_SIZE];
     if (fread(sig, sizeof(sig), 1, file) != 1) {
         nsk_err(
             "Cannot read PNG signature from the \"%s\" file",
             filename
         );
-        exit(EXIT_FAILURE);
+        return false;
     }
     if (png_sig_cmp(sig, 0, NSK_PNG_SIG_SIZE) != 0) {
         nsk_err(
             "File \"%s\" is not a PNG file\n",
             filename
         );
-        exit(EXIT_FAILURE);
+        return false;
     }
+
+    return true;
 }
 
 /*!
@@ -100,7 +102,7 @@ static png_structp _pngimage_create_png(bool write) {
         nsk_err(
             "Out of memory while creating PNG ptr\n"
         );
-        exit(EXIT_FAILURE);
+        return NULL;
     }
     return png_ptr;
 }
@@ -131,7 +133,7 @@ static png_infop _pngimage_create_info(png_structp png_ptr, bool write) {
         nsk_err(
             "Out of memory while creating PNG info\n"
         );
-        exit(EXIT_FAILURE);
+        return NULL;
     }
     return info_ptr;
 }
@@ -206,7 +208,7 @@ struct nsk_type_pngimage *_pngimage_create(
  * \brief  Creates image in local format
  *
  * \param[in] filename  Original filename
- * \return Allocated image
+ * \return Allocated image, or NULL on error
  */
 struct nsk_type_pngimage *nsk_pngimage_read(
     const char *filename
@@ -216,9 +218,19 @@ struct nsk_type_pngimage *nsk_pngimage_read(
     struct nsk_type_pngimage *image;
 
     nsk_auto_fclose FILE *file = _pngimage_openfile(filename);
-    _pngimage_validate(file, filename);
+    if (!file || !_pngimage_validate(file, filename)) {
+        return NULL;
+    }
+
     png_ptr  = _pngimage_create_png(false);
+    if (!png_ptr) {
+        return NULL;
+    }
+
     info_ptr = _pngimage_create_info(png_ptr, false);
+    if (!info_ptr) {
+        return NULL;
+    }
 
     /* Cannot be legally exported to static function */
     if (setjmp(png_jmpbuf(png_ptr))) {
@@ -226,7 +238,7 @@ struct nsk_type_pngimage *nsk_pngimage_read(
         nsk_err(
             "setjmp unexpectedly failed\n"
         );
-        exit(EXIT_FAILURE);
+        return NULL;
     }
 
     png_init_io(png_ptr, file);
@@ -266,8 +278,9 @@ static void _pngimage_writedata(
  *
  * \param[in] image     The image
  * \param[in] filename  The filename
+ * \return True if the image was written, false otherwise
  */
-void nsk_pngimage_write(
+bool nsk_pngimage_write(
     const struct nsk_type_pngimage *image,
     const char *filename
 ) {
@@ -279,11 +292,18 @@ void nsk_pngimage_write(
             "Cannot open file \"%s\"\n",
             filename
         );
-        exit(EXIT_FAILURE);
+        return false;
     }
 
     png_ptr  = _pngimage_create_png(true);
+    if (!png_ptr) {
+        return false;
+    }
+
     info_ptr = _pngimage_create_info(png_ptr, true);
+    if (!info_ptr) {
+        return false;
+    }
 
     /* Cannot be legally exported to static function */
     if (setjmp(png_jmpbuf(png_ptr))) {
@@ -291,7 +311,7 @@ void nsk_pngimage_write(
         nsk_err(
             "setjmp unexpectedly failed\n"
         );
-        exit(EXIT_FAILURE);
+        return false;
     }
 
     png_init_io(png_ptr, file);
@@ -309,6 +329,8 @@ void nsk_pngimage_write(
     _pngimage_writedata(png_ptr, image);
     png_write_end(png_ptr, NULL);
     png_destroy_write_struct(&png_ptr, &info_ptr);
+
+    return true;
 }
 
 /*!

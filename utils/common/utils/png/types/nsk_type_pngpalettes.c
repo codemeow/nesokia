@@ -1,5 +1,3 @@
-#include <stdlib.h>
-
 #include "png/types/nsk_type_pngpalettes.h"
 #include "io/nsk_io_fullpath.h"
 #include "log/nsk_log_err.h"
@@ -77,15 +75,20 @@ struct nsk_type_palettes _palettes_readpng(
 /*!
  * \brief  Reads local palettes from Nesokia PNG component
  *
- * \param[in] filename  The filename
- * \return Local palettes
+ * \param[in]  filename  The filename
+ * \param[out] palettes  The local palettes
+ * \return True if the palettes were read, false otherwise
  */
-struct nsk_type_palettes nsk_palettes_readpng(
-    const char *filename
+bool nsk_palettes_readpng(
+    const char *filename,
+    struct nsk_type_palettes *palettes
 ) {
     nsk_auto_pifree struct nsk_type_pngimage *image = nsk_pngimage_read(
         filename
     );
+    if (!image) {
+        return false;
+    }
 
     if (image->width  != NSK_PALETTESSIZE_WIDTH ||
         image->height != NSK_PALETTESSIZE_HEIGHT) {
@@ -93,14 +96,16 @@ struct nsk_type_palettes nsk_palettes_readpng(
             "Provided file \"%s\" is not a palettes template component",
             filename
         );
-        exit(EXIT_FAILURE);
+        return false;
     }
 
-    return _palettes_readpng(
+    *palettes = _palettes_readpng(
         image,
         NSK_PALETTESTEMPLPOS_X,
         NSK_PALETTESTEMPLPOS_Y
     );
+
+    return true;
 }
 
 /*!
@@ -117,6 +122,9 @@ struct nsk_type_pngimage *nsk_palettes_convtopng(
     struct nsk_type_pngimage *image = nsk_pngimage_read(
         template_fullpath
     );
+    if (!image) {
+        return NULL;
+    }
 
     for (size_t p = 0; p < NSK_PLANES_COUNT; p++) {
         if (!nsk_palette_validate_colors(&palettes->plane[p])) {

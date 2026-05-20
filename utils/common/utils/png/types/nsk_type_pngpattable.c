@@ -1,5 +1,3 @@
-#include <stdlib.h>
-
 #include "png/types/nsk_type_pngpattable.h"
 #include "png/types/nsk_type_pngtile.h"
 #include "log/nsk_log_err.h"
@@ -61,15 +59,20 @@ struct nsk_type_pattable _pattable_readpng(
 /*!
  * \brief  Reads pattern table from Nesokia PNG component
  *
- * \param[in] filename  The filename
- * \return Local palettes
+ * \param[in]  filename  The filename
+ * \param[out] pattable  The pattern table
+ * \return True if the pattern table was read, false otherwise
  */
-struct nsk_type_pattable nsk_pattable_readpng(
-    const char *filename
+bool nsk_pattable_readpng(
+    const char *filename,
+    struct nsk_type_pattable *pattable
 ) {
     nsk_auto_pifree struct nsk_type_pngimage *image = nsk_pngimage_read(
         filename
     );
+    if (!image) {
+        return false;
+    }
 
     if (image->width  != NSK_PATTABLESIZE_WIDTH ||
         image->height != NSK_PATTABLESIZE_HEIGHT) {
@@ -77,21 +80,23 @@ struct nsk_type_pattable nsk_pattable_readpng(
             "Provided file \"%s\" is not a pattern table template component",
             filename
         );
-        exit(EXIT_FAILURE);
+        return false;
     }
 
-    return _pattable_readpng(
+    *pattable = _pattable_readpng(
         image,
         NSK_PATTABLETEMPLPOS_X,
         NSK_PATTABLETEMPLPOS_Y
     );
+
+    return true;
 }
 
 /*!
  * \brief  Converts pattern table into composite component
  *
  * \param[in] pattable  The pattern table
- * \return Nesokia PNG component image
+ * \return Nesokia PNG component image, or NULL on error
  */
 struct nsk_type_pngimage *nsk_pattable_convtopng(
     const struct nsk_type_pattable *pattable
@@ -109,6 +114,9 @@ struct nsk_type_pngimage *nsk_pattable_convtopng(
     struct nsk_type_pngimage *image = nsk_pngimage_read(
         template_fullpath
     );
+    if (!image) {
+        return NULL;
+    }
 
     for (size_t y = 0; y < NSK_PATTABLETABLE_HEIGHT; y++) {
         for (size_t x = 0; x < NSK_PATTABLETABLE_WIDTH; x++) {

@@ -208,20 +208,24 @@ static void _output_save(
         if (!image) {
             exit(EXIT_FAILURE);
         }
-        nsk_pngimage_write(
+        if (!nsk_pngimage_write(
             image,
             nsk_options_program.output.full
-        );
+        )) {
+            exit(EXIT_FAILURE);
+        }
     }
 
     if (nsk_options_program.output.ppucolors) {
         nsk_auto_pifree struct nsk_type_pngimage *image = nsk_ppucolors_convtopng(
             ppucolors
         );
-        nsk_pngimage_write(
+        if (!image || !nsk_pngimage_write(
             image,
             nsk_options_program.output.ppucolors
-        );
+        )) {
+            exit(EXIT_FAILURE);
+        }
     }
 
     if (nsk_options_program.output.palettes.both) {
@@ -231,10 +235,12 @@ static void _output_save(
         if (!image) {
             exit(EXIT_FAILURE);
         }
-        nsk_pngimage_write(
+        if (!nsk_pngimage_write(
             image,
             nsk_options_program.output.palettes.both
-        );
+        )) {
+            exit(EXIT_FAILURE);
+        }
     }
 
     if (nsk_options_program.output.pattables.left) {
@@ -244,10 +250,12 @@ static void _output_save(
                 NSK_PATTABLEADDR_0000
             )
         );
-        nsk_pngimage_write(
+        if (!image || !nsk_pngimage_write(
             image,
             nsk_options_program.output.pattables.left
-        );
+        )) {
+            exit(EXIT_FAILURE);
+        }
     }
 
     if (nsk_options_program.output.pattables.right) {
@@ -257,10 +265,12 @@ static void _output_save(
                 NSK_PATTABLEADDR_1000
             )
         );
-        nsk_pngimage_write(
+        if (!image || !nsk_pngimage_write(
             image,
             nsk_options_program.output.pattables.right
-        );
+        )) {
+            exit(EXIT_FAILURE);
+        }
     }
 }
 

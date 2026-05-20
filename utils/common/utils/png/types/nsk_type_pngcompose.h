@@ -1,6 +1,8 @@
 #ifndef NSK_TYPE_PNGCOMPOSE
 #define NSK_TYPE_PNGCOMPOSE
 
+#include <stdbool.h>
+
 #include "png/types/nsk_type_pngimage.h"
 #include "types/nsk_type_ppucolors.h"
 #include "types/nsk_type_palettes.h"
@@ -13,7 +15,7 @@
  * \param[in]  palettes  The local palettes
  * \param[in]  patleft   The left pattern table
  * \param[in]  patright  The pattern tables
- * \return Composite (full) image
+ * \return Composite (full) image, or NULL on error
  */
 struct nsk_type_pngimage *nsk_pngimage_composesave(
     const struct nsk_type_ppucolors *colors,
@@ -28,10 +30,11 @@ struct nsk_type_pngimage *nsk_pngimage_composesave(
  * \param[out] colors     The colors
  * \param[out] palettes   The palettes
  * \param[out] pattables  The pattern tables
+ * \return True if the image was read, false otherwise
  *
  * \note Arguments cannot be NULL.
  */
-void nsk_pngimage_composeread(
+bool nsk_pngimage_composeread(
     const char *filename,
     struct nsk_type_ppucolors *colors,
     struct nsk_type_palettes  *palettes,

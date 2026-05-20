@@ -87,26 +87,31 @@ static void _input_load(
     struct nsk_type_pattables *pattables
 ) {
     if (nsk_options_program.input.full) {
-        nsk_pngimage_composeread(
+        if (!nsk_pngimage_composeread(
             nsk_options_program.input.full,
             ppucolors,
             palettes,
             pattables
-        );
+        )) {
+            exit(EXIT_FAILURE);
+        }
 
     } else {
-        *ppucolors = nsk_ppucolors_readpng(
-            nsk_options_program.input.ppucolors
-        );
-        *palettes = nsk_palettes_readpng(
-            nsk_options_program.input.palettes.both
-        );
-        pattables->plane[NSK_PLANE_BACKGROUND] = nsk_pattable_readpng(
-            nsk_options_program.input.pattables.left
-        );
-        pattables->plane[NSK_PLANE_SPRITES] = nsk_pattable_readpng(
-            nsk_options_program.input.pattables.left
-        );
+        if (!nsk_ppucolors_readpng(
+            nsk_options_program.input.ppucolors,
+            ppucolors
+        ) || !nsk_palettes_readpng(
+            nsk_options_program.input.palettes.both,
+            palettes
+        ) || !nsk_pattable_readpng(
+            nsk_options_program.input.pattables.left,
+            &pattables->plane[NSK_PLANE_BACKGROUND]
+        ) || !nsk_pattable_readpng(
+            nsk_options_program.input.pattables.left,
+            &pattables->plane[NSK_PLANE_SPRITES]
+        )) {
+            exit(EXIT_FAILURE);
+        }
     }
 
     nsk_pattable_setplane(

@@ -36,6 +36,7 @@ CMD_RM := rm -rf
 CMD_MKDIR := mkdir -p
 CMD_TOUCH := touch
 CMD_FIND := find
+CMD_RMDIR := rmdir
 
 # Default target
 .DEFAULT_GOAL := all
@@ -73,13 +74,16 @@ $(DIR_BIN)/$(PROJECT_NAME)-pre:
 clean-pre: $(DIR_BIN)/$(PROJECT_NAME)-pre
 	@$(call print_category,Cleaning)
 
-CLEAN_ENTRIES := $(DIR_BUILD) $(DIR_BIN)/$(PROJECT_NAME)
+CLEAN_ENTRIES := $(DIR_BUILD) $(DIR_BIN)/$(PROJECT_NAME) $(TEMPLATE_TARGET)
 
 clean-post:
 	@$(foreach p,$(CLEAN_ENTRIES), \
 		$(CMD_RM) "$(p)" &&            \
 		$(call print_entry,$(p));  \
 	)
+	@if [ -d "$(DIR_TEMPLATES_TARGET)" ]; then \
+		$(CMD_FIND) "$(DIR_TEMPLATES_TARGET)" -depth -type d -empty -exec $(CMD_RMDIR) {} \; ; \
+	fi
 
 # Testing
 define require-tool

@@ -88,21 +88,30 @@ static void _input_load(
     }
 
     if (nsk_options_program.input.pattables.both) {
-        *pattables = nsk_pattables_readpats(
-            nsk_options_program.input.pattables.both
-        );
+        if (!nsk_pattables_readpats(
+            nsk_options_program.input.pattables.both,
+            pattables
+        )) {
+            exit(EXIT_FAILURE);
+        }
     }
 
     if (nsk_options_program.input.pattables.left) {
-        pattables->plane[NSK_PLANE_BACKGROUND] = nsk_pattable_readpat(
-            nsk_options_program.input.pattables.left
-        );
+        if (!nsk_pattable_readpat(
+            nsk_options_program.input.pattables.left,
+            &pattables->plane[NSK_PLANE_BACKGROUND]
+        )) {
+            exit(EXIT_FAILURE);
+        }
     }
 
     if (nsk_options_program.input.pattables.right) {
-        pattables->plane[NSK_PLANE_SPRITES] = nsk_pattable_readpat(
-            nsk_options_program.input.pattables.right
-        );
+        if (!nsk_pattable_readpat(
+            nsk_options_program.input.pattables.right,
+            &pattables->plane[NSK_PLANE_SPRITES]
+        )) {
+            exit(EXIT_FAILURE);
+        }
     }
 
     if (!nsk_palettes_setcolors(ppucolors, palettes)) {

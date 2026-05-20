@@ -427,8 +427,9 @@ bool nsk_tile_setpalette(
  * \param[in,out]  tile      The tile
  * \param[in,out]  file      The file
  * \param[in]      filename  The filename
+ * \return True if the tile was read, false otherwise
  */
-void nsk_tile_readchr(
+bool nsk_tile_readchr(
     struct nsk_type_tile *tile,
     FILE                 *file,
     const char           *filename
@@ -440,7 +441,7 @@ void nsk_tile_readchr(
             "Error: cannot read data from \"%s\" CHR file\n",
             filename
         );
-        exit(EXIT_FAILURE);
+        return false;
     }
 
     for (size_t y = 0; y < NSK_TILESIZE_HEIGHT; y++) {
@@ -455,6 +456,7 @@ void nsk_tile_readchr(
     }
 
     tile->init.index = true;
+    return true;
 }
 
 /*!
@@ -463,8 +465,9 @@ void nsk_tile_readchr(
  * \param[in]     tile      The tile
  * \param[in,out] file      The file
  * \param[in]     filename  The filename
+ * \return True if the tile was saved, false otherwise
  */
-void nsk_tile_savechr(
+bool nsk_tile_savechr(
     const struct nsk_type_tile *tile,
     FILE                       *file,
     const char                 *filename
@@ -488,6 +491,8 @@ void nsk_tile_savechr(
             "Error: cannot write data to \"%s\" CHR file\n",
             filename
         );
-        exit(EXIT_FAILURE);
+        return false;
     }
+
+    return true;
 }

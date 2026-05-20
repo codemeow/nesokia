@@ -93,22 +93,26 @@ unsigned nsk_conv_pataddress2value(enum nsk_pattable_address address);
  * \brief  Reads pattern table from .pat file
  * (binary $0000..$0fff/$1000..$1fff)
  *
- * \param[in] filename  The filename
- * \return The resulting pattern table
+ * \param[in]  filename  The filename
+ * \param[out] table     The resulting pattern table
+ * \return True if the pattern table was read, false otherwise
  */
-struct nsk_type_pattable nsk_pattable_readpat(
-    const char *filename
+bool nsk_pattable_readpat(
+    const char *filename,
+    struct nsk_type_pattable *table
 );
 
 /*!
  * \brief  Reads pattern tables from .pats file
  * (binary $0000..$1fff)
  *
- * \param[in] filename  The filename
- * \return The resulting pattern tables
+ * \param[in]  filename  The filename
+ * \param[out] tables    The resulting pattern tables
+ * \return True if the pattern tables were read, false otherwise
  */
-struct nsk_type_pattables nsk_pattables_readpats(
-    const char *filename
+bool nsk_pattables_readpats(
+    const char *filename,
+    struct nsk_type_pattables *tables
 );
 
 /*!
@@ -116,8 +120,9 @@ struct nsk_type_pattables nsk_pattables_readpats(
  *
  * \param[in] filename  The filename
  * \param[in] table     The table
+ * \return True if the pattern table was saved, false otherwise
  */
-void nsk_pattable_savepat(
+bool nsk_pattable_savepat(
     const char *filename,
     const struct nsk_type_pattable *table
 );
@@ -130,8 +135,9 @@ void nsk_pattable_savepat(
  *
  * \param[in] filename  The filename
  * \param[in] tables    The tables
+ * \return True if the pattern tables were saved, false otherwise
  */
-void nsk_pattables_savepats(
+bool nsk_pattables_savepats(
     const char *filename,
     const struct nsk_type_pattables *tables
 );

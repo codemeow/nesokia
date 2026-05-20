@@ -247,30 +247,36 @@ static void _output_save(
     }
 
     if (nsk_options_program.output.pattables.both) {
-        nsk_pattables_savepats(
+        if (!nsk_pattables_savepats(
             nsk_options_program.output.pattables.both,
             pattables
-        );
+        )) {
+            exit(EXIT_FAILURE);
+        }
     }
 
     if (nsk_options_program.output.pattables.left) {
-        nsk_pattable_savepat(
+        if (!nsk_pattable_savepat(
             nsk_options_program.output.pattables.left,
             nsk_pattables_getbyaddress(
                 pattables,
                 NSK_PATTABLEADDR_0000
             )
-        );
+        )) {
+            exit(EXIT_FAILURE);
+        }
     }
 
     if (nsk_options_program.output.pattables.right) {
-        nsk_pattable_savepat(
+        if (!nsk_pattable_savepat(
             nsk_options_program.output.pattables.right,
             nsk_pattables_getbyaddress(
                 pattables,
                 NSK_PATTABLEADDR_1000
             )
-        );
+        )) {
+            exit(EXIT_FAILURE);
+        }
     }
 }
 

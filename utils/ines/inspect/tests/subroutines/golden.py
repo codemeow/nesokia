@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Union
 
@@ -26,6 +27,14 @@ CASE_INDEXES = [
 ]
 
 
+@dataclass(frozen=True)
+class GoldenRom:
+    """Selected ROM data for golden output tests."""
+
+    name: str
+    path: Path
+
+
 def required_file(path: Union[str, Path]) -> Path:
     """Resolve a file path and require it to exist."""
 
@@ -41,11 +50,14 @@ def golden_root(project_root: Path) -> Path:
     return project_root / "utils/ines/inspect/tests/golden"
 
 
-def case_by_index(repo_root: Path) -> dict[str, Path]:
-    """Return shared NES ROM paths indexed by fixture prefix."""
+def case_by_index(repo_root: Path) -> dict[str, GoldenRom]:
+    """Return shared NES ROM data indexed by fixture prefix."""
 
     return {
-        case.name[:2]: case.reference.relative_to(repo_root)
+        case.name[:2]: GoldenRom(
+            name=case.name,
+            path=case.reference.relative_to(repo_root)
+        )
         for case in nes_cases(repo_root)
     }
 
@@ -58,15 +70,16 @@ def golden_cases(repo_root: Path) -> List[GoldenCase]:
 
     for output_format in FORMATS:
         for index in CASE_INDEXES:
+            selected_case = selected_cases[index]
             expected = golden_root(repo_root) / output_format / f"{index}.out"
             cases.append(
                 GoldenCase(
                     section=output_format,
-                    name=index,
+                    name=selected_case.name,
                     args=[
                         "-o",
                         output_format,
-                        str(selected_cases[index])
+                        str(selected_case.path)
                     ],
                     expected=expected,
                     cwd=repo_root

@@ -22,6 +22,31 @@ static void _print_footer(void) {
 }
 
 /*!
+ * \brief  Checks if the current category has more matching fields
+ *
+ * \param[in] index     Current table index
+ * \param[in] category  Current category
+ *
+ * \return True if another matching field exists in the same category
+ */
+static bool _has_next_match_in_category(
+    size_t index,
+    enum nsk_table_category category
+) {
+    for (size_t i = index + 1; i < nsk_header_tablesize; i++) {
+        if (nsk_header_table[i].category != category) {
+            return false;
+        }
+
+        if (nsk_printer_match(nsk_header_table[i].shortcut)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/*!
  * \brief  Prints one single entry
  *
  * \param[in] filename  The filename
@@ -51,9 +76,7 @@ static void _print_entry(
             nsk_inf("\t\t\"%s\" : {\n", nsk_category_json(category));
         }
 
-        bool locallast =
-            i == nsk_header_tablesize - 1 ||
-            nsk_header_table[i + 1].category != category;
+        bool locallast = !_has_next_match_in_category(i, category);
 
         nsk_inf(
             "\t\t\t\"%s\" : {\n",

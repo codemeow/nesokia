@@ -62,7 +62,7 @@ size_t nsk_ppucolors_lookup(
     const struct nsk_type_ppucolors *colors,
     const union nsk_type_color4 *color
 ) {
-        for (size_t i = 0; i < NSK_SIZE(colors->colors); i++) {
+    for (size_t i = 0; i < NSK_SIZE(colors->colors); i++) {
         if (colors->allowed[i] &&
             colors->colors [i].raw == color->raw) {
             return i;

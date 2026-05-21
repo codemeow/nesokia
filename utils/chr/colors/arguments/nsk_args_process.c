@@ -138,6 +138,21 @@ static void _arguments_unknown(char *const *argv) {
 }
 
 /*!
+ * \brief  Error processing if positional arguments are provided
+ *
+ * \param[in]  argv  The arguments array
+ */
+__attribute__((noreturn))
+static void _arguments_positional(char *const *argv) {
+    nsk_err(
+        "Unexpected positional argument: %s\n"
+        "Use `-i`/`--input` and `-o`/`--output` options instead\n",
+        argv[optind]
+    );
+    exit(EXIT_FAILURE);
+}
+
+/*!
  * \brief  Processes the provided program arguments
  *
  * \param[in] argc  The count of arguments
@@ -177,6 +192,10 @@ void nsk_args_process(int argc, char *const *argv) {
                 nsk_options_table[_option_index(c)].option_processor();
                 break;
         }
+    }
+
+    if (argv[optind]) {
+        _arguments_positional(argv);
     }
 
     nsk_options_program.files = argv + optind;

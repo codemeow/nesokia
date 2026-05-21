@@ -101,7 +101,7 @@ test-pre: $(DIR_BIN)/$(PROJECT_NAME)-pre
 test-post:
 	@if [ -f "$(TEST_SCRIPT)" ]; then \
 	    $(call require-tool,$(PYTHON)); \
-	    $(PYTHON) "$(TEST_SCRIPT)"; \
+	    PYTHONPATH="$(DIR_ROOT)$${PYTHONPATH:+:$$PYTHONPATH}" $(PYTHON) "$(TEST_SCRIPT)"; \
 	else \
 	    echo "    - Nothing to test"; \
 	fi

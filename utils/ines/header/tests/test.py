@@ -7,78 +7,87 @@ import subprocess
 import sys
 import textwrap
 
-from colorama import init, Fore, Style
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional, Union, List
 
+from colorama import init, Fore, Style
+from tests.helpers.nes_cases import nes_cases
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parent.parent.parent.parent
+
 # Colorama's init
 init(autoreset=True)
 
+
 ##
-## \brief  Local setup values
+# \brief  Local setup values
 ##
 @dataclass
 class BuildSetup:
+    root: Path  # < Path to the repository root
+
     ##
-    ## \brief  Compiler programs
+    # \brief  Compiler programs
     ##
     @dataclass
     class BuildCompiler:
-        ca65: Path ##< Path to the ca65 compiler
-        ld65: Path ##< Path to the ld65 linker
-        make: Path ##< Path to the make program
+        ca65: Path  # < Path to the ca65 compiler
+        ld65: Path  # < Path to the ld65 linker
+        make: Path  # < Path to the make program
 
     ##
-    ## \brief  List of helpful directories
+    # \brief  List of helpful directories
     ##
     @dataclass
     class BuildDirectories:
-        cases  : Path ##< Path to the test cases
-        helpers: Path ##< Path to the test subroutines
-        reader : Path ##< Path to the ROM reader utility
+        helpers: Path  # < Path to the test subroutines
+        reader: Path   # < Path to the ROM reader utility
 
     ##
-    ## \brief  List of helpers utilities
+    # \brief  List of helpers utilities
     ##
     @dataclass
     class BuildHelpers:
-        generator: Path ##< Path to the ROM header generator
-        reader   : Path ##< Path to the ROM header reader
+        generator: Path  # < Path to the ROM header generator
+        reader: Path     # < Path to the ROM header reader
 
     ##
-    ## \brief  Configuration files for the tests
+    # \brief  Configuration files for the tests
     ##
     @dataclass
     class BuildConfig:
-        consts: Path ##< Generator's constants file
-        source: Path ##< Generator's source file
-        memory: Path ##< Generator's linker script
+        consts: Path  # < Generator's constants file
+        source: Path  # < Generator's source file
+        memory: Path  # < Generator's linker script
 
-    compiler:  BuildCompiler        ##< Compiler programs
-    directory: BuildDirectories     ##< List of helpful directories
-    helpers:   BuildHelpers         ##< List of helper utilities
-    config:    BuildConfig          ##< Configuration files for the tests
+    compiler: BuildCompiler  # < Compiler programs
+    directory: BuildDirectories  # < List of helpful directories
+    helpers: BuildHelpers  # < List of helper utilities
+    config: BuildConfig  # < Configuration files for the tests
+
 
 ##
-## \brief  One test case setup
+# \brief  One test case setup
 ##
 @dataclass
 class CaseSetup:
-    root      : Path ##< Path to the root directory of the test case
-    slice     : Path ##< Path to the NES20DB slice for that test case
-    object    : Path ##< Path to the compiled object file
-    target    : Path ##< Path to the linked target test file
-    config    : Path ##< Path to the generator's configuration file
-    reference : Path ##< Path to the reference ROM header file
-    failed    : bool ##< Failed test flag
+    root: Path          # < Path to the root directory of the test case
+    slice: Path         # < Path to the NES20DB slice for that test case
+    object: Path        # < Path to the compiled object file
+    target: Path        # < Path to the linked target test file
+    config: Path        # < Path to the generator's configuration file
+    reference: Path     # < Path to the reference ROM header file
+    failed: bool        # < Failed test flag
+
 
 ##
-## \brief  Resolves the filename and checks its existence
+# \brief  Resolves the filename and checks its existence
 ##
-## \param  path         The path (string or Path)
-## \param  missing_ok   If True, missing file will not raise an error
-## \return filename as Path type
+# \param  path         The path (string or Path)
+# \param  missing_ok   If True, missing file will not raise an error
+# \return filename as Path type
 ##
 def resolve_file(path: Union[str, Path], missing_ok: bool = False) -> Path:
     file = Path(path).resolve()
@@ -86,12 +95,13 @@ def resolve_file(path: Union[str, Path], missing_ok: bool = False) -> Path:
         raise RuntimeError(f"File {file} not found")
     return file
 
+
 ##
-## \brief  Resolves the directory name and checks its existence
+# \brief  Resolves the directory name and checks its existence
 ##
-## \param  path         The path (string or Path)
-## \param  missing_ok   If True, missing directory will not raise an error
-## \return Directory name as Path type
+# \param  path         The path (string or Path)
+# \param  missing_ok   If True, missing directory will not raise an error
+# \return Directory name as Path type
 ##
 def resolve_dir(path: Union[str, Path], missing_ok: bool = False) -> Path:
     directory = Path(path).resolve()
@@ -99,77 +109,84 @@ def resolve_dir(path: Union[str, Path], missing_ok: bool = False) -> Path:
         raise RuntimeError(f"Directory {directory} not found")
     return directory
 
+
 ##
-## \brief  Resolves the program name
+# \brief  Resolves the program name
 ##
-## \param  name  The program name
-## \return Extracted from PATH full name
+# \param  name  The program name
+# \return Extracted from PATH full name
 ##
-def resolve_program(name : str) -> Path:
+def resolve_program(name: str) -> Path:
     prog = shutil.which(name)
     if prog is None:
         raise RuntimeError(f"{name} not found in PATH")
     return Path(prog)
 
+
 ##
-## \brief  Builds a global setup.
+# \brief  Builds a global setup.
 ##
-## \return The setup.
+# \return The setup.
 ##
 def build_setup() -> BuildSetup:
-    here = Path(__file__).resolve().parent
-    root = here.parent.parent.parent.parent
-
     return BuildSetup(
-        compiler = BuildSetup.BuildCompiler(
-            ca65 = resolve_program("ca65"),
-            ld65 = resolve_program("ld65"),
-            make = resolve_program("make")
+        root=ROOT,
+        compiler=BuildSetup.BuildCompiler(
+            ca65=resolve_program("ca65"),
+            ld65=resolve_program("ld65"),
+            make=resolve_program("make")
         ),
-        directory = BuildSetup.BuildDirectories(
-            cases   = resolve_dir(root / "tests/nes"),
-            helpers = resolve_dir(here / "subroutines"),
-            reader  = resolve_dir(root / "utils/ines/inspect")
+        directory=BuildSetup.BuildDirectories(
+            helpers=resolve_dir(HERE / "subroutines"),
+            reader=resolve_dir(ROOT / "utils/ines/inspect")
         ),
-        helpers = BuildSetup.BuildHelpers(
-            generator = resolve_file(here / "subroutines/nsk_config_create.py"),
-            reader    = resolve_file(root / "bin/nesokia-ines-inspect", True)
+        helpers=BuildSetup.BuildHelpers(
+            generator=resolve_file(HERE / "subroutines/nsk_config_create.py"),
+            reader=resolve_file(ROOT / "bin/nesokia-ines-inspect", True)
         ),
-        config = BuildSetup.BuildConfig(
-            consts = resolve_file(root / "utils/ines/header/nsk_header_consts.inc"),
-            source = resolve_file(root / "utils/ines/header/nsk_header_code.asm"),
-            memory = resolve_file(here / "memory/nsk_header_memory.cfg")
+        config=BuildSetup.BuildConfig(
+            consts=resolve_file(
+                ROOT / "utils/ines/header/nsk_header_consts.inc"
+            ),
+            source=resolve_file(
+                ROOT / "utils/ines/header/nsk_header_code.asm"
+            ),
+            memory=resolve_file(HERE / "memory/nsk_header_memory.cfg")
         )
     )
 
+
 ##
-## \brief  Prints the text as "passed" line
+# \brief  Prints the text as "passed" line
 ##
-## \param  string  The string
+# \param  string  The string
 ##
 def print_passed(string: str) -> None:
     print(f"[{Fore.GREEN}OK{Style.RESET_ALL}]    {string}")
 
+
 ##
-## \brief  Prints the text as "failed" line
+# \brief  Prints the text as "failed" line
 ##
-## \param  string  The string
+# \param  string  The string
 ##
 def print_failed(string: str) -> None:
     print(f"[{Fore.RED}ERR{Style.RESET_ALL}]   {string}")
 
+
 ##
-## \brief  Prints the case as "passed"
+# \brief  Prints the case as "passed"
 ##
-## \param  case  The test case
+# \param  case  The test case
 ##
 def test_passed(case: CaseSetup) -> None:
     print_passed(case.root.name)
 
+
 ##
-## \brief  Prints the case as "failed"
+# \brief  Prints the case as "failed"
 ##
-## \param  case  The test case
+# \param  case  The test case
 ##
 def test_failed(case: CaseSetup, e: Optional[Exception] = None) -> None:
     if e is None:
@@ -178,19 +195,21 @@ def test_failed(case: CaseSetup, e: Optional[Exception] = None) -> None:
         print_failed(f"{case.root.name} : {e}")
     case.failed = True
 
+
 ##
-## \brief  Prints the additional text with the indentation
+# \brief  Prints the additional text with the indentation
 ##
-## \param  output  The output
+# \param  output  The output
 ##
 def print_test_output(output: str) -> None:
     print(f"{textwrap.indent(output, '    ')}")
 
+
 ##
-## \brief  Prints the selected ROM info
+# \brief  Prints the selected ROM info
 ##
-## \param  setup  The setup
-## \param  file   The ROM filename
+# \param  setup  The setup
+# \param  file   The ROM filename
 ##
 def print_rom_info(setup: BuildSetup, file: Path) -> None:
     cmd = [
@@ -205,36 +224,42 @@ def print_rom_info(setup: BuildSetup, file: Path) -> None:
     )
     print_test_output(proc.stdout)
 
+
 ##
-## \brief  Populates the test cases list
+# \brief  Populates the test cases list
 ##
-## \param  setup  The setup
-## \return test cases list
+# \param  setup  The setup
+# \return test cases list
 ##
 def cases_setup(setup: BuildSetup) -> List[CaseSetup]:
     cases: List[CaseSetup] = []
-    for sub in sorted(setup.directory.cases.iterdir()):
-        if not sub.is_dir():
-            continue
-
+    for case in nes_cases(setup.root):
         cases.append(
             CaseSetup(
-                root        = sub,
-                slice       = resolve_file(sub / "nes20db-slice.xml"),
-                object      = resolve_file(sub / "test.o",                  missing_ok = True),
-                target      = resolve_file(sub / "test.nes",                missing_ok = True),
-                config      = resolve_file(sub / "nsk_header_config.inc",   missing_ok = True),
-                reference   = resolve_file(sub / "rom-header.nes"),
-                failed      = False
-            )
-        )
+                root=case.root,
+                slice=case.meta,
+                object=resolve_file(
+                    case.root /
+                    "test.o",
+                    missing_ok=True),
+                target=resolve_file(
+                    case.root /
+                    "test.nes",
+                    missing_ok=True),
+                config=resolve_file(
+                    case.root /
+                    "nsk_header_config.inc",
+                    missing_ok=True),
+                reference=case.reference,
+                failed=False))
     return cases
 
+
 ##
-## \brief  Cleans the test cases directory of the generated files
+# \brief  Cleans the test cases directory of the generated files
 ##
-## \param  setup  The setup
-## \param  cases  The test cases
+# \param  setup  The setup
+# \param  cases  The test cases
 ##
 def test_directory_clean(setup: BuildSetup, cases: List[CaseSetup]) -> None:
     print("# Clearing old files")
@@ -244,18 +269,19 @@ def test_directory_clean(setup: BuildSetup, cases: List[CaseSetup]) -> None:
             test_failed(case)
             continue
 
-        case.object.unlink(missing_ok = True)
-        case.target.unlink(missing_ok = True)
-        case.config.unlink(missing_ok = True)
+        case.object.unlink(missing_ok=True)
+        case.target.unlink(missing_ok=True)
+        case.config.unlink(missing_ok=True)
         test_passed(case)
 
     print()
 
+
 ##
-## \brief  Creates the configuration files for the test cases
+# \brief  Creates the configuration files for the test cases
 ##
-## \param  setup  The setup
-## \param  cases  The test cases
+# \param  setup  The setup
+# \param  cases  The test cases
 ##
 def test_config_create(setup: BuildSetup, cases: List[CaseSetup]) -> None:
     print("# Creating configuration files")
@@ -290,11 +316,12 @@ def test_config_create(setup: BuildSetup, cases: List[CaseSetup]) -> None:
             test_failed(case, e)
     print()
 
+
 ##
-## \brief  Compiles the test cases
+# \brief  Compiles the test cases
 ##
-## \param  setup  The setup
-## \param  cases  The test cases
+# \param  setup  The setup
+# \param  cases  The test cases
 ##
 def test_source_compile(setup: BuildSetup, cases: List[CaseSetup]) -> None:
     print("# Compilation")
@@ -328,11 +355,12 @@ def test_source_compile(setup: BuildSetup, cases: List[CaseSetup]) -> None:
             test_failed(case, e)
     print()
 
+
 ##
-## \brief  Links the test cases
+# \brief  Links the test cases
 ##
-## \param  setup  The setup
-## \param  cases  The test cases
+# \param  setup  The setup
+# \param  cases  The test cases
 ##
 def test_object_link(setup: BuildSetup, cases: List[CaseSetup]) -> None:
     print("# Linking")
@@ -345,7 +373,7 @@ def test_object_link(setup: BuildSetup, cases: List[CaseSetup]) -> None:
         cmd = [
             str(setup.compiler.ld65),
             "-C", str(setup.config.memory),
-            "-o", str(case.target) ,
+            "-o", str(case.target),
             str(case.object)
         ]
 
@@ -368,23 +396,24 @@ def test_object_link(setup: BuildSetup, cases: List[CaseSetup]) -> None:
 
 
 ##
-## \brief  Shows the linked and reference ROMs data
+# \brief  Shows the linked and reference ROMs data
 ##
-## \param  setup  The setup
-## \param  cases  The test cases
+# \param  setup  The setup
+# \param  cases  The test cases
 ##
-def test_reference_show(setup: BuildSetup, case : CaseSetup) -> None:
+def test_reference_show(setup: BuildSetup, case: CaseSetup) -> None:
     print("    Expected:")
     print_rom_info(setup, case.reference)
 
     print("    Received:")
     print_rom_info(setup, case.target)
 
+
 ##
-## \brief  Compares the generated and reference ROMs
+# \brief  Compares the generated and reference ROMs
 ##
-## \param  setup  The setup
-## \param  cases  The test cases
+# \param  setup  The setup
+# \param  cases  The test cases
 ##
 def test_reference_compare(setup: BuildSetup, cases: List[CaseSetup]) -> None:
     print("# Comparing the result")
@@ -401,18 +430,19 @@ def test_reference_compare(setup: BuildSetup, cases: List[CaseSetup]) -> None:
             test_failed(case)
     print()
 
+
 ##
-## \brief  Shows the final test results
+# \brief  Shows the final test results
 ##
-## \param  setup  The setup
-## \param  cases  The test cases
+# \param  setup  The setup
+# \param  cases  The test cases
 ##
-## \return 0 if all the tests are successfull
+# \return 0 if all the tests are successfull
 ##
 def test_final(cases: List[CaseSetup]) -> int:
     print("# Final results")
 
-    total  = 0
+    total = 0
     passed = 0
 
     for case in cases:
@@ -429,8 +459,9 @@ def test_final(cases: List[CaseSetup]) -> int:
 
     return 0 if passed == total else 1
 
+
 ##
-## \brief  Main function
+# \brief  Main function
 ##
 def main() -> int:
     TEST_STEPS = [
@@ -450,6 +481,7 @@ def main() -> int:
         step(setup, cases)
 
     return test_final(cases)
+
 
 if __name__ == "__main__":
     rc = main()

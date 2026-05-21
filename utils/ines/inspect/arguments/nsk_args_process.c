@@ -37,10 +37,11 @@ static char *_options_short(void) {
     /* Worst case - all options are optional, which should be
      * mapped as "X::", thus 3 characters per entry */
     char *options = nsk_util_malloc(
-        nsk_options_count * 3 + 1
+        nsk_options_count * 3 + 2
     );
 
     size_t pos = 0;
+    options[pos++] = ':';
     for (size_t i = 0; i < nsk_options_count; i++) {
 
         if (nsk_options_table[i].option_short < NSK_OPTION_SHORTLIMIT) {
@@ -124,7 +125,7 @@ static void _arguments_noarg(char *const *argv) {
         );
     } else if (optind > 0 && argv[optind - 1]) {
         nsk_err(
-            "Option --%s requires an argument\n",
+            "Option %s requires an argument\n",
             argv[optind - 1]
         );
     }
@@ -145,7 +146,7 @@ static void _arguments_unknown(char *const *argv) {
         );
     } else if (optind > 0 && argv[optind - 1]) {
         nsk_err(
-            "Unknown option: --%s\n",
+            "Unknown option: %s\n",
             argv[optind - 1]
         );
     }

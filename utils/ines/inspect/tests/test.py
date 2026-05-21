@@ -4,6 +4,7 @@
 from pathlib import Path
 
 from subroutines.cli import run_cli_tests
+from subroutines.directories import run_directory_tests
 from subroutines.errors import run_error_tests
 from subroutines.golden import run_golden_tests
 from subroutines.semantic import run_semantic_tests
@@ -26,6 +27,8 @@ def main() -> int:
     semantic_status = run_semantic_tests(ROOT, PROGRAM)
     print()
     error_status = run_error_tests(ROOT, PROGRAM)
+    print()
+    directory_status = run_directory_tests(ROOT, PROGRAM)
 
     if (
         smoke_status == 0
@@ -33,6 +36,7 @@ def main() -> int:
         and golden_status == 0
         and semantic_status == 0
         and error_status == 0
+        and directory_status == 0
     ):
         return 0
 

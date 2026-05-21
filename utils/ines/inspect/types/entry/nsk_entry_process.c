@@ -10,12 +10,12 @@
  *
  * \param[in] filename  The filename
  */
-void nsk_entry_process(const char *filename) {
+bool nsk_entry_process(const char *filename) {
     struct nsk_header_raw raw;
     struct nsk_header_data data;
 
     if (!nsk_entry_read(filename, &raw)) {
-        return;
+        return false;
     }
 
     nsk_header_raw2data(&raw, &data);
@@ -23,4 +23,6 @@ void nsk_entry_process(const char *filename) {
     if (nsk_entry_match(&data)) {
         nsk_entry_push(filename, &data);
     }
+
+    return true;
 }

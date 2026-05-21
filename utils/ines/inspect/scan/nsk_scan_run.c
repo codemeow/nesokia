@@ -5,10 +5,13 @@
 /*!
  * \brief  Sets the filter string for the scan process
  */
-void nsk_scan_run(void) {
+bool nsk_scan_run(void) {
+    bool found = false;
     char *const *files = nsk_options_program.files;
     while (*files) {
-        nsk_scan_entry(*files, 0);
+        found = nsk_scan_entry(*files, 0) || found;
         files++;
     }
+
+    return found;
 }

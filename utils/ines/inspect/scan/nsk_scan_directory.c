@@ -42,17 +42,18 @@ static bool _entry_path(
  * \param[in] directory  The directory
  * \param[in] level      The deepness level (starts with 0)
  */
-void nsk_scan_directory(const char *directory, unsigned level) {
+bool nsk_scan_directory(const char *directory, unsigned level) {
     if (!nsk_options_program.recursive && level > 0) {
-        return;
+        return false;
     }
 
     DIR *dir = nsk_io_opendir(directory);
     if (!dir) {
         nsk_err("Error: cannot open dir: \"%s\"\n", directory);
-        return;
+        return false;
     }
 
+    bool found = false;
     const struct dirent *entry;
     while ((entry = nsk_io_readdir(dir))) {
         if (
@@ -72,12 +73,14 @@ void nsk_scan_directory(const char *directory, unsigned level) {
             continue;
         }
 
-        nsk_scan_entry(path, level + 1);
+        found = nsk_scan_entry(path, level + 1) || found;
     }
 
 
     if (closedir(dir)) {
         nsk_err("Error: cannot close dir: \"%s\"\n", directory);
-        return;
+        return found;
     }
+
+    return found;
 }

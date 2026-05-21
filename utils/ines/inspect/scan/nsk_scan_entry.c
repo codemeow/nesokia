@@ -13,20 +13,20 @@
  * \param[in] entryname  The entry file-/directoryname
  * \param[in] level      Deepness level
  */
-void nsk_scan_entry(const char *entryname, unsigned level) {
+bool nsk_scan_entry(const char *entryname, unsigned level) {
     struct stat stat;
     if (nsk_io_lstat(entryname, &stat) != 0) {
         nsk_err("Error: cannot `lstat` file: \"%s\"\n", entryname);
-        return;
+        return false;
     }
 
     if (S_ISDIR(stat.st_mode)) {
-        nsk_scan_directory(entryname, level);
+        return nsk_scan_directory(entryname, level);
 
     } else if (S_ISLNK(stat.st_mode)) {
-        nsk_scan_link(entryname, level);
+        return nsk_scan_link(entryname, level);
 
     } else {
-        nsk_scan_file(entryname, level);
+        return nsk_scan_file(entryname, level);
     }
 }

@@ -5,6 +5,7 @@ import json
 from dataclasses import asdict
 from pathlib import Path
 from typing import Any, Dict, List, Union
+from xml.etree import ElementTree
 
 from tests.helpers.nes20db import Nes20DbHeader, parse_slice
 from tests.helpers.nes_cases import NesCase, nes_cases
@@ -186,7 +187,7 @@ def keys_cases(repo_root: Path) -> List[SemanticCase]:
     return [
         SemanticCase(
             section="Keys",
-            name="mapper and prg_rom only",
+            name="json mapper and prg_rom only",
             args=[
                 "-o",
                 "json",
@@ -196,6 +197,19 @@ def keys_cases(repo_root: Path) -> List[SemanticCase]:
             ],
             cwd=repo_root,
             check=check_keys({"filename", "mapper", "memory"})
+        ),
+        SemanticCase(
+            section="Keys",
+            name="xml mapper and prg_rom only",
+            args=[
+                "-o",
+                "xml",
+                "-k",
+                "mapper&prg_rom",
+                str(case.reference.relative_to(repo_root))
+            ],
+            cwd=repo_root,
+            check=check_xml_keys()
         )
     ]
 
@@ -222,6 +236,54 @@ def check_keys(expected_top_level: set[str]) -> Any:
         memory_keys = set(entries[0]["memory"].keys())
         if memory_keys != {"prg_rom"}:
             raise AssertionError(f"memory keys: got {sorted(memory_keys)!r}")
+
+    return check
+
+
+def check_xml_keys() -> Any:
+    """Build a check that XML output contains only selected fields."""
+
+    def check(proc: Any) -> None:
+        scan = ElementTree.fromstring(proc.stdout)
+        games = scan.findall("game")
+        if len(games) != 1:
+            raise AssertionError(f"expected 1 XML game, got {len(games)}")
+
+        game = games[0]
+
+        pcb = game.find("pcb")
+        if pcb is None:
+            raise AssertionError("expected pcb element")
+        if set(pcb.attrib.keys()) != {"mapper"}:
+            raise AssertionError(
+                f"pcb attributes: got {sorted(pcb.attrib.keys())!r}"
+            )
+
+        prgrom = game.find("prgrom")
+        if prgrom is None:
+            raise AssertionError("expected prgrom element")
+        if set(prgrom.attrib.keys()) != {"size"}:
+            raise AssertionError(
+                f"prgrom attributes: got {sorted(prgrom.attrib.keys())!r}"
+            )
+
+        forbidden = [
+            "format",
+            "chrrom",
+            "prgram",
+            "chrram",
+            "prgnvram",
+            "chrnvram",
+            "miscrom",
+            "trainer",
+            "console",
+            "vs",
+            "expansion"
+        ]
+
+        for name in forbidden:
+            if game.find(name) is not None:
+                raise AssertionError(f"unexpected {name} element")
 
     return check
 

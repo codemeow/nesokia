@@ -1,0 +1,27 @@
+# tests/nes/30 Ultima - Quest of the Avatar (U).nes/rom-header.nes
+ - Format:
+	 - Is NES 2.0?         : Yes
+ - Console:
+	 - Type                : Nintendo Entertainment System / Famicom / Dendy
+	 - Timings / region    : RP2C02 PPU / NTSC 21.47 MHz / North America / Japan / South Korea / Taiwan
+	 - Vs. PPU type        : Not applicable / Any RP2C03 / Any RC2C03
+	 - Vs. Hardware type   : Not applicable / Vs. Unisystem (normal)
+ - Nametables:
+	 - Mirroring / layout  : Vertical arrangement / Horizontal mirroring / Mapper controlled
+	 - Alternative layout  : Normal nametables layout
+ - Mapper:
+	 - Mapper ID           : 1
+	 - Submapper ID        : 0
+ - Memory:
+	 - PRG ROM             : 256.00 KiB (262144 bytes)
+	 - CHR ROM             : 0 bytes
+	 - PRG RAM             : 0 bytes
+	 - CHR RAM             : 8.00 KiB (8192 bytes)
+	 - PRG NVRAM           : 8.00 KiB (8192 bytes)
+	 - CHR NVRAM           : 0 bytes
+	 - Misc. ROMs          : 0
+ - Miscellaneous info:
+	 - Trainer area        : Not present
+	 - Non volatile memory : Present
+	 - Expansion device    : Standard Famicom/NES controllers
+

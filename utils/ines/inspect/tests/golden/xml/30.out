@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scan>
+	<game><!-- tests/nes/30 Ultima - Quest of the Avatar (U).nes/rom-header.nes -->
+		<name>tests/nes/30 Ultima - Quest of the Avatar (U).nes/rom-header.nes</name>
+		<format isnes20="1" />
+		<prgrom size="262144" />
+		<chrram size="8192" />
+		<prgnvram size="8192" />
+		<pcb mapper="1" submapper="0" mirroring="V" battery="1" />
+		<console type="0" region="0" />
+		<expansion type="1" />
+	</game>
+</scan>

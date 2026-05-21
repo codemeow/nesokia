@@ -1,0 +1,27 @@
+- "filename": "tests/nes/27 Super Turrican (E).nes/rom-header.nes"
+  "format":
+    "isnes20":     { raw: true, display: "Yes" }
+  "console":
+    "console":     { raw: 0, display: "Nintendo Entertainment System / Famicom / Dendy" }
+    "region":      { raw: 2, display: "Multiple regions/modern" }
+    "vs_ppu":      { raw: null, display: "Not applicable / Any RP2C03 / Any RC2C03" }
+    "vs_hardware": { raw: null, display: "Not applicable / Vs. Unisystem (normal)" }
+  "nametables":
+    "mirroring":   { raw: 0, display: "Vertical arrangement / Horizontal mirroring / Mapper controlled" }
+    "alternative": { raw: 0, display: "Normal nametables layout" }
+  "mapper":
+    "mapper":      { raw: 4, display: "4" }
+    "submapper":   { raw: 0, display: "0" }
+  "memory":
+    "prg_rom":     { raw: 131072, display: "128.00 KiB (131072 bytes)" }
+    "chr_rom":     { raw: 131072, display: "128.00 KiB (131072 bytes)" }
+    "prg_ram":     { raw: 8192, display: "8.00 KiB (8192 bytes)" }
+    "chr_ram":     { raw: 0, display: "0 bytes" }
+    "prg_nvram":   { raw: 0, display: "0 bytes" }
+    "chr_nvram":   { raw: 0, display: "0 bytes" }
+    "misc_roms":   { raw: 0, display: "0" }
+  "misc":
+    "trainer":     { raw: 0, display: "Not present" }
+    "battery":     { raw: 0, display: "Not present" }
+    "device":      { raw: 1, display: "Standard Famicom/NES controllers" }
+

@@ -96,7 +96,7 @@ def cli_cases(root: Path) -> List[CliCase]:
             "Output",
             name="repeated output option uses last value",
             args=["-o", "json", "-o", "table", first_rom],
-            stdout_contains=["| Filename", "| rom-header.nes |"],
+            stdout_contains=["| Filename", first_rom],
             stdout_not_contains=["\"filename\""],
             stderr_forbidden=True
         ),

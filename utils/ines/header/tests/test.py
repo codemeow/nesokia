@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from __future__ import annotations
+
 import filecmp
 import shutil
 import subprocess
@@ -9,399 +11,333 @@ import textwrap
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional, Union, List
+from typing import IO, Optional, Union, List
 
 from colorama import init, Fore, Style
 from tests.helpers.nes_cases import nes_cases
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent.parent.parent
+SubprocessOutput = Union[int, IO[str]]
 
 # Colorama's init
 init(autoreset=True)
 
 
-##
-# \brief  Local setup values
-##
 @dataclass
 class BuildSetup:
-    root: Path  # < Path to the repository root
+    """Local setup values."""
 
-    ##
-    # \brief  Compiler programs
-    ##
+    root: Path
+
     @dataclass
     class BuildCompiler:
-        ca65: Path  # < Path to the ca65 compiler
-        ld65: Path  # < Path to the ld65 linker
-        make: Path  # < Path to the make program
+        """Compiler programs."""
 
-    ##
-    # \brief  List of helpful directories
-    ##
-    @dataclass
-    class BuildDirectories:
-        helpers: Path  # < Path to the test subroutines
-        reader: Path   # < Path to the ROM reader utility
+        ca65: Path
+        ld65: Path
 
-    ##
-    # \brief  List of helpers utilities
-    ##
     @dataclass
     class BuildHelpers:
-        generator: Path  # < Path to the ROM header generator
-        reader: Path     # < Path to the ROM header reader
+        """Helper utilities."""
 
-    ##
-    # \brief  Configuration files for the tests
-    ##
+        generator: Path
+        reader: Path
+
     @dataclass
     class BuildConfig:
-        consts: Path  # < Generator's constants file
-        source: Path  # < Generator's source file
-        memory: Path  # < Generator's linker script
+        """Configuration files for the tests."""
 
-    compiler: BuildCompiler  # < Compiler programs
-    directory: BuildDirectories  # < List of helpful directories
-    helpers: BuildHelpers  # < List of helper utilities
-    config: BuildConfig  # < Configuration files for the tests
+        consts: Path
+        source: Path
+        memory: Path
+
+    compiler: BuildCompiler
+    helpers: BuildHelpers
+    config: BuildConfig
 
 
-##
-# \brief  One test case setup
-##
 @dataclass
 class CaseSetup:
-    root: Path          # < Path to the root directory of the test case
-    slice: Path         # < Path to the NES20DB slice for that test case
-    object: Path        # < Path to the compiled object file
-    target: Path        # < Path to the linked target test file
-    config: Path        # < Path to the generator's configuration file
-    reference: Path     # < Path to the reference ROM header file
-    failed: bool        # < Failed test flag
+    """One test case setup."""
+
+    root: Path
+    meta: Path
+    object_file: Path
+    target: Path
+    config: Path
+    reference: Path
+    failed: bool
 
 
-##
-# \brief  Resolves the filename and checks its existence
-##
-# \param  path         The path (string or Path)
-# \param  missing_ok   If True, missing file will not raise an error
-# \return filename as Path type
-##
-def resolve_file(path: Union[str, Path], missing_ok: bool = False) -> Path:
-    file = Path(path).resolve()
-    if not file.is_file() and not missing_ok:
-        raise RuntimeError(f"File {file} not found")
-    return file
+def required_file(path: Union[str, Path]) -> Path:
+    """Resolve a file path and require it to exist."""
+
+    filename = Path(path).resolve()
+    if not filename.is_file():
+        raise RuntimeError(f"File {filename} not found")
+    return filename
 
 
-##
-# \brief  Resolves the directory name and checks its existence
-##
-# \param  path         The path (string or Path)
-# \param  missing_ok   If True, missing directory will not raise an error
-# \return Directory name as Path type
-##
-def resolve_dir(path: Union[str, Path], missing_ok: bool = False) -> Path:
-    directory = Path(path).resolve()
-    if not directory.is_dir() and not missing_ok:
-        raise RuntimeError(f"Directory {directory} not found")
-    return directory
+def output_file(path: Union[str, Path]) -> Path:
+    """Resolve a generated file path."""
+
+    return Path(path).resolve()
 
 
-##
-# \brief  Resolves the program name
-##
-# \param  name  The program name
-# \return Extracted from PATH full name
-##
 def resolve_program(name: str) -> Path:
+    """Resolve a program path from PATH."""
+
     prog = shutil.which(name)
     if prog is None:
         raise RuntimeError(f"{name} not found in PATH")
     return Path(prog)
 
 
-##
-# \brief  Builds a global setup.
-##
-# \return The setup.
-##
 def build_setup() -> BuildSetup:
+    """Build the global test setup."""
+
     return BuildSetup(
         root=ROOT,
         compiler=BuildSetup.BuildCompiler(
             ca65=resolve_program("ca65"),
-            ld65=resolve_program("ld65"),
-            make=resolve_program("make")
-        ),
-        directory=BuildSetup.BuildDirectories(
-            helpers=resolve_dir(HERE / "subroutines"),
-            reader=resolve_dir(ROOT / "utils/ines/inspect")
+            ld65=resolve_program("ld65")
         ),
         helpers=BuildSetup.BuildHelpers(
-            generator=resolve_file(HERE / "subroutines/nsk_config_create.py"),
-            reader=resolve_file(ROOT / "bin/nesokia-ines-inspect", True)
+            generator=required_file(HERE / "subroutines/nsk_config_create.py"),
+            reader=required_file(ROOT / "bin/nesokia-ines-inspect")
         ),
         config=BuildSetup.BuildConfig(
-            consts=resolve_file(
+            consts=required_file(
                 ROOT / "utils/ines/header/nsk_header_consts.inc"
             ),
-            source=resolve_file(
+            source=required_file(
                 ROOT / "utils/ines/header/nsk_header_code.asm"
             ),
-            memory=resolve_file(HERE / "memory/nsk_header_memory.cfg")
+            memory=required_file(HERE / "memory/nsk_header_memory.cfg")
         )
     )
 
 
-##
-# \brief  Prints the text as "passed" line
-##
-# \param  string  The string
-##
 def print_passed(string: str) -> None:
+    """Print a passed line."""
+
     print(f"[{Fore.GREEN}OK{Style.RESET_ALL}]    {string}")
 
 
-##
-# \brief  Prints the text as "failed" line
-##
-# \param  string  The string
-##
 def print_failed(string: str) -> None:
+    """Print a failed line."""
+
     print(f"[{Fore.RED}ERR{Style.RESET_ALL}]   {string}")
 
 
-##
-# \brief  Prints the case as "passed"
-##
-# \param  case  The test case
-##
-def test_passed(case: CaseSetup) -> None:
+def print_case_passed(case: CaseSetup) -> None:
+    """Print a test case as passed."""
+
     print_passed(case.root.name)
 
 
-##
-# \brief  Prints the case as "failed"
-##
-# \param  case  The test case
-##
-def test_failed(case: CaseSetup, e: Optional[Exception] = None) -> None:
+def print_case_failed(case: CaseSetup, e: Optional[Exception] = None) -> None:
+    """Print a test case as failed."""
+
     if e is None:
         print_failed(case.root.name)
     else:
         print_failed(f"{case.root.name} : {e}")
+
+
+def mark_case_failed(case: CaseSetup, e: Optional[Exception] = None) -> None:
+    """Mark a test case as failed and print it."""
+
+    print_case_failed(case, e)
     case.failed = True
 
 
-##
-# \brief  Prints the additional text with the indentation
-##
-# \param  output  The output
-##
 def print_test_output(output: str) -> None:
+    """Print command output with test indentation."""
+
     print(f"{textwrap.indent(output, '    ')}")
 
 
-##
-# \brief  Prints the selected ROM info
-##
-# \param  setup  The setup
-# \param  file   The ROM filename
-##
-def print_rom_info(setup: BuildSetup, file: Path) -> None:
+def run_case_command(
+    case: CaseSetup,
+    cmd: List[str],
+    stdout: SubprocessOutput = subprocess.PIPE,
+    stderr: SubprocessOutput = subprocess.STDOUT
+) -> Optional[subprocess.CompletedProcess[str]]:
+    """Run a test case command and mark the case failed on exceptions."""
+
+    try:
+        return subprocess.run(
+            cmd,
+            text=True,
+            stdout=stdout,
+            stderr=stderr
+        )
+    except Exception as e:
+        mark_case_failed(case, e)
+        return None
+
+
+def print_rom_info(setup: BuildSetup, rom_file: Path) -> None:
+    """Print selected ROM info through the reader utility."""
+
     cmd = [
         str(setup.helpers.reader),
-        str(file)
+        str(rom_file)
     ]
-    proc = subprocess.run(
-        cmd,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT
-    )
+    try:
+        proc = subprocess.run(
+            cmd,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT
+        )
+    except Exception as e:
+        print_test_output(f"Unable to inspect {rom_file}: {e}")
+        return
+
     print_test_output(proc.stdout)
+    if proc.returncode != 0:
+        print_test_output(f"Reader exited with code {proc.returncode}")
 
 
-##
-# \brief  Populates the test cases list
-##
-# \param  setup  The setup
-# \return test cases list
-##
 def cases_setup(setup: BuildSetup) -> List[CaseSetup]:
+    """Populate the test cases list."""
+
     cases: List[CaseSetup] = []
     for case in nes_cases(setup.root):
         cases.append(
             CaseSetup(
                 root=case.root,
-                slice=case.meta,
-                object=resolve_file(
-                    case.root /
-                    "test.o",
-                    missing_ok=True),
-                target=resolve_file(
-                    case.root /
-                    "test.nes",
-                    missing_ok=True),
-                config=resolve_file(
-                    case.root /
-                    "nsk_header_config.inc",
-                    missing_ok=True),
+                meta=case.meta,
+                object_file=output_file(case.root / "test.o"),
+                target=output_file(case.root / "test.nes"),
+                config=output_file(case.root / "nsk_header_config.inc"),
                 reference=case.reference,
                 failed=False))
     return cases
 
 
-##
-# \brief  Cleans the test cases directory of the generated files
-##
-# \param  setup  The setup
-# \param  cases  The test cases
-##
 def test_directory_clean(setup: BuildSetup, cases: List[CaseSetup]) -> None:
+    """Remove generated files from the test cases."""
+
     print("# Clearing old files")
 
     for case in cases:
-        if case.failed:
-            test_failed(case)
-            continue
-
-        case.object.unlink(missing_ok=True)
+        case.object_file.unlink(missing_ok=True)
         case.target.unlink(missing_ok=True)
         case.config.unlink(missing_ok=True)
-        test_passed(case)
+
+        if case.failed:
+            print_case_failed(case)
+        else:
+            print_case_passed(case)
 
     print()
 
 
-##
-# \brief  Creates the configuration files for the test cases
-##
-# \param  setup  The setup
-# \param  cases  The test cases
-##
 def test_config_create(setup: BuildSetup, cases: List[CaseSetup]) -> None:
+    """Create configuration files for the test cases."""
+
     print("# Creating configuration files")
 
     for case in cases:
         if case.failed:
-            test_failed(case)
+            print_case_failed(case)
             continue
 
         cmd = [
             sys.executable,
             str(setup.helpers.generator),
-            "-x", str(case.slice),
+            "-x", str(case.meta),
             "-c", str(setup.config.consts)
         ]
 
         try:
             with case.config.open("w", encoding="utf-8") as fout:
-                proc = subprocess.run(
+                proc = run_case_command(
+                    case,
                     cmd,
-                    text=True,
                     stdout=fout,
                     stderr=subprocess.PIPE
                 )
-            if proc.returncode != 0:
-                test_failed(case)
-                print_test_output(proc.stderr)
-            else:
-                test_passed(case)
-
         except Exception as e:
-            test_failed(case, e)
+            mark_case_failed(case, e)
+            continue
+
+        if proc is None:
+            continue
+
+        if proc.returncode != 0:
+            mark_case_failed(case)
+            print_test_output(proc.stderr or "")
+        else:
+            print_case_passed(case)
     print()
 
 
-##
-# \brief  Compiles the test cases
-##
-# \param  setup  The setup
-# \param  cases  The test cases
-##
 def test_source_compile(setup: BuildSetup, cases: List[CaseSetup]) -> None:
+    """Compile the test cases."""
+
     print("# Compilation")
 
     for case in cases:
         if case.failed:
-            test_failed(case)
+            print_case_failed(case)
             continue
 
         cmd = [
             str(setup.compiler.ca65),
             "-I", str(case.root),
-            "-o", str(case.object),
+            "-o", str(case.object_file),
             str(setup.config.source)
         ]
 
-        try:
-            proc = subprocess.run(
-                cmd,
-                text=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT
-            )
-            if proc.returncode != 0:
-                test_failed(case)
-                print_test_output(proc.stdout)
-            else:
-                test_passed(case)
+        proc = run_case_command(case, cmd)
+        if proc is None:
+            continue
 
-        except Exception as e:
-            test_failed(case, e)
+        if proc.returncode != 0:
+            mark_case_failed(case)
+            print_test_output(proc.stdout or "")
+        else:
+            print_case_passed(case)
     print()
 
 
-##
-# \brief  Links the test cases
-##
-# \param  setup  The setup
-# \param  cases  The test cases
-##
 def test_object_link(setup: BuildSetup, cases: List[CaseSetup]) -> None:
+    """Link the test cases."""
+
     print("# Linking")
 
     for case in cases:
         if case.failed:
-            test_failed(case)
+            print_case_failed(case)
             continue
 
         cmd = [
             str(setup.compiler.ld65),
             "-C", str(setup.config.memory),
             "-o", str(case.target),
-            str(case.object)
+            str(case.object_file)
         ]
 
-        try:
-            proc = subprocess.run(
-                cmd,
-                text=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT
-            )
-            if proc.returncode != 0:
-                test_failed(case)
-                print_test_output(proc.stdout)
-            else:
-                test_passed(case)
+        proc = run_case_command(case, cmd)
+        if proc is None:
+            continue
 
-        except Exception as e:
-            test_failed(case, e)
+        if proc.returncode != 0:
+            mark_case_failed(case)
+            print_test_output(proc.stdout or "")
+        else:
+            print_case_passed(case)
     print()
 
 
-##
-# \brief  Shows the linked and reference ROMs data
-##
-# \param  setup  The setup
-# \param  cases  The test cases
-##
 def test_reference_show(setup: BuildSetup, case: CaseSetup) -> None:
+    """Show the linked and reference ROMs data."""
+
     print("    Expected:")
     print_rom_info(setup, case.reference)
 
@@ -409,37 +345,27 @@ def test_reference_show(setup: BuildSetup, case: CaseSetup) -> None:
     print_rom_info(setup, case.target)
 
 
-##
-# \brief  Compares the generated and reference ROMs
-##
-# \param  setup  The setup
-# \param  cases  The test cases
-##
 def test_reference_compare(setup: BuildSetup, cases: List[CaseSetup]) -> None:
+    """Compare the generated and reference ROMs."""
+
     print("# Comparing the result")
 
     for case in cases:
         if case.failed:
-            test_failed(case)
+            print_case_failed(case)
             continue
 
         if filecmp.cmp(case.target, case.reference, shallow=False):
-            test_passed(case)
+            print_case_passed(case)
         else:
             test_reference_show(setup, case)
-            test_failed(case)
+            mark_case_failed(case)
     print()
 
 
-##
-# \brief  Shows the final test results
-##
-# \param  setup  The setup
-# \param  cases  The test cases
-##
-# \return 0 if all the tests are successfull
-##
 def test_final(cases: List[CaseSetup]) -> int:
+    """Show the final test results and return the process status."""
+
     print("# Final results")
 
     total = 0
@@ -447,9 +373,9 @@ def test_final(cases: List[CaseSetup]) -> int:
 
     for case in cases:
         if case.failed:
-            test_failed(case)
+            print_case_failed(case)
         else:
-            test_passed(case)
+            print_case_passed(case)
             passed += 1
 
         total += 1
@@ -460,11 +386,10 @@ def test_final(cases: List[CaseSetup]) -> int:
     return 0 if passed == total else 1
 
 
-##
-# \brief  Main function
-##
 def main() -> int:
-    TEST_STEPS = [
+    """Run the test suite."""
+
+    test_steps = [
         test_directory_clean,
         test_config_create,
         test_source_compile,
@@ -477,7 +402,7 @@ def main() -> int:
 
     cases = cases_setup(setup)
 
-    for step in TEST_STEPS:
+    for step in test_steps:
         step(setup, cases)
 
     return test_final(cases)

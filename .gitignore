@@ -12,6 +12,10 @@ bin
 .vscode
 *.sublime-workspace
 
+# Python cache files
+__pycache__/
+*.py[cod]
+
 # NES test cases generated configuration files
 tests/nes/*/nsk_header_config.inc
 # NES test cases generated object files

@@ -8,7 +8,13 @@ VER_BUILD := 1
 # Common root directory
 DIR_ROOT := ../../..
 
-include $(DIR_ROOT)/scripts/make/common.mk
-include $(DIR_ROOT)/scripts/make/lang/dummy.mk
+# Test dependencies
+TEST_DEPS = $(DIR_BIN)/nesokia-ines-inspect
 
+include $(DIR_ROOT)/scripts/make/common.mk
+
+$(DIR_BIN)/nesokia-ines-inspect:
+	@$(MAKE) -C "$(DIR_ROOT)/utils/ines/inspect" build
+
+include $(DIR_ROOT)/scripts/make/lang/dummy.mk
 

@@ -94,11 +94,12 @@ endef
 
 PYTHON ?= python3
 TEST_SCRIPT := tests/test.py
+TEST_DEPS ?=
 
 test-pre: $(DIR_BIN)/$(PROJECT_NAME)-pre
 	@$(call print_category,Testing)
 
-test-post:
+test-post: $(TEST_DEPS)
 	@if [ -f "$(TEST_SCRIPT)" ]; then \
 	    $(call require-tool,$(PYTHON)); \
 	    PYTHONPATH="$(DIR_ROOT)$${PYTHONPATH:+:$$PYTHONPATH}" $(PYTHON) "$(TEST_SCRIPT)"; \

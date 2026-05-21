@@ -7,21 +7,17 @@ import filecmp
 import shutil
 import subprocess
 import sys
-import textwrap
 
 from dataclasses import dataclass
 from pathlib import Path
 from typing import IO, Optional, Union, List
 
-from colorama import init, Fore, Style
 from tests.helpers.nes_cases import nes_cases
+from tests.helpers.output import print_failed, print_indented, print_passed
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent.parent.parent
 SubprocessOutput = Union[int, IO[str]]
-
-# Colorama's init
-init(autoreset=True)
 
 
 @dataclass
@@ -119,18 +115,6 @@ def build_setup() -> BuildSetup:
     )
 
 
-def print_passed(string: str) -> None:
-    """Print a passed line."""
-
-    print(f"[{Fore.GREEN}OK{Style.RESET_ALL}]    {string}")
-
-
-def print_failed(string: str) -> None:
-    """Print a failed line."""
-
-    print(f"[{Fore.RED}ERR{Style.RESET_ALL}]   {string}")
-
-
 def print_case_passed(case: CaseSetup) -> None:
     """Print a test case as passed."""
 
@@ -143,7 +127,7 @@ def print_case_failed(case: CaseSetup, e: Optional[Exception] = None) -> None:
     if e is None:
         print_failed(case.root.name)
     else:
-        print_failed(f"{case.root.name} : {e}")
+        print_failed(case.root.name, str(e))
 
 
 def mark_case_failed(case: CaseSetup, e: Optional[Exception] = None) -> None:
@@ -151,12 +135,6 @@ def mark_case_failed(case: CaseSetup, e: Optional[Exception] = None) -> None:
 
     print_case_failed(case, e)
     case.failed = True
-
-
-def print_test_output(output: str) -> None:
-    """Print command output with test indentation."""
-
-    print(f"{textwrap.indent(output, '    ')}")
 
 
 def run_case_command(
@@ -194,12 +172,12 @@ def print_rom_info(setup: BuildSetup, rom_file: Path) -> None:
             stderr=subprocess.STDOUT
         )
     except Exception as e:
-        print_test_output(f"Unable to inspect {rom_file}: {e}")
+        print_indented(f"Unable to inspect {rom_file}: {e}")
         return
 
-    print_test_output(proc.stdout)
+    print_indented(proc.stdout)
     if proc.returncode != 0:
-        print_test_output(f"Reader exited with code {proc.returncode}")
+        print_indented(f"Reader exited with code {proc.returncode}")
 
 
 def cases_setup(setup: BuildSetup) -> List[CaseSetup]:
@@ -271,7 +249,7 @@ def test_config_create(setup: BuildSetup, cases: List[CaseSetup]) -> None:
 
         if proc.returncode != 0:
             mark_case_failed(case)
-            print_test_output(proc.stderr or "")
+            print_indented(proc.stderr or "")
         else:
             print_case_passed(case)
     print()
@@ -300,7 +278,7 @@ def test_source_compile(setup: BuildSetup, cases: List[CaseSetup]) -> None:
 
         if proc.returncode != 0:
             mark_case_failed(case)
-            print_test_output(proc.stdout or "")
+            print_indented(proc.stdout or "")
         else:
             print_case_passed(case)
     print()
@@ -329,7 +307,7 @@ def test_object_link(setup: BuildSetup, cases: List[CaseSetup]) -> None:
 
         if proc.returncode != 0:
             mark_case_failed(case)
-            print_test_output(proc.stdout or "")
+            print_indented(proc.stdout or "")
         else:
             print_case_passed(case)
     print()

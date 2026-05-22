@@ -107,7 +107,7 @@ static void _input_load(
             nsk_options_program.input.pattables.left,
             &pattables->plane[NSK_PLANE_BACKGROUND]
         ) || !nsk_pattable_readpng(
-            nsk_options_program.input.pattables.left,
+            nsk_options_program.input.pattables.right,
             &pattables->plane[NSK_PLANE_SPRITES]
         )) {
             exit(EXIT_FAILURE);

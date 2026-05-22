@@ -32,6 +32,27 @@ static void _options_validate(void) {
         exit(EXIT_FAILURE);
     }
 
+    if (!nsk_options_program.input.palettes.both &&
+        !nsk_options_program.input.palettes.back &&
+        !nsk_options_program.input.palettes.sprites
+    ) {
+        nsk_err(
+            "Invalid input: no palettes input provided\n"
+        );
+        exit(EXIT_FAILURE);
+    }
+
+    if (!nsk_options_program.input.palettes.both &&
+        (!nsk_options_program.input.palettes.back ||
+            !nsk_options_program.input.palettes.sprites)
+    ) {
+        nsk_err(
+            "Invalid input: both background and sprites palette files "
+            "must be provided when using separated palettes\n"
+        );
+        exit(EXIT_FAILURE);
+    }
+
     if (nsk_options_program.input.pattables.both &&
         (nsk_options_program.input.pattables.left ||
             nsk_options_program.input.pattables.right)
@@ -39,6 +60,27 @@ static void _options_validate(void) {
         nsk_err(
             "Invalid input: Both united and separated pattern tables "
             "cannot be used at once\n"
+        );
+        exit(EXIT_FAILURE);
+    }
+
+    if (!nsk_options_program.input.pattables.both &&
+        !nsk_options_program.input.pattables.left &&
+        !nsk_options_program.input.pattables.right
+    ) {
+        nsk_err(
+            "Invalid input: no pattern tables input provided\n"
+        );
+        exit(EXIT_FAILURE);
+    }
+
+    if (!nsk_options_program.input.pattables.both &&
+        (!nsk_options_program.input.pattables.left ||
+            !nsk_options_program.input.pattables.right)
+    ) {
+        nsk_err(
+            "Invalid input: both left and right pattern table files "
+            "must be provided when using separated pattern tables\n"
         );
         exit(EXIT_FAILURE);
     }

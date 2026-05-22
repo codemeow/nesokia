@@ -74,6 +74,13 @@ static void _explicit_validate(void) {
  * \brief  Sets input list of explicit palette selection
  */
 void nsk_option_input_patpal_explicit(void) {
+    if (nsk_options_program.input.explicit) {
+        nsk_err(
+            "There must be only one `-e`/`--explicit-palettes` option provided\n"
+        );
+        exit(EXIT_FAILURE);
+    }
+
     _explicit_read();
     _explicit_validate();
 }

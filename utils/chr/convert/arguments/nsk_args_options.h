@@ -79,6 +79,8 @@ struct nsk_options_program {
 
     enum nsk_mode_values      mode;        /*!< Selected mode                 */
     enum nsk_ppuctlr34_values ppuctrl34;   /*!< Nametables purpose            */
+    bool                      mode_set;    /*!< Mode option was provided      */
+    bool                      ppuctrl34_set; /*!< PPUCTRL option was provided  */
 
     char *const     *files;                /*!< Null-terminated files list    */
 };

@@ -9,6 +9,13 @@
  * \brief  Selects conversion mode
  */
 void nsk_option_mode(void) {
+    if (nsk_options_program.mode_set) {
+        nsk_err(
+            "There must be only one `-M`/`--mode` option provided\n"
+        );
+        exit(EXIT_FAILURE);
+    }
+
     static const struct {
         enum nsk_mode_values mode;
         const char *string;
@@ -25,6 +32,7 @@ void nsk_option_mode(void) {
     for (size_t i = 0; i < NSK_SIZE(_table); i++) {
         if (strcmp(optarg, _table[i].string) == 0) {
             nsk_options_program.mode = _table[i].mode;
+            nsk_options_program.mode_set = true;
             return;
         }
     }

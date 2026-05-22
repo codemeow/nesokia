@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 import subprocess
 from pathlib import Path
-from typing import Any, Sequence, Union
+from typing import Literal, Sequence, Union
 
 
 Command = Sequence[Union[str, Path]]
@@ -38,17 +38,34 @@ def _is_nesokia_binary(command: Command) -> bool:
 
 def run(
     command: Command,
-    **kwargs: Any
+    *,
+    cwd: str | Path | None = None,
+    text: Literal[True] = True,
+    stdout: int | None = None,
+    stderr: int | None = None
 ) -> subprocess.CompletedProcess[str]:
     """Run a command, optionally wrapping nesokia binaries with Valgrind."""
 
     normalized = [str(part) for part in command]
+    cwd_arg = None if cwd is None else str(cwd)
     if not _valgrind_enabled() or not _is_nesokia_binary(normalized):
-        return subprocess.run(normalized, **kwargs)
+        return subprocess.run(
+            normalized,
+            cwd=cwd_arg,
+            text=text,
+            stdout=stdout,
+            stderr=stderr
+        )
 
     wrapped = [
         "valgrind",
         *VALGRIND_OPTIONS,
         *normalized
     ]
-    return subprocess.run(wrapped, **kwargs)
+    return subprocess.run(
+        wrapped,
+        cwd=cwd_arg,
+        text=text,
+        stdout=stdout,
+        stderr=stderr
+    )

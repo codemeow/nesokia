@@ -3,7 +3,7 @@ from __future__ import annotations
 import subprocess
 
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from tests.helpers.output import print_indented
 from tests.helpers.png_rgb import Image, Rgb, read_png_rgb
@@ -105,8 +105,8 @@ def read_colors(
     """Read the PPU colors table from a component or full image."""
 
     ox, oy = origin
-    colors = []
-    allowed = []
+    colors: List[Rgb] = []
+    allowed: List[bool] = []
 
     for y in range(4):
         for x in range(16):
@@ -142,12 +142,12 @@ def read_palette_colors(
     """Read palette RGB groups from a component or full image."""
 
     ox, oy = origin
-    result = []
+    result: List[List[List[Rgb]]] = []
 
     for plane in range(2):
-        plane_groups = []
+        plane_groups: List[List[Rgb]] = []
         for group in range(4):
-            group_colors = []
+            group_colors: List[Rgb] = []
             for color in range(4):
                 px = ox + DATA_X + (group * 4 + color) * CELL + PALETTE_PAD
                 py = oy + DATA_Y + plane * CELL + PALETTE_PAD
@@ -180,14 +180,14 @@ def read_table_pixels(
     """Read pattern table tile pixels from a component or full image."""
 
     ox, oy = origin
-    table = []
+    table: List[List[List[List[Rgb]]]] = []
 
     for ty in range(16):
-        row = []
+        row: List[List[List[Rgb]]] = []
         for tx in range(16):
-            tile = []
+            tile: List[List[Rgb]] = []
             for py in range(8):
-                tile_row = []
+                tile_row: List[Rgb] = []
                 for px in range(8):
                     tile_row.append(
                         image[
@@ -206,7 +206,7 @@ def read_table_pixels(
 def _unique_tile_colors(tile: List[List[Rgb]]) -> List[Rgb]:
     """Return unique tile colors in read order."""
 
-    result = []
+    result: List[Rgb] = []
     for row in tile:
         for color in row:
             if color not in result:

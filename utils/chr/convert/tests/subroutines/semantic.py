@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import subprocess
 import tempfile
 
 from pathlib import Path
@@ -30,7 +31,7 @@ def _compare_file(name: str, expected: bytes, actual: Path) -> bool:
     return True
 
 
-def _check_success(name: str, proc) -> bool:
+def _check_success(name: str, proc: subprocess.CompletedProcess[str]) -> bool:
     """Check successful process completion."""
 
     if proc.returncode != 0:

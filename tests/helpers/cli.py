@@ -4,10 +4,15 @@ import subprocess
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List, Optional
 
 from tests.helpers.output import print_failed, print_indented, print_passed
 from tests.helpers.runner import run
+
+
+def _empty_str_list() -> list[str]:
+    """Return a new empty string list for dataclass defaults."""
+
+    return []
 
 
 @dataclass(frozen=True)
@@ -15,17 +20,17 @@ class CliCase:
     """One CLI argument parsing test command setup."""
 
     name: str
-    args: List[str]
+    args: list[str]
     expected_code: int = 0
     stdout_required: bool = False
     stderr_required: bool = False
     stdout_forbidden: bool = False
     stderr_forbidden: bool = False
-    stdout_contains: List[str] = field(default_factory=list)
-    stderr_contains: List[str] = field(default_factory=list)
-    stdout_not_contains: List[str] = field(default_factory=list)
-    stderr_not_contains: List[str] = field(default_factory=list)
-    section: Optional[str] = None
+    stdout_contains: list[str] = field(default_factory=_empty_str_list)
+    stderr_contains: list[str] = field(default_factory=_empty_str_list)
+    stdout_not_contains: list[str] = field(default_factory=_empty_str_list)
+    stderr_not_contains: list[str] = field(default_factory=_empty_str_list)
+    section: str | None = None
 
 
 def print_process_output(proc: subprocess.CompletedProcess[str]) -> None:
@@ -138,7 +143,7 @@ def run_cli_case(program: Path, case: CliCase) -> bool:
     return True
 
 
-def run_cli_cases(program: Path, cases: List[CliCase]) -> int:
+def run_cli_cases(program: Path, cases: list[CliCase]) -> int:
     """Run CLI argument parsing test cases and return a process status."""
 
     passed = 0

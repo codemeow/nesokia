@@ -46,7 +46,8 @@ def gpl_colors(filename: Path) -> List[tuple[int, int, int]]:
         match = RGB_LINE.match(line)
         if not match:
             continue
-        colors.append(tuple(int(value) for value in match.groups()))
+        r, g, b = match.groups()
+        colors.append((int(r), int(g), int(b)))
 
     return colors
 

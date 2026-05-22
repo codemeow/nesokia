@@ -64,7 +64,7 @@ def read_png_rgb(path: Path) -> Image:
     bpp = channels
     stride = width * channels
     raw = zlib.decompress(compressed)
-    rows = []
+    rows: Image = []
     previous = [0] * stride
     offset = 0
 
@@ -93,10 +93,14 @@ def read_png_rgb(path: Path) -> Image:
             else:
                 raise RuntimeError(f"{path} uses unsupported PNG filter")
 
-        row = []
+        row: list[Rgb] = []
         for x in range(width):
             base = x * channels
-            row.append(tuple(decoded[base:base + 3]))
+            row.append((
+                decoded[base],
+                decoded[base + 1],
+                decoded[base + 2]
+            ))
         rows.append(row)
         previous = decoded
 

@@ -6,6 +6,7 @@ import tempfile
 from pathlib import Path
 
 from tests.helpers.output import print_failed, print_indented, print_passed
+from tests.helpers.runner import run
 
 from subroutines.common import (
     first_diff,
@@ -39,7 +40,7 @@ def run_golden_tests(root: Path, program: Path) -> int:
         for name, option, expected_name, actual_name in OUTPUTS:
             expected = required_file(golden_root(root) / expected_name)
             actual = tmpdir / actual_name
-            proc = subprocess.run(
+            proc = run(
                 [
                     str(binary),
                     "-q",

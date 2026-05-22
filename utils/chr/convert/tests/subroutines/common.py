@@ -7,6 +7,7 @@ from typing import Dict, Iterable, List, Optional, Tuple
 
 from tests.helpers.output import print_indented
 from tests.helpers.png_rgb import Image, Rgb, read_png_rgb
+from tests.helpers.runner import run
 
 
 COMPONENT_COLORS_SIZE = (152, 64)
@@ -65,7 +66,7 @@ def run_command(
 ) -> subprocess.CompletedProcess[str]:
     """Run chr-convert and capture output."""
 
-    return subprocess.run(
+    return run(
         [str(program), *args],
         text=True,
         stdout=subprocess.PIPE,

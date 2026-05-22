@@ -4,6 +4,8 @@
 /*!
  * \brief  Sets the follow symbolic links flag
  */
-void nsk_option_follow(void) {
+enum nsk_args_result nsk_option_follow(void) {
     nsk_options_program.follow = true;
+
+    return NSK_ARGS_CONTINUE;
 }

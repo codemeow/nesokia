@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Callable, List, Optional
 
 from tests.helpers.output import print_failed, print_indented, print_passed
+from tests.helpers.runner import run
 
 
 if TYPE_CHECKING:
@@ -49,7 +50,7 @@ def run_semantic_case(program: Path, case: SemanticCase) -> bool:
     ]
 
     try:
-        proc = subprocess.run(
+        proc = run(
             cmd,
             cwd=case.cwd,
             text=True,

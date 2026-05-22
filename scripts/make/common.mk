@@ -56,14 +56,15 @@ $(DIR_TEMPLATES_TARGET)/%: $(DIR_TEMPLATES_PROJECT)/% |
 
 
 # Targets
-.PHONY: all build                       test      clean
+.PHONY: all build                       test test-valgrind clean
 .PHONY: $(DIR_BIN)/$(PROJECT_NAME)-pre  test-pre  clean-pre
-.PHONY:                                 test-post clean-post
+.PHONY:                                 test-post test-valgrind-post clean-post
 
 all: $(DIR_BIN)/$(PROJECT_NAME)-pre $(TEMPLATE_TARGET) $(DIR_BIN)/$(PROJECT_NAME)
 build: all
 clean: clean-pre clean-post
 test: test-pre test-post
+test-valgrind: test-pre test-valgrind-post
 
 .PHONY: $(DIR_BIN)/$(PROJECT_NAME)-pre
 $(DIR_BIN)/$(PROJECT_NAME)-pre:
@@ -103,6 +104,15 @@ test-post: $(TEST_DEPS)
 	@if [ -f "$(TEST_SCRIPT)" ]; then \
 	    $(call require-tool,$(PYTHON)); \
 	    PYTHONPATH="$(DIR_ROOT)$${PYTHONPATH:+:$$PYTHONPATH}" $(PYTHON) "$(TEST_SCRIPT)"; \
+	else \
+	    echo "    - Nothing to test"; \
+	fi
+
+test-valgrind-post: $(TEST_DEPS)
+	@if [ -f "$(TEST_SCRIPT)" ]; then \
+	    $(call require-tool,$(PYTHON)); \
+	    $(call require-tool,valgrind); \
+	    NESOKIA_TEST_VALGRIND=1 PYTHONPATH="$(DIR_ROOT)$${PYTHONPATH:+:$$PYTHONPATH}" $(PYTHON) "$(TEST_SCRIPT)"; \
 	else \
 	    echo "    - Nothing to test"; \
 	fi

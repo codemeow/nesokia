@@ -8,12 +8,12 @@
 /*!
  * \brief  Sets background pattern table address
  */
-void nsk_option_back_address(void) {
+enum nsk_args_result nsk_option_back_address(void) {
     if (nsk_options_program.ppuctrl34_set) {
         nsk_err(
             "There must be only one `-A`/`--back-address` option provided\n"
         );
-        exit(EXIT_FAILURE);
+        return NSK_ARGS_EXIT_FAILURE;
     }
 
     static const struct {
@@ -33,7 +33,7 @@ void nsk_option_back_address(void) {
         if (strcmp(optarg, _table[i].string) == 0) {
             nsk_options_program.ppuctrl34 = _table[i].value;
             nsk_options_program.ppuctrl34_set = true;
-            return;
+            return NSK_ARGS_CONTINUE;
         }
     }
 
@@ -42,5 +42,5 @@ void nsk_option_back_address(void) {
         "See '--help' for the list of options\n",
         optarg
     );
-    exit(EXIT_FAILURE);
+    return NSK_ARGS_EXIT_FAILURE;
 }

@@ -9,7 +9,7 @@
 /*!
  * \brief Select a set of keys to show
  */
-void nsk_option_keys(void) {
+enum nsk_args_result nsk_option_keys(void) {
     const char **shorts =
         nsk_util_malloc(sizeof(*shorts) * (nsk_header_tablesize + 1));
 
@@ -29,6 +29,8 @@ void nsk_option_keys(void) {
     free(shorts);
 
     if (optarg && !nsk_options_program.keys) {
-        exit(EXIT_FAILURE);
+        return NSK_ARGS_EXIT_FAILURE;
     }
+
+    return NSK_ARGS_CONTINUE;
 }

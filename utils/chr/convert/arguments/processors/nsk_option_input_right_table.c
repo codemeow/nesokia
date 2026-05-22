@@ -7,13 +7,15 @@
 /*!
  * \brief  Sets input right pattern table file
  */
-void nsk_option_input_right_table(void) {
+enum nsk_args_result nsk_option_input_right_table(void) {
     if (nsk_options_program.input.pattables.right) {
         nsk_err(
             "There must be only one `-r`/`--input-right-table` option provided\n"
         );
-        exit(EXIT_FAILURE);
+        return NSK_ARGS_EXIT_FAILURE;
     }
 
     nsk_options_program.input.pattables.right = optarg;
+
+    return NSK_ARGS_CONTINUE;
 }

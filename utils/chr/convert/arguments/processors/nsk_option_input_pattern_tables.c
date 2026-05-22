@@ -7,13 +7,15 @@
 /*!
  * \brief  Sets input pattern tables file
  */
-void nsk_option_input_pattern_tables(void) {
+enum nsk_args_result nsk_option_input_pattern_tables(void) {
     if (nsk_options_program.input.pattables.both) {
         nsk_err(
             "There must be only one `-t`/`--input-pattern-tables` option provided\n"
         );
-        exit(EXIT_FAILURE);
+        return NSK_ARGS_EXIT_FAILURE;
     }
 
     nsk_options_program.input.pattables.both = optarg;
+
+    return NSK_ARGS_CONTINUE;
 }

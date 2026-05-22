@@ -7,13 +7,15 @@
 /*!
  * \brief  Sets output combined template file
  */
-void nsk_option_output(void) {
+enum nsk_args_result nsk_option_output(void) {
     if (nsk_options_program.output.full) {
         nsk_err(
             "There must be only one `-O`/`--output` option provided\n"
         );
-        exit(EXIT_FAILURE);
+        return NSK_ARGS_EXIT_FAILURE;
     }
 
     nsk_options_program.output.full = optarg;
+
+    return NSK_ARGS_CONTINUE;
 }

@@ -21,7 +21,7 @@
 /*!
  * \brief  Show program version and exit
  */
-void nsk_option_version(void) {
+enum nsk_args_result nsk_option_version(void) {
     nsk_inf(
         "%s %d.%d.%d\n",
         NSK_PROGRAM_NAME,
@@ -43,5 +43,5 @@ void nsk_option_version(void) {
     nsk_inf("THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n");
     nsk_inf("IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n");
     nsk_inf("FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.\n");
-    exit(EXIT_SUCCESS);
+    return NSK_ARGS_EXIT_SUCCESS;
 }

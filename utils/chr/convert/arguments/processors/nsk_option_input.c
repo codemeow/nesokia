@@ -7,13 +7,15 @@
 /*!
  * \brief  Sets input combined template file
  */
-void nsk_option_input(void) {
+enum nsk_args_result nsk_option_input(void) {
     if (nsk_options_program.input.full) {
         nsk_err(
             "There must be only one `-i`/`--input` option provided\n"
         );
-        exit(EXIT_FAILURE);
+        return NSK_ARGS_EXIT_FAILURE;
     }
 
     nsk_options_program.input.full = optarg;
+
+    return NSK_ARGS_CONTINUE;
 }

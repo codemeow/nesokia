@@ -11,7 +11,7 @@
 /*!
  * \brief  Displays program help and exits
  */
-void nsk_option_help(void) {
+enum nsk_args_result nsk_option_help(void) {
     nsk_inf("Usage: %s [options]...\n", NSK_PROGRAM_NAME);
     nsk_inf("Convert between PNG templates and NES CHR-related data.\n");
     nsk_inf("\n");
@@ -45,5 +45,5 @@ void nsk_option_help(void) {
         nsk_inf("\n");
     }
 
-    exit(EXIT_SUCCESS);
+    return NSK_ARGS_EXIT_SUCCESS;
 }

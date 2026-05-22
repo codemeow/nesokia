@@ -10,7 +10,7 @@
 /*!
  * \brief  Sets the filter string for the scan process
  */
-void nsk_option_filter(void) {
+enum nsk_args_result nsk_option_filter(void) {
     const char **shorts =
         nsk_util_malloc(sizeof(*shorts) * (nsk_header_tablesize + 1));
 
@@ -28,6 +28,8 @@ void nsk_option_filter(void) {
     free(shorts);
 
     if (!nsk_options_program.filter) {
-        exit(EXIT_FAILURE);
+        return NSK_ARGS_EXIT_FAILURE;
     }
+
+    return NSK_ARGS_CONTINUE;
 }

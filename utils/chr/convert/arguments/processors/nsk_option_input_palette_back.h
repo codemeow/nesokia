@@ -1,9 +1,11 @@
 #ifndef NSK_OPTION_INPUT_PALETTE_BACK
 #define NSK_OPTION_INPUT_PALETTE_BACK
 
+#include "../../arguments/nsk_args_options.h"
+
 /*!
  * \brief  Sets input background palette file
  */
-void nsk_option_input_palette_back(void);
+enum nsk_args_result nsk_option_input_palette_back(void);
 
 #endif

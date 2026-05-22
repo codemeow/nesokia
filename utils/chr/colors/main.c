@@ -5,7 +5,16 @@
 #include "process/nsk_process_output.h"
 
 int main(int argc, char *argv[]) {
-    nsk_args_process(argc, argv);
+    switch (nsk_args_process(argc, argv)) {
+        case NSK_ARGS_CONTINUE:
+            break;
+
+        case NSK_ARGS_EXIT_SUCCESS:
+            return EXIT_SUCCESS;
+
+        case NSK_ARGS_EXIT_FAILURE:
+            return EXIT_FAILURE;
+    }
 
     nsk_process_input();
     nsk_process_output();

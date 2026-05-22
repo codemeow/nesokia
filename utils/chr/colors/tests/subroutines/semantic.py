@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import List
 
 from tests.helpers.output import print_failed, print_indented, print_passed
+from tests.helpers.runner import run
 
 from subroutines.common import required_file, template_2c02
 
@@ -56,7 +57,7 @@ def run_command(
 ) -> subprocess.CompletedProcess[str]:
     """Run chr-colors and capture output."""
 
-    return subprocess.run(
+    return run(
         [str(program), *args],
         text=True,
         stdout=subprocess.PIPE,

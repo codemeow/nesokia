@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import List
 
 from tests.helpers.output import print_failed, print_indented, print_passed
+from tests.helpers.runner import run
 
 from subroutines.common import required_file, template_2c02
 
@@ -126,7 +127,7 @@ def error_cases(root: Path, tmpdir: Path) -> List[ErrorCase]:
 def run_error_case(program: Path, case: ErrorCase) -> bool:
     """Run one error handling test case."""
 
-    proc = subprocess.run(
+    proc = run(
         [str(program), *case.args],
         text=True,
         stdout=subprocess.PIPE,

@@ -14,6 +14,7 @@ from typing import IO, Optional, Union, List
 
 from tests.helpers.nes_cases import nes_cases
 from tests.helpers.output import print_failed, print_indented, print_passed
+from tests.helpers.runner import run
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent.parent.parent
@@ -165,7 +166,7 @@ def print_rom_info(setup: BuildSetup, rom_file: Path) -> None:
         str(rom_file)
     ]
     try:
-        proc = subprocess.run(
+        proc = run(
             cmd,
             text=True,
             stdout=subprocess.PIPE,

@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import List, Optional
 
 from tests.helpers.output import print_failed, print_indented, print_passed
+from tests.helpers.runner import run
 
 
 @dataclass(frozen=True)
@@ -109,7 +110,7 @@ def run_cli_case(program: Path, case: CliCase) -> bool:
     ]
 
     try:
-        proc = subprocess.run(
+        proc = run(
             cmd,
             text=True,
             stdout=subprocess.PIPE,

@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import List, Optional
 
 from tests.helpers.output import print_failed, print_indented, print_passed
+from tests.helpers.runner import run
 
 
 @dataclass(frozen=True)
@@ -56,7 +57,7 @@ def run_golden_case(program: Path, case: GoldenCase) -> bool:
 
     try:
         expected = case.expected.read_text(encoding="utf-8")
-        proc = subprocess.run(
+        proc = run(
             cmd,
             cwd=case.cwd,
             text=True,

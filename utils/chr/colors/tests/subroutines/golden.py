@@ -6,6 +6,7 @@ import tempfile
 from pathlib import Path
 
 from tests.helpers.output import print_failed, print_indented, print_passed
+from tests.helpers.runner import run
 
 from subroutines.common import golden_root, required_file, template_2c02
 
@@ -65,7 +66,7 @@ def run_golden_tests(root: Path, program: Path) -> int:
                 golden_root(root) / f"2c02.{output_format}"
             )
             actual = tmpdir / f"2c02.{output_format}"
-            proc = subprocess.run(
+            proc = run(
                 [
                     str(binary),
                     "-q",

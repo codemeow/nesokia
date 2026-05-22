@@ -101,8 +101,7 @@ static size_t _option_index(int option_short) {
  *
  * \param[in]  argv  The arguments array
  */
-__attribute__((noreturn))
-static void _arguments_noarg(char *const *argv) {
+static enum nsk_args_result _arguments_noarg(char *const *argv) {
     if (optind > 0 && argv[optind - 1] &&
         argv[optind - 1][0] == '-' &&
         argv[optind - 1][1] == '-'
@@ -122,7 +121,7 @@ static void _arguments_noarg(char *const *argv) {
             argv[optind - 1]
         );
     }
-    exit(EXIT_FAILURE);
+    return NSK_ARGS_EXIT_FAILURE;
 }
 
 /*!
@@ -130,8 +129,7 @@ static void _arguments_noarg(char *const *argv) {
  *
  * \param[in]  argv  The arguments array
  */
-__attribute__((noreturn))
-static void _arguments_unknown(char *const *argv) {
+static enum nsk_args_result _arguments_unknown(char *const *argv) {
     if (optopt) {
         nsk_err(
             "Unknown option: -%c\n",
@@ -143,7 +141,7 @@ static void _arguments_unknown(char *const *argv) {
             argv[optind - 1]
         );
     }
-    exit(EXIT_FAILURE);
+    return NSK_ARGS_EXIT_FAILURE;
 }
 
 /*!
@@ -151,14 +149,13 @@ static void _arguments_unknown(char *const *argv) {
  *
  * \param[in]  argv  The arguments array
  */
-__attribute__((noreturn))
-static void _arguments_positional(char *const *argv) {
+static enum nsk_args_result _arguments_positional(char *const *argv) {
     nsk_err(
         "Unexpected positional argument: %s\n"
         "Use explicit input and output options instead\n",
         argv[optind]
     );
-    exit(EXIT_FAILURE);
+    return NSK_ARGS_EXIT_FAILURE;
 }
 
 /*!
@@ -167,7 +164,7 @@ static void _arguments_positional(char *const *argv) {
  * \param[in] argc  The count of arguments
  * \param[in] argv  The arguments array
  */
-void nsk_args_process(int argc, char *const *argv) {
+enum nsk_args_result nsk_args_process(int argc, char *const *argv) {
     _getopt_messagesdisable();
 
     nsk_args_program = argv[0];
@@ -192,20 +189,26 @@ void nsk_args_process(int argc, char *const *argv) {
 
         switch (c) {
             case ':':
-                _arguments_noarg(argv);
+                return _arguments_noarg(argv);
 
             case '?':
-                _arguments_unknown(argv);
+                return _arguments_unknown(argv);
 
-            default:
-                nsk_options_table[_option_index(c)].option_processor();
+            default: {
+                enum nsk_args_result result =
+                    nsk_options_table[_option_index(c)].option_processor();
+                if (result != NSK_ARGS_CONTINUE) {
+                    return result;
+                }
                 break;
+            }
         }
     }
 
     if (argv[optind]) {
-        _arguments_positional(argv);
+        return _arguments_positional(argv);
     }
 
     nsk_options_program.files = argv + optind;
+    return NSK_ARGS_CONTINUE;
 }

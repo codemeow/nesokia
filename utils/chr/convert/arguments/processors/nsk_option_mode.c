@@ -8,12 +8,12 @@
 /*!
  * \brief  Selects conversion mode
  */
-void nsk_option_mode(void) {
+enum nsk_args_result nsk_option_mode(void) {
     if (nsk_options_program.mode_set) {
         nsk_err(
             "There must be only one `-M`/`--mode` option provided\n"
         );
-        exit(EXIT_FAILURE);
+        return NSK_ARGS_EXIT_FAILURE;
     }
 
     static const struct {
@@ -33,7 +33,7 @@ void nsk_option_mode(void) {
         if (strcmp(optarg, _table[i].string) == 0) {
             nsk_options_program.mode = _table[i].mode;
             nsk_options_program.mode_set = true;
-            return;
+            return NSK_ARGS_CONTINUE;
         }
     }
 
@@ -42,5 +42,5 @@ void nsk_option_mode(void) {
         "See '--help' for the list of options\n",
         optarg
     );
-    exit(EXIT_FAILURE);
+    return NSK_ARGS_EXIT_FAILURE;
 }

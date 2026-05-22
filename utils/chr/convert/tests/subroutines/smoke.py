@@ -8,6 +8,7 @@ from typing import List
 
 from tests.helpers.output import print_failed, print_passed
 from tests.helpers.png_compose import compose_chr_template
+from tests.helpers.runner import run
 from tests.helpers.smoke import SmokeCase, run_smoke_cases
 
 from subroutines.common import (
@@ -60,7 +61,7 @@ def _run(
 ) -> subprocess.CompletedProcess[str]:
     """Run chr-convert."""
 
-    return subprocess.run(
+    return run(
         [str(program), *args],
         text=True,
         stdout=subprocess.PIPE,

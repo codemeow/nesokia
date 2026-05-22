@@ -11,7 +11,7 @@
 /*!
  * \brief  Displays program help and exits
  */
-void nsk_option_help(void) {
+enum nsk_args_result nsk_option_help(void) {
     nsk_inf(
         "Usage: %s -i <inputfile> -o <outputfile> [options]...\n",
         NSK_PROGRAM_NAME
@@ -48,5 +48,5 @@ void nsk_option_help(void) {
         nsk_inf("\n");
     }
 
-    exit(EXIT_SUCCESS);
+    return NSK_ARGS_EXIT_SUCCESS;
 }

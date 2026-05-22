@@ -8,15 +8,16 @@ UTIL_MODULES := \
   $(UTILS_DIR)/chr/convert
 
 .DEFAULT_GOAL := all
-.PHONY: all build test clean
+.PHONY: all build test test-valgrind clean
 
 all:   $(addprefix   all-,$(UTIL_MODULES))
 build: $(addprefix build-,$(UTIL_MODULES))
 test:  $(addprefix  test-,$(UTIL_MODULES))
+test-valgrind:  $(addprefix test-valgrind-,$(UTIL_MODULES))
 clean: $(addprefix clean-,$(UTIL_MODULES))
 
 define MODULE_RULES
-.PHONY: all-$(1) build-$(1) test-$(1) clean-$(1)
+.PHONY: all-$(1) build-$(1) test-$(1) test-valgrind-$(1) clean-$(1)
 
 all-$(1):
 	@$$(MAKE) -C "$(1)" all
@@ -26,6 +27,9 @@ build-$(1):
 
 test-$(1):
 	@$$(MAKE) -C "$(1)" test
+
+test-valgrind-$(1):
+	@$$(MAKE) -C "$(1)" test-valgrind
 
 clean-$(1):
 	@$$(MAKE) -C "$(1)" clean

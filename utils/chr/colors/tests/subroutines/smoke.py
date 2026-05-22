@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import List
 
 from tests.helpers.output import print_failed, print_indented, print_passed
+from tests.helpers.runner import run
 from tests.helpers.smoke import SmokeCase, run_smoke_cases
 
 from subroutines.common import required_file, template_2c02
@@ -82,7 +83,7 @@ def run_conversion_smoke(program: Path, root: Path) -> bool:
 
         for output_format in OUTPUT_FORMATS:
             output_file = tmpdir / f"2c02.{output_format}"
-            proc = subprocess.run(
+            proc = run(
                 [
                     str(program),
                     "-q",
@@ -116,7 +117,7 @@ def run_conversion_smoke(program: Path, root: Path) -> bool:
             print_passed(f"pal to {output_format}")
             passed += 1
 
-        proc = subprocess.run(
+        proc = run(
             [
                 str(program),
                 "-q",

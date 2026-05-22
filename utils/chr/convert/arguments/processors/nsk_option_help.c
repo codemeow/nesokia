@@ -12,8 +12,8 @@
  * \brief  Displays program help and exits
  */
 void nsk_option_help(void) {
-    nsk_inf("Usage: %s [options]... file\n", NSK_PROGRAM_NAME);
-    nsk_inf("Convert PNG image/images into CHR ROM data.\n");
+    nsk_inf("Usage: %s [options]...\n", NSK_PROGRAM_NAME);
+    nsk_inf("Convert between PNG templates and NES CHR-related data.\n");
     nsk_inf("\n");
     for (size_t i = 0; i < nsk_options_count; i++) {
         nsk_inf("    ");

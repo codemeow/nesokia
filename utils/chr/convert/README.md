@@ -58,7 +58,8 @@ nesokia-chr-convert <mode> <ppuflags> <input options> <output options>
 
 ## Mode Selection
 
-Exactly **one** conversion mode must be specified.
+The conversion mode is optional.
+If it is not specified, `t2c` is used.
 
 ```
 -M, --mode=t2c
@@ -74,7 +75,8 @@ CHR to Template conversion
 
 ## PPU Pattern Table Configuration
 
-Exactly **one** PPU configuration must be specified.
+The PPU pattern table configuration is optional.
+If it is not specified, `0000` is used.
 
 ```
 -A, --back-address=0000

@@ -294,7 +294,7 @@ struct nsk_options_entry nsk_options_table[] = {
         "c2t mode\n"
         "    * PNG component\n"
         "t2c mode\n"
-        "    * Left pattern table (CHR `$0000–$0fff`) \n"
+        "    * Right pattern table (CHR `$1000–$1fff`) \n"
         "\n"
     },
 

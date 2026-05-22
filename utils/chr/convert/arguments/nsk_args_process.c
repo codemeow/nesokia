@@ -22,10 +22,11 @@ static char *_options_short(void) {
     /* Worst case - all options are optional, which should be
      * mapped as "X::", thus 3 characters per entry */
     char *options = nsk_util_malloc(
-        nsk_options_count * 3 + 1
+        nsk_options_count * 3 + 2
     );
 
     size_t pos = 0;
+    options[pos++] = ':';
     for (size_t i = 0; i < nsk_options_count; i++) {
 
         if (nsk_options_table[i].option_short < NSK_OPTION_SHORTLIMIT) {
@@ -102,14 +103,22 @@ static size_t _option_index(int option_short) {
  */
 __attribute__((noreturn))
 static void _arguments_noarg(char *const *argv) {
-    if (optopt) {
+    if (optind > 0 && argv[optind - 1] &&
+        argv[optind - 1][0] == '-' &&
+        argv[optind - 1][1] == '-'
+    ) {
+        nsk_err(
+            "Option %s requires an argument\n",
+            argv[optind - 1]
+        );
+    } else if (optopt) {
         nsk_err(
             "Option -%c requires an argument\n",
             optopt
         );
     } else if (optind > 0 && argv[optind - 1]) {
         nsk_err(
-            "Option --%s requires an argument\n",
+            "Option %s requires an argument\n",
             argv[optind - 1]
         );
     }
@@ -130,10 +139,25 @@ static void _arguments_unknown(char *const *argv) {
         );
     } else if (optind > 0 && argv[optind - 1]) {
         nsk_err(
-            "Unknown option: --%s\n",
+            "Unknown option: %s\n",
             argv[optind - 1]
         );
     }
+    exit(EXIT_FAILURE);
+}
+
+/*!
+ * \brief  Error processing if positional arguments are provided
+ *
+ * \param[in]  argv  The arguments array
+ */
+__attribute__((noreturn))
+static void _arguments_positional(char *const *argv) {
+    nsk_err(
+        "Unexpected positional argument: %s\n"
+        "Use explicit input and output options instead\n",
+        argv[optind]
+    );
     exit(EXIT_FAILURE);
 }
 
@@ -177,6 +201,10 @@ void nsk_args_process(int argc, char *const *argv) {
                 nsk_options_table[_option_index(c)].option_processor();
                 break;
         }
+    }
+
+    if (argv[optind]) {
+        _arguments_positional(argv);
     }
 
     nsk_options_program.files = argv + optind;

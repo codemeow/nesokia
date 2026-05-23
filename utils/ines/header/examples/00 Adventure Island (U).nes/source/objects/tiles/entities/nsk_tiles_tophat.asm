@@ -7,12 +7,13 @@
 ::__NSK_TILES_TOPHAT_ASM__ = 1
 
 .include "nsk_tiles_tophat.inc"
+.include "../utils/nsk_utils_tiles.inc"
 
 .segment "RODATA"
 
 .export nsk_object_tophat
 nsk_object_tophat:
-    .byte 8,4
+    nsk_tile_objectsize 8, 4
 
     .byte $d3,$d1,$d1,$d1, $d1,$d1,$d1,$d5
     .byte $f3,$e4,$e4,$e3, $e4,$e4,$e4,$f5

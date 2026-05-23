@@ -10,6 +10,7 @@
 
 .include "nsk_map_data.inc"
 .include "../nsk_tiles_list.inc"
+.include "../utils/nsk_utils_maps.inc"
 
 .segment "RODATA"
 
@@ -22,94 +23,60 @@ nsk_map_left:
     .byte 34 ; Objects count
 
     ; Skyboxes x 12
-    .byte 0, 0 ; X, Y
-    .addr nsk_object_skybox2
-    .byte 8, 0 ; X, Y
-    .addr nsk_object_skybox1
-    .byte 16, 0 ; X, Y
-    .addr nsk_object_skybox3
-    .byte 24, 0 ; X, Y
-    .addr nsk_object_skybox0
-    .byte 0, 8 ; X, Y
-    .addr nsk_object_skybox4
-    .byte 8, 8 ; X, Y
-    .addr nsk_object_skybox1
-    .byte 16, 8 ; X, Y
-    .addr nsk_object_skybox2
-    .byte 24, 8 ; X, Y
-    .addr nsk_object_skybox1
+    nsk_map_object 0, 0, nsk_object_skybox2
+    nsk_map_object 8, 0, nsk_object_skybox1
+    nsk_map_object 16, 0, nsk_object_skybox3
+    nsk_map_object 24, 0, nsk_object_skybox0
+    nsk_map_object 0, 8, nsk_object_skybox4
+    nsk_map_object 8, 8, nsk_object_skybox1
+    nsk_map_object 16, 8, nsk_object_skybox2
+    nsk_map_object 24, 8, nsk_object_skybox1
 
     ; Bg
-    .byte 0,24
-    .addr nsk_object_bg_line
-    .byte 2,22
-    .addr nsk_object_bg_up
-    .byte 4,20
-    .addr nsk_object_bg_up
+    nsk_map_object 0, 24, nsk_object_bg_line
+    nsk_map_object 2, 22, nsk_object_bg_up
+    nsk_map_object 4, 20, nsk_object_bg_up
 
-    .byte 10,14
-    .addr nsk_object_bg_up
-    .byte 12,12
-    .addr nsk_object_bg_up
-    .byte 14,12
-    .addr nsk_object_bg_line
-    .byte 18,12
-    .addr nsk_object_bg_line
-    .byte 22,12
-    .addr nsk_object_bg_down
-    .byte 24,14
-    .addr nsk_object_bg_down
+    nsk_map_object 10, 14, nsk_object_bg_up
+    nsk_map_object 12, 12, nsk_object_bg_up
+    nsk_map_object 14, 12, nsk_object_bg_line
+    nsk_map_object 18, 12, nsk_object_bg_line
+    nsk_map_object 22, 12, nsk_object_bg_down
+    nsk_map_object 24, 14, nsk_object_bg_down
 
-    .byte 26,16
-    .addr nsk_object_bg_line
-    .byte 30,16
-    .addr nsk_object_bg_down
+    nsk_map_object 26, 16, nsk_object_bg_line
+    nsk_map_object 30, 16, nsk_object_bg_down
 
     ; Floor
-    .byte 0,28
-    .addr nsk_object_base_a
-    .byte 8,28
-    .addr nsk_object_base_b
-    .byte 24,28
-    .addr nsk_object_base_a
+    nsk_map_object 0, 28, nsk_object_base_a
+    nsk_map_object 8, 28, nsk_object_base_b
+    nsk_map_object 24, 28, nsk_object_base_a
 
     ; V Tubes
-    .byte 6,12
-    .addr nsk_object_tube_4v
-    .byte 6,20
-    .addr nsk_object_tube_4v
+    nsk_map_object 6, 12, nsk_object_tube_4v
+    nsk_map_object 6, 20, nsk_object_tube_4v
 
     ; Platform
-    .byte 20,24
-    .addr nsk_object_platform_l
-    .byte 24,24
-    .addr nsk_object_tube_4h
+    nsk_map_object 20, 24, nsk_object_platform_l
+    nsk_map_object 24, 24, nsk_object_tube_4h
 
     ; Tophat
-    .byte 4,8
-    .addr nsk_object_tophat
+    nsk_map_object 4, 8, nsk_object_tophat
 
     ; Branches
-    .byte 0,16
-    .addr nsk_object_branch_l
-    .byte 8,20
-    .addr nsk_object_branch_r
+    nsk_map_object 0, 16, nsk_object_branch_l
+    nsk_map_object 8, 20, nsk_object_branch_r
 
     ; Hills
-    .byte 0,26
-    .addr nsk_object_hills_l
-    .byte 8,26
-    .addr nsk_object_hills_r
+    nsk_map_object 0, 26, nsk_object_hills_l
+    nsk_map_object 8, 26, nsk_object_hills_r
 
     ; Glass
-    .byte 14,16
-    .addr nsk_object_glass_8
-    .byte 18,20
-    .addr nsk_object_glass_8
+    nsk_map_object 14, 16, nsk_object_glass_8
+    nsk_map_object 18, 20, nsk_object_glass_8
 
     ; Stars remover
-    .byte 18,14
-    .addr nsk_object_void
+    nsk_map_object 18, 14, nsk_object_void
 
 ; @brief Right map data
 ;
@@ -120,81 +87,50 @@ nsk_map_right:
     .byte 31 ; Objects count
 
     ; Skyboxes x 12
-    .byte 0, 0 ; X, Y
-    .addr nsk_object_skybox0
-    .byte 8, 0 ; X, Y
-    .addr nsk_object_skybox1
-    .byte 16, 0 ; X, Y
-    .addr nsk_object_skybox2
-    .byte 24, 0 ; X, Y
-    .addr nsk_object_skybox3
-    .byte 0, 8 ; X, Y
-    .addr nsk_object_skybox4
-    .byte 8, 8 ; X, Y
-    .addr nsk_object_skybox0
-    .byte 16, 8 ; X, Y
-    .addr nsk_object_skybox0
-    .byte 24, 8 ; X, Y
-    .addr nsk_object_skybox1
+    nsk_map_object 0, 0, nsk_object_skybox0
+    nsk_map_object 8, 0, nsk_object_skybox1
+    nsk_map_object 16, 0, nsk_object_skybox2
+    nsk_map_object 24, 0, nsk_object_skybox3
+    nsk_map_object 0, 8, nsk_object_skybox4
+    nsk_map_object 8, 8, nsk_object_skybox0
+    nsk_map_object 16, 8, nsk_object_skybox0
+    nsk_map_object 24, 8, nsk_object_skybox1
 
     ; Bg
-    .byte 0,18
-    .addr nsk_object_bg_line
-    .byte 4,18
-    .addr nsk_object_bg_line
-    .byte 8,16
-    .addr nsk_object_bg_up
-    .byte 10,16
-    .addr nsk_object_bg_line
-    .byte 14,16
-    .addr nsk_object_bg_line
-    .byte 18,14
-    .addr nsk_object_bg_up
-    .byte 20,12
-    .addr nsk_object_bg_up
-    .byte 22,12
-    .addr nsk_object_bg_line
-    .byte 26,12
-    .addr nsk_object_bg_line
-    .byte 30,12
-    .addr nsk_object_bg_down
+    nsk_map_object 0, 18, nsk_object_bg_line
+    nsk_map_object 4, 18, nsk_object_bg_line
+    nsk_map_object 8, 16, nsk_object_bg_up
+    nsk_map_object 10, 16, nsk_object_bg_line
+    nsk_map_object 14, 16, nsk_object_bg_line
+    nsk_map_object 18, 14, nsk_object_bg_up
+    nsk_map_object 20, 12, nsk_object_bg_up
+    nsk_map_object 22, 12, nsk_object_bg_line
+    nsk_map_object 26, 12, nsk_object_bg_line
+    nsk_map_object 30, 12, nsk_object_bg_down
 
     ; Floor
-    .byte 0,28
-    .addr nsk_object_base_c
-    .byte 8,28
-    .addr nsk_object_base_c
-    .byte 16,28
-    .addr nsk_object_base_c
-    .byte 24,28
-    .addr nsk_object_base_b
+    nsk_map_object 0, 28, nsk_object_base_c
+    nsk_map_object 8, 28, nsk_object_base_c
+    nsk_map_object 16, 28, nsk_object_base_c
+    nsk_map_object 24, 28, nsk_object_base_b
 
 
     ; Platform
-    .byte 0,24
-    .addr nsk_object_tube_4h
-    .byte 8,24
-    .addr nsk_object_platform_r
+    nsk_map_object 0, 24, nsk_object_tube_4h
+    nsk_map_object 8, 24, nsk_object_platform_r
 
     ; Cave
-    .byte 16,20
-    .addr nsk_object_cave_l
-    .byte 28,20
-    .addr nsk_object_cave_r
-    .byte 20,20
-    .addr nsk_object_cave_c
-    .byte 20,26
-    .addr nsk_object_cave_b
+    nsk_map_object 16, 20, nsk_object_cave_l
+    nsk_map_object 28, 20, nsk_object_cave_r
+    nsk_map_object 20, 20, nsk_object_cave_c
+    nsk_map_object 20, 26, nsk_object_cave_b
 
     ; Glass
-    .byte 16,12
-    .addr nsk_object_glass_4
-    .byte 24,16
-    .addr nsk_object_glass_4
+    nsk_map_object 16, 12, nsk_object_glass_4
+    nsk_map_object 24, 16, nsk_object_glass_4
 
     ; Stars remover
-    .byte 24,14
-    .addr nsk_object_void
+    nsk_map_object 24, 14, nsk_object_void
 
     nsk_todo "animated small meteors in the sky"
 

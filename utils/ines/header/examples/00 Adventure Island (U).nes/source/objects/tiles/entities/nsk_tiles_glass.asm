@@ -7,12 +7,13 @@
 ::__NSK_TILES_GLASS_ASM__ = 1
 
 .include "nsk_tiles_glass.inc"
+.include "../utils/nsk_utils_tiles.inc"
 
 .segment "RODATA"
 
 .export nsk_object_glass_8
 nsk_object_glass_8:
-    .byte 8,2
+    nsk_tile_objectsize 8, 2
 
     .byte $a0,$a1,$a3,$a2, $a3,$a1,$a2,$a4
     .byte $00,$00,$00,$00, $00,$00,$00,$00
@@ -23,7 +24,7 @@ nsk_object_glass_8:
 
 .export nsk_object_glass_4
 nsk_object_glass_4:
-    .byte 4,2
+    nsk_tile_objectsize 4, 2
 
     .byte $a0,$a1,$a3,$a4
     .byte $00,$00,$00,$00

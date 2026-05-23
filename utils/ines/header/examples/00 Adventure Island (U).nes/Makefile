@@ -43,7 +43,9 @@ NSK_FLAGS  := -I .
 
 
 # Test game source
-GAME_SOURCE := $(shell find $(SOURCE_DIR) -type f -name '*.asm')
+GAME_SOURCE := $(shell find $(SOURCE_DIR) -type f -name '*.asm' | sort)
+# Test game include dependencies
+GAME_INCLUDES := $(shell find $(SOURCE_DIR) $(COMMON_DIR) -type f -name '*.inc' | sort)
 # Test game object
 GAME_OBJECT := $(patsubst $(SOURCE_DIR)/%.asm,$(BUILD_DIR)/%.o,$(GAME_SOURCE))
 # Test game linker script
@@ -124,12 +126,16 @@ $(NSK_OBJECT): $(NSK_DEPS)
 # CHR banks object includes generated CHR binaries.
 $(BUILD_DIR)/chr/nsk_chr_banks.o: $(CHR_OUTPUT)
 
+# Palette objects include generated palette binaries.
+$(BUILD_DIR)/objects/tiles/palettes/nsk_tiles_palette.o: $(BUILD_DIR)/pal/back.pal
+$(BUILD_DIR)/objects/sprites/palettes/nsk_sprites_palette.o: $(BUILD_DIR)/pal/sprites.pal
+
 # Subdirectory for the object target
 $(GAME_DIRS):
 	$(MKDIR) $@
 
 # Target: Example game code
-$(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.asm
+$(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.asm $(GAME_INCLUDES)
 	@$(MKDIR) $(dir $@)
 	$(CA) $(CFLAGS) $< -o $@
 

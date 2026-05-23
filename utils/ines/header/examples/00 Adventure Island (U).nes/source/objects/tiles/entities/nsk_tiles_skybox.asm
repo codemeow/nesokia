@@ -7,12 +7,13 @@
 ::__NSK_TILES_SKYBOX_ASM__ = 1
 
 .include "nsk_tiles_skybox.inc"
+.include "../utils/nsk_utils_tiles.inc"
 
 .segment "RODATA"
 
 .export nsk_object_skybox0
 nsk_object_skybox0:
-    .byte 8, 8
+    nsk_tile_objectsize 8, 8
 
     .byte $00,$00,$00,$00,  $00,$00,$00,$00
     .byte $00,$00,$00,$00,  $00,$00,$00,$00
@@ -36,7 +37,7 @@ nsk_object_skybox0:
 
 .export nsk_object_skybox1
 nsk_object_skybox1:
-    .byte 8, 8
+    nsk_tile_objectsize 8, 8
 
     .byte $00,$00,$00,$00,  $00,$00,$00,$00
     .byte $00,$00,$01,$00,  $00,$00,$00,$00
@@ -60,7 +61,7 @@ nsk_object_skybox1:
 
 .export nsk_object_skybox2
 nsk_object_skybox2:
-    .byte 8, 8
+    nsk_tile_objectsize 8, 8
 
     .byte $00,$00,$00,$00,  $00,$00,$00,$00
     .byte $00,$00,$00,$00,  $00,$00,$00,$00
@@ -84,7 +85,7 @@ nsk_object_skybox2:
 
 .export nsk_object_skybox3
 nsk_object_skybox3:
-    .byte 8, 8
+    nsk_tile_objectsize 8, 8
 
     .byte $00,$00,$00,$00,  $00,$00,$00,$00
     .byte $00,$00,$00,$00,  $00,$00,$00,$00
@@ -108,7 +109,7 @@ nsk_object_skybox3:
 
 .export nsk_object_skybox4
 nsk_object_skybox4:
-    .byte 8, 8
+    nsk_tile_objectsize 8, 8
 
     .byte $00,$00,$00,$00,  $00,$00,$00,$00
     .byte $00,$00,$00,$00,  $00,$00,$00,$00

@@ -7,12 +7,13 @@
 ::__NSK_TILES_BRANCH_ASM__ = 1
 
 .include "nsk_tiles_branch.inc"
+.include "../utils/nsk_utils_tiles.inc"
 
 .segment "RODATA"
 
 .export nsk_object_branch_l
 nsk_object_branch_l:
-    .byte 8,4
+    nsk_tile_objectsize 8, 4
 
     .byte $d3,$d1,$d1,$d1, $d1,$d1,$e4,$e4
     .byte $e0,$e4,$e5,$f1, $f1,$e4,$d4,$e4
@@ -27,7 +28,7 @@ nsk_object_branch_l:
 
 .export nsk_object_branch_r
 nsk_object_branch_r:
-    .byte 8,4
+    nsk_tile_objectsize 8, 4
 
     .byte $e4,$e4,$d1,$d1, $d1,$d1,$d1,$d5
     .byte $e3,$e4,$e4,$f1, $f1,$e4,$f4,$e2

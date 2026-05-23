@@ -7,12 +7,13 @@
 ::__NSK_TILES_CAVE_ASM__ = 1
 
 .include "nsk_tiles_cave.inc"
+.include "../utils/nsk_utils_tiles.inc"
 
 .segment "RODATA"
 
 .export nsk_object_cave_l
 nsk_object_cave_l:
-    .byte 4,8
+    nsk_tile_objectsize 4, 8
 
     .byte $00,$d0,$d1,$d1
     .byte $d3,$d4,$e4,$f1
@@ -36,7 +37,7 @@ nsk_object_cave_l:
 
 .export nsk_object_cave_r
 nsk_object_cave_r:
-    .byte 4,8
+    nsk_tile_objectsize 4, 8
 
     .byte $d1,$d1,$d1,$d5
     .byte $f1,$e4,$e3,$e2
@@ -60,7 +61,7 @@ nsk_object_cave_r:
 
 .export nsk_object_cave_c
 nsk_object_cave_c:
-    .byte 8,4
+    nsk_tile_objectsize 8, 4
 
     .byte $d1,$d1,$d1,$d1, $d1,$d1,$d1,$d1
     .byte $f1,$f1,$db,$dc, $dd,$de,$f1,$f1
@@ -75,7 +76,7 @@ nsk_object_cave_c:
 
 .export nsk_object_cave_b
 nsk_object_cave_b:
-    .byte 8,2
+    nsk_tile_objectsize 8, 2
 
     .byte $d1,$d1,$d1,$d1, $d1,$d1,$d1,$d1
     .byte $20,$20,$20,$20, $20,$20,$20,$20

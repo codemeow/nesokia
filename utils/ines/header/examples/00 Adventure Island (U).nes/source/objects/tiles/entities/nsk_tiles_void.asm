@@ -7,12 +7,13 @@
 ::__NSK_TILES_VOID_ASM__ = 1
 
 .include "nsk_tiles_void.inc"
+.include "../utils/nsk_utils_tiles.inc"
 
 .segment "RODATA"
 
 .export nsk_object_void
 nsk_object_void:
-    .byte 2,2
+    nsk_tile_objectsize 2, 2
 
     .byte $00,$00
     .byte $00,$00

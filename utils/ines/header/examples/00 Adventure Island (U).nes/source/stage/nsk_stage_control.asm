@@ -42,12 +42,23 @@ stage_jump_ptr:
 .export nsk_stage_next
 .proc nsk_stage_next
     inc game_stage_num
+    lda game_stage_num
+    cmp #STAGE::COUNT
+    bcc :+
+        lda #0
+        sta game_stage_num
+    :
     rts
 .endproc
 
 ; @brief Select the previous stage
 .export nsk_stage_prev
 .proc nsk_stage_prev
+    lda game_stage_num
+    bne :+
+        lda #STAGE::COUNT
+        sta game_stage_num
+    :
     dec game_stage_num
     rts
 .endproc

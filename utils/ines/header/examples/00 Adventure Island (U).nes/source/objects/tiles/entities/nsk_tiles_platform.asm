@@ -7,12 +7,13 @@
 ::__NSK_TILES_PLATFORM_ASM__ = 1
 
 .include "nsk_tiles_platform.inc"
+.include "../utils/nsk_utils_tiles.inc"
 
 .segment "RODATA"
 
 .export nsk_object_platform_l
 nsk_object_platform_l:
-    .byte 4,4
+    nsk_tile_objectsize 4, 4
 
     .byte $d3,$d1,$d1,$d1
     .byte $e0,$e3,$e4,$e5
@@ -27,7 +28,7 @@ nsk_object_platform_l:
 
 .export nsk_object_platform_r
 nsk_object_platform_r:
-    .byte 8,4
+    nsk_tile_objectsize 8, 4
 
     .byte $d1,$d1,$d1,$d1, $d5,$00,$00,$00
     .byte $e4,$e4,$e4,$e4, $e4,$e7,$00,$00

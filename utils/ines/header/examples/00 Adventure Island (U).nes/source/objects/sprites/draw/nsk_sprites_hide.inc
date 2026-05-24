@@ -3,8 +3,8 @@
 ;
 ; Part of the Nesokia project — MIT License.
 
-.ifndef ::__NSK_SPRITES_DRAW__
-::__NSK_SPRITES_DRAW__ = 1
+.ifndef ::__NSK_SPRITES_HIDE__
+::__NSK_SPRITES_HIDE__ = 1
 
 .include "nsk_common_meta.inc"
 

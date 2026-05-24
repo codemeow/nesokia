@@ -15,20 +15,16 @@
 ; @param[in] index Index of the element to remove
 .macro nsk_pool_remove index
     .local reduce
+    .local done
 
     push a,x,y
 
     ; Sanity checks
-    .ifdef ::NSK_DEBUG
-        .local invalid
-        .local done
-        
-        lda nsk_pool_size
-        beq invalid
-        cmp index
-        beq invalid
-        bcc invalid
-    .endif
+    lda nsk_pool_size
+    beq done
+    cmp index
+    beq done
+    bcc done
 
     ; # Check if the slot is not the last object
     lda nsk_pool_size
@@ -47,19 +43,8 @@
     reduce:
         dec nsk_pool_size
 
-    pull a,x,y
-
-    ; Sanity check gone wrong
-    .ifdef ::NSK_DEBUG
-        jmp done
-
-        ; Something wrong
-        invalid:
-            brk
-
-        ; Exit
-        done:
-    .endif
+    done:
+        pull a,x,y
 
 .endmacro
 

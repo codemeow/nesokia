@@ -15,6 +15,7 @@
 .include "../../nsk_main.inc"
 .include "../../ppu/nsk_ppu_vars.inc"
 .include "../../stage/init/nsk_stage_init.inc"
+.include "../../utils/nsk_constructors.inc"
 .include "../../utils/nsk_util_rand8.inc"
 
 .segment "CODE"
@@ -127,7 +128,7 @@
 
     init_vblank_wait
 
-    jsr nsk_util_srand8
+    jsr nsk_constructors_run
     jsr nsk_stage_init
 
     jmp nsk_main

@@ -12,9 +12,6 @@
 ; @param[out] A Random number
 .import nsk_util_rand8
 
-; Initialize the randomizer
-.import nsk_util_srand8
-
 .endif
 
 .endif

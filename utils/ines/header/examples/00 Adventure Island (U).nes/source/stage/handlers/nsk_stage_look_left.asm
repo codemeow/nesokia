@@ -13,6 +13,8 @@
 .include "../nsk_stage_control.inc"
 .include "nsk_stage_sprites.inc"
 
+nsk_constructor _init
+
 ; Module settings
 .scope NSK_LOCAL_SETTINGS
     ; How many frames should pass before scrolling
@@ -78,8 +80,7 @@ scroll_frames:
 .endproc
 
 ; @brief Init this stage
-.export nsk_stage_look_left_init
-.proc nsk_stage_look_left_init
+.proc _init
     push a
 
     lda #$00

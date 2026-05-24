@@ -13,6 +13,8 @@
 
 .include "../utils/nsk_util_rand8.inc"
 
+nsk_constructor _init
+
 .segment "RODATA"
 
 ; Random seed
@@ -70,8 +72,7 @@ _rand_holder:
 .endproc
 
 ; Initialize the randomizer
-.export nsk_util_srand8
-.proc nsk_util_srand8
+.proc _init
     push a
 
     lda _rand_seed   + 0

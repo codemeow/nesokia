@@ -8,13 +8,13 @@
 
 .include "nsk_common_meta.inc"
 
-.include "nsk_pool_init.inc"
 .include "nsk_pool_vars.inc"
+
+nsk_constructor _init
 
 .segment "CODE"
 
-.export nsk_pool_init
-.proc nsk_pool_init
+.proc _init
     push a
 
     lda #0

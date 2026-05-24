@@ -18,10 +18,7 @@
 .include "list/nsk_init_tiles_draw.inc"
 .include "list/nsk_init_ppu_flush.inc"
 
-.include "../../objects/sprites/pool/nsk_pool_init.inc"
 .include "../../objects/sprites/nsk_sprites_list.inc"
-.include "../handlers/nsk_stage_look_left.inc"
-.include "../handlers/nsk_stage_look_right.inc"
 .include "../nsk_stage_control.inc"
 
 .segment "RODATA"
@@ -29,11 +26,6 @@
 ; @brief List of initialization routines
 .scope INITS
     TABLE:
-        nsk_todo "Move to global init"
-        .addr nsk_pool_init
-        .addr nsk_stage_look_left_init
-        .addr nsk_stage_look_right_init
-
         .addr nsk_init_ppu_disable
 
         .addr nsk_hud_init

@@ -76,19 +76,45 @@
     .endscope
 
     .scope COUNTER
+        POSITIONS = 4
+        DIGITS = 10
+
         ; Screen start coordinates
         SCREENX = 48
         SCREENY = 16
 
-        POSX:
-            .byte 32,40,48,56
+        .scope POSX
+            TABLE:
+                .byte 32,40,48,56
+            END:
+
+            SIZE = END - TABLE
+
+            .assert SIZE = HUD::COUNTER::POSITIONS, error, "HUD counter X table size mismatch"
+        .endscope
+
         POSY_TOP    = 0 ; Top row Y position
         POSY_BOTTOM = 8 ; Bottom row Y position
 
-        SPRITE_TOP:
-            .byte $06,$07,$08,$09,$0a, $0b,$0c,$0d,$0e,$0f
-        SPRITE_BOTTOM:
-            .byte $16,$17,$18,$19,$1a, $1b,$1c,$1d,$1e,$1f
+        .scope SPRITE_TOP
+            TABLE:
+                .byte $06,$07,$08,$09,$0a, $0b,$0c,$0d,$0e,$0f
+            END:
+
+            SIZE = END - TABLE
+
+            .assert SIZE = HUD::COUNTER::DIGITS, error, "HUD counter top sprite table size mismatch"
+        .endscope
+
+        .scope SPRITE_BOTTOM
+            TABLE:
+                .byte $16,$17,$18,$19,$1a, $1b,$1c,$1d,$1e,$1f
+            END:
+
+            SIZE = END - TABLE
+
+            .assert SIZE = HUD::COUNTER::DIGITS, error, "HUD counter bottom sprite table size mismatch"
+        .endscope
 
         ; Same attributes for all sprites in purpose of simplicity
         ATTRS = \
@@ -193,7 +219,7 @@ _temp_y:
 
     clc
     lda _temp_x
-    adc HUD::COUNTER::POSX, x
+    adc HUD::COUNTER::POSX::TABLE, x
     sta _hud_screenx
 
     clc
@@ -202,7 +228,7 @@ _temp_y:
     sta _hud_screeny
 
     nsk_sprite_draw \
-        { HUD::COUNTER::SPRITE_TOP, y }, \
+        { HUD::COUNTER::SPRITE_TOP::TABLE, y }, \
         { #HUD::COUNTER::ATTRS        }, \
         { #HUD::COUNTER::PALETTE      }, \
         { _hud_screenx                }, \
@@ -214,7 +240,7 @@ _temp_y:
     sta _hud_screeny
 
     nsk_sprite_draw \
-        { HUD::COUNTER::SPRITE_BOTTOM, y }, \
+        { HUD::COUNTER::SPRITE_BOTTOM::TABLE, y }, \
         { #HUD::COUNTER::ATTRS        }, \
         { #HUD::COUNTER::PALETTE      }, \
         { _hud_screenx                }, \

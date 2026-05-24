@@ -35,9 +35,9 @@
         .addr nsk_init_sprites_draw
         .addr nsk_init_ppu_enable
         .addr nsk_init_ppu_flush
-    _TABLE_END:
+    END:
 
-    COUNT = (INITS::_TABLE_END - INITS::TABLE) / 2
+    COUNT = (END - TABLE) / 2
 .endscope
 
 .segment "BSS"

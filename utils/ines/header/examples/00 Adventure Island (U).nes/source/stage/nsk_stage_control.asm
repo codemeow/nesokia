@@ -31,9 +31,9 @@ stage_jump_ptr:
     TABLE:
         .addr nsk_stage_look_right
         .addr nsk_stage_look_left
-    _TABLE_END:
+    END:
 
-    COUNT = (STAGE::_TABLE_END - STAGE::TABLE) / 2
+    COUNT = (END - TABLE) / 2
 .endscope
 
 .segment "CODE"

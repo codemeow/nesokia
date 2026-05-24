@@ -7,6 +7,7 @@
 ::__NSK_COMMON_META__ = 1
 
 .include "nsk_common_addr.inc"
+.include "nsk_common_constructor.inc"
 .include "nsk_common_consts.inc"
 .include "nsk_common_debug.inc"
 .include "nsk_common_jump.inc"

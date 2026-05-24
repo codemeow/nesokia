@@ -21,45 +21,103 @@
 
 ; @brief Debris settings
 .scope DEBRIS
-    OBJECT:
-        .byte SPRITELIST::DEBRIS_0
-        .byte SPRITELIST::DEBRIS_1
-        .byte SPRITELIST::DEBRIS_2
-        .byte SPRITELIST::DEBRIS_3
+    ; @brief Number of layers
+    LAYERS = 4
+
+    ; @brief Object list
+    .scope OBJECT
+        TABLE:
+            .byte SPRITELIST::DEBRIS_0
+            .byte SPRITELIST::DEBRIS_1
+            .byte SPRITELIST::DEBRIS_2
+            .byte SPRITELIST::DEBRIS_3
+        END:
+
+        SIZE = END - TABLE
+
+        .assert SIZE = DEBRIS::LAYERS, error, "Debris object table size mismatch"
+    .endscope
 
     ; @brief Sprites of the debris
-    SPRITE:
-        .byte $bf, $bf, $be, $be
+    .scope SPRITE
+        TABLE:
+            .byte $bf, $bf, $be, $be
+        END:
+
+        SIZE = END - TABLE
+
+        .assert SIZE = DEBRIS::LAYERS, error, "Debris sprite table size mismatch"
+    .endscope
 
     ; @brief Number of particles per layer
-    SIZE:
-        .byte 10, 8, 6, 4
+    .scope SIZE
+        TABLE:
+            .byte 10, 8, 6, 4
+        END:
+
+        SIZE = END - TABLE
+
+        .assert SIZE = DEBRIS::LAYERS, error, "Debris size table size mismatch"
+    .endscope
 
     ; @brief Attributes per layer
-    ATTRS:
-        .byte NSK::PPU::SPRITES::ATTRIBUTE::PRIORITY::BACKGROUND
-        .byte NSK::PPU::SPRITES::ATTRIBUTE::PRIORITY::BACKGROUND
-        .byte NSK::PPU::SPRITES::ATTRIBUTE::PRIORITY::BACKGROUND
-        .byte NSK::PPU::SPRITES::ATTRIBUTE::PRIORITY::FOREGROUND
+    .scope ATTRS
+        TABLE:
+            .byte NSK::PPU::SPRITES::ATTRIBUTE::PRIORITY::BACKGROUND
+            .byte NSK::PPU::SPRITES::ATTRIBUTE::PRIORITY::BACKGROUND
+            .byte NSK::PPU::SPRITES::ATTRIBUTE::PRIORITY::BACKGROUND
+            .byte NSK::PPU::SPRITES::ATTRIBUTE::PRIORITY::FOREGROUND
+        END:
+
+        SIZE = END - TABLE
+
+        .assert SIZE = DEBRIS::LAYERS, error, "Debris attrs table size mismatch"
+    .endscope
 
     ; @brief Palette per layer
-    PALETTE:
-        .byte %00, %00, %00, %00
+    .scope PALETTE
+        TABLE:
+            .byte %00, %00, %00, %00
+        END:
+
+        SIZE = END - TABLE
+
+        .assert SIZE = DEBRIS::LAYERS, error, "Debris palette table size mismatch"
+    .endscope
 
     ; @brief Right-to-Left wind per layer (signed 8.8)
-    WIND_LO:
-        .byte $ff, $ff, $ff, $ff
-    WIND_FRAC:
-        .byte $90, $7e, $69, $21
+    .scope WIND_LO
+        TABLE:
+            .byte $ff, $ff, $ff, $ff
+        END:
+
+        SIZE = END - TABLE
+
+        .assert SIZE = DEBRIS::LAYERS, error, "Debris wind low table size mismatch"
+    .endscope
+
+    .scope WIND_FRAC
+        TABLE:
+            .byte $90, $7e, $69, $21
+        END:
+
+        SIZE = END - TABLE
+
+        .assert SIZE = DEBRIS::LAYERS, error, "Debris wind frac table size mismatch"
+    .endscope
 
     ; @brief Gravity per layer
     ;
     ; @note Not the engine's gravity is used, but the vector
-    GRAVITY_FRAC:
-        .byte 10, 17, 31, 90
+    .scope GRAVITY_FRAC
+        TABLE:
+            .byte 10, 17, 31, 90
+        END:
 
-    ; @brief Number of layers
-    LAYERS = 4
+        SIZE = END - TABLE
+
+        .assert SIZE = DEBRIS::LAYERS, error, "Debris gravity frac table size mismatch"
+    .endscope
 
     ; @brief Object flags
     FLAGS = POOL::FLAGS::VECTORS
@@ -95,9 +153,9 @@ _debris_worldy_lo:
     tay
 
     nsk_sprite_draw \
-        { DEBRIS::SPRITE, y     }, \
-        { DEBRIS::ATTRS, y      }, \
-        { DEBRIS::PALETTE, y    }, \
+        { DEBRIS::SPRITE::TABLE, y     }, \
+        { DEBRIS::ATTRS::TABLE, y      }, \
+        { DEBRIS::PALETTE::TABLE, y    }, \
         { nsk_pool_screenx      }, \
         { nsk_pool_worldy_lo, x }
 
@@ -158,20 +216,20 @@ _debris_worldy_lo:
             sta _debris_worldy_lo
 
             nsk_pool_add \
-                { DEBRIS::OBJECT, y         }, \
+                { DEBRIS::OBJECT::TABLE, y  }, \
                 { #DEBRIS::FLAGS            }, \
                 { _debris_worldx_hi         }, \
                 { _debris_worldx_lo         }, \
                 { _debris_worldy_lo         }, \
-                { DEBRIS::WIND_LO, y        }, \
-                { DEBRIS::WIND_FRAC, y      }, \
+                { DEBRIS::WIND_LO::TABLE, y }, \
+                { DEBRIS::WIND_FRAC::TABLE, y }, \
                 { #0                        }, \
-                { DEBRIS::GRAVITY_FRAC, y   }, \
+                { DEBRIS::GRAVITY_FRAC::TABLE, y }, \
                 { #0                        }
 
             inx
             txa
-            cmp DEBRIS::SIZE,y
+            cmp DEBRIS::SIZE::TABLE,y
             bne particle
 
         iny

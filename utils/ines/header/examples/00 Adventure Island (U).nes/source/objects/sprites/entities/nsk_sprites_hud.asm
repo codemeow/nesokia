@@ -29,16 +29,42 @@
 ;       and readablity I keep the original values
 .scope HUD
     .scope CAPTION
+        ; Number of fixed HUD sprites
+        COUNT = 3
+
         ; Screen start coordinates
         SCREENX = 16
         SCREENY = 16
 
-        SPRITE:
-            .byte $13,$14,$15
-        POSX:
-            .byte 0,8,16
-        POSY:
-            .byte 8,8,8
+        .scope SPRITE
+            TABLE:
+                .byte $13,$14,$15
+            END:
+
+            SIZE = END - TABLE
+
+            .assert SIZE = HUD::CAPTION::COUNT, error, "HUD caption sprite table size mismatch"
+        .endscope
+
+        .scope POSX
+            TABLE:
+                .byte 0,8,16
+            END:
+
+            SIZE = END - TABLE
+
+            .assert SIZE = HUD::CAPTION::COUNT, error, "HUD caption X table size mismatch"
+        .endscope
+
+        .scope POSY
+            TABLE:
+                .byte 8,8,8
+            END:
+
+            SIZE = END - TABLE
+
+            .assert SIZE = HUD::CAPTION::COUNT, error, "HUD caption Y table size mismatch"
+        .endscope
 
         ; Same attributes for all sprites in purpose of simplicity
         ATTRS = \
@@ -47,8 +73,6 @@
             NSK::PPU::SPRITES::ATTRIBUTE::FLIP::VER::NO
         ; Same palette for all digits
         PALETTE = %00
-
-        COUNT = 3   ; Number of fixed HUD sprites
     .endscope
 
     .scope COUNTER
@@ -109,16 +133,16 @@ _temp_y:
     loop:
         clc
         lda nsk_pool_worldy_lo, x
-        adc HUD::CAPTION::POSY, y
+        adc HUD::CAPTION::POSY::TABLE, y
         sta _hud_screeny
 
         clc
         lda nsk_pool_worldx_lo, x
-        adc HUD::CAPTION::POSX, y
+        adc HUD::CAPTION::POSX::TABLE, y
         sta _hud_screenx
 
         nsk_sprite_draw \
-            { HUD::CAPTION::SPRITE, y }, \
+            { HUD::CAPTION::SPRITE::TABLE, y }, \
             { #HUD::CAPTION::ATTRS    }, \
             { #HUD::CAPTION::PALETTE  }, \
             { _hud_screenx            }, \

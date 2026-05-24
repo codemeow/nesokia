@@ -12,6 +12,8 @@
 .import __CONSTRUCTORS_RUN__
 .import __CONSTRUCTORS_SIZE__
 
+.assert __CONSTRUCTORS_SIZE__ < 256, error, "CONSTRUCTORS segment should be less than 256 bytes"
+
 .segment "CONSTRUCTORS"
 
 ; @brief Keeps the constructors segment defined even when no routines are registered

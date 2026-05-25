@@ -29,6 +29,11 @@ _table_ptr:
 _sweep_index:
     .res 1
 
+; @brief Current pool size copy for safe iteration for the
+; cases when the pool size is manipulated inside of the pool tick
+_pool_size:
+    .res 1
+
 .segment "CODE"
 
 ; @brief Ticks vector forces
@@ -237,22 +242,20 @@ _sweep_index:
 .proc nsk_pool_tick
     push a, x
 
+    lda nsk_pool_size
+    sta _pool_size
+
     ldx #0
-    cpx nsk_pool_size
+    cpx _pool_size
     beq done
 
 
     loop:
         jsr _pool_tick_element
-
-        lda nsk_pool_flags, x
-        and #POOL::FLAGS::DELETED
-        bne :+
-            jsr _pool_draw_element
-        :
+        jsr _pool_draw_element
 
         inx
-        cpx nsk_pool_size
+        cpx _pool_size
         bne loop
 
 

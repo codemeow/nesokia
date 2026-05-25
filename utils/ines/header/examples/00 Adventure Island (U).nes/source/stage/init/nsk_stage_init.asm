@@ -29,6 +29,7 @@
         .addr nsk_init_ppu_disable
 
         .addr nsk_hud_init
+        .addr nsk_character_init
         .addr nsk_debris_init
 
         .addr nsk_init_tiles_draw

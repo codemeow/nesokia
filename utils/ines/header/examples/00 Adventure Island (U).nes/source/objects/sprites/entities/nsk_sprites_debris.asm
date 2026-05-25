@@ -225,7 +225,8 @@ _debris_worldy_lo:
                 { DEBRIS::WIND_FRAC::TABLE, y }, \
                 { #0                        }, \
                 { DEBRIS::GRAVITY_FRAC::TABLE, y }, \
-                { #0                        }
+                { #0                        }, \
+                { #$ff                      }
 
             inx
             txa
@@ -234,7 +235,9 @@ _debris_worldy_lo:
 
         iny
         cpy #DEBRIS::LAYERS
-        bne layer
+        beq :+
+            jmp layer
+        :
 
     pull a, x, y
 

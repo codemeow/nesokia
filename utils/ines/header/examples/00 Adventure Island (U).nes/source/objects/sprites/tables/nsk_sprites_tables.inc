@@ -12,6 +12,9 @@
 
     ; @brief List of the Out-of-bounds routines
     .import nsk_sprites_table_oob
+
+    ; @brief List of the cleanup routines
+    .import nsk_sprites_table_clean
 .endif
 
 .endif

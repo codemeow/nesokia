@@ -9,6 +9,7 @@
 .include "nsk_sprites_tables.inc"
 
 .include "../entities/nsk_sprites_hud.inc"
+.include "../entities/nsk_sprites_character.inc"
 .include "../entities/nsk_sprites_debris.inc"
 .include "../nsk_sprites_list.inc"
 
@@ -20,6 +21,7 @@ nsk_sprites_table_draw:
 .scope DRAW
     TABLE:
         .addr nsk_hud_draw
+        .addr nsk_character_draw
         .addr nsk_debris_draw
         .addr nsk_debris_draw
         .addr nsk_debris_draw
@@ -37,6 +39,7 @@ nsk_sprites_table_oob:
 .scope OOB
     TABLE:
         .addr $0000
+        .addr nsk_character_oob
         .addr nsk_debris_oob
         .addr nsk_debris_oob
         .addr nsk_debris_oob
@@ -46,6 +49,24 @@ nsk_sprites_table_oob:
     SIZE = (END - TABLE) / 2
 
     .assert SIZE = SPRITELIST::COUNT, error, "Sprites OOB table size mismatch"
+.endscope
+
+; @brief List of the cleanup routines
+.export nsk_sprites_table_clean
+nsk_sprites_table_clean:
+.scope CLEAN
+    TABLE:
+        .addr $0000
+        .addr nsk_character_clean
+        .addr $0000
+        .addr $0000
+        .addr $0000
+        .addr $0000
+    END:
+
+    SIZE = (END - TABLE) / 2
+
+    .assert SIZE = SPRITELIST::COUNT, error, "Sprites clean table size mismatch"
 .endscope
 
 .endif

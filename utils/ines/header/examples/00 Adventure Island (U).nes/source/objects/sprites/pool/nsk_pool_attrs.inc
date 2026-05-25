@@ -55,7 +55,8 @@
     vectorx_frac,           \
     vectory_lo,             \
     vectory_frac,           \
-    timer_a
+    timer_a,                \
+    data_id
 
     ;              Operation   name             value         in add ?
     _NSK_OP_LIST_START
@@ -74,6 +75,7 @@
     _NSK_OP_LIST_ENTRY OP, "vectory_frac",  { vectory_frac  },   1
 
     _NSK_OP_LIST_ENTRY OP, "timer_a",       { timer_a       },   1
+    _NSK_OP_LIST_ENTRY OP, "data_id",       { data_id       },   1
     _NSK_OP_LIST_CHECK .paramcount
 .endmacro
 

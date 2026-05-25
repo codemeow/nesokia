@@ -213,7 +213,9 @@ _pool_size:
     loop:
         lda nsk_pool_flags, x
         and #POOL::FLAGS::DELETED
-        beq next
+        bne :+
+            jmp next
+        :
 
             stx _sweep_index
             nsk_pool_remove _sweep_index

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scan>
+	<game><!-- tests/nes/00 Adventure Island 4 (J).nes/rom-header.nes -->
+		<name>tests/nes/00 Adventure Island 4 (J).nes/rom-header.nes</name>
+		<format isnes20="1" />
+		<prgrom size="262144" />
+		<chrrom size="131072" />
+		<pcb mapper="4" submapper="0" mirroring="V" battery="0" />
+		<console type="0" region="0" />
+		<expansion type="1" />
+	</game>
+</scan>

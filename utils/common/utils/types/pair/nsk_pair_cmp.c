@@ -1,8 +1,7 @@
 #include <string.h>
-#include <stdlib.h>
-#include <nsk_util_meta.h>
 
-#include "../../types/pair/nsk_pair_cmp.h"
+#include "types/pair/nsk_pair_cmp.h"
+#include "base/nsk_util_size.h"
 
 /* Forward declaration */
 static bool _compare_equal      (uint64_t left, uint64_t right);
@@ -119,8 +118,7 @@ bool nsk_pair_compare(
         }
     }
 
-    nsk_err("Error: unknown compare operator: %d\n", (int)operator);
-    abort();
+    __builtin_unreachable();
 }
 
 /*!
@@ -136,8 +134,7 @@ const char *nsk_pair_operatorstring(enum nsk_pair_operator operator) {
         }
     }
 
-    nsk_err("Error: unknown compare operator: %d\n", (int)operator);
-    abort();
+    __builtin_unreachable();
 }
 
 /*!

@@ -2,12 +2,12 @@
 #include <errno.h>
 #include <stdlib.h>
 
-#include "../types/nsk_type_pattable.h"
-#include "../log/nsk_log_err.h"
-#include "../utils/nsk_util_cleanup.h"
-#include "../utils/io/nsk_io_fopen.h"
-#include "../error/nsk_util_errno.h"
-#include "../utils/log/nsk_log_inf.h"
+#include "types/nsk_type_pattable.h"
+#include "log/nsk_log_err.h"
+#include "base/nsk_util_cleanup.h"
+#include "io/nsk_io_fopen.h"
+#include "error/nsk_util_errno.h"
+#include "log/nsk_log_inf.h"
 
 /*!
  * \brief  Converts the enum value to the raw value
@@ -19,14 +19,9 @@ unsigned nsk_conv_pataddress2value(enum nsk_pattable_address address) {
     switch (address) {
         case NSK_PATTABLEADDR_0000: return 0x0000;
         case NSK_PATTABLEADDR_1000: return 0x1000;
-
-        default:
-            nsk_err(
-                "Error: Unknown address value: %d\n",
-                (int)address
-            );
-            abort();
     }
+
+    __builtin_unreachable();
 }
 
 /*!
@@ -52,6 +47,9 @@ static void _pattable_validate(
  * \brief  Validates pattern table's plane field
  *
  * \param[in]  table  The table
+ *
+ * \note This is a fatal workflow invariant check. It returns only when the
+ *       field is initialized; otherwise it terminates the process.
  */
 void nsk_pattable_validate_plane(const struct nsk_type_pattable *table) {
     _pattable_validate(table->init.plane, "plane");
@@ -61,6 +59,9 @@ void nsk_pattable_validate_plane(const struct nsk_type_pattable *table) {
  * \brief  Validates pattern table's address field
  *
  * \param[in]  table  The table
+ *
+ * \note This is a fatal workflow invariant check. It returns only when the
+ *       field is initialized; otherwise it terminates the process.
  */
 void nsk_pattable_validate_address(const struct nsk_type_pattable *table) {
     _pattable_validate(table->init.address, "address");
@@ -72,21 +73,26 @@ void nsk_pattable_validate_address(const struct nsk_type_pattable *table) {
  * \param[in]  file      The file
  * \param[in]  filename  The filename
  * \param[out] table     The table
+ * \return True if the pattern table was read, false otherwise
  */
-static void _pattable_readpat(
+static bool _pattable_readpat(
     FILE                        *file,
     const char                  *filename,
     struct nsk_type_pattable    *table
 ) {
     for (size_t h = 0; h < NSK_PATTABLETABLE_HEIGHT; h++) {
         for (size_t w = 0; w < NSK_PATTABLETABLE_WIDTH; w++) {
-            nsk_tile_readchr(
+            if (!nsk_tile_readchr(
                 &table->tile[h][w],
                 file,
                 filename
-            );
+            )) {
+                return false;
+            }
         }
     }
+
+    return true;
 }
 
 /*!
@@ -95,34 +101,41 @@ static void _pattable_readpat(
  * \param[in] file      The file
  * \param[in] filename  The filename
  * \param[in] table     The table
+ * \return True if the pattern table was saved, false otherwise
  */
-static void _pattable_savepat(
+static bool _pattable_savepat(
     FILE *file,
     const char *filename,
     const struct nsk_type_pattable *table
 ) {
     for (size_t h = 0; h < NSK_PATTABLETABLE_HEIGHT; h++) {
         for (size_t w = 0; w < NSK_PATTABLETABLE_WIDTH; w++) {
-            nsk_tile_savechr(
+            if (!nsk_tile_savechr(
                 &table->tile[h][w],
                 file,
                 filename
-            );
+            )) {
+                return false;
+            }
         }
     }
+
+    return true;
 }
 
 /*!
  * \brief  Reads pattern table from .pat file
  * (binary $0000..$0fff/$1000..$1fff)
  *
- * \param[in] filename  The filename
- * \return The resulting pattern table
+ * \param[in]  filename  The filename
+ * \param[out] table     The resulting pattern table
+ * \return True if the pattern table was read, false otherwise
  */
-struct nsk_type_pattable nsk_pattable_readpat(
-    const char *filename
+bool nsk_pattable_readpat(
+    const char *filename,
+    struct nsk_type_pattable *table
 ) {
-    struct nsk_type_pattable table = { 0 };
+    *table = (struct nsk_type_pattable){ 0 };
     nsk_auto_fclose FILE *file = nsk_io_fopen(filename, "rb");
     if (!file) {
         nsk_err(
@@ -131,25 +144,25 @@ struct nsk_type_pattable nsk_pattable_readpat(
             filename,
             nsk_util_strerror(errno)
         );
-        exit(EXIT_FAILURE);
+        return false;
     }
 
-    _pattable_readpat(file, filename, &table);
-
-    return table;
+    return _pattable_readpat(file, filename, table);
 }
 
 /*!
  * \brief  Reads pattern tables from .pats file
  * (binary $0000..$1fff)
  *
- * \param[in] filename  The filename
- * \return The resulting pattern tables
+ * \param[in]  filename  The filename
+ * \param[out] tables    The resulting pattern tables
+ * \return True if the pattern tables were read, false otherwise
  */
-struct nsk_type_pattables nsk_pattables_readpats(
-    const char *filename
+bool nsk_pattables_readpats(
+    const char *filename,
+    struct nsk_type_pattables *tables
 ) {
-    struct nsk_type_pattables tables = { 0 };
+    *tables = (struct nsk_type_pattables){ 0 };
     nsk_auto_fclose FILE *file = nsk_io_fopen(filename, "rb");
     if (!file) {
         nsk_err(
@@ -158,14 +171,16 @@ struct nsk_type_pattables nsk_pattables_readpats(
             filename,
             nsk_util_strerror(errno)
         );
-        exit(EXIT_FAILURE);
+        return false;
     }
 
     for (size_t p = 0; p < NSK_PLANES_COUNT; p++) {
-        _pattable_readpat(file, filename, &tables.plane[p]);
+        if (!_pattable_readpat(file, filename, &tables->plane[p])) {
+            return false;
+        }
     }
 
-    return tables;
+    return true;
 }
 
 /*!
@@ -176,8 +191,9 @@ struct nsk_type_pattables nsk_pattables_readpats(
  *
  * \param[in] filename  The filename
  * \param[in] table     The table
+ * \return True if the pattern table was saved, false otherwise
  */
-void nsk_pattable_savepat(
+bool nsk_pattable_savepat(
     const char *filename,
     const struct nsk_type_pattable *table
 ) {
@@ -189,10 +205,10 @@ void nsk_pattable_savepat(
             filename,
             nsk_util_strerror(errno)
         );
-        exit(EXIT_FAILURE);
+        return false;
     }
 
-    _pattable_savepat(file, filename, table);
+    return _pattable_savepat(file, filename, table);
 }
 
 /*!
@@ -203,8 +219,9 @@ void nsk_pattable_savepat(
  *
  * \param[in] filename  The filename
  * \param[in] tables    The tables
+ * \return True if the pattern tables were saved, false otherwise
  */
-void nsk_pattables_savepats(
+bool nsk_pattables_savepats(
     const char *filename,
     const struct nsk_type_pattables *tables
 ) {
@@ -216,12 +233,16 @@ void nsk_pattables_savepats(
             filename,
             nsk_util_strerror(errno)
         );
-        exit(EXIT_FAILURE);
+        return false;
     }
 
     for (size_t p = 0; p < NSK_PLANES_COUNT; p++) {
-        _pattable_savepat(file, filename, &tables->plane[p]);
+        if (!_pattable_savepat(file, filename, &tables->plane[p])) {
+            return false;
+        }
     }
+
+    return true;
 }
 
 /*!
@@ -291,6 +312,9 @@ void nsk_pattables_show(
  * \param[in] tables   The tables
  * \param[in] address  The address
  * \return Matching pattern table
+ *
+ * \note This is a fatal workflow invariant check. It returns only when a
+ *       matching table exists; otherwise it terminates the process.
  */
 const struct nsk_type_pattable *nsk_pattables_getbyaddress(
     const struct nsk_type_pattables *tables,

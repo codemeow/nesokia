@@ -1,4 +1,4 @@
-#include "../../png/types/nsk_type_pngtile.h"
+#include "png/types/nsk_type_pngtile.h"
 
 /*!
  * \brief  Reads the selected tile from Nesokia PNG from selected position

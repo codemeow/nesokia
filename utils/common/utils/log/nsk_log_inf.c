@@ -1,7 +1,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-#include "../log/nsk_log_inf.h"
+#include "log/nsk_log_inf.h"
 
 /*!
  * \brief Silences the non-error output

@@ -18,14 +18,16 @@ static void _getopt_messagesdisable(void) {
  *
  * \param[in] argc  The count of arguments
  */
-static void _arguments_validate(int argc) {
+static enum nsk_args_result _arguments_validate(int argc) {
     if (argc < 2) {
         nsk_err(
             "Error: no input paths provided — pass at least one file or directory.\n"
             "See -h or --help for usage.\n"
         );
-        exit(EXIT_FAILURE);
+        return NSK_ARGS_EXIT_FAILURE;
     }
+
+    return NSK_ARGS_CONTINUE;
 }
 
 /*!
@@ -37,10 +39,11 @@ static char *_options_short(void) {
     /* Worst case - all options are optional, which should be
      * mapped as "X::", thus 3 characters per entry */
     char *options = nsk_util_malloc(
-        nsk_options_count * 3 + 1
+        nsk_options_count * 3 + 2
     );
 
     size_t pos = 0;
+    options[pos++] = ':';
     for (size_t i = 0; i < nsk_options_count; i++) {
 
         if (nsk_options_table[i].option_short < NSK_OPTION_SHORTLIMIT) {
@@ -115,8 +118,7 @@ static size_t _option_index(int option_short) {
  *
  * \param[in]  argv  The arguments array
  */
-__attribute__((noreturn))
-static void _arguments_noarg(char *const *argv) {
+static enum nsk_args_result _arguments_noarg(char *const *argv) {
     if (optopt) {
         nsk_err(
             "Option -%c requires an argument\n",
@@ -124,11 +126,11 @@ static void _arguments_noarg(char *const *argv) {
         );
     } else if (optind > 0 && argv[optind - 1]) {
         nsk_err(
-            "Option --%s requires an argument\n",
+            "Option %s requires an argument\n",
             argv[optind - 1]
         );
     }
-    exit(EXIT_FAILURE);
+    return NSK_ARGS_EXIT_FAILURE;
 }
 
 /*!
@@ -136,8 +138,7 @@ static void _arguments_noarg(char *const *argv) {
  *
  * \param[in]  argv  The arguments array
  */
-__attribute__((noreturn))
-static void _arguments_unknown(char *const *argv) {
+static enum nsk_args_result _arguments_unknown(char *const *argv) {
     if (optopt) {
         nsk_err(
             "Unknown option: -%c\n",
@@ -145,11 +146,11 @@ static void _arguments_unknown(char *const *argv) {
         );
     } else if (optind > 0 && argv[optind - 1]) {
         nsk_err(
-            "Unknown option: --%s\n",
+            "Unknown option: %s\n",
             argv[optind - 1]
         );
     }
-    exit(EXIT_FAILURE);
+    return NSK_ARGS_EXIT_FAILURE;
 }
 
 /*!
@@ -158,9 +159,12 @@ static void _arguments_unknown(char *const *argv) {
  * \param[in] argc  The count of arguments
  * \param[in] argv  The arguments array
  */
-void nsk_args_process(int argc, char *const *argv) {
+enum nsk_args_result nsk_args_process(int argc, char *const *argv) {
     _getopt_messagesdisable();
-    _arguments_validate(argc);
+    enum nsk_args_result result = _arguments_validate(argc);
+    if (result != NSK_ARGS_CONTINUE) {
+        return result;
+    }
 
     nsk_auto_free char            *options_short = _options_short();
     nsk_auto_free struct option   *options_long  = _options_long();
@@ -182,13 +186,16 @@ void nsk_args_process(int argc, char *const *argv) {
 
         switch (c) {
             case ':':
-                _arguments_noarg(argv);
+                return _arguments_noarg(argv);
 
             case '?':
-                _arguments_unknown(argv);
+                return _arguments_unknown(argv);
 
             default:
-                nsk_options_table[_option_index(c)].option_processor();
+                result = nsk_options_table[_option_index(c)].option_processor();
+                if (result != NSK_ARGS_CONTINUE) {
+                    return result;
+                }
                 break;
         }
     }
@@ -198,8 +205,9 @@ void nsk_args_process(int argc, char *const *argv) {
             "Error: no input paths provided — pass at least one file or directory.\n"
             "See -h or --help for usage.\n"
         );
-        exit(EXIT_FAILURE);
+        return NSK_ARGS_EXIT_FAILURE;
     }
 
     nsk_options_program.files = argv + optind;
+    return NSK_ARGS_CONTINUE;
 }

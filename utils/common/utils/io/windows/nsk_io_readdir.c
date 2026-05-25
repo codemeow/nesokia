@@ -2,11 +2,11 @@
 
 #include <stdio.h>
 
-#include "../../io/nsk_io_readdir.h"
+#include "io/nsk_io_readdir.h"
 
-#include "../../strings/windows/nsk_strings_wide.h"
-#include "../../nsk_util_cleanup.h"
-#include "../../nsk_util_malloc.h"
+#include "strings/windows/nsk_strings_wide.h"
+#include "base/nsk_util_cleanup.h"
+#include "base/nsk_util_malloc.h"
 
 /*!
  * \brief  Return next element of the directory
@@ -29,7 +29,14 @@ struct dirent *nsk_io_readdir(DIR *dir) {
         CP_ACP,
         MB_ERR_INVALID_CHARS
     );
+    if (!wname) {
+        return NULL;
+    }
+
     nsk_auto_free char * name = nsk_string_w2a(wname);
+    if (!name) {
+        return NULL;
+    }
 
     int ret = snprintf(result->d_name, sizeof(result->d_name), "%s", name);
 

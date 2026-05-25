@@ -16,6 +16,7 @@
 .proc nsk_ppu_flush_control
     lda ppu_temp_control
     sta NSK::CPU::PPU::PPUCTRL
+    rts
 .endproc
 
 ; @brief Flushes the current ppu_temp_mask variable directly to PPU
@@ -23,6 +24,7 @@
 .proc nsk_ppu_flush_mask
     lda ppu_temp_mask
     sta NSK::CPU::PPU::PPUMASK
+    rts
 .endproc
 
 .endif

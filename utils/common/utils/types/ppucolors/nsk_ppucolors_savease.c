@@ -1,11 +1,11 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "../../types/ppucolors/nsk_ppucolors_savease.h"
-#include "../../log/nsk_log_err.h"
-#include "../../nsk_util_cleanup.h"
-#include "../../types/ppucolors/nsk_ppucolors_common.h"
-#include "../../math/nsk_math_endianness.h"
+#include "types/ppucolors/nsk_ppucolors_savease.h"
+#include "log/nsk_log_err.h"
+#include "base/nsk_util_cleanup.h"
+#include "types/ppucolors/nsk_ppucolors_common.h"
+#include "math/nsk_math_endianness.h"
 
 /*!
  * \brief  ASE block types
@@ -41,12 +41,12 @@ enum nsk_formatase_colortype {
  * \param[in,out]  file      The file
  * \param[in]      filename  The filename
  */
-static void _savease_magic(
+static bool _savease_magic(
     FILE *file,
     const char *filename
 ) {
     static const uint32_t magic = 0x46455341; /* "ASEF" */
-    nsk_ppucolors_fwrite(&magic, sizeof(magic), file, filename);
+    return nsk_ppucolors_fwrite(&magic, sizeof(magic), file, filename);
 }
 
 /*!
@@ -55,7 +55,7 @@ static void _savease_magic(
  * \param[in,out]  file      The file
  * \param[in]      filename  The filename
  */
-static void _savease_version(
+static bool _savease_version(
     FILE *file,
     const char *filename
 ) {
@@ -64,9 +64,11 @@ static void _savease_version(
     uint16_t buf;
 
     buf = nsk_math_tobe16(major);
-    nsk_ppucolors_fwrite(&buf, sizeof(buf), file, filename);
+    if (!nsk_ppucolors_fwrite(&buf, sizeof(buf), file, filename)) {
+        return false;
+    }
     buf = nsk_math_tobe16(minor);
-    nsk_ppucolors_fwrite(&buf, sizeof(buf), file, filename);
+    return nsk_ppucolors_fwrite(&buf, sizeof(buf), file, filename);
 }
 
 /*!
@@ -76,7 +78,7 @@ static void _savease_version(
  * \param[in]      filename  The filename
  * \param[in]      colors    The colors
  */
-static void _savease_blockcount(
+static bool _savease_blockcount(
     FILE *file,
     const char *filename,
     const struct nsk_type_ppucolors *colors
@@ -89,7 +91,7 @@ static void _savease_blockcount(
     }
 
     count = nsk_math_tobe32(count);
-    nsk_ppucolors_fwrite(&count, sizeof(count), file, filename);
+    return nsk_ppucolors_fwrite(&count, sizeof(count), file, filename);
 }
 
 /*!
@@ -99,7 +101,7 @@ static void _savease_blockcount(
  * \param[in]     filename  The filename
  * \param[in]     index     The index
  */
-static void _savease_blockname(
+static bool _savease_blockname(
     FILE *file,
     const char *filename,
     size_t index
@@ -114,19 +116,26 @@ static void _savease_blockname(
     /* Note: After changing the name change the block length */
 
     size_t utf16lenraw;
-    const uint8_t *utf16name = nsk_ppucolors_toUTF16be(
+    nsk_auto_free uint8_t *utf16name = nsk_ppucolors_toUTF16be(
         name,
         &utf16lenraw
     );
+    if (!utf16name) {
+        nsk_err(
+            "Error: cannot convert ASE color name \"%s\" to UTF16-BE\n",
+            name
+        );
+        return false;
+    }
+
     uint16_t utf16len = nsk_math_tobe16(utf16lenraw);
 
-    nsk_ppucolors_fwrite(
+    return nsk_ppucolors_fwrite(
         &utf16len,
         sizeof(utf16len),
         file,
         filename
-    );
-    nsk_ppucolors_fwrite(
+    ) && nsk_ppucolors_fwrite(
         utf16name,
         utf16lenraw * sizeof(uint16_t),
         file,
@@ -140,12 +149,12 @@ static void _savease_blockname(
  * \param[in,out] file      The file
  * \param[in]     filename  The filename
  */
-static void _savease_blockmodel(
+static bool _savease_blockmodel(
     FILE *file,
     const char *filename
 ) {
     uint32_t model = nsk_math_tobe32(NSK_FORMATASE_COLORMODEL_RGB);
-    nsk_ppucolors_fwrite(
+    return nsk_ppucolors_fwrite(
         &model,
         sizeof(model),
         file,
@@ -160,7 +169,7 @@ static void _savease_blockmodel(
  * \param[in]     filename  The filename
  * \param[in]     color     The color
  */
-static void _savease_blockcolor(
+static bool _savease_blockcolor(
     FILE *file,
     const char *filename,
     const union nsk_type_color4 *color
@@ -168,9 +177,9 @@ static void _savease_blockcolor(
     float r = nsk_math_tobeflt(color->r / 255.0);
     float g = nsk_math_tobeflt(color->g / 255.0);
     float b = nsk_math_tobeflt(color->b / 255.0);
-    nsk_ppucolors_fwrite(&r, sizeof(r), file, filename);
-    nsk_ppucolors_fwrite(&g, sizeof(g), file, filename);
-    nsk_ppucolors_fwrite(&b, sizeof(b), file, filename);
+    return nsk_ppucolors_fwrite(&r, sizeof(r), file, filename)
+        && nsk_ppucolors_fwrite(&g, sizeof(g), file, filename)
+        && nsk_ppucolors_fwrite(&b, sizeof(b), file, filename);
 }
 
 /*!
@@ -179,12 +188,12 @@ static void _savease_blockcolor(
  * \param[in,out] file      The file
  * \param[in]     filename  The filename
  */
-static void _savease_blocktype(
+static bool _savease_blocktype(
     FILE *file,
     const char *filename
 ) {
     uint16_t type = nsk_math_tobe16(NSK_FORMATASE_COLORTYPE_GLOBAL);
-    nsk_ppucolors_fwrite(&type, sizeof(type), file, filename);
+    return nsk_ppucolors_fwrite(&type, sizeof(type), file, filename);
 }
 
 /*!
@@ -193,12 +202,12 @@ static void _savease_blocktype(
  * \param[in,out] file      The file
  * \param[in]     filename  The filename
  */
-static void _savease_blockkind(
+static bool _savease_blockkind(
     FILE *file,
     const char *filename
 ) {
     uint16_t kind = nsk_math_tobe16(NSK_FORMATASE_BLOCKTYPE_COLOR);
-    nsk_ppucolors_fwrite(&kind, sizeof(kind), file, filename);
+    return nsk_ppucolors_fwrite(&kind, sizeof(kind), file, filename);
 }
 
 /*!
@@ -207,14 +216,14 @@ static void _savease_blockkind(
  * \param[in,out] file      The file
  * \param[in]     filename  The filename
  */
-static void _savease_blocklength(
+static bool _savease_blocklength(
     FILE *file,
     const char *filename
 ) {
     static const uint32_t blocklen = 28;
 
     uint32_t length = nsk_math_tobe32(blocklen);
-    nsk_ppucolors_fwrite(&length, sizeof(length), file, filename);
+    return nsk_ppucolors_fwrite(&length, sizeof(length), file, filename);
 }
 
 /*!
@@ -224,7 +233,7 @@ static void _savease_blocklength(
  * \param[in]      filename  The filename
  * \param[in]      colors    The colors
  */
-static void _savease_blockdata(
+static bool _savease_blockdata(
     FILE *file,
     const char *filename,
     const struct nsk_type_ppucolors *colors
@@ -234,13 +243,17 @@ static void _savease_blockdata(
             continue;
         }
 
-        _savease_blockkind  (file, filename);
-        _savease_blocklength(file, filename);
-        _savease_blockname  (file, filename, i);
-        _savease_blockmodel (file, filename);
-        _savease_blockcolor (file, filename, &colors->colors[i]);
-        _savease_blocktype  (file, filename);
+        if (!_savease_blockkind  (file, filename) ||
+            !_savease_blocklength(file, filename) ||
+            !_savease_blockname  (file, filename, i) ||
+            !_savease_blockmodel (file, filename) ||
+            !_savease_blockcolor (file, filename, &colors->colors[i]) ||
+            !_savease_blocktype  (file, filename)) {
+            return false;
+        }
     }
+
+    return true;
 }
 
 /*!
@@ -248,15 +261,19 @@ static void _savease_blockdata(
  *
  * \param[in] filename  The filename
  * \param[in] colors    The colors
+ * \return True if the PPU colors were saved, false otherwise
  */
-void nsk_ppucolors_savease(
+bool nsk_ppucolors_savease(
     const char *filename,
     const struct nsk_type_ppucolors *colors
 ) {
     nsk_auto_fclose FILE *file = nsk_ppucolors_fopen(filename, "wb");
+    if (!file) {
+        return false;
+    }
 
-    _savease_magic     (file, filename);
-    _savease_version   (file, filename);
-    _savease_blockcount(file, filename, colors);
-    _savease_blockdata (file, filename, colors);
+    return _savease_magic     (file, filename)
+        && _savease_version   (file, filename)
+        && _savease_blockcount(file, filename, colors)
+        && _savease_blockdata (file, filename, colors);
 }

@@ -27,6 +27,9 @@ To
 By default the input and output formats are deduced by the file extension.
 This could be overrided with the `-I`/`--input-format` and `-O`/`--output-format` flags:
 
+The tool prints an ANSI-colored preview of the loaded PPU palette by default.
+Use `-q`/`--quiet` to suppress this preview and print only errors.
+
 Input formats:
 ```
 -I "png"

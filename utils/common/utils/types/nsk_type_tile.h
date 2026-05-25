@@ -5,9 +5,10 @@
 #include <stddef.h>
 #include <stdio.h>
 
-#include "../types/nsk_type_color4.h"
-#include "../types/nsk_type_palettes.h"
-#include "../types/pair/nsk_pair_type.h"
+#include "base/nsk_util_attributes.h"
+#include "types/nsk_type_color4.h"
+#include "types/nsk_type_palettes.h"
+#include "types/pair/nsk_pair_type.h"
 
 /*!
  * \brief  Tile sizes configuration
@@ -42,21 +43,30 @@ struct nsk_type_tile {
 /*!
  * \brief  Validates tile's palette field
  *
- * \param[in]  table  The table
+ * \param[in]  tile  The tile
+ *
+ * \note This is a fatal workflow invariant check. It returns only when the
+ *       field is initialized; otherwise it terminates the process.
  */
 void nsk_tile_validate_palette(const struct nsk_type_tile *tile);
 
 /*!
  * \brief  Validates tile's index field
  *
- * \param[in]  table  The table
+ * \param[in]  tile  The tile
+ *
+ * \note This is a fatal workflow invariant check. It returns only when the
+ *       field is initialized; otherwise it terminates the process.
  */
 void nsk_tile_validate_index(const struct nsk_type_tile *tile);
 
 /*!
  * \brief  Validates tile's colors field
  *
- * \param[in]  table  The table
+ * \param[in]  tile  The tile
+ *
+ * \note This is a fatal workflow invariant check. It returns only when the
+ *       field is initialized; otherwise it terminates the process.
  */
 void nsk_tile_validate_colors(const struct nsk_type_tile *tile);
 
@@ -75,8 +85,9 @@ bool nsk_tile_isempty(
  *
  * \param[in,out]  tile  The tile
  * \param[in]  palette Palette data
+ * \return True if the index was assigned, false otherwise
  */
-void nsk_tile_setindex(
+bool nsk_tile_setindex(
     struct nsk_type_tile *tile,
     const struct nsk_type_palette *palette
 );
@@ -99,10 +110,12 @@ void nsk_tile_setcolors(
  * \param[out] count  The colors count
  * \return Allocated list of colors
  */
+nsk_attr_result_unused
+nsk_attr_args_nonnull(2)
 union nsk_type_color4 *nsk_tile_getcolors(
     const struct nsk_type_tile *tile,
     size_t *count
-) __attribute__((nonnull(2)));
+);
 
 /*!
  * \brief  Sets the tile palette by colors
@@ -111,7 +124,7 @@ union nsk_type_color4 *nsk_tile_getcolors(
  * \param[in]     palette  The palette
  * \param[in]     explicit The explicitly requested palette index or -1
  */
-__attribute__((warn_unused_result))
+nsk_attr_result_unused
 bool nsk_tile_setpalette(
     struct nsk_type_tile          *tile,
     const struct nsk_type_palette *palette,
@@ -124,8 +137,10 @@ bool nsk_tile_setpalette(
  * \param[in,out]  tile      The tile
  * \param[in,out]  file      The file
  * \param[in]      filename  The filename
+ * \return True if the tile was read, false otherwise
  */
-void nsk_tile_readchr(
+nsk_attr_result_unused
+bool nsk_tile_readchr(
     struct nsk_type_tile *tile,
     FILE                 *file,
     const char           *filename
@@ -137,8 +152,10 @@ void nsk_tile_readchr(
  * \param[in]     tile      The tile
  * \param[in,out] file      The file
  * \param[in]     filename  The filename
+ * \return True if the tile was saved, false otherwise
  */
-void nsk_tile_savechr(
+nsk_attr_result_unused
+bool nsk_tile_savechr(
     const struct nsk_type_tile *tile,
     FILE                       *file,
     const char                 *filename

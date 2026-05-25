@@ -1,25 +1,32 @@
 #ifndef NSK_TYPE_PNGPALETTES
 #define NSK_TYPE_PNGPALETTES
 
-#include "../../types/nsk_type_palettes.h"
-#include "../../png/types/nsk_type_pngimage.h"
+#include <stdbool.h>
+
+#include "base/nsk_util_attributes.h"
+#include "types/nsk_type_palettes.h"
+#include "png/types/nsk_type_pngimage.h"
 
 /*!
  * \brief  Reads local palettes from Nesokia PNG component
  *
- * \param[in] filename  The filename
- * \return Local palettes
+ * \param[in]  filename  The filename
+ * \param[out] palettes  The local palettes
+ * \return True if the palettes were read, false otherwise
  */
-struct nsk_type_palettes nsk_palettes_readpng(
-    const char *filename
+nsk_attr_result_unused
+bool nsk_palettes_readpng(
+    const char *filename,
+    struct nsk_type_palettes *palettes
 );
 
 /*!
  * \brief  Converts local palettes into composite component
  *
  * \param[in] palettes  The palettes
- * \return Nesokia PNG component image
+ * \return Nesokia PNG component image, or NULL on validation error
  */
+nsk_attr_result_unused
 struct nsk_type_pngimage *nsk_palettes_convtopng(
     const struct nsk_type_palettes *palettes
 );

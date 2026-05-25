@@ -1,0 +1,27 @@
+# tests/nes/27 Super Turrican (E).nes/rom-header.nes
+ - Format:
+	 - Is NES 2.0?         : Yes
+ - Console:
+	 - Type                : Nintendo Entertainment System / Famicom / Dendy
+	 - Timings / region    : Multiple regions/modern
+	 - Vs. PPU type        : Not applicable / Any RP2C03 / Any RC2C03
+	 - Vs. Hardware type   : Not applicable / Vs. Unisystem (normal)
+ - Nametables:
+	 - Mirroring / layout  : Vertical arrangement / Horizontal mirroring / Mapper controlled
+	 - Alternative layout  : Normal nametables layout
+ - Mapper:
+	 - Mapper ID           : 4
+	 - Submapper ID        : 0
+ - Memory:
+	 - PRG ROM             : 128.00 KiB (131072 bytes)
+	 - CHR ROM             : 128.00 KiB (131072 bytes)
+	 - PRG RAM             : 8.00 KiB (8192 bytes)
+	 - CHR RAM             : 0 bytes
+	 - PRG NVRAM           : 0 bytes
+	 - CHR NVRAM           : 0 bytes
+	 - Misc. ROMs          : 0
+ - Miscellaneous info:
+	 - Trainer area        : Not present
+	 - Non volatile memory : Not present
+	 - Expansion device    : Standard Famicom/NES controllers
+

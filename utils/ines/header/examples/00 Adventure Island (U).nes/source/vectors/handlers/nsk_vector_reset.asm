@@ -9,13 +9,14 @@
 
 .include "nsk_common_meta.inc"
 
-.include "../../vectors/handlers/nsk_vector_reset.inc"
-.include "../../vectors/handlers/nsk_vector_nmi.inc"
-.include "../../stage/nsk_stage_list.inc"
-.include "../../ppu/nsk_ppu_vars.inc"
+.include "nsk_vector_reset.inc"
+
+.include "nsk_vector_nmi.inc"
 .include "../../nsk_main.inc"
-.include "../../init/nsk_init_loop.inc"
-.include "../../init/nsk_init_list.inc"
+.include "../../ppu/nsk_ppu_vars.inc"
+.include "../../stage/init/nsk_stage_init.inc"
+.include "../../utils/nsk_constructors.inc"
+.include "../../utils/nsk_util_rand8.inc"
 
 .segment "CODE"
 
@@ -43,7 +44,7 @@
 .macro init_ppu_values
     lda #( \
         NSK::CPU::PPU::BITS::PPUMASK::GRAYSCALE_OFF       | \
-        NSK::CPU::PPU::BITS::PPUMASK::LEFTMOST_BACK_ON    | \
+        NSK::CPU::PPU::BITS::PPUMASK::LEFTMOST_BACK_OFF   | \
         NSK::CPU::PPU::BITS::PPUMASK::LEFTMOST_SPRITE_OFF | \
         NSK::CPU::PPU::BITS::PPUMASK::RENDER_BACK_OFF     | \
         NSK::CPU::PPU::BITS::PPUMASK::RENDER_SPRITES_OFF  | \
@@ -60,7 +61,6 @@
         NSK::CPU::PPU::BITS::PPUCTRL::SPRITE_TABLE_1000   | \
         NSK::CPU::PPU::BITS::PPUCTRL::TILES_TABLE_0000    | \
         NSK::CPU::PPU::BITS::PPUCTRL::SPRITE_8x8          | \
-        NSK::CPU::PPU::BITS::PPUCTRL::PPU_SLAVE           | \
         NSK::CPU::PPU::BITS::PPUCTRL::NMI_DISABLE           \
     )
     sta ppu_temp_control
@@ -99,8 +99,6 @@
 .endmacro
 
 .macro init_zeropage_reset
-    jsr nsk_stage_init
-
     lda #$00
     sta ppu_temp_scroll_x
     sta ppu_temp_scroll_y
@@ -130,7 +128,8 @@
 
     init_vblank_wait
 
-    nsk_init_loop nsk_init_list
+    jsr nsk_constructors_run
+    jsr nsk_stage_init
 
     jmp nsk_main
 .endproc

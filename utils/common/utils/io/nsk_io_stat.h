@@ -3,6 +3,8 @@
 
 #include <sys/stat.h>
 
+#include "base/nsk_util_attributes.h"
+
 #if !defined (S_IFLNK)
     /* By some reason sometimes missed */
     #define S_IFLNK 0120000
@@ -20,7 +22,12 @@
  * \param[out] stat  The stat buffer
  * \return 0 at success
  */
-int nsk_io_lstat(const char *path, struct stat *stat);
+nsk_attr_result_unused
+nsk_attr_args_nonnull(1, 2)
+int nsk_io_lstat(
+    const char *path,
+    struct stat *stat
+);
 
 /*!
  * \brief  Executes platform-specific `stat`
@@ -29,6 +36,11 @@ int nsk_io_lstat(const char *path, struct stat *stat);
  * \param[out] statbuf  The statbuf
  * \return 0 at success
  */
-int nsk_io_stat(const char *path, struct stat *statbuf);
+nsk_attr_result_unused
+nsk_attr_args_nonnull(1, 2)
+int nsk_io_stat(
+    const char *path,
+    struct stat *statbuf
+);
 
 #endif

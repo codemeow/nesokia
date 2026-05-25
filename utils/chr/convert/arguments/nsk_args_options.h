@@ -13,13 +13,22 @@
 #define NSK_OPTION_SHORTLIMIT (1000)
 
 /*!
+ * \brief  Argument processing result
+ */
+enum nsk_args_result {
+    NSK_ARGS_CONTINUE,      /*!< Continue normal program execution */
+    NSK_ARGS_EXIT_SUCCESS,  /*!< Stop argument processing successfully */
+    NSK_ARGS_EXIT_FAILURE   /*!< Stop argument processing with error */
+};
+
+/*!
  * \brief  Options table entry
  */
 struct nsk_options_entry {
     const char   *option_long;             /*!< Long argument option or NULL  */
     const int     option_short;            /*!< Short argument option or 1000+*/
     const int     option_arg;              /*!< Argument presence flag        */
-    void        (*option_processor)(void); /*!< Argument processor            */
+    enum nsk_args_result (*option_processor)(void); /*!< Argument processor */
     const char   *option_desc;             /*!< Argument description          */
 };
 
@@ -79,6 +88,8 @@ struct nsk_options_program {
 
     enum nsk_mode_values      mode;        /*!< Selected mode                 */
     enum nsk_ppuctlr34_values ppuctrl34;   /*!< Nametables purpose            */
+    bool                      mode_set;    /*!< Mode option was provided      */
+    bool                      ppuctrl34_set; /*!< PPUCTRL option was provided  */
 
     char *const     *files;                /*!< Null-terminated files list    */
 };

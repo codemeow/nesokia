@@ -8,22 +8,22 @@
 
 .segment "CHR0"
 
-.incbin "../../chrrom/chr/bank-0.0.chr"
-.incbin "../../chrrom/chr/bank-0.1.chr"
+.incbin "build/chr/bank-0.0000.chr"
+.incbin "build/chr/bank-0.1000.chr"
 
 .segment "CHR1"
 
-.incbin "../../chrrom/chr/bank-1.0.chr"
-.incbin "../../chrrom/chr/bank-1.1.chr"
+.incbin "build/chr/bank-1.0000.chr"
+.incbin "build/chr/bank-1.1000.chr"
 
 .segment "CHR2"
 
-.incbin "../../chrrom/chr/bank-2.0.chr"
-.incbin "../../chrrom/chr/bank-2.1.chr"
+.incbin "build/chr/bank-2.0000.chr"
+.incbin "build/chr/bank-2.1000.chr"
 
 .segment "CHR3"
 
-.incbin "../../chrrom/chr/bank-3.0.chr"
-.incbin "../../chrrom/chr/bank-3.1.chr"
+.incbin "build/chr/bank-3.0000.chr"
+.incbin "build/chr/bank-3.1000.chr"
 
 .endif

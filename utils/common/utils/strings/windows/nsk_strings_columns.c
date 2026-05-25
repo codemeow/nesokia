@@ -2,8 +2,8 @@
 
 #include <string.h>
 
-#include "../../strings/nsk_strings_columns.h"
-#include "../../nsk_util_min.h"
+#include "strings/nsk_strings_columns.h"
+#include "base/nsk_util_min.h"
 
 /*!
  * \brief  Counts bytes of the UTF-8 string that fit into \p requested columns

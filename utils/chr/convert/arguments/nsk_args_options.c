@@ -294,7 +294,7 @@ struct nsk_options_entry nsk_options_table[] = {
         "c2t mode\n"
         "    * PNG component\n"
         "t2c mode\n"
-        "    * Left pattern table (CHR `$0000–$0fff`) \n"
+        "    * Right pattern table (CHR `$1000–$1fff`) \n"
         "\n"
     },
 
@@ -331,3 +331,11 @@ size_t nsk_options_count = NSK_SIZE(nsk_options_table);
  * \brief  Provided program options
  */
 struct nsk_options_program nsk_options_program = { 0 };
+
+/*!
+ * \brief  Module finalizer
+ */
+__attribute__((destructor))
+static void _fini(void) {
+    nsk_pair_free(nsk_options_program.input.explicit);
+}

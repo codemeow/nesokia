@@ -9,18 +9,12 @@
 .include "nsk_common_meta.inc"
 
 .ifndef ::__NSK_PPU_PALETTE_ASM__
-; @brief Temporary address to store palette data address
-.importzp _nsk_ppu_palette_data
-.endif
-
-.ifndef ::__NSK_PPU_PALETTE_ASM__
-; @brief Temporary address to store ppu address
-.import _nsk_ppu_palette_addr
-.endif
-
-.ifndef ::__NSK_PPU_PALETTE_ASM__
-; @brief Sets the palette (both tiles and sprites)
-.import _nsk_ppu_palette_set
+    ; @brief Temporary address to store palette data address
+    .importzp _nsk_ppu_palette_data
+    ; @brief Temporary address to store ppu address
+    .import _nsk_ppu_palette_addr
+    ; @brief Sets the palette (both tiles and sprites)
+    .import _nsk_ppu_palette_set
 .endif
 
 ; @brief Sets the palette for tiles

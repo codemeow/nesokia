@@ -28,8 +28,12 @@ CFLAGS  += -std=c11 -Wall -Wextra -Werror -O0 -g \
 	$(VER_STRING) $(NAME_STRING) \
 	$(INCLUDE_HEADERS) -I$(DIR_COMMON_X) -I$(DIR_COMMON)
 
+include $(DIR_ROOT)/scripts/make/lang/c/modules.mk
+
 # List of source files
-SRCS_COMMON  := $(shell find $(DIR_COMMON) -type f -name '*.c')
+SRCS_COMMON  := $(foreach m,$(COMMON_MODULES_RESOLVED), \
+	$(shell find $(DIR_COMMON)/$(m) -type f -name '*.c') \
+)
 SRCS_PROJECT := $(shell find . -type f -name '*.c')
 
 # Automatically derive object file paths inside build/
@@ -42,7 +46,7 @@ $(DIR_BIN):
 
 $(DIR_BIN)/$(PROJECT_NAME): $(OBJS_COMMON) $(OBJS_PROJECT) | $(DIR_BIN)
 	@$(call print_category,Linking)
-	@$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+	@$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(COMMON_LDLIBS)
 	@$(call print_entry,Linking $@)
 
 # Bug: doesn't show "Compiling" in case of incremental

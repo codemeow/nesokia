@@ -17,6 +17,16 @@ END {
 
  */
 
+#include "./base/nsk_util_assert.h"                  // IWYU pragma: export
+#include "./base/nsk_util_attributes.h"              // IWYU pragma: export
+#include "./base/nsk_util_cleanup.h"                 // IWYU pragma: export
+#include "./base/nsk_util_expsize.h"                 // IWYU pragma: export
+#include "./base/nsk_util_hrbytes.h"                 // IWYU pragma: export
+#include "./base/nsk_util_malloc.h"                  // IWYU pragma: export
+#include "./base/nsk_util_max.h"                     // IWYU pragma: export
+#include "./base/nsk_util_min.h"                     // IWYU pragma: export
+#include "./base/nsk_util_multimap.h"                // IWYU pragma: export
+#include "./base/nsk_util_size.h"                    // IWYU pragma: export
 #include "./error/nsk_util_errno.h"                  // IWYU pragma: export
 #include "./io/nsk_io_dirname.h"                     // IWYU pragma: export
 #include "./io/nsk_io_fopen.h"                       // IWYU pragma: export
@@ -31,15 +41,7 @@ END {
 #include "./log/nsk_log_err.h"                       // IWYU pragma: export
 #include "./log/nsk_log_inf.h"                       // IWYU pragma: export
 #include "./math/nsk_math_endianness.h"              // IWYU pragma: export
-#include "./nsk_util_assert.h"                       // IWYU pragma: export
-#include "./nsk_util_cleanup.h"                      // IWYU pragma: export
-#include "./nsk_util_expsize.h"                      // IWYU pragma: export
-#include "./nsk_util_hrbytes.h"                      // IWYU pragma: export
-#include "./nsk_util_malloc.h"                       // IWYU pragma: export
-#include "./nsk_util_max.h"                          // IWYU pragma: export
-#include "./nsk_util_min.h"                          // IWYU pragma: export
-#include "./nsk_util_multimap.h"                     // IWYU pragma: export
-#include "./nsk_util_size.h"                         // IWYU pragma: export
+#include "./nsk_util_meta.h"                         // IWYU pragma: export
 #include "./png/types/nsk_type_pngcompose.h"         // IWYU pragma: export
 #include "./png/types/nsk_type_pngimage.h"           // IWYU pragma: export
 #include "./png/types/nsk_type_pngpalettes.h"        // IWYU pragma: export
@@ -67,6 +69,5 @@ END {
 #include "./types/ppucolors/nsk_ppucolors_savease.h" // IWYU pragma: export
 #include "./types/ppucolors/nsk_ppucolors_savegpl.h" // IWYU pragma: export
 #include "./types/ppucolors/nsk_ppucolors_savepal.h" // IWYU pragma: export
-
 
 #endif

@@ -1,13 +1,11 @@
 #include <assert.h>
-#include <stdlib.h>
 #include <string.h>
 
-#include "../../png/types/nsk_type_pngcompose.h"
-#include "../../nsk_util_size.h"
-#include "../../png/types/nsk_type_pngppucolors.h"
-#include "../../png/types/nsk_type_pngpalettes.h"
-#include "../../png/types/nsk_type_pngpattable.h"
-#include "../../log/nsk_log_err.h"
+#include "png/types/nsk_type_pngcompose.h"
+#include "base/nsk_util_size.h"
+#include "png/types/nsk_type_pngppucolors.h"
+#include "png/types/nsk_type_pngpalettes.h"
+#include "png/types/nsk_type_pngpattable.h"
 
 /*!
  * \brief  Sizes of components
@@ -196,7 +194,7 @@ static const struct {
  * \param[in]  palettes  The local palettes
  * \param[in]  patleft   The left pattern table
  * \param[in]  patright  The pattern tables
- * \return Composite (full) image
+ * \return Composite (full) image, or NULL on error
  */
 struct nsk_type_pngimage *nsk_pngimage_composesave(
     const struct nsk_type_ppucolors *colors,
@@ -248,6 +246,9 @@ struct nsk_type_pngimage *nsk_pngimage_composesave(
 
         nsk_auto_pifree struct nsk_type_pngimage *component =
             _compose_info[i].conv_o2i(objects[i]);
+        if (!component) {
+            return NULL;
+        }
 
         nsk_pngimage_combine(
             image,
@@ -267,21 +268,16 @@ struct nsk_type_pngimage *nsk_pngimage_composesave(
  * \param[out] colors     The colors
  * \param[out] palettes   The palettes
  * \param[out] pattables  The pattern tables
+ * \return True if the image was read, false otherwise
+ *
+ * \note Arguments cannot be NULL.
  */
-void nsk_pngimage_composeread(
+bool nsk_pngimage_composeread(
     const char *filename,
     struct nsk_type_ppucolors *colors,
     struct nsk_type_palettes  *palettes,
     struct nsk_type_pattables *pattables
 ) {
-    if (!filename || !colors || !palettes || !pattables) {
-        nsk_err(
-            "Error: invalid input at %s",
-            __PRETTY_FUNCTION__
-        );
-        abort();
-    }
-
     memset(colors,    0, sizeof(*colors));
     memset(palettes,  0, sizeof(*palettes));
     memset(pattables, 0, sizeof(*pattables));
@@ -311,6 +307,9 @@ void nsk_pngimage_composeread(
     nsk_auto_pifree struct nsk_type_pngimage *image = nsk_pngimage_read(
         filename
     );
+    if (!image) {
+        return false;
+    }
 
     for (size_t i = 0; i < NSK_COMPOSECOMPS_COUNT; i++) {
         _compose_info[i].conv_i2o(
@@ -320,4 +319,6 @@ void nsk_pngimage_composeread(
             objects[i]
         );
     }
+
+    return true;
 }

@@ -1,10 +1,10 @@
 #if defined (NSK_OS_WINDOWS)
 
-#include "../../io/nsk_io_opendir.h"
+#include "io/nsk_io_opendir.h"
 
-#include "../../strings/windows/nsk_strings_wide.h"
-#include "../../nsk_util_cleanup.h"
-#include "../../nsk_util_malloc.h"
+#include "strings/windows/nsk_strings_wide.h"
+#include "base/nsk_util_cleanup.h"
+#include "base/nsk_util_malloc.h"
 
 /*!
  * \brief  Opens the directory with platform-specific features
@@ -22,11 +22,18 @@ DIR *nsk_io_opendir(const char *path) {
      * safe behavior and avoid broken file names with non-ASCII characters.
      */
     nsk_auto_free LPWSTR wpath = nsk_string_a2w(path);
+    if (!wpath) {
+        return NULL;
+    }
+
     nsk_auto_free char * apath = nsk_string_w2a_enc(
         wpath,
         CP_ACP,
         WC_NO_BEST_FIT_CHARS
     );
+    if (!apath) {
+        return NULL;
+    }
 
     DIR * stream = opendir(apath);
 

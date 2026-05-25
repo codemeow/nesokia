@@ -9,13 +9,13 @@
 /*!
  * \brief  Reads the list of explicitly requested tile palettes
  */
-static void _explicit_read(void) {
+static enum nsk_args_result _explicit_read(void) {
     const char partnames[]  = "lr";
     const size_t partsize   = 256;
     const size_t partscount = 2;
     const size_t list_size  = partsize * partscount;
 
-    char **list = malloc(sizeof(*list) * list_size);
+    char **list = nsk_util_malloc(sizeof(*list) * (list_size + 1));
     for (size_t p = 0; p < partscount; p++) {
         for (size_t i = 0; i < partsize; i++) {
             int res = asprintf(
@@ -28,10 +28,15 @@ static void _explicit_read(void) {
                 nsk_err(
                     "Cannot allocate memory for explicit palette list"
                 );
-                exit(EXIT_FAILURE);
+                for (size_t j = 0; j < p * partsize + i; j++) {
+                    free(list[j]);
+                }
+                free(list);
+                return NSK_ARGS_EXIT_FAILURE;
             }
         }
     }
+    list[list_size] = NULL;
 
     nsk_options_program.input.explicit = nsk_pair_parse(
         optarg,
@@ -44,12 +49,18 @@ static void _explicit_read(void) {
     }
 
     free(list);
+
+    if (!nsk_options_program.input.explicit) {
+        return NSK_ARGS_EXIT_FAILURE;
+    }
+
+    return NSK_ARGS_CONTINUE;
 }
 
 /*!
  * \brief  Validates the list
  */
-static void _explicit_validate(void) {
+static enum nsk_args_result _explicit_validate(void) {
     struct nsk_pair *pair = nsk_options_program.input.explicit;
     while (pair) {
         if (pair->operator != NSK_PAIR_EQUAL) {
@@ -58,17 +69,35 @@ static void _explicit_validate(void) {
                 "The provided list is as follows:\"%s\"\n",
                 optarg
             );
-            exit(EXIT_FAILURE);
+            return NSK_ARGS_EXIT_FAILURE;
         }
 
         pair = nsk_pair_next(pair);
     }
+
+    return NSK_ARGS_CONTINUE;
 }
 
 /*!
  * \brief  Sets input list of explicit palette selection
  */
-void nsk_option_input_patpal_explicit(void) {
-    _explicit_read();
-    _explicit_validate();
+enum nsk_args_result nsk_option_input_patpal_explicit(void) {
+    if (nsk_options_program.input.explicit) {
+        nsk_err(
+            "There must be only one `-e`/`--explicit-palettes` option provided\n"
+        );
+        return NSK_ARGS_EXIT_FAILURE;
+    }
+
+    enum nsk_args_result result = _explicit_read();
+    if (result != NSK_ARGS_CONTINUE) {
+        return result;
+    }
+
+    result = _explicit_validate();
+    if (result != NSK_ARGS_CONTINUE) {
+        return result;
+    }
+
+    return NSK_ARGS_CONTINUE;
 }

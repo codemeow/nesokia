@@ -1,0 +1,93 @@
+[
+	{
+		"filename" : "tests/nes/16 Miracle Piano Teaching System (U).nes/rom-header.nes",
+		"format" : {
+			"isnes20" : {
+				"raw" : true,
+				"display" : "Yes"
+			}
+		},
+		"console" : {
+			"console" : {
+				"raw" : 0,
+				"display" : "Nintendo Entertainment System / Famicom / Dendy"
+			},
+			"region" : {
+				"raw" : 0,
+				"display" : "RP2C02 PPU / NTSC 21.47 MHz / North America / Japan / South Korea / Taiwan"
+			},
+			"vs_ppu" : {
+				"raw" : null,
+				"display" : "Not applicable / Any RP2C03 / Any RC2C03"
+			},
+			"vs_hardware" : {
+				"raw" : null,
+				"display" : "Not applicable / Vs. Unisystem (normal)"
+			}
+		},
+		"nametables" : {
+			"mirroring" : {
+				"raw" : 0,
+				"display" : "Vertical arrangement / Horizontal mirroring / Mapper controlled"
+			},
+			"alternative" : {
+				"raw" : 0,
+				"display" : "Normal nametables layout"
+			}
+		},
+		"mapper" : {
+			"mapper" : {
+				"raw" : 1,
+				"display" : "1"
+			},
+			"submapper" : {
+				"raw" : 0,
+				"display" : "0"
+			}
+		},
+		"memory" : {
+			"prg_rom" : {
+				"raw" : 262144,
+				"display" : "256.00 KiB (262144 bytes)"
+			},
+			"chr_rom" : {
+				"raw" : 65536,
+				"display" : "64.00 KiB (65536 bytes)"
+			},
+			"prg_ram" : {
+				"raw" : 8192,
+				"display" : "8.00 KiB (8192 bytes)"
+			},
+			"chr_ram" : {
+				"raw" : 0,
+				"display" : "0 bytes"
+			},
+			"prg_nvram" : {
+				"raw" : 0,
+				"display" : "0 bytes"
+			},
+			"chr_nvram" : {
+				"raw" : 0,
+				"display" : "0 bytes"
+			},
+			"misc_roms" : {
+				"raw" : 0,
+				"display" : "0"
+			}
+		},
+		"misc" : {
+			"trainer" : {
+				"raw" : 0,
+				"display" : "Not present"
+			},
+			"battery" : {
+				"raw" : 0,
+				"display" : "Not present"
+			},
+			"device" : {
+				"raw" : 25,
+				"display" : "Toolworks Miracle Piano"
+			}
+		}
+	}
+]

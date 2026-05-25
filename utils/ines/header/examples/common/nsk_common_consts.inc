@@ -15,22 +15,22 @@
     .scope SCREEN
         ; @brief Tilemap info
         .scope TILEMAP
-            WIDTH  = $20 ; Screen width in tiles
-            HEIGHT = $1e ; Screen height in tiles
+            WIDTH  = 32 ; Screen width in tiles
+            HEIGHT = 30 ; Screen height in tiles
         .endscope
 
         ; @brief Tiles info
         .scope TILE
-            WIDTH    = $08 ; Tile width in pixels
-            HEIGHT   = $08 ; Tile height in pixels
+            WIDTH    = 8 ; Tile width in pixels
+            HEIGHT   = 8 ; Tile height in pixels
         .endscope
 
         ; @brief Attributes info
         .scope ATTR
             ; @brief Byte sizes
             .scope BYTE
-                WIDTH   = $08 ; Attribute table width in bytes
-                HEIGHT  = $08 ; Attribute table height in bytes
+                WIDTH   = 8 ; Attribute table width in bytes
+                HEIGHT  = 8 ; Attribute table height in bytes
             .endscope
         .endscope
 
@@ -45,14 +45,14 @@
         .scope SPRITES
             ; @brief 8x8 mode sizes
             .scope MODE_8X8
-                SPRITEWIDTH  = $08 ; Sprite width in pixels
-                SPRITEHEIGHT = $08 ; Sprite height in pixels
+                SPRITEWIDTH  = 8 ; Sprite width in pixels
+                SPRITEHEIGHT = 8 ; Sprite height in pixels
             .endscope
 
             ; @brief 8x16 mode sizes
             .scope MODE_8X16
-                SPRITEWIDTH  = $08 ; Sprite width in pixels
-                SPRITEHEIGHT = $10 ; Sprite height in pixels
+                SPRITEWIDTH  = 8  ; Sprite width in pixels
+                SPRITEHEIGHT = 16 ; Sprite height in pixels
             .endscope
         .endscope
     .endscope
@@ -100,8 +100,13 @@
                     SPRITE_8x8        = %00000000 ; Sprite size is 8x8
                     SPRITE_8x16       = %00100000 ; Sprite size is 8x16
 
-                    PPU_SLAVE         = %00000000 ; PPU reads backdrop from EXT pins
-                    PPU_MASTER        = %01000000 ; PPU emits backdrop to EXT pins
+; These values are commented out on purpose.
+;
+; Accidentally setting SLAVE mode can possible damage your console.
+; And as the "safe" value is 0 it it safer to not to use this bit at all
+;
+;                    PPU_MASTER        = %00000000 ; PPU reads backdrop from EXT pins
+;                    PPU_SLAVE         = %01000000 ; PPU emits backdrop to EXT pins
 
                     NMI_DISABLE       = %00000000 ; NMI interrupt is disabled
                     NMI_ENABLE        = %10000000 ; NMI interrupt is enabled
@@ -315,7 +320,40 @@
             TILES   = $3f00 ; Tiles' palette
             SPRITES = $3f10 ; Sprites' palette
 
-            SIZE    = $10   ; Single palette size in bytes
+            SIZE    = 16    ; Single palette size in bytes
+        .endscope
+
+        ; @brief Sprites related constants for OAM
+        .scope SPRITES
+            ; @brief Max sprites slots
+            MAXCOUNT = 64
+
+            ; @brief Attributes
+            .scope ATTRIBUTE
+                PALETTEMASK = %11 ; First two bits represent the palette
+
+                ; @brief Sprite priority
+                .scope PRIORITY
+                    FOREGROUND = %00000000 ; Above the background
+                    BACKGROUND = %00100000 ; Under the background
+                .endscope
+
+                ; @brief Flip attributes
+                .scope FLIP
+
+                    ; @brief Horizontally
+                    .scope HOR
+                        NO     = %00000000 ; Do not flip
+                        YES    = %01000000 ; Flip
+                    .endscope
+
+                    ; @brief Vertically
+                    .scope VER
+                        NO     = %00000000 ; Do not flip
+                        YES    = %10000000 ; Flip
+                    .endscope
+                .endscope
+            .endscope
         .endscope
     .endscope
 .endscope

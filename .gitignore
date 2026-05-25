@@ -1,18 +1,33 @@
-*.sublime-workspace
-*.elf
-*.o
+# Global match
+*/*.elf
+*/*.o
+*/*.dbg
+*/*.nes
+
+# Root directories
 build
 bin
+
+# Editors files
 .vscode
+*.sublime-workspace
 
-# Utils/Create autotests configuration files
-utils/ines/header/tests/cases/*/nsk_header_config.inc
-# Utils/Create autotests object files
-utils/ines/header/tests/cases/*/test.o
-# Utils/Create autotests binary files
-utils/ines/header/tests/cases/*/test.nes
+# Python cache files
+__pycache__/
+*.py[cod]
 
-# Utils/Create examples build directory
+# NES test cases generated configuration files
+tests/nes/*/nsk_header_config.inc
+# NES test cases generated object files
+tests/nes/*/*.o
+# NES test cases generated binary files
+tests/nes/*/test.nes
+# NES test cases generated debug files
+tests/nes/*/*.dbg
+
+# utils/ines/header examples build directory
 utils/ines/header/examples/*/bin
-# Utils/Create examples binary files
+# utils/ines/header examples binary files
 utils/ines/header/examples/*/*.nes
+# utils/ines/header examples debug files
+utils/ines/header/examples/*/*.dbg

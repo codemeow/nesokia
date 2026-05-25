@@ -1,44 +1,34 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <threads.h>
 
-#include "../types/nsk_type_palettes.h"
-#include "../log/nsk_log_err.h"
-#include "../strings/nsk_strings_ansi.h"
-#include "../log/nsk_log_inf.h"
-#include "../io/nsk_io_fopen.h"
-#include "../error/nsk_util_errno.h"
-#include "../nsk_util_cleanup.h"
-#include "../nsk_util_size.h"
-
-/*!
- * \brief  Number of static strings in functions, returning static strings
- */
-#define _STATIC_CAROUSEL_SIZE (5)
+#include "types/nsk_type_palettes.h"
+#include "log/nsk_log_err.h"
+#include "strings/nsk_strings_ansi.h"
+#include "log/nsk_log_inf.h"
+#include "io/nsk_io_fopen.h"
+#include "error/nsk_util_errno.h"
+#include "base/nsk_util_cleanup.h"
+#include "base/nsk_util_malloc.h"
+#include "base/nsk_util_size.h"
 
 /*!
  * \brief  Returns the binary string representation (00 .. 11)
  *
  * \param[in] value  The value
- * \return Static string
+ * \return Allocated string
  */
-static const char *_string_binary(size_t value) {
-    static thread_local char string[_STATIC_CAROUSEL_SIZE][8];
-    static thread_local size_t index;
-
-    if (++index >= _STATIC_CAROUSEL_SIZE) {
-        index = 0;
-    }
+static char *_string_binary(size_t value) {
+    char *string = nsk_util_malloc(8);
 
     snprintf(
-        string[index],
-        sizeof(string[index]),
+        string,
+        8,
         "%zu%zu",
         (value & (1 << 1)) >> 1,
         (value & (1 << 0)) >> 0
     );
-    return string[index];
+    return string;
 }
 
 /*!
@@ -63,16 +53,29 @@ static void _palette_validate(
 /*!
  * \brief  Validates palette's colors field
  *
- * \param[in]  table  The table
+ * \param[in]  palette  The palette
+ *
+ * \return True if the field is initialized, false otherwise
  */
-void nsk_palette_validate_colors(const struct nsk_type_palette *palette) {
-    _palette_validate(palette->init.colors, "colors");
+bool nsk_palette_validate_colors(const struct nsk_type_palette *palette) {
+    if (!palette->init.colors) {
+        nsk_err(
+            "Error: Palette field \"%s\" is not initialized\n",
+            "colors"
+        );
+        return false;
+    }
+
+    return true;
 }
 
 /*!
  * \brief  Validates palette's indexes field
  *
- * \param[in]  table  The table
+ * \param[in]  palette  The palette
+ *
+ * \note This is a fatal workflow invariant check. It returns only when the
+ *       field is initialized; otherwise it terminates the process.
  */
 void nsk_palette_validate_indexes(const struct nsk_type_palette *palette) {
     _palette_validate(palette->init.indexes, "indexes");
@@ -84,8 +87,9 @@ void nsk_palette_validate_indexes(const struct nsk_type_palette *palette) {
  * \param[in]      file     The file
  * \param[in]      filename File's filename
  * \param[in,out]  palette  The palette
+ * \return True if the palette was read, false otherwise
  */
-static void _palette_readspal(
+static bool _palette_readspal(
     FILE *file,
     const char *filename,
     struct nsk_type_palette *palette
@@ -100,13 +104,14 @@ static void _palette_readspal(
                     filename,
                     nsk_util_strerror(errno)
                 );
-                exit(EXIT_FAILURE);
+                return false;
             }
             palette->group[g].index[c] = index;
         }
     }
 
     palette->init.indexes = true;
+    return true;
 }
 
 /*!
@@ -115,8 +120,9 @@ static void _palette_readspal(
  * \param[in]       file      The file
  * \param[in]       filename  The filename
  * \param[in,out]   palette   The palette
+ * \return True if the palette was saved, false otherwise
  */
-static void _palette_savespal(
+static bool _palette_savespal(
     FILE *file,
     const char *filename,
     const struct nsk_type_palette *palette
@@ -133,26 +139,30 @@ static void _palette_savespal(
                     filename,
                     nsk_util_strerror(errno)
                 );
-                exit(EXIT_FAILURE);
+                return false;
             }
         }
     }
+
+    return true;
 }
 
 /*!
  * \brief  Reads .spal file ("Selected palette")
- * (binary $3f00..$3f0f/$f10..$3f1f)
+ * (binary $3f00..$3f0f/$3f10..$3f1f)
  *
- * \note Reads only `index` fiels. Call `nsk_palette_apply` function
+ * \note Reads only `index` fields. Call `nsk_palette_apply` function
  *       to fill the actual colors
  *
- * \param[in] filename  The filename
- * \return Palette
+ * \param[in]  filename  The filename
+ * \param[out] palette   The palette
+ * \return True if the palette was read, false otherwise
  */
-struct nsk_type_palette nsk_palette_readspal(
-    const char *filename
+bool nsk_palette_readspal(
+    const char *filename,
+    struct nsk_type_palette *palette
 ) {
-    struct nsk_type_palette palette = { 0 };
+    *palette = (struct nsk_type_palette){ 0 };
 
     nsk_auto_fclose FILE *file = nsk_io_fopen(filename, "rb");
     if (!file) {
@@ -162,11 +172,10 @@ struct nsk_type_palette nsk_palette_readspal(
             filename,
             nsk_util_strerror(errno)
         );
-        exit(EXIT_FAILURE);
+        return false;
     }
 
-    _palette_readspal(file, filename, &palette);
-    return palette;
+    return _palette_readspal(file, filename, palette);
 }
 
 /*!
@@ -174,39 +183,42 @@ struct nsk_type_palette nsk_palette_readspal(
  *
  * \param[in] filename  The filename
  * \param[in] palette   The palette
+ * \return True if the palette was saved, false otherwise
  */
-void nsk_palette_savespal(
+bool nsk_palette_savespal(
     const char *filename,
     const struct nsk_type_palette *palette
 ) {
     nsk_auto_fclose FILE *file = nsk_io_fopen(filename, "wb");
-        if (!file) {
+    if (!file) {
         nsk_err(
             "Error: cannot open file \"%s\" for palette colors writing.\n"
             "Possible reason: %s\n",
             filename,
             nsk_util_strerror(errno)
         );
-        exit(EXIT_FAILURE);
+        return false;
     }
 
-    _palette_savespal(file, filename, palette);
+    return _palette_savespal(file, filename, palette);
 }
 
 /*!
  * \brief  Reads .spals file ("Selected palettes")
  *
- * \note Reads only `index` fiels. Call `nsk_palette_apply` function
+ * \note Reads only `index` fields. Call `nsk_palette_apply` function
  *       to fill the actual colors
  * (binary $3f00..$3f1f)
  *
- * \param[in] filename  The filename
- * \return Palettes
+ * \param[in]  filename  The filename
+ * \param[out] palettes  The palettes
+ * \return True if the palettes were read, false otherwise
  */
-struct nsk_type_palettes nsk_palettes_readspals(
-    const char *filename
+bool nsk_palettes_readspals(
+    const char *filename,
+    struct nsk_type_palettes *palettes
 ) {
-    struct nsk_type_palettes palettes = { 0 };
+    *palettes = (struct nsk_type_palettes){ 0 };
 
     nsk_auto_fclose FILE *file = nsk_io_fopen(filename, "rb");
     if (!file) {
@@ -216,51 +228,61 @@ struct nsk_type_palettes nsk_palettes_readspals(
             filename,
             nsk_util_strerror(errno)
         );
-        exit(EXIT_FAILURE);
+        return false;
     }
 
-    for (size_t p = 0; p < NSK_SIZE(palettes.plane); p++) {
-        _palette_readspal(file, filename, &palettes.plane[p]);
+    for (size_t p = 0; p < NSK_SIZE(palettes->plane); p++) {
+        if (!_palette_readspal(file, filename, &palettes->plane[p])) {
+            return false;
+        }
     }
 
-    return palettes;
+    return true;
 }
 
 /*!
  * \brief  Saves both palettes as binary .spals file
  *
  * \param[in] filename  The filename
- * \param[in] palette   The palette
+ * \param[in] palettes  The palettes
+ * \return True if the palettes were saved, false otherwise
  */
-void nsk_palettes_savespals(
+bool nsk_palettes_savespals(
     const char *filename,
     const struct nsk_type_palettes *palettes
 ) {
     nsk_auto_fclose FILE *file = nsk_io_fopen(filename, "wb");
-        if (!file) {
+    if (!file) {
         nsk_err(
             "Error: cannot open file \"%s\" for palette colors writing.\n"
             "Possible reason: %s\n",
             filename,
             nsk_util_strerror(errno)
         );
-        exit(EXIT_FAILURE);
+        return false;
     }
 
     for (size_t p = 0; p < NSK_SIZE(palettes->plane); p++) {
-        _palette_savespal(file, filename, &palettes->plane[p]);
+        if (!_palette_savespal(file, filename, &palettes->plane[p])) {
+            return false;
+        }
     }
+
+    return true;
 }
 
 /*!
  * \brief  Shows selected palette as ANSI colored output
  *
  * \param[in] palette  The palette
+ * \return True if the palette was shown, false otherwise
  */
-void nsk_palette_show(
+bool nsk_palette_show(
     const struct nsk_type_palette *palette
 ) {
-    nsk_palette_validate_colors(palette);
+    if (!nsk_palette_validate_colors(palette)) {
+        return false;
+    }
 
     nsk_inf(
         "# %s palette ($3f-)\n",
@@ -269,35 +291,49 @@ void nsk_palette_show(
 
     nsk_inf("           ");
     for (size_t c = 0; c < NSK_PALETTESIZE_COLORS; c++) {
-        nsk_inf("   -%s ", _string_binary(c));
+        nsk_auto_free char *binary = _string_binary(c);
+        nsk_inf("   -%s ", binary);
     }
     nsk_inf("\n");
 
     for (size_t g = 0; g < NSK_PALETTESIZE_GROUPS; g++) {
-        nsk_inf("  %%%04d %s- ", (int)palette->plane, _string_binary(g));
+        nsk_auto_free char *binary = _string_binary(g);
+        nsk_inf("  %%%04d %s- ", (int)palette->plane, binary);
         for (size_t c = 0; c < NSK_PALETTESIZE_COLORS; c++) {
             const union nsk_type_color4 *color = &palette->group[g].color[c];
+            nsk_auto_free char *string = nsk_string_color(
+                color->r,
+                color->g,
+                color->b
+            );
             nsk_inf(
                 "%s ",
-                nsk_string_color(color->r, color->g, color->b)
+                string
             );
         }
         nsk_inf("\n");
     }
     nsk_inf("\n");
+
+    return true;
 }
 
 /*!
  * \brief  Shows selected palettes as ANSI colored output
  *
  * \param[in] palettes  The palettes
+ * \return True if the palettes were shown, false otherwise
  */
-void nsk_palettes_show(
+bool nsk_palettes_show(
     const struct nsk_type_palettes *palettes
 ) {
     for (size_t p = 0; p < NSK_PLANES_COUNT; p++) {
-        nsk_palette_show(&palettes->plane[p]);
+        if (!nsk_palette_show(&palettes->plane[p])) {
+            return false;
+        }
     }
+
+    return true;
 }
 
 /*!
@@ -306,7 +342,7 @@ void nsk_palettes_show(
  * \param[in] colors   The colors
  * \param[in] palette  The palette
  */
-void nsk_palette_validate(
+bool nsk_palette_validate(
     const struct nsk_type_ppucolors *colors,
     const struct nsk_type_palette   *palette
 ) {
@@ -322,7 +358,7 @@ void nsk_palette_validate(
                     c,
                     palette->group[g].index[c]
                 );
-                exit(EXIT_FAILURE);
+                return false;
             }
 
             if (!colors->allowed[palette->group[g].index[c]]) {
@@ -332,10 +368,12 @@ void nsk_palette_validate(
                     g,
                     c
                 );
-                exit(EXIT_FAILURE);
+                return false;
             }
         }
     }
+
+    return true;
 }
 
 /*!
@@ -344,15 +382,19 @@ void nsk_palette_validate(
  * \param[in] colors   The colors
  * \param[in] palettes  The palettes
  */
-void nsk_palettes_validate(
+bool nsk_palettes_validate(
     const struct nsk_type_ppucolors *colors,
     const struct nsk_type_palettes  *palettes
 ) {
-    nsk_palette_validate_colors(&palettes->plane[NSK_PLANE_BACKGROUND]);
-    nsk_palette_validate_colors(&palettes->plane[NSK_PLANE_SPRITES]);
+    if (!nsk_palette_validate_colors(&palettes->plane[NSK_PLANE_BACKGROUND]) ||
+        !nsk_palette_validate_colors(&palettes->plane[NSK_PLANE_SPRITES])) {
+        return false;
+    }
 
     for (size_t p = 0; p < NSK_PLANES_COUNT; p++) {
-        nsk_palette_validate(colors, &palettes->plane[p]);
+        if (!nsk_palette_validate(colors, &palettes->plane[p])) {
+            return false;
+        }
     }
 
     for (size_t g = 0; g < NSK_PALETTESIZE_GROUPS; g++) {
@@ -362,15 +404,19 @@ void nsk_palettes_validate(
             &palettes->plane[NSK_PLANE_SPRITES].group[g].color[0];
 
         if (cb->raw != cs->raw) {
+            nsk_auto_free char *b = nsk_string_color(cb->r, cb->g, cb->b);
+            nsk_auto_free char *s = nsk_string_color(cs->r, cs->g, cs->b);
             nsk_err(
                 "Error: first colors of the %zu groups does not match: %s ≠ %s\n",
                 g,
-                nsk_string_color(cb->r, cb->g, cb->b),
-                nsk_string_color(cs->r, cs->g, cs->b)
+                b,
+                s
             );
-            exit(EXIT_FAILURE);
+            return false;
         }
     }
+
+    return true;
 }
 
 /*!
@@ -378,8 +424,9 @@ void nsk_palettes_validate(
  *
  * \param[in]       colors   The colors
  * \param[in,out]   palette  The palette
+ * \return True if colors were assigned, false otherwise
  */
-void nsk_palette_setcolors(
+bool nsk_palette_setcolors(
     const struct nsk_type_ppucolors *colors,
     struct nsk_type_palette *palette
 ) {
@@ -397,7 +444,7 @@ void nsk_palette_setcolors(
                     c,
                     index
                 );
-                exit(EXIT_FAILURE);
+                return false;
             }
 
             if (!colors->allowed[index]) {
@@ -409,7 +456,7 @@ void nsk_palette_setcolors(
                     g,
                     c
                 );
-                exit(EXIT_FAILURE);
+                return false;
             }
 
             palette->group[g].color[c].raw = colors->colors[index].raw;
@@ -417,6 +464,7 @@ void nsk_palette_setcolors(
     }
 
     palette->init.colors = true;
+    return true;
 }
 
 /*!
@@ -424,14 +472,19 @@ void nsk_palette_setcolors(
  *
  * \param[in]       colors    The colors
  * \param[in,out]   palettes  The palettes
+ * \return True if colors were assigned, false otherwise
  */
-void nsk_palettes_setcolors(
+bool nsk_palettes_setcolors(
     const struct nsk_type_ppucolors *colors,
     struct nsk_type_palettes *palettes
 ) {
     for (size_t p = 0; p < NSK_PLANES_COUNT; p++) {
-        nsk_palette_setcolors(colors, &palettes->plane[p]);
+        if (!nsk_palette_setcolors(colors, &palettes->plane[p])) {
+            return false;
+        }
     }
+
+    return true;
 }
 
 /*!
@@ -440,11 +493,13 @@ void nsk_palettes_setcolors(
  * \param[in]     colors    The colors
  * \param[in,out] palette   The palette
  */
-void nsk_palette_setindexes(
+bool nsk_palette_setindexes(
     const struct nsk_type_ppucolors *colors,
     struct nsk_type_palette *palette
 ) {
-    nsk_palette_validate_colors(palette);
+    if (!nsk_palette_validate_colors(palette)) {
+        return false;
+    }
 
     for (size_t g = 0; g < NSK_PALETTESIZE_GROUPS; g++) {
         for (size_t c = 0; c < NSK_PALETTESIZE_COLORS; c++) {
@@ -458,22 +513,24 @@ void nsk_palette_setindexes(
                 }
             }
             if (i == NSK_PPUCOLORSTABLE_COUNT) {
+                nsk_auto_free char *color = nsk_string_color(
+                    palette->group[g].color[c].r,
+                    palette->group[g].color[c].g,
+                    palette->group[g].color[c].b
+                );
                 nsk_err(
                     "Error: invalid color in the palette [%zu:%zu]: %s",
                     g,
                     c,
-                    nsk_string_color(
-                        palette->group[g].color[c].r,
-                        palette->group[g].color[c].g,
-                        palette->group[g].color[c].b
-                    )
+                    color
                 );
-                exit(EXIT_FAILURE);
+                return false;
             }
         }
     }
 
     palette->init.indexes = true;
+    return true;
 }
 
 /*!
@@ -482,16 +539,20 @@ void nsk_palette_setindexes(
  * \param[in]     colors    The colors
  * \param[in,out] palettes  The palettes
  */
-void nsk_palettes_setindexes(
+bool nsk_palettes_setindexes(
     const struct nsk_type_ppucolors *colors,
     struct nsk_type_palettes *palettes
 ) {
     for (size_t p = 0; p < NSK_PLANES_COUNT; p++) {
-        nsk_palette_setindexes(
+        if (!nsk_palette_setindexes(
             colors,
             &palettes->plane[p]
-        );
+        )) {
+            return false;
+        }
     }
+
+    return true;
 }
 
 /*!
@@ -499,14 +560,16 @@ void nsk_palettes_setindexes(
  *
  * \param[in] palette  The palette
  * \param[in] group The colors group
- * \return The color index
+ * \return The color index, or (size_t)-1 on error
  */
 size_t nsk_palette_getindex(
     const struct nsk_type_palette *palette,
     size_t group,
     const union nsk_type_color4 *color
 ) {
-    nsk_palette_validate_colors(palette);
+    if (!nsk_palette_validate_colors(palette)) {
+        return (size_t)-1;
+    }
 
     for (size_t i = 0; i < NSK_PALETTESIZE_COLORS; i++) {
         if (palette->group[group].color[i].raw == color->raw) {
@@ -514,15 +577,16 @@ size_t nsk_palette_getindex(
         }
     }
 
+    nsk_auto_free char *string = nsk_string_color(
+        color->r,
+        color->g,
+        color->b
+    );
     nsk_err(
         "Error: color %s is not found in the %zu group of the %s palette\n",
-        nsk_string_color(
-            color->r,
-            color->g,
-            color->b
-        ),
+        string,
         group,
         nsk_conv_plane2string(palette->plane)
     );
-    exit(EXIT_FAILURE);
+    return (size_t)-1;
 }

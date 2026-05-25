@@ -1,7 +1,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-#include "../log/nsk_log_err.h"
+#include "log/nsk_log_err.h"
 
 /*!
  * \brief  Outputs message to stderr

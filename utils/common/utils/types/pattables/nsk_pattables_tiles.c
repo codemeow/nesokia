@@ -1,9 +1,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../../types/pattables/nsk_pattables_tiles.h"
-#include "../../types/nsk_type_tile.h"
-#include "../../log/nsk_log_err.h"
+#include "types/pattables/nsk_pattables_tiles.h"
+#include "types/nsk_type_tile.h"
+#include "log/nsk_log_err.h"
 
 /*!
  * \brief  Finds the tile's requested explicit palette in the list
@@ -52,8 +52,9 @@ static ssize_t _explicit_find(
  * \param[in] table     The table
  * \param[in] palette   The palette
  * \param[in] explicit  The list of explici palette indexes
+ * \return True if palettes were assigned, false otherwise
  */
-void nsk_pattable_settilespalettes(
+bool nsk_pattable_settilespalettes(
     struct nsk_type_pattable        *table,
     const struct nsk_type_palette   *palette,
     const struct nsk_pair           *explicit
@@ -74,10 +75,12 @@ void nsk_pattable_settilespalettes(
                     nsk_conv_plane2string(table->plane),
                     nsk_conv_pataddress2value(table->address)
                 );
-                exit(EXIT_FAILURE);
+                return false;
             }
         }
     }
+
+    return true;
 }
 
 /*!
@@ -85,16 +88,21 @@ void nsk_pattable_settilespalettes(
  *
  * \param[in] table     The table
  * \param[in] palette   The palette
+ * \return True if indexes were assigned, false otherwise
  */
-void nsk_pattable_settilesindexes(
+bool nsk_pattable_settilesindexes(
     struct nsk_type_pattable        *table,
     const struct nsk_type_palette   *palette
 ) {
     for (size_t h = 0; h < NSK_PATTABLETABLE_HEIGHT; h++) {
         for (size_t w = 0; w < NSK_PATTABLETABLE_WIDTH; w++) {
-            nsk_tile_setindex(&table->tile[h][w], palette);
+            if (!nsk_tile_setindex(&table->tile[h][w], palette)) {
+                return false;
+            }
         }
     }
+
+    return true;
 }
 
 /*!
@@ -120,19 +128,24 @@ void nsk_pattable_settilescolors(
  * \param[in] tables    The tables
  * \param[in] palettes  The palettes
  * \param[in] explicit  The list of explici palette indexes
+ * \return True if palettes were assigned, false otherwise
  */
-void nsk_pattables_settilespalettes(
+bool nsk_pattables_settilespalettes(
     struct nsk_type_pattables       *tables,
     const struct nsk_type_palettes  *palettes,
     const struct nsk_pair           *explicit
 ) {
     for (size_t p = 0; p < NSK_PLANES_COUNT; p++) {
-        nsk_pattable_settilespalettes(
+        if (!nsk_pattable_settilespalettes(
             &tables->plane[p],
             &palettes->plane[p],
             explicit
-        );
+        )) {
+            return false;
+        }
     }
+
+    return true;
 }
 
 /*!
@@ -140,17 +153,22 @@ void nsk_pattables_settilespalettes(
  *
  * \param[in] tables    The tables
  * \param[in] palettes  The palettes
+ * \return True if indexes were assigned, false otherwise
  */
-void nsk_pattables_settilesindexes(
+bool nsk_pattables_settilesindexes(
     struct nsk_type_pattables       *tables,
     const struct nsk_type_palettes  *palettes
 ) {
     for (size_t p = 0; p < NSK_PLANES_COUNT; p++) {
-        nsk_pattable_settilesindexes(
+        if (!nsk_pattable_settilesindexes(
             &tables->plane[p],
             &palettes->plane[p]
-        );
+        )) {
+            return false;
+        }
     }
+
+    return true;
 }
 
 /*!

@@ -1,24 +1,31 @@
 #ifndef NSK_TYPE_PNGPPUCOLORS
 #define NSK_TYPE_PNGPPUCOLORS
 
-#include "../../types/nsk_type_ppucolors.h"
-#include "../../png/types/nsk_type_pngimage.h"
+#include <stdbool.h>
+
+#include "base/nsk_util_attributes.h"
+#include "types/nsk_type_ppucolors.h"
+#include "png/types/nsk_type_pngimage.h"
 /*!
  * \brief  Reads the PPU colors from Nesokia PNG component
  *
- * \param[in] filename  The filename
- * \return PPU colors
+ * \param[in]  filename  The filename
+ * \param[out] colors    The colors
+ * \return True if the PPU colors were read, false otherwise
  */
-struct nsk_type_ppucolors nsk_ppucolors_readpng(
-    const char *filename
+nsk_attr_result_unused
+bool nsk_ppucolors_readpng(
+    const char *filename,
+    struct nsk_type_ppucolors *colors
 );
 
 /*!
  * \brief  Converts PPU colors into composite component
  *
  * \param[in] colors  The colors
- * \return Nesokia PNG component image
+ * \return Nesokia PNG component image, or NULL on error
  */
+nsk_attr_result_unused
 struct nsk_type_pngimage *nsk_ppucolors_convtopng(
     const struct nsk_type_ppucolors *colors
 );

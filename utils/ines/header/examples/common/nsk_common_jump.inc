@@ -55,47 +55,44 @@
 ; @arg table Table/list of 2-bytes addresses
 ; @arg index Index of the table's element
 .macro jai ramptr, table, index
-.scope
-    init:
-        push a, x, y
+    .local done
 
-    address:
-        .if     (.xmatch({index}, x))
-            txa
+    .assert .paramcount = 3, error, "Illegal JAI call"
 
-        .elseif (.xmatch({index}, y))
-            tya
+    push a, y
 
-        .else
-            lda index
+    .if     (.xmatch({index}, x))
+        txa
 
-        .endif
+    .elseif (.xmatch({index}, y))
+        tya
 
-        asl
+    .else
+        lda index
 
-        tay
-        lda table + 0, y
-        sta ramptr + 0
-        lda table + 1, y
-        sta ramptr + 1
+    .endif
 
-    check:
-        lda ramptr + 1
-        ora ramptr + 0
-        beq done
+    asl
 
-    return:
-        lda #>(done - 1)
-        pha
-        lda #<(done - 1)
-        pha
+    tay
+    lda table + 0, y
+    sta ramptr + 0
+    lda table + 1, y
+    sta ramptr + 1
 
-    jump:
-        jmp (ramptr)
+    ; Failsafe
+    ora ramptr + 0
+    beq done
+
+    lda #>(done - 1)
+    pha
+    lda #<(done - 1)
+    pha
+
+    jmp (ramptr)
 
     done:
-        pull a, x, y
-.endscope
+        pull a, y
 .endmacro
 
 ; @brief Jump By Address instruction

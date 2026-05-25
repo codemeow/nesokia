@@ -1,16 +1,20 @@
 #include <stddef.h>
 #include <string.h>
 
-#include "../strings/nsk_strings_strdup.h"
+#include "strings/nsk_strings_strdup.h"
 
-#include "../log/nsk_log_err.h"
-#include "../nsk_util_malloc.h"
+#include "log/nsk_log_err.h"
+#include "base/nsk_util_malloc.h"
 
 /*!
  * \brief  Dupes the string value
  *
  * \param[in] value  The value
  * \return Allocated copied string
+ *
+ * \note This function never returns NULL. It either returns an allocated copy
+ *       or terminates the process.
+ * \note Passing NULL terminates the process.
  */
 char *nsk_strings_strdup(const char *value) {
     if (!value) {

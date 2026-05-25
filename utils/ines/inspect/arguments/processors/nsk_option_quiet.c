@@ -4,6 +4,8 @@
 /*!
  * \brief  Sets the "quiet" mode, producing no output but errors
  */
-void nsk_option_quiet(void) {
+enum nsk_args_result nsk_option_quiet(void) {
     nsk_log_quiet = true;
+
+    return NSK_ARGS_CONTINUE;
 }

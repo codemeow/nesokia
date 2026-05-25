@@ -3,6 +3,7 @@
 #include <nsk_util_meta.h>
 
 #include "../../queue/printers/nsk_printer_xml.h"
+#include "../../queue/printers/nsk_printer_match.h"
 #include "../../types/entry/nsk_entry_storage.h"
 #include "../../types/entry/nsk_entry_type.h"
 #include "../../types/header/nsk_header_data.h"
@@ -104,6 +105,10 @@ static void _print_game_format(
     const char *filename __attribute__((unused)),
     const struct nsk_header_data *data
 ) {
+    if (!nsk_printer_match("isnes20")) {
+        return;
+    }
+
     nsk_inf("\t\t<format isnes20=\"%d\" />\n", data->isNES20);
 }
 
@@ -118,26 +123,34 @@ static void _print_game_memory(
     const struct nsk_header_data *data
 ) {
     struct {
-        const char *name;
+        const char *shortcut;
+        const char *tag;
         uint64_t    value;
     } table_simple_u64[] = {
-        { "prgrom", data->ROM.prg },
-        { "chrrom", data->ROM.chr },
-        { "prgram", data->RAM.prg },
-        { "chrram", data->RAM.chr },
-        { "prgnvram", data->NVRAM.prg },
-        { "chrnvram", data->NVRAM.chr },
+        { "prg_rom",   "prgrom",   data->ROM.prg    },
+        { "chr_rom",   "chrrom",   data->ROM.chr    },
+        { "prg_ram",   "prgram",   data->RAM.prg    },
+        { "chr_ram",   "chrram",   data->RAM.chr    },
+        { "prg_nvram", "prgnvram", data->NVRAM.prg  },
+        { "chr_nvram", "chrnvram", data->NVRAM.chr  },
     };
 
 
     for (size_t i = 0; i < NSK_SIZE(table_simple_u64); i++) {
-        if (table_simple_u64[i].value > 0) {
+        if (
+            table_simple_u64[i].value > 0 &&
+            nsk_printer_match(table_simple_u64[i].shortcut)
+        ) {
             nsk_inf(
                 "\t\t<%s size=\"%" PRIu64 "\" />\n",
-                table_simple_u64[i].name,
+                table_simple_u64[i].tag,
                 table_simple_u64[i].value
             );
         }
+    }
+
+    if (data->ROM.misc > 0 && nsk_printer_match("misc_roms")) {
+        nsk_inf("\t\t<miscrom count=\"%u\" />\n", data->ROM.misc);
     }
 }
 
@@ -151,18 +164,36 @@ static void _print_game_pcb(
     const char *filename __attribute__((unused)),
     const struct nsk_header_data *data
 ) {
-    nsk_inf(
-        "\t\t<pcb "
-            "mapper=\"%" PRIu16 "\" "
-            "submapper=\"%" PRIu8 "\" "
-            "mirroring=\"%c\" "
-            "battery=\"%d\" "
-        "/>\n",
-        data->mapper.id,
-        data->mapper.subid,
-        _print_mirroring(data),
-        data->battery
-    );
+    bool print_mapper      = nsk_printer_match("mapper");
+    bool print_submapper   = nsk_printer_match("submapper");
+    bool print_mirroring   = nsk_printer_match("mirroring");
+    bool print_alternative = nsk_printer_match("alternative");
+    bool print_battery     = nsk_printer_match("battery");
+
+    if (
+        !print_mapper &&
+        !print_submapper &&
+        !print_mirroring &&
+        !print_alternative &&
+        !print_battery
+    ) {
+        return;
+    }
+
+    nsk_inf("\t\t<pcb");
+    if (print_mapper) {
+        nsk_inf(" mapper=\"%" PRIu16 "\"", data->mapper.id);
+    }
+    if (print_submapper) {
+        nsk_inf(" submapper=\"%" PRIu8 "\"", data->mapper.subid);
+    }
+    if (print_mirroring || print_alternative) {
+        nsk_inf(" mirroring=\"%c\"", _print_mirroring(data));
+    }
+    if (print_battery) {
+        nsk_inf(" battery=\"%d\"", data->battery);
+    }
+    nsk_inf(" />\n");
 }
 
 /*!
@@ -175,7 +206,7 @@ static void _print_game_trainer(
     const char *filename __attribute__((unused)),
     const struct nsk_header_data *data
 ) {
-    if (data->trainer) {
+    if (data->trainer && nsk_printer_match("trainer")) {
         nsk_inf("\t\t<trainer size=\"512\" />\n");
     }
 }
@@ -190,11 +221,21 @@ static void _print_game_console(
     const char *filename __attribute__((unused)),
     const struct nsk_header_data *data
 ) {
-    nsk_inf(
-        "\t\t<console type=\"%d\" region=\"%d\" />\n",
-        data->hardware.console.type,
-        data->hardware.console.region
-    );
+    bool print_console = nsk_printer_match("console");
+    bool print_region  = nsk_printer_match("region");
+
+    if (!print_console && !print_region) {
+        return;
+    }
+
+    nsk_inf("\t\t<console");
+    if (print_console) {
+        nsk_inf(" type=\"%d\"", data->hardware.console.type);
+    }
+    if (print_region) {
+        nsk_inf(" region=\"%d\"", data->hardware.console.region);
+    }
+    nsk_inf(" />\n");
 }
 
 /*!
@@ -207,13 +248,24 @@ static void _print_game_vs(
     const char *filename __attribute__((unused)),
     const struct nsk_header_data *data
 ) {
-    if (data->hardware.console.type == NSK_CONSOLE_NINTENDO_VS) {
-        nsk_inf(
-            "\t\t<vs hardware=\"%d\" ppu=\"%d\" />\n",
-            data->hardware.console.vs.hardware,
-            data->hardware.console.vs.ppu
-        );
+    bool print_hardware = nsk_printer_match("vs_hardware");
+    bool print_ppu      = nsk_printer_match("vs_ppu");
+
+    if (
+        data->hardware.console.type != NSK_CONSOLE_NINTENDO_VS ||
+        (!print_hardware && !print_ppu)
+    ) {
+        return;
     }
+
+    nsk_inf("\t\t<vs");
+    if (print_hardware) {
+        nsk_inf(" hardware=\"%d\"", data->hardware.console.vs.hardware);
+    }
+    if (print_ppu) {
+        nsk_inf(" ppu=\"%d\"", data->hardware.console.vs.ppu);
+    }
+    nsk_inf(" />\n");
 }
 
 /*!
@@ -226,7 +278,10 @@ static void _print_game_device(
     const char *filename __attribute__((unused)),
     const struct nsk_header_data *data
 ) {
-    if (data->hardware.expansion != NSK_DEVICE_NONE_UNSPECIFIED) {
+    if (
+        data->hardware.expansion != NSK_DEVICE_NONE_UNSPECIFIED &&
+        nsk_printer_match("device")
+    ) {
         nsk_inf(
             "\t\t<expansion type=\"%d\" />\n",
             data->hardware.expansion

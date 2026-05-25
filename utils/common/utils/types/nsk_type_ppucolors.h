@@ -4,7 +4,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include "../types/nsk_type_color4.h"
+#include "base/nsk_util_attributes.h"
+#include "types/nsk_type_color4.h"
 
 /*!
  * \brief Common constants
@@ -79,8 +80,10 @@ size_t nsk_ppucolors_lookup(
  * \brief  Validates the PPU colors list
  *
  * \param[in] colors  The colors
+ * \return True if the colors are valid, false otherwise
  */
-void nsk_ppucolors_validate(
+nsk_attr_result_unused
+bool nsk_ppucolors_validate(
     const struct nsk_type_ppucolors *colors
 );
 

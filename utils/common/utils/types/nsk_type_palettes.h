@@ -1,11 +1,13 @@
 #ifndef NSK_TYPE_PALETTES
 #define NSK_TYPE_PALETTES
 
+#include <stdbool.h>
 #include <stddef.h>
 
-#include "../types/nsk_type_plane.h"
-#include "../types/nsk_type_color4.h"
-#include "../types/nsk_type_ppucolors.h"
+#include "base/nsk_util_attributes.h"
+#include "types/nsk_type_plane.h"
+#include "types/nsk_type_color4.h"
+#include "types/nsk_type_ppucolors.h"
 
 /*!
  * \brief  Palettes sizes
@@ -61,29 +63,40 @@ struct nsk_type_palettes {
 /*!
  * \brief  Validates palette's colors field
  *
- * \param[in]  table  The table
+ * \param[in]  palette  The palette
+ *
+ * \return True if the field is initialized, false otherwise
  */
-void nsk_palette_validate_colors(const struct nsk_type_palette *palette);
+nsk_attr_result_unused
+bool nsk_palette_validate_colors(
+    const struct nsk_type_palette *palette
+);
 
 /*!
  * \brief  Validates palette's indexes field
  *
- * \param[in]  table  The table
+ * \param[in]  palette  The palette
+ *
+ * \note This is a fatal workflow invariant check. It returns only when the
+ *       field is initialized; otherwise it terminates the process.
  */
 void nsk_palette_validate_indexes(const struct nsk_type_palette *palette);
 
 /*!
  * \brief  Reads .spal file ("Selected palette")
- * (binary $3f00..$3f0f/$f10..$3f1f)
+ * (binary $3f00..$3f0f/$3f10..$3f1f)
  *
- * \note Reads only `index` fiels. Call `nsk_palette_apply` function
+ * \note Reads only `index` fields. Call `nsk_palette_apply` function
  *       to fill the actual colors
  *
- * \param[in] filename  The filename
- * \return Palette
+ * \param[in]  filename  The filename
+ * \param[out] palette   The palette
+ * \return True if the palette was read, false otherwise
  */
-struct nsk_type_palette nsk_palette_readspal(
-    const char *filename
+nsk_attr_result_unused
+bool nsk_palette_readspal(
+    const char *filename,
+    struct nsk_type_palette *palette
 );
 
 /*!
@@ -91,8 +104,10 @@ struct nsk_type_palette nsk_palette_readspal(
  *
  * \param[in] filename  The filename
  * \param[in] palette   The palette
+ * \return True if the palette was saved, false otherwise
  */
-void nsk_palette_savespal(
+nsk_attr_result_unused
+bool nsk_palette_savespal(
     const char *filename,
     const struct nsk_type_palette *palette
 );
@@ -101,23 +116,28 @@ void nsk_palette_savespal(
  * \brief  Reads .spals file ("Selected palettes")
  * (binary $3f00..$3f1f)
  *
- * \note Reads only `index` fiels. Call `nsk_palette_apply` function
+ * \note Reads only `index` fields. Call `nsk_palette_apply` function
  *       to fill the actual colors
  *
- * \param[in] filename  The filename
- * \return Palettes
+ * \param[in]  filename  The filename
+ * \param[out] palettes  The palettes
+ * \return True if the palettes were read, false otherwise
  */
-struct nsk_type_palettes nsk_palettes_readspals(
-    const char *filename
+nsk_attr_result_unused
+bool nsk_palettes_readspals(
+    const char *filename,
+    struct nsk_type_palettes *palettes
 );
 
 /*!
  * \brief  Saves both palettes as binary .spals file
  *
  * \param[in] filename  The filename
- * \param[in] palette   The palette
+ * \param[in] palettes  The palettes
+ * \return True if the palettes were saved, false otherwise
  */
-void nsk_palettes_savespals(
+nsk_attr_result_unused
+bool nsk_palettes_savespals(
     const char *filename,
     const struct nsk_type_palettes *palettes
 );
@@ -126,8 +146,10 @@ void nsk_palettes_savespals(
  * \brief  Shows selected palette as ANSI colored output
  *
  * \param[in] palette  The palette
+ * \return True if the palette was shown, false otherwise
  */
-void nsk_palette_show(
+nsk_attr_result_unused
+bool nsk_palette_show(
     const struct nsk_type_palette *palette
 );
 
@@ -135,8 +157,10 @@ void nsk_palette_show(
  * \brief  Shows selected palettes as ANSI colored output
  *
  * \param[in] palettes  The palettes
+ * \return True if the palettes were shown, false otherwise
  */
-void nsk_palettes_show(
+nsk_attr_result_unused
+bool nsk_palettes_show(
     const struct nsk_type_palettes *palettes
 );
 
@@ -145,8 +169,10 @@ void nsk_palettes_show(
  *
  * \param[in] colors   The colors
  * \param[in] palette  The palette
+ * \return True if the palette is valid, false otherwise
  */
-void nsk_palette_validate(
+nsk_attr_result_unused
+bool nsk_palette_validate(
     const struct nsk_type_ppucolors *colors,
     const struct nsk_type_palette   *palette
 );
@@ -156,8 +182,10 @@ void nsk_palette_validate(
  *
  * \param[in] colors   The colors
  * \param[in] palettes  The palettes
+ * \return True if the palettes are valid, false otherwise
  */
-void nsk_palettes_validate(
+nsk_attr_result_unused
+bool nsk_palettes_validate(
     const struct nsk_type_ppucolors *colors,
     const struct nsk_type_palettes  *palettes
 );
@@ -167,8 +195,10 @@ void nsk_palettes_validate(
  *
  * \param[in]       colors   The colors
  * \param[in,out]   palette  The palette
+ * \return True if colors were assigned, false otherwise
  */
-void nsk_palette_setcolors(
+nsk_attr_result_unused
+bool nsk_palette_setcolors(
     const struct nsk_type_ppucolors *colors,
     struct nsk_type_palette *palette
 );
@@ -178,8 +208,10 @@ void nsk_palette_setcolors(
  *
  * \param[in]       colors    The colors
  * \param[in,out]   palettes  The palettes
+ * \return True if colors were assigned, false otherwise
  */
-void nsk_palettes_setcolors(
+nsk_attr_result_unused
+bool nsk_palettes_setcolors(
     const struct nsk_type_ppucolors *colors,
     struct nsk_type_palettes *palettes
 );
@@ -189,8 +221,10 @@ void nsk_palettes_setcolors(
  *
  * \param[in]     colors    The colors
  * \param[in,out] palette   The palette
+ * \return True if indexes were assigned, false otherwise
  */
-void nsk_palette_setindexes(
+nsk_attr_result_unused
+bool nsk_palette_setindexes(
     const struct nsk_type_ppucolors *colors,
     struct nsk_type_palette *palette
 );
@@ -200,8 +234,10 @@ void nsk_palette_setindexes(
  *
  * \param[in]     colors    The colors
  * \param[in,out] palettes  The palettes
+ * \return True if indexes were assigned, false otherwise
  */
-void nsk_palettes_setindexes(
+nsk_attr_result_unused
+bool nsk_palettes_setindexes(
     const struct nsk_type_ppucolors *colors,
     struct nsk_type_palettes *palettes
 );
@@ -211,7 +247,7 @@ void nsk_palettes_setindexes(
  *
  * \param[in] palette  The palette
  * \param[in] group The colors group
- * \return The color index
+ * \return The color index, or (size_t)-1 on error
  */
 size_t nsk_palette_getindex(
     const struct nsk_type_palette *palette,

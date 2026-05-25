@@ -14,6 +14,7 @@ ifeq ($(and $(filter 1,$(COLOR_TTY)),$(filter-out dumb,$(TERM)),$(if $(NO_COLOR)
 else
   COLOR_RESET :=
   COLOR_GREEN :=
+  COLOR_WHITE :=
 endif
 
 MSG_OK := [$(COLOR_GREEN)OK$(COLOR_RESET)]
@@ -35,6 +36,7 @@ CMD_RM := rm -rf
 CMD_MKDIR := mkdir -p
 CMD_TOUCH := touch
 CMD_FIND := find
+CMD_RMDIR := rmdir
 
 # Default target
 .DEFAULT_GOAL := all
@@ -54,13 +56,15 @@ $(DIR_TEMPLATES_TARGET)/%: $(DIR_TEMPLATES_PROJECT)/% |
 
 
 # Targets
-.PHONY: all                             test      clean
+.PHONY: all build                       test test-valgrind clean
 .PHONY: $(DIR_BIN)/$(PROJECT_NAME)-pre  test-pre  clean-pre
-.PHONY:                                 test-post clean-post
+.PHONY:                                 test-post test-valgrind-post clean-post
 
 all: $(DIR_BIN)/$(PROJECT_NAME)-pre $(TEMPLATE_TARGET) $(DIR_BIN)/$(PROJECT_NAME)
+build: all
 clean: clean-pre clean-post
 test: test-pre test-post
+test-valgrind: test-pre test-valgrind-post
 
 .PHONY: $(DIR_BIN)/$(PROJECT_NAME)-pre
 $(DIR_BIN)/$(PROJECT_NAME)-pre:
@@ -71,13 +75,16 @@ $(DIR_BIN)/$(PROJECT_NAME)-pre:
 clean-pre: $(DIR_BIN)/$(PROJECT_NAME)-pre
 	@$(call print_category,Cleaning)
 
-CLEAN_ENTRIES := $(DIR_BUILD) $(DIR_BIN)/$(PROJECT_NAME)
+CLEAN_ENTRIES := $(DIR_BUILD) $(DIR_BIN)/$(PROJECT_NAME) $(TEMPLATE_TARGET)
 
 clean-post:
 	@$(foreach p,$(CLEAN_ENTRIES), \
 		$(CMD_RM) "$(p)" &&            \
 		$(call print_entry,$(p));  \
 	)
+	@if [ -d "$(DIR_TEMPLATES_TARGET)" ]; then \
+		$(CMD_FIND) "$(DIR_TEMPLATES_TARGET)" -depth -type d -empty -exec $(CMD_RMDIR) {} \; ; \
+	fi
 
 # Testing
 define require-tool
@@ -88,14 +95,24 @@ endef
 
 PYTHON ?= python3
 TEST_SCRIPT := tests/test.py
+TEST_DEPS ?=
 
 test-pre: $(DIR_BIN)/$(PROJECT_NAME)-pre
 	@$(call print_category,Testing)
 
-test-post:
+test-post: $(TEST_DEPS)
 	@if [ -f "$(TEST_SCRIPT)" ]; then \
 	    $(call require-tool,$(PYTHON)); \
-	    $(PYTHON) "$(TEST_SCRIPT)"; \
+	    PYTHONPATH="$(DIR_ROOT)$${PYTHONPATH:+:$$PYTHONPATH}" $(PYTHON) "$(TEST_SCRIPT)"; \
+	else \
+	    echo "    - Nothing to test"; \
+	fi
+
+test-valgrind-post: $(TEST_DEPS)
+	@if [ -f "$(TEST_SCRIPT)" ]; then \
+	    $(call require-tool,$(PYTHON)); \
+	    $(call require-tool,valgrind); \
+	    NESOKIA_TEST_VALGRIND=1 PYTHONPATH="$(DIR_ROOT)$${PYTHONPATH:+:$$PYTHONPATH}" $(PYTHON) "$(TEST_SCRIPT)"; \
 	else \
 	    echo "    - Nothing to test"; \
 	fi

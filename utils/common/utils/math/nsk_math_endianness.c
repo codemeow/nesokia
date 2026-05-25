@@ -1,4 +1,4 @@
-#include "../math/nsk_math_endianness.h"
+#include "math/nsk_math_endianness.h"
 
 /*!
  * \brief Current endianness check

@@ -1,13 +1,12 @@
 #if defined(NSK_OS_WINDOWS)
 
-#include <stdlib.h>
 #include <windows.h>
 
-#include "../../strings/windows/nsk_strings_wide.h"
+#include "strings/windows/nsk_strings_wide.h"
 
-#include "../../log/nsk_log_err.h"
-#include "../../nsk_util_cleanup.h"
-#include "../../nsk_util_malloc.h"
+#include "log/nsk_log_err.h"
+#include "base/nsk_util_cleanup.h"
+#include "base/nsk_util_malloc.h"
 
 /*!
  * \brief  Converts provided string to Windows Wide String using the provided
@@ -16,13 +15,13 @@
  * \param[in] str    The string
  * \param[in] enc    The encoding
  * \param[in] flags  MultiByteToWideChar flags
- * \return Allocated wide string
+ * \return Allocated wide string, or NULL on conversion error
  */
 LPWSTR nsk_string_a2w_enc(const char *str, UINT enc, DWORD flags) {
     const int wstr_size = MultiByteToWideChar(enc, flags, str, -1, NULL, 0);
     if (wstr_size == 0) {
         nsk_err("Cannot convert provided string \"%s\" into wide string", str);
-        exit(EXIT_FAILURE);
+        return NULL;
     }
 
     LPWSTR wstr = nsk_util_malloc(wstr_size * sizeof(wstr[0]));
@@ -30,7 +29,7 @@ LPWSTR nsk_string_a2w_enc(const char *str, UINT enc, DWORD flags) {
     if (MultiByteToWideChar(enc, flags, str, -1, wstr, wstr_size) == 0) {
         nsk_util_free(wstr);
         nsk_err("Cannot convert provided string \"%s\" into wide string", str);
-        exit(EXIT_FAILURE);
+        return NULL;
     }
 
     return wstr;
@@ -43,7 +42,7 @@ LPWSTR nsk_string_a2w_enc(const char *str, UINT enc, DWORD flags) {
  * \param[in] wstr   The wide string
  * \param[in] enc    The encoding
  * \param[in] flags  WideCharToMultiByte flags
- * \return  Allocated string
+ * \return  Allocated string, or NULL on conversion error
  */
 char *nsk_string_w2a_enc(LPCWSTR wstr, UINT enc, DWORD flags) {
     const int str_size = WideCharToMultiByte(
@@ -51,7 +50,7 @@ char *nsk_string_w2a_enc(LPCWSTR wstr, UINT enc, DWORD flags) {
     );
     if (str_size == 0) {
         nsk_err("Cannot convert provided wide string into string");
-        exit(EXIT_FAILURE);
+        return NULL;
     }
 
     char *str = nsk_util_malloc(str_size);
@@ -62,7 +61,7 @@ char *nsk_string_w2a_enc(LPCWSTR wstr, UINT enc, DWORD flags) {
     if (res == 0) {
         nsk_util_free(str);
         nsk_err("Cannot convert provided wide string into string");
-        exit(EXIT_FAILURE);
+        return NULL;
     }
 
     return str;
@@ -72,7 +71,7 @@ char *nsk_string_w2a_enc(LPCWSTR wstr, UINT enc, DWORD flags) {
  * \brief  Converts string into Windows Wide String
  *
  * \param[in] str  The string
- * \return Allocated Windows Wide String
+ * \return Allocated Windows Wide String, or NULL on conversion error
  */
 LPWSTR nsk_string_a2w(const char *str) {
     return nsk_string_a2w_enc(str, CP_UTF8, MB_ERR_INVALID_CHARS);
@@ -82,7 +81,7 @@ LPWSTR nsk_string_a2w(const char *str) {
  * \brief  Converts Windows Wide String to string
  *
  * \param[in] wstr  The Windows Wide String
- * \return Allocated string
+ * \return Allocated string, or NULL on conversion error
  */
 char *nsk_string_w2a(LPCWSTR wstr) {
     return nsk_string_w2a_enc(wstr, CP_UTF8, WC_ERR_INVALID_CHARS);

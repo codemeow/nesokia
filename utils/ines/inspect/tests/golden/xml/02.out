@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scan>
+	<game><!-- tests/nes/02 Battle City (VS).nes/rom-header.nes -->
+		<name>tests/nes/02 Battle City (VS).nes/rom-header.nes</name>
+		<format isnes20="1" />
+		<prgrom size="32768" />
+		<chrrom size="16384" />
+		<prgram size="2048" />
+		<pcb mapper="99" submapper="0" mirroring="V" battery="0" />
+		<console type="1" region="0" />
+		<vs hardware="0" ppu="2" />
+		<expansion type="5" />
+	</game>
+</scan>

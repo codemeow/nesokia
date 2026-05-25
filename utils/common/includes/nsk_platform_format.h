@@ -3,7 +3,7 @@
 
 /*!
  * Different compilers accept different modifiers for
- * `__attribute__((format(...))).`. While GCC/MinGW support "gnu_printf"; Clang
+ * `__attribute__((format(...))).`. While GCC/MinGW supports "gnu_printf"; Clang
  * does not. MinGW treats "printf" as "ms_printf", which (e.g.) lacks the 'z'
  * length modifier for size_t/ssize_t. "gnu_printf" enables it, but fails on
  * Clang.

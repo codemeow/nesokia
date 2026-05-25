@@ -1,8 +1,7 @@
-#include <stdlib.h>
-
-#include "../../png/types/nsk_type_pngpalettes.h"
-#include "../../io/nsk_io_fullpath.h"
-#include "../../log/nsk_log_err.h"
+#include "png/types/nsk_type_pngpalettes.h"
+#include "io/nsk_io_fullpath.h"
+#include "log/nsk_log_err.h"
+#include "base/nsk_util_cleanup.h"
 
 /*!
  * \brief  Positioning of the global palette in the template image
@@ -77,15 +76,20 @@ struct nsk_type_palettes _palettes_readpng(
 /*!
  * \brief  Reads local palettes from Nesokia PNG component
  *
- * \param[in] filename  The filename
- * \return Local palettes
+ * \param[in]  filename  The filename
+ * \param[out] palettes  The local palettes
+ * \return True if the palettes were read, false otherwise
  */
-struct nsk_type_palettes nsk_palettes_readpng(
-    const char *filename
+bool nsk_palettes_readpng(
+    const char *filename,
+    struct nsk_type_palettes *palettes
 ) {
     nsk_auto_pifree struct nsk_type_pngimage *image = nsk_pngimage_read(
         filename
     );
+    if (!image) {
+        return false;
+    }
 
     if (image->width  != NSK_PALETTESSIZE_WIDTH ||
         image->height != NSK_PALETTESSIZE_HEIGHT) {
@@ -93,33 +97,40 @@ struct nsk_type_palettes nsk_palettes_readpng(
             "Provided file \"%s\" is not a palettes template component",
             filename
         );
-        exit(EXIT_FAILURE);
+        return false;
     }
 
-    return _palettes_readpng(
+    *palettes = _palettes_readpng(
         image,
         NSK_PALETTESTEMPLPOS_X,
         NSK_PALETTESTEMPLPOS_Y
     );
+
+    return true;
 }
 
 /*!
  * \brief  Converts local palettes into composite component
  *
  * \param[in] palettes  The palettes
- * \return Nesokia PNG component image
+ * \return Nesokia PNG component image, or NULL on validation error
  */
 struct nsk_type_pngimage *nsk_palettes_convtopng(
     const struct nsk_type_palettes *palettes
 ) {
     static const char template_path[] = "./templates/png/template-palettes.png";
-    const char *template_fullpath = nsk_io_fullpath(template_path);
+    nsk_auto_free char *template_fullpath = nsk_io_fullpath(template_path);
     struct nsk_type_pngimage *image = nsk_pngimage_read(
         template_fullpath
     );
+    if (!image) {
+        return NULL;
+    }
 
     for (size_t p = 0; p < NSK_PLANES_COUNT; p++) {
-        nsk_palette_validate_colors(&palettes->plane[p]);
+        if (!nsk_palette_validate_colors(&palettes->plane[p])) {
+            return NULL;
+        }
 
         for (size_t g = 0; g < NSK_PALETTESIZE_GROUPS; g++) {
             for (size_t c = 0; c < NSK_PALETTESIZE_COLORS; c++) {

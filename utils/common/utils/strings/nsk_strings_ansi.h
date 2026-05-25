@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "base/nsk_util_attributes.h"
+
 /*!
  * \brief Declares the support of ANSI codes
  */
@@ -17,9 +19,10 @@ extern bool nsk_ansi_support;
  * \param[in] g     Green component
  * \param[in] b     Blue component
  * \param[in] back  True if background code required, false otherwise
- * \return Static string
+ * \return Allocated string
  */
-const char *nsk_ansi_24bit(uint8_t r, uint8_t g, uint8_t b, bool back);
+nsk_attr_result_unused
+char *nsk_ansi_24bit(uint8_t r, uint8_t g, uint8_t b, bool back);
 
 /*!
  * \brief  Returns the ANSI-escape sequence, containing style reset code
@@ -36,8 +39,9 @@ const char *nsk_ansi_reset(void);
  * \param[in] g   Green component
  * \param[in] b   Blue component
  *
- * \return Static string
+ * \return Allocated string
  */
-const char *nsk_string_color(uint8_t r, uint8_t g, uint8_t b);
+nsk_attr_result_unused
+char *nsk_string_color(uint8_t r, uint8_t g, uint8_t b);
 
 #endif

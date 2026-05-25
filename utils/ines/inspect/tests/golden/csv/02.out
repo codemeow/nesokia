@@ -1,0 +1,2 @@
+Filename,"Is NES 2.0?","Type","Timings / region","Vs. PPU type","Vs. Hardware type","Mirroring / layout","Alternative layout","Mapper ID","Submapper ID","PRG ROM","CHR ROM","PRG RAM","CHR RAM","PRG NVRAM","CHR NVRAM","Misc. ROMs","Trainer area","Non volatile memory","Expansion device"
+"tests/nes/02 Battle City (VS).nes/rom-header.nes",1,1,0,2,,0,1,99,0,32768,16384,2048,0,0,0,0,0,0,5

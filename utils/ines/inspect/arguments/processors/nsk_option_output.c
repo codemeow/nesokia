@@ -8,11 +8,13 @@
 /*!
  * \brief  Selects the output type (tree, table, etc)
  */
-void nsk_option_output(void) {
+enum nsk_args_result nsk_option_output(void) {
     if (!nsk_printer_isvalid(optarg)) {
         nsk_err("Error: invalid value \"%s\" for \"printer\" option\n", optarg);
-        exit(EXIT_FAILURE);
+        return NSK_ARGS_EXIT_FAILURE;
     }
 
     nsk_options_program.printer = optarg;
+
+    return NSK_ARGS_CONTINUE;
 }

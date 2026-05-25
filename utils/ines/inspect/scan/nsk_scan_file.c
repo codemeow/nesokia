@@ -9,10 +9,10 @@
  * \param[in] filename  The filename
  * \param[in] level      Deepness level
  */
-void nsk_scan_file(const char *filename, unsigned level) {
+bool nsk_scan_file(const char *filename, unsigned level) {
     if (!nsk_options_program.recursive && level > 0) {
-        return;
+        return false;
     }
 
-    nsk_entry_process(filename);
+    return nsk_entry_process(filename);
 }

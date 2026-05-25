@@ -1,6 +1,6 @@
 #include <stddef.h>
 
-#include "../list/nsk_list_type.h"
+#include "types/list/nsk_list_type.h"
 
 /*!
  * \brief  Initializes the list element;

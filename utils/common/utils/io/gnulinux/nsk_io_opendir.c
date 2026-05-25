@@ -3,7 +3,7 @@
 #include <dirent.h>
 #include <sys/types.h>
 
-#include "../../io/nsk_io_opendir.h"
+#include "io/nsk_io_opendir.h"
 
 /*!
  * \brief  Opens the directory with platform-specific features

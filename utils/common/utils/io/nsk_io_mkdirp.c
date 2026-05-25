@@ -2,11 +2,11 @@
 #include <sys/stat.h>
 #include <string.h>
 
-#include "../io/nsk_io_mkdirp.h"
-#include "../io/nsk_io_mkdir.h"
-#include "../io/nsk_io_testd.h"
-#include "../nsk_util_cleanup.h"
-#include "../strings/nsk_strings_strdup.h"
+#include "io/nsk_io_mkdirp.h"
+#include "io/nsk_io_mkdir.h"
+#include "io/nsk_io_testd.h"
+#include "base/nsk_util_cleanup.h"
+#include "strings/nsk_strings_strdup.h"
 
 /*!
  * \brief  Creates the path including all subdirectories

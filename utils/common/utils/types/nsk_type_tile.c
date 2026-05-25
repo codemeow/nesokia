@@ -1,9 +1,10 @@
 #include <stdlib.h>
 
-#include "../types/nsk_type_tile.h"
-#include "../log/nsk_log_err.h"
-#include "../nsk_util_malloc.h"
-#include "../strings/nsk_strings_ansi.h"
+#include "types/nsk_type_tile.h"
+#include "log/nsk_log_err.h"
+#include "base/nsk_util_cleanup.h"
+#include "base/nsk_util_malloc.h"
+#include "strings/nsk_strings_ansi.h"
 
 /*!
  * \brief  Generic validator
@@ -27,7 +28,10 @@ static void _tile_validate(
 /*!
  * \brief  Validates tile's palette field
  *
- * \param[in]  table  The table
+ * \param[in]  tile  The tile
+ *
+ * \note This is a fatal workflow invariant check. It returns only when the
+ *       field is initialized; otherwise it terminates the process.
  */
 void nsk_tile_validate_palette(const struct nsk_type_tile *tile) {
     _tile_validate(tile->init.palette, "palette");
@@ -36,7 +40,10 @@ void nsk_tile_validate_palette(const struct nsk_type_tile *tile) {
 /*!
  * \brief  Validates tile's index field
  *
- * \param[in]  table  The table
+ * \param[in]  tile  The tile
+ *
+ * \note This is a fatal workflow invariant check. It returns only when the
+ *       field is initialized; otherwise it terminates the process.
  */
 void nsk_tile_validate_index(const struct nsk_type_tile *tile) {
     _tile_validate(tile->init.index, "index");
@@ -45,7 +52,10 @@ void nsk_tile_validate_index(const struct nsk_type_tile *tile) {
 /*!
  * \brief  Validates tile's colors field
  *
- * \param[in]  table  The table
+ * \param[in]  tile  The tile
+ *
+ * \note This is a fatal workflow invariant check. It returns only when the
+ *       field is initialized; otherwise it terminates the process.
  */
 void nsk_tile_validate_colors(const struct nsk_type_tile *tile) {
     _tile_validate(tile->init.colors, "colors");
@@ -78,8 +88,9 @@ bool nsk_tile_isempty(
  *
  * \param[in,out]  tile  The tile
  * \param[in]  palette Palette data
+ * \return True if the index was assigned, false otherwise
  */
-void nsk_tile_setindex(
+bool nsk_tile_setindex(
     struct nsk_type_tile *tile,
     const struct nsk_type_palette *palette
 ) {
@@ -88,15 +99,21 @@ void nsk_tile_setindex(
 
     for (size_t h = 0; h < NSK_TILESIZE_HEIGHT; h++) {
         for (size_t w = 0; w < NSK_TILESIZE_WIDTH; w++) {
-            tile->pixel[h][w].index = nsk_palette_getindex(
+            size_t index = nsk_palette_getindex(
                 palette,
                 tile->palette,
                 &tile->pixel[h][w].color
             );
+            if (index == (size_t)-1) {
+                return false;
+            }
+
+            tile->pixel[h][w].index = index;
         }
     }
 
     tile->init.index = true;
+    return true;
 }
 
 /*!
@@ -189,10 +206,15 @@ static bool _setpalette_explicitly(
             }
         }
         if (c == NSK_PALETTESIZE_COLORS) {
+            nsk_auto_free char *color = nsk_string_color(
+                colors[i].r,
+                colors[i].g,
+                colors[i].b
+            );
             nsk_err(
                 "Requested tile palette #%zd does not contain the tile color %s\n",
                 explicit,
-                nsk_string_color(colors[i].r, colors[i].g, colors[i].b)
+                color
             );
             return false;
         }
@@ -245,14 +267,15 @@ static void _palette_print(
 ) {
     nsk_err("   - %s:\n", name);
     for (size_t i = 0; i < count; i++) {
+        nsk_auto_free char *color = nsk_string_color(
+            colors[i].r,
+            colors[i].g,
+            colors[i].b
+        );
         nsk_err(
             "%s%s%s",
             i == 0 ? "        " : ", ",
-            nsk_string_color(
-                colors[i].r,
-                colors[i].g,
-                colors[i].b
-            ),
+            color,
             i == count - 1 ? "\n" : ""
         );
     }
@@ -347,14 +370,15 @@ static bool _setpalette_heuristically(
         );
         nsk_err("   - Tile colors:\n");
         for (size_t i = 0; i < count; i++) {
+            nsk_auto_free char *color = nsk_string_color(
+                colors[i].r,
+                colors[i].g,
+                colors[i].b
+            );
             nsk_err(
                 "%s%s%s",
                 i == 0 ? "        " : ", ",
-                nsk_string_color(
-                    colors[i].r,
-                    colors[i].g,
-                    colors[i].b
-                ),
+                color,
                 i == count - 1 ? "\n" : ""
             );
         }
@@ -411,8 +435,9 @@ bool nsk_tile_setpalette(
  * \param[in,out]  tile      The tile
  * \param[in,out]  file      The file
  * \param[in]      filename  The filename
+ * \return True if the tile was read, false otherwise
  */
-void nsk_tile_readchr(
+bool nsk_tile_readchr(
     struct nsk_type_tile *tile,
     FILE                 *file,
     const char           *filename
@@ -424,7 +449,7 @@ void nsk_tile_readchr(
             "Error: cannot read data from \"%s\" CHR file\n",
             filename
         );
-        exit(EXIT_FAILURE);
+        return false;
     }
 
     for (size_t y = 0; y < NSK_TILESIZE_HEIGHT; y++) {
@@ -439,6 +464,7 @@ void nsk_tile_readchr(
     }
 
     tile->init.index = true;
+    return true;
 }
 
 /*!
@@ -447,8 +473,9 @@ void nsk_tile_readchr(
  * \param[in]     tile      The tile
  * \param[in,out] file      The file
  * \param[in]     filename  The filename
+ * \return True if the tile was saved, false otherwise
  */
-void nsk_tile_savechr(
+bool nsk_tile_savechr(
     const struct nsk_type_tile *tile,
     FILE                       *file,
     const char                 *filename
@@ -472,6 +499,8 @@ void nsk_tile_savechr(
             "Error: cannot write data to \"%s\" CHR file\n",
             filename
         );
-        exit(EXIT_FAILURE);
+        return false;
     }
+
+    return true;
 }

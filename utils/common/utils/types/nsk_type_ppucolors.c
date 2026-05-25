@@ -1,10 +1,11 @@
 #include <stdlib.h>
 
-#include "../types/nsk_type_ppucolors.h"
-#include "../log/nsk_log_err.h"
-#include "../log/nsk_log_inf.h"
-#include "../nsk_util_size.h"
-#include "../strings/nsk_strings_ansi.h"
+#include "types/nsk_type_ppucolors.h"
+#include "log/nsk_log_err.h"
+#include "log/nsk_log_inf.h"
+#include "base/nsk_util_cleanup.h"
+#include "base/nsk_util_size.h"
+#include "strings/nsk_strings_ansi.h"
 
 /*!
  * \brief  Shows the PPU colors as ANSI colored output
@@ -28,13 +29,14 @@ void nsk_ppucolors_show(
             const size_t index = y * NSK_PPUCOLORSTABLE_WIDTH + x;
 
             if (colors->allowed[index]) {
+                nsk_auto_free char *color = nsk_string_color(
+                    colors->colors[index].r,
+                    colors->colors[index].g,
+                    colors->colors[index].b
+                );
                 nsk_inf(
                     "%s ",
-                    nsk_string_color(
-                        colors->colors[index].r,
-                        colors->colors[index].g,
-                        colors->colors[index].b
-                    )
+                    color
                 );
             } else {
                 nsk_inf(
@@ -60,7 +62,7 @@ size_t nsk_ppucolors_lookup(
     const struct nsk_type_ppucolors *colors,
     const union nsk_type_color4 *color
 ) {
-        for (size_t i = 0; i < NSK_SIZE(colors->colors); i++) {
+    for (size_t i = 0; i < NSK_SIZE(colors->colors); i++) {
         if (colors->allowed[i] &&
             colors->colors [i].raw == color->raw) {
             return i;
@@ -74,18 +76,19 @@ size_t nsk_ppucolors_lookup(
  * \brief  Validates the PPU colors list
  *
  * \param[in] colors  The colors
+ * \return True if the colors are valid, false otherwise
  */
-void nsk_ppucolors_validate(
+bool nsk_ppucolors_validate(
     const struct nsk_type_ppucolors *colors
 ) {
     for (size_t i = 0; i < NSK_PPUCOLORSTABLE_COUNT; i++) {
         if (colors->allowed[i]) {
-            return;
+            return true;
         }
     }
 
     nsk_err(
         "Invalid PPU palette: at least one allowed color is required"
     );
-    exit(EXIT_FAILURE);
+    return false;
 }

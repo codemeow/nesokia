@@ -1,16 +1,20 @@
 #ifndef NSK_PPUCOLORS_COMMON
 #define NSK_PPUCOLORS_COMMON
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
+
+#include "base/nsk_util_attributes.h"
 
 /*!
  * \brief  Opens the file and handles errors
  *
  * \param[in] filename  The filename
  * \param[in] mode      The mode
- * \return  file descriptor
+ * \return  File descriptor, or NULL on open error
  */
+nsk_attr_result_unused
 FILE *nsk_ppucolors_fopen(
     const char *filename,
     const char *mode
@@ -23,8 +27,10 @@ FILE *nsk_ppucolors_fopen(
  * \param[in]     size     The size
  * \param[in,out] file     The file
  * \param[in]     filename The file's filename
+ * \return True if the data was written, false otherwise
  */
-void nsk_ppucolors_fwrite(
+nsk_attr_result_unused
+bool nsk_ppucolors_fwrite(
     const void *buffer,
     size_t size,
     FILE *file,
@@ -38,8 +44,10 @@ void nsk_ppucolors_fwrite(
  * \param[in]     size     The size
  * \param[in,out] file     The file
  * \param[in]     filename The file's filename
+ * \return True if the data was read, false otherwise
  */
-void nsk_ppucolors_fread(
+nsk_attr_result_unused
+bool nsk_ppucolors_fread(
     void *buffer,
     size_t size,
     FILE *file,
@@ -47,15 +55,19 @@ void nsk_ppucolors_fread(
 );
 
 /*!
- * \brief  Converts name value to UTF16-BE format
+ * \brief  Converts string value to UTF16-BE format
  *
  * \warning Only supports ASCII-characters (codes < 128)
  *
- * \param[in]  name  The ASCII name
- * \param[out] size  The result size in bytes
- * \return Static zero-terminated UTF16-BE "string"
+ * \param[in]  str   The ASCII string
+ * \param[out] size  The result size in 16-bit code units
+ * \return Allocated UTF16-BE buffer, or NULL if conversion fails
+ *
+ * \note Arguments cannot be NULL.
  */
-const uint8_t *nsk_ppucolors_toUTF16be(
+nsk_attr_result_unused
+nsk_attr_args_nonnull(1, 2)
+uint8_t *nsk_ppucolors_toUTF16be(
     const char *str,
     size_t *size
 );

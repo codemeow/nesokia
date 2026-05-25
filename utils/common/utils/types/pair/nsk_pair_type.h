@@ -3,8 +3,9 @@
 
 #include <stdint.h>
 
-#include "../../types/list/nsk_list_type.h"
-#include "../../types/pair/nsk_pair_cmp.h"
+#include "base/nsk_util_attributes.h"
+#include "types/list/nsk_list_type.h"
+#include "types/pair/nsk_pair_cmp.h"
 
 /*!
  * \brief  List of fields, used in particular pair instance
@@ -40,6 +41,7 @@ struct nsk_pair {
  * \param[in, out] parent   The parent list (optional)
  * \return Freshly allocated pair element
  */
+nsk_attr_result_unused
 struct nsk_pair *nsk_pair_append(
     const char      *name,
     uint64_t         value,
@@ -56,6 +58,7 @@ struct nsk_pair *nsk_pair_append(
  * \param[in, out] parent   The parent list (optional)
  * \return Freshly allocated pair element
  */
+nsk_attr_result_unused
 struct nsk_pair *nsk_pair_appendn(
     const char      *name,
     size_t           namesize,

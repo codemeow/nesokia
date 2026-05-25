@@ -3,9 +3,9 @@
 #include <sys/stat.h>
 #include <windows.h>
 
-#include "../../io/nsk_io_mkdir.h"
-#include "../../strings/windows/nsk_strings_wide.h"
-#include "../../nsk_util_cleanup.h"
+#include "io/nsk_io_mkdir.h"
+#include "strings/windows/nsk_strings_wide.h"
+#include "base/nsk_util_cleanup.h"
 
 /*!
  * \brief  Creates the path
@@ -19,6 +19,10 @@ int nsk_io_mkdir(
     mode_t mode         __attribute__((unused))
 ) {
     nsk_auto_free LPWSTR wpath = nsk_string_a2w(path);
+    if (!wpath) {
+        return -1;
+    }
+
     return _wmkdir(wpath);
 }
 

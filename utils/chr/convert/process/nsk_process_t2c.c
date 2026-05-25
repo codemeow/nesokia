@@ -87,26 +87,31 @@ static void _input_load(
     struct nsk_type_pattables *pattables
 ) {
     if (nsk_options_program.input.full) {
-        nsk_pngimage_composeread(
+        if (!nsk_pngimage_composeread(
             nsk_options_program.input.full,
             ppucolors,
             palettes,
             pattables
-        );
+        )) {
+            exit(EXIT_FAILURE);
+        }
 
     } else {
-        *ppucolors = nsk_ppucolors_readpng(
-            nsk_options_program.input.ppucolors
-        );
-        *palettes = nsk_palettes_readpng(
-            nsk_options_program.input.palettes.both
-        );
-        pattables->plane[NSK_PLANE_BACKGROUND] = nsk_pattable_readpng(
-            nsk_options_program.input.pattables.left
-        );
-        pattables->plane[NSK_PLANE_SPRITES] = nsk_pattable_readpng(
-            nsk_options_program.input.pattables.left
-        );
+        if (!nsk_ppucolors_readpng(
+            nsk_options_program.input.ppucolors,
+            ppucolors
+        ) || !nsk_palettes_readpng(
+            nsk_options_program.input.palettes.both,
+            palettes
+        ) || !nsk_pattable_readpng(
+            nsk_options_program.input.pattables.left,
+            &pattables->plane[NSK_PLANE_BACKGROUND]
+        ) || !nsk_pattable_readpng(
+            nsk_options_program.input.pattables.right,
+            &pattables->plane[NSK_PLANE_SPRITES]
+        )) {
+            exit(EXIT_FAILURE);
+        }
     }
 
     nsk_pattable_setplane(
@@ -130,16 +135,22 @@ static void _input_load(
         nsk_pattable_swapaddress(pattables);
     }
 
-    nsk_palettes_setindexes(
+    if (!nsk_palettes_setindexes(
         ppucolors,
         palettes
-    );
-    nsk_pattables_settilespalettes(
+    )) {
+        exit(EXIT_FAILURE);
+    }
+    if (!nsk_pattables_settilespalettes(
         pattables,
         palettes,
         nsk_options_program.input.explicit
-    );
-    nsk_pattables_settilesindexes (pattables, palettes);
+    )) {
+        exit(EXIT_FAILURE);
+    }
+    if (!nsk_pattables_settilesindexes(pattables, palettes)) {
+        exit(EXIT_FAILURE);
+    }
 }
 
 /*!
@@ -154,8 +165,12 @@ static void _input_validate(
     struct nsk_type_palettes  *palettes,
     struct nsk_type_pattables *pattables __attribute__((unused))
 ) {
-    nsk_ppucolors_validate(ppucolors);
-    nsk_palettes_validate(ppucolors, palettes);
+    if (!nsk_ppucolors_validate(ppucolors)) {
+        exit(EXIT_FAILURE);
+    }
+    if (!nsk_palettes_validate(ppucolors, palettes)) {
+        exit(EXIT_FAILURE);
+    }
 }
 
 /*!
@@ -171,7 +186,9 @@ static void _input_show(
     struct nsk_type_pattables *pattables
 ) {
     nsk_ppucolors_show(ppucolors);
-    nsk_palettes_show (palettes);
+    if (!nsk_palettes_show(palettes)) {
+        exit(EXIT_FAILURE);
+    }
     nsk_pattables_show(pattables);
 }
 
@@ -200,58 +217,72 @@ static void _output_save(
     struct nsk_type_pattables *pattables
 ) {
     if (nsk_options_program.output.ppucolors) {
-        nsk_ppucolors_savepal(
+        if (!nsk_ppucolors_savepal(
             nsk_options_program.output.ppucolors,
             ppucolors
-        );
+        )) {
+            exit(EXIT_FAILURE);
+        }
     }
 
     if (nsk_options_program.output.palettes.both) {
-        nsk_palettes_savespals(
+        if (!nsk_palettes_savespals(
             nsk_options_program.output.palettes.both,
             palettes
-        );
+        )) {
+            exit(EXIT_FAILURE);
+        }
     }
 
     if (nsk_options_program.output.palettes.back) {
-        nsk_palette_savespal(
+        if (!nsk_palette_savespal(
             nsk_options_program.output.palettes.back,
             &palettes->plane[NSK_PLANE_BACKGROUND]
-        );
+        )) {
+            exit(EXIT_FAILURE);
+        }
     }
 
     if (nsk_options_program.output.palettes.sprites) {
-        nsk_palette_savespal(
+        if (!nsk_palette_savespal(
             nsk_options_program.output.palettes.sprites,
             &palettes->plane[NSK_PLANE_SPRITES]
-        );
+        )) {
+            exit(EXIT_FAILURE);
+        }
     }
 
     if (nsk_options_program.output.pattables.both) {
-        nsk_pattables_savepats(
+        if (!nsk_pattables_savepats(
             nsk_options_program.output.pattables.both,
             pattables
-        );
+        )) {
+            exit(EXIT_FAILURE);
+        }
     }
 
     if (nsk_options_program.output.pattables.left) {
-        nsk_pattable_savepat(
+        if (!nsk_pattable_savepat(
             nsk_options_program.output.pattables.left,
             nsk_pattables_getbyaddress(
                 pattables,
                 NSK_PATTABLEADDR_0000
             )
-        );
+        )) {
+            exit(EXIT_FAILURE);
+        }
     }
 
     if (nsk_options_program.output.pattables.right) {
-        nsk_pattable_savepat(
+        if (!nsk_pattable_savepat(
             nsk_options_program.output.pattables.right,
             nsk_pattables_getbyaddress(
                 pattables,
                 NSK_PATTABLEADDR_1000
             )
-        );
+        )) {
+            exit(EXIT_FAILURE);
+        }
     }
 }
 

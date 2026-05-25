@@ -9,6 +9,7 @@
 .include "nsk_common_meta.inc"
 
 .include "nsk_pool_tick.inc"
+.include "nsk_pool_remove.inc"
 .include "nsk_pool_settings.inc"
 .include "nsk_pool_vars.inc"
 .include "../draw/nsk_sprites_hide.inc"
@@ -23,6 +24,10 @@
 ; @brief Jump pointer
 _table_ptr:
     .res 2
+
+; @brief Current sweep index
+_sweep_index:
+    .res 1
 
 .segment "CODE"
 
@@ -111,21 +116,28 @@ _table_ptr:
     ; there's nothing to do there
 
     lda nsk_pool_flags, x
+    and #POOL::FLAGS::DELETED
+    bne done
+
+    lda nsk_pool_flags, x
     and #POOL::FLAGS::VECTORS
     beq :+
         jsr _pool_tick_vectors
     :
+
     lda nsk_pool_flags, x
     and #POOL::FLAGS::GRAVITY
     beq :+
         jsr _pool_tick_gravity
     :
+
     lda nsk_pool_flags, x
     and #POOL::FLAGS::COLLISION
     beq :+
         jsr _pool_tick_collision
     :
 
+    done:
     rts
 .endproc
 
@@ -184,6 +196,40 @@ _table_ptr:
     rts
 .endproc
 
+; @brief Removes objects marked as deleted
+.proc _pool_sweep_deleted
+    push a, x
+
+    ldx #0
+    cpx nsk_pool_size
+    bne loop
+        jmp done
+
+    loop:
+        lda nsk_pool_flags, x
+        and #POOL::FLAGS::DELETED
+        beq next
+
+            stx _sweep_index
+            nsk_pool_remove _sweep_index
+
+            ; Do not increment X: remove swaps the last object into
+            ; the current slot, so the same index must be checked again.
+            cpx nsk_pool_size
+            beq done
+            jmp loop
+
+        next:
+            inx
+            cpx nsk_pool_size
+            beq done
+            jmp loop
+
+    done:
+        pull a, x
+        rts
+.endproc
+
 ; @brief Object pool "tick" routine
 ; - Calculates the physics
 ; - Calls objects draw routines
@@ -198,7 +244,12 @@ _table_ptr:
 
     loop:
         jsr _pool_tick_element
-        jsr _pool_draw_element
+
+        lda nsk_pool_flags, x
+        and #POOL::FLAGS::DELETED
+        bne :+
+            jsr _pool_draw_element
+        :
 
         inx
         cpx nsk_pool_size
@@ -208,6 +259,8 @@ _table_ptr:
     done:
 
     nsk_todo "Rotate pool elements here"
+
+    jsr _pool_sweep_deleted
 
     ; Hide the rest of the sprites (if any)
     nsk_sprites_hide

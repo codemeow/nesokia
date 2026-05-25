@@ -33,6 +33,7 @@
 
         .addr nsk_init_tiles_draw
         .addr nsk_init_sprites_draw
+        
         .addr nsk_init_ppu_enable
         .addr nsk_init_ppu_flush
     END:

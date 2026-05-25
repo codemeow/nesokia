@@ -112,6 +112,8 @@ _NSK_POOL_ATTRS _NSK_POOL_ATTRSCOUNT_OP
         GRAVITY   = 1 << 2
         ; Is this object has a collision box?
         COLLISION = 1 << 3
+        ; Should this object be removed at the end of the pool tick?
+        DELETED   = 1 << 4
     .endscope
 .endscope
 

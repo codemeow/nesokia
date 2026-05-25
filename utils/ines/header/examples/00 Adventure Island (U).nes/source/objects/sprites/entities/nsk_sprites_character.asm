@@ -29,7 +29,7 @@ nsk_constructor _init
     WIDTH = 2
 
     ; @brief Height of the character metasprite in hardware sprites
-    HEIGHT = 4
+    HEIGHT = 3
 
     ; @brief Number of hardware sprites per character frame
     COUNT = WIDTH * HEIGHT
@@ -67,7 +67,6 @@ nsk_constructor _init
             .byte 0,8
             .byte 0,8
             .byte 0,8
-            .byte 0,8
         END:
 
         SIZE = END - TABLE
@@ -81,7 +80,6 @@ nsk_constructor _init
             .byte 0,0
             .byte 8,8
             .byte 16,16
-            .byte 24,24
         END:
 
         SIZE = END - TABLE
@@ -125,7 +123,6 @@ nsk_constructor _init
                 .byte $48,$49
                 .byte $58,$59
                 .byte $68,$69
-                .byte $78,$79
             END:
 
             SIZE = END - TABLE
@@ -139,7 +136,6 @@ nsk_constructor _init
                 .byte $4a,$4b
                 .byte $5a,$5b
                 .byte $6a,$6b
-                .byte $7a,$7b
             END:
 
             SIZE = END - TABLE
@@ -153,7 +149,6 @@ nsk_constructor _init
                 .byte $4c,$4d
                 .byte $5c,$5d
                 .byte $6c,$6d
-                .byte $7c,$7d
             END:
 
             SIZE = END - TABLE
@@ -167,7 +162,6 @@ nsk_constructor _init
                 .byte $4e,$4f
                 .byte $5e,$5f
                 .byte $6e,$6f
-                .byte $7e,$7f
             END:
 
             SIZE = END - TABLE
@@ -180,6 +174,12 @@ nsk_constructor _init
     .scope ANIMATION
         ; @brief Walking animation frames
         .scope WALK
+            ; @brief Number of game frames per animation frame
+            DURATION = 8
+
+            ; @brief State to switch to when the animation reaches its end
+            NEXT_STATE = CHARACTER::STATE::CROUCH
+
             TABLE:
                 .addr CHARACTER::FRAME::WALK_0::TABLE
                 .addr CHARACTER::FRAME::WALK_1::TABLE
@@ -190,6 +190,12 @@ nsk_constructor _init
 
         ; @brief Crouching animation frames
         .scope CROUCH
+            ; @brief Number of game frames per animation frame
+            DURATION = 120
+
+            ; @brief State to switch to when the animation reaches its end
+            NEXT_STATE = CHARACTER::STATE::JUMP
+
             TABLE:
                 .addr CHARACTER::FRAME::CROUCH_0::TABLE
             END:
@@ -199,6 +205,12 @@ nsk_constructor _init
 
         ; @brief Jumping animation frames
         .scope JUMP
+            ; @brief Number of game frames per animation frame
+            DURATION = 120
+
+            ; @brief State to switch to when the animation reaches its end
+            NEXT_STATE = CHARACTER::STATE::WALK
+
             TABLE:
                 .addr CHARACTER::FRAME::JUMP_0::TABLE
             END:
@@ -217,6 +229,20 @@ nsk_constructor _init
 
         .assert COUNT = CHARACTER::STATE::COUNT, error, "Character animation table size mismatch"
 
+        ; @brief Animation frame durations indexed by CHARACTER::STATE
+        DURATION:
+            .byte WALK::DURATION
+            .byte CROUCH::DURATION
+            .byte JUMP::DURATION
+        DURATION_END:
+
+        DURATION_COUNT = DURATION_END - DURATION
+
+        .assert \
+            DURATION_COUNT = CHARACTER::STATE::COUNT, \
+            error,                                    \
+            "Character animation duration table size mismatch"
+
         ; @brief Number of frames per animation indexed by CHARACTER::STATE
         FRAMES:
             .byte WALK::COUNT
@@ -230,8 +256,31 @@ nsk_constructor _init
             FRAMES_COUNT = CHARACTER::STATE::COUNT, \
             error,                                  \
             "Character animation frame-count table size mismatch"
+
+        ; @brief Animation next states indexed by CHARACTER::STATE
+        NEXT_STATE:
+            .byte WALK::NEXT_STATE
+            .byte CROUCH::NEXT_STATE
+            .byte JUMP::NEXT_STATE
+        NEXT_STATE_END:
+
+        NEXT_STATE_COUNT = NEXT_STATE_END - NEXT_STATE
+
+        .assert \
+            NEXT_STATE_COUNT = CHARACTER::STATE::COUNT, \
+            error,                                      \
+            "Character animation next-state table size mismatch"
     .endscope
 .endscope
+
+.segment "ZEROPAGE"
+
+; @brief Current animation frame sequence pointer
+_character_animation_ptr:
+    .res 2
+; @brief Current character frame sprite table pointer
+_character_frame_ptr:
+    .res 2
 
 .segment "BSS"
 
@@ -243,6 +292,15 @@ _character_screeny:
     .res 1
 ; @brief Allocated character data slot
 _character_data_id:
+    .res 1
+; @brief Current pool index
+_character_pool_index:
+    .res 1
+; @brief Current character sprite index
+_character_sprite:
+    .res 1
+; @brief Current character sprite attributes
+_character_attrs:
     .res 1
 
 ; @brief Character data slot usage markers
@@ -328,6 +386,7 @@ _character_data_timer:
     sta _character_data_direction, x
     lda #0
     sta _character_data_frame, x
+    lda #CHARACTER::ANIMATION::WALK::DURATION
     sta _character_data_timer, x
 
     nsk_pool_add \
@@ -377,16 +436,98 @@ _character_data_timer:
     rts
 .endproc
 
-; @brief Routine to draw the character
+; @brief Ticks character animation state
 ;
-; @param[in] X the index of the object in the nsk_pool_*
-.export nsk_character_draw
-.proc nsk_character_draw
-    push a, y
+; @param[in] Y the index of the character data slot
+.proc _character_animation_tick
+    lda _character_data_timer, y
+    beq advance
 
+    sec
+    sbc #1
+    sta _character_data_timer, y
+    jmp done
+
+    advance:
+        lda _character_data_state, y
+        tax
+
+        lda _character_data_frame, y
+        clc
+        adc #1
+        cmp CHARACTER::ANIMATION::FRAMES, x
+        bcc set_frame
+
+        lda CHARACTER::ANIMATION::NEXT_STATE, x
+        sta _character_data_state, y
+        tax
+
+        lda #0
+
+    set_frame:
+        sta _character_data_frame, y
+
+        lda CHARACTER::ANIMATION::DURATION, x
+        sta _character_data_timer, y
+
+    done:
+        rts
+.endproc
+
+; @brief Selects the current character frame sprite table
+;
+; @param[in] Y the index of the character data slot
+.proc _character_frame_select
+    lda _character_data_state, y
+    asl
+    tax
+
+    lda CHARACTER::ANIMATION::TABLE + 0, x
+    sta _character_animation_ptr + 0
+    lda CHARACTER::ANIMATION::TABLE + 1, x
+    sta _character_animation_ptr + 1
+
+    lda _character_data_frame, y
+    asl
+    tay
+
+    lda (_character_animation_ptr), y
+    sta _character_frame_ptr + 0
+    iny
+    lda (_character_animation_ptr), y
+    sta _character_frame_ptr + 1
+
+    rts
+.endproc
+
+; @brief Selects the current character sprite attributes
+;
+; @param[in] Y the index of the character data slot
+.proc _character_attrs_select
+    lda _character_data_direction, y
+    cmp #CHARACTER::DIRECTION::RIGHT
+    beq flipped
+
+    lda #CHARACTER::ATTRS
+    jmp done
+
+    flipped:
+        lda #CHARACTER::ATTRS_FLIPPED
+
+    done:
+        sta _character_attrs
+        rts
+.endproc
+
+; @brief Draws the selected character frame
+.proc _character_frame_draw
+    ldx _character_pool_index
     ldy #0
 
     loop:
+        lda (_character_frame_ptr), y
+        sta _character_sprite
+
         clc
         lda nsk_pool_screenx
         adc CHARACTER::POSX::TABLE, y
@@ -398,17 +539,46 @@ _character_data_timer:
         sta _character_screeny
 
         nsk_sprite_draw \
-            { CHARACTER::FRAME::WALK_0::TABLE, y }, \
-            { #CHARACTER::ATTRS                  }, \
-            { #CHARACTER::PALETTE                }, \
-            { _character_screenx                 }, \
-            { _character_screeny                 }
+            { _character_sprite  }, \
+            { _character_attrs   }, \
+            { #CHARACTER::PALETTE }, \
+            { _character_screenx }, \
+            { _character_screeny }
 
         iny
         cpy #CHARACTER::COUNT
         bne loop
 
-    pull a, y
+    rts
+.endproc
+
+; @brief Routine to draw the character
+;
+; @param[in] X the index of the object in the nsk_pool_*
+.export nsk_character_draw
+.proc nsk_character_draw
+    push a, x, y
+
+    stx _character_pool_index
+
+    ldy nsk_pool_data_id, x
+    cpy #CHARACTER::DATA::MAX
+    bcs done
+
+    jsr _character_animation_tick
+
+    ldx _character_pool_index
+    ldy nsk_pool_data_id, x
+    jsr _character_frame_select
+
+    ldx _character_pool_index
+    ldy nsk_pool_data_id, x
+    jsr _character_attrs_select
+
+    jsr _character_frame_draw
+
+    done:
+        pull a, x, y
 
     rts
 .endproc

@@ -220,7 +220,7 @@ nsk_constructor _init
         ; @brief Walking animation frames
         .scope WALK
             ; @brief Number of game frames per animation frame
-            DURATION = 16
+            DURATION = 8
 
             ; @brief State to switch to when the animation reaches its end
             NEXT_STATE = CHARACTER::STATE::WALK

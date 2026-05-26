@@ -15,6 +15,9 @@
 
     ; @brief List of the cleanup routines
     .import nsk_sprites_table_clean
+
+    ; @brief List of the ground-check routines
+    .import nsk_sprites_table_isonground
 .endif
 
 .endif

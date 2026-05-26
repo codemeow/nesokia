@@ -18,6 +18,7 @@
 .include "../pool/nsk_pool_settings.inc"
 .include "../pool/nsk_pool_vars.inc"
 .include "../nsk_sprites_list.inc"
+.include "../../tiles/maps/nsk_map_vars.inc"
 
 nsk_constructor _init
 
@@ -38,7 +39,9 @@ nsk_constructor _init
     PALETTE = %10
 
     ; @brief Object flags
-    FLAGS = 0
+    FLAGS = \
+        POOL::FLAGS::GRAVITY | \
+        POOL::FLAGS::VECTORS
 
     ; @brief Character start X high byte
     STARTX_HI = 0
@@ -101,6 +104,21 @@ nsk_constructor _init
     .scope DIRECTION
         LEFT  = 0 ; @< Looking left
         RIGHT = 1 ; @< Looking right
+    .endscope
+
+    ; @brief Character collision box
+    .scope COLLISION
+        ; @brief Left foot probe offset
+        LEFT_X = 0
+
+        ; @brief Right foot probe offset
+        RIGHT_X = CHARACTER::WIDTH * NSK::SCREEN::SPRITES::MODE_8X8::SPRITEWIDTH - 1
+
+        ; @brief Foot probe Y offset
+        FOOT_Y = CHARACTER::HEIGHT * NSK::SCREEN::SPRITES::MODE_8X8::SPRITEHEIGHT
+
+        ; @brief Collision box height
+        HEIGHT = FOOT_Y
     .endscope
 
     ; @brief Character object-specific data storage
@@ -175,10 +193,10 @@ nsk_constructor _init
         ; @brief Walking animation frames
         .scope WALK
             ; @brief Number of game frames per animation frame
-            DURATION = 8
+            DURATION = 16
 
             ; @brief State to switch to when the animation reaches its end
-            NEXT_STATE = CHARACTER::STATE::CROUCH
+            NEXT_STATE = CHARACTER::STATE::WALK
 
             TABLE:
                 .addr CHARACTER::FRAME::WALK_0::TABLE
@@ -194,7 +212,7 @@ nsk_constructor _init
             DURATION = 120
 
             ; @brief State to switch to when the animation reaches its end
-            NEXT_STATE = CHARACTER::STATE::JUMP
+            NEXT_STATE = CHARACTER::STATE::WALK
 
             TABLE:
                 .addr CHARACTER::FRAME::CROUCH_0::TABLE
@@ -281,6 +299,9 @@ _character_animation_ptr:
 ; @brief Current character frame sprite table pointer
 _character_frame_ptr:
     .res 2
+; @brief Current collision map page pointer
+_character_map_ptr:
+    .res 2
 
 .segment "BSS"
 
@@ -301,6 +322,18 @@ _character_sprite:
     .res 1
 ; @brief Current character sprite attributes
 _character_attrs:
+    .res 1
+; @brief Current foot probe X high byte
+_character_probe_x_hi:
+    .res 1
+; @brief Current foot probe X low byte
+_character_probe_x_lo:
+    .res 1
+; @brief Current foot probe Y
+_character_probe_y:
+    .res 1
+; @brief Current collision map cell index
+_character_map_index:
     .res 1
 
 ; @brief Character data slot usage markers
@@ -432,6 +465,142 @@ _character_data_timer:
 
     done:
         pull a, y
+
+    rts
+.endproc
+
+; @brief Selects the collision map page for the current foot probe
+.proc _character_map_page_select
+    lda #<nsk_map_grid
+    sta _character_map_ptr + 0
+    lda #>nsk_map_grid
+    sta _character_map_ptr + 1
+
+    lda _character_probe_x_hi
+    beq done
+
+    lda _character_map_ptr + 0
+    clc
+    adc #<MAP::SCREEN::PAGE
+    sta _character_map_ptr + 0
+    lda _character_map_ptr + 1
+    adc #>MAP::SCREEN::PAGE
+    sta _character_map_ptr + 1
+
+    done:
+        rts
+.endproc
+
+; @brief Checks if the current foot probe touches a solid collision block
+;
+; @param[in] _character_probe_x_hi Foot probe X high byte
+; @param[in] _character_probe_x_lo Foot probe X low byte
+; @param[in] _character_probe_y    Foot probe Y position
+; @param[out] A 0 if empty, 1 if solid
+.proc _character_ground_probe
+    lda _character_probe_x_hi
+    cmp #MAP::SCREEN::PAGES
+    bcs empty
+
+    lda _character_probe_y
+    cmp #NSK::SCREEN::HEIGHT
+    bcs empty
+
+    jsr _character_map_page_select
+
+    lda _character_probe_y
+    and #$f0
+    sta _character_map_index
+
+    lda _character_probe_x_lo
+    lsr
+    lsr
+    lsr
+    lsr
+    clc
+    adc _character_map_index
+    tay
+
+    lda (_character_map_ptr), y
+    cmp #MAP::COLLISION::SOLID
+    beq solid
+
+    empty:
+        lda #0
+        rts
+
+    solid:
+        lda #1
+        rts
+.endproc
+
+; @brief Sets the character Y position to the top of the current ground block
+.proc _character_snap_ground
+    ldx _character_pool_index
+
+    lda _character_probe_y
+    and #$f0
+    sec
+    sbc #CHARACTER::COLLISION::HEIGHT
+    sta nsk_pool_worldy_lo, x
+
+    lda #0
+    sta nsk_pool_worldy_frac, x
+
+    rts
+.endproc
+
+; @brief Sets the current foot probe X position from the object X and offset
+;
+; @param[in] A Foot probe X offset
+.proc _character_probe_x_set
+    ldx _character_pool_index
+
+    clc
+    adc nsk_pool_worldx_lo, x
+    sta _character_probe_x_lo
+
+    lda nsk_pool_worldx_hi, x
+    adc #0
+    sta _character_probe_x_hi
+
+    rts
+.endproc
+
+; @brief Routine to check if the character stands on ground
+;
+; @param[in] X the index of the object in the nsk_pool_*
+; @note Writes 0 or 1 to nsk_pool_result and may snap the character Y position
+.export nsk_character_isonground
+.proc nsk_character_isonground
+    push a, x, y
+
+    stx _character_pool_index
+
+    lda nsk_pool_worldy_lo, x
+    clc
+    adc #CHARACTER::COLLISION::FOOT_Y
+    bcs done
+    sta _character_probe_y
+
+    lda #CHARACTER::COLLISION::LEFT_X
+    jsr _character_probe_x_set
+    jsr _character_ground_probe
+    bne grounded
+
+    lda #CHARACTER::COLLISION::RIGHT_X
+    jsr _character_probe_x_set
+    jsr _character_ground_probe
+    beq done
+
+    grounded:
+        jsr _character_snap_ground
+
+        lda #1
+        sta nsk_pool_result
+
+    done:
+        pull a, x, y
 
     rts
 .endproc

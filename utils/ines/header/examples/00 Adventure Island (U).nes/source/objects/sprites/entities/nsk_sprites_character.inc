@@ -20,6 +20,11 @@
     ; @param[in] X the index of the object in the nsk_pool_*
     .import nsk_character_clean
 
+    ; @brief Routine to check if the character stands on ground
+    ;
+    ; @param[in] X the index of the object in the nsk_pool_*
+    .import nsk_character_isonground
+
     ; @brief Routine to draw the character
     ;
     ; @param[in] X the index of the object in the nsk_pool_*

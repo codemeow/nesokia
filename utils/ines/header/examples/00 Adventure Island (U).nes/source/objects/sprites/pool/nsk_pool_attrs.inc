@@ -102,6 +102,21 @@ _NSK_POOL_ATTRS _NSK_POOL_ATTRSCOUNT_OP
 
 ; @brief Object settings
 .scope POOL
+    ; @brief Gravity settings
+    .scope GRAVITY
+        ; @brief Gravity acceleration low byte
+        ACCEL_LO   = $00
+
+        ; @brief Gravity acceleration fractional byte
+        ACCEL_FRAC = $60
+
+        ; @brief Maximum falling speed low byte
+        MAX_LO     = $0a
+
+        ; @brief Maximum falling speed fractional byte
+        MAX_FRAC   = $00
+    .endscope
+
     ; @brief List of flags
     .scope FLAGS
         ; Is this object screen-fixed?

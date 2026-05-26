@@ -18,6 +18,9 @@
 
     ; @brief Current X position of the current object on the screen
     .import nsk_pool_screenx
+
+    ; @brief Shared callback result scratch byte
+    .import nsk_pool_result
 .endif
 
 .endif

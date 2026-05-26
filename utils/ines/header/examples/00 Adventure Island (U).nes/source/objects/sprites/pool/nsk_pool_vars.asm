@@ -24,4 +24,9 @@ nsk_pool_size:
 nsk_pool_screenx:
     .res 1
 
+; @brief Shared callback result scratch byte
+.export nsk_pool_result
+nsk_pool_result:
+    .res 1
+
 .endif

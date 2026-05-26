@@ -97,8 +97,52 @@ _pool_size:
 ;
 ; @param[in] X Current element index
 .proc _pool_tick_gravity
+    push y
 
-    nsk_todo "Gravity tick"
+    lda #0
+    sta nsk_pool_result
+
+    ldy nsk_pool_object, x
+    jai _table_ptr, nsk_sprites_table_isonground, y
+
+    lda nsk_pool_result
+    beq falling
+
+    lda #0
+    sta nsk_pool_vectory_lo, x
+    sta nsk_pool_vectory_frac, x
+    jmp done
+
+    falling:
+        clc
+        lda nsk_pool_vectory_frac, x
+        adc #POOL::GRAVITY::ACCEL_FRAC
+        sta nsk_pool_vectory_frac, x
+
+        lda nsk_pool_vectory_lo, x
+        adc #POOL::GRAVITY::ACCEL_LO
+        sta nsk_pool_vectory_lo, x
+
+        ; Clamp only positive falling velocity. Negative velocity is an
+        ; upward movement and gravity should bring it back down naturally.
+        bmi done
+
+        cmp #POOL::GRAVITY::MAX_LO
+        bcc done
+        bne clamp
+
+        lda nsk_pool_vectory_frac, x
+        cmp #POOL::GRAVITY::MAX_FRAC
+        bcc done
+
+    clamp:
+        lda #POOL::GRAVITY::MAX_LO
+        sta nsk_pool_vectory_lo, x
+        lda #POOL::GRAVITY::MAX_FRAC
+        sta nsk_pool_vectory_frac, x
+
+    done:
+        pull y
 
     rts
 .endproc
@@ -125,15 +169,15 @@ _pool_size:
     bne done
 
     lda nsk_pool_flags, x
-    and #POOL::FLAGS::VECTORS
-    beq :+
-        jsr _pool_tick_vectors
-    :
-
-    lda nsk_pool_flags, x
     and #POOL::FLAGS::GRAVITY
     beq :+
         jsr _pool_tick_gravity
+    :
+
+    lda nsk_pool_flags, x
+    and #POOL::FLAGS::VECTORS
+    beq :+
+        jsr _pool_tick_vectors
     :
 
     lda nsk_pool_flags, x

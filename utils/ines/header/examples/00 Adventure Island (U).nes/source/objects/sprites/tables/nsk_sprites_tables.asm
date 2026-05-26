@@ -69,4 +69,26 @@ nsk_sprites_table_clean:
     .assert SIZE = SPRITELIST::COUNT, error, "Sprites clean table size mismatch"
 .endscope
 
+; @brief List of the ground-check routines
+;
+; @note The routines get X as the pool object index. They write the result to
+;       nsk_pool_result: 0 means no ground, non-zero means the object is on
+;       ground. The object routine may snap its own Y position.
+.export nsk_sprites_table_isonground
+nsk_sprites_table_isonground:
+.scope ISONGROUND
+    TABLE:
+        .addr $0000
+        .addr nsk_character_isonground
+        .addr $0000
+        .addr $0000
+        .addr $0000
+        .addr $0000
+    END:
+
+    SIZE = (END - TABLE) / 2
+
+    .assert SIZE = SPRITELIST::COUNT, error, "Sprites ground-check table size mismatch"
+.endscope
+
 .endif

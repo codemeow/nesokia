@@ -127,13 +127,13 @@ nsk_constructor _init
         LEFT_X_LO = $ff
 
         ; @brief Left movement fractional byte
-        LEFT_X_FRAC = $b0
+        LEFT_X_FRAC = $10
 
         ; @brief Right movement low byte
         RIGHT_X_LO = $00
 
         ; @brief Right movement fractional byte
-        RIGHT_X_FRAC = $b0
+        RIGHT_X_FRAC = $f0
 
         ; @brief Down movement low byte
         Y_LO = $01
@@ -1022,12 +1022,24 @@ _meteorite_data_timer:
         clc
         lda nsk_pool_screenx
         adc METEORITE::POSX::TABLE, y
+        bcs next
         sta _meteorite_screenx
 
         clc
         lda nsk_pool_worldy_lo, x
         adc METEORITE::POSY::TABLE, y
         sta _meteorite_screeny
+
+        ldy nsk_pool_data_id, x
+        lda _meteorite_data_state, y
+        cmp #METEORITE::STATE::COOL
+        bne :+
+            lda _meteorite_screeny
+            clc
+            adc #NSK::SCREEN::SPRITES::MODE_8X8::SPRITEHEIGHT
+            sta _meteorite_screeny
+        :
+        ldy _meteorite_draw_index
 
         nsk_sprite_draw \
             { _meteorite_sprite  }, \
@@ -1036,6 +1048,7 @@ _meteorite_data_timer:
             { _meteorite_screenx }, \
             { _meteorite_screeny }
 
+        next:
         iny
         cpy _meteorite_draw_count
         bne loop

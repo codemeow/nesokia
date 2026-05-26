@@ -145,7 +145,7 @@ nsk_constructor _init
         SPEED_NEG_LO = $ff
 
         ; @brief Negative walking speed fractional byte
-        SPEED_NEG_FRAC = $70
+        SPEED_NEG_FRAC = $90
     .endscope
 
     ; @brief Character object-specific data storage
@@ -923,6 +923,7 @@ _character_data_timer:
         clc
         lda nsk_pool_screenx
         adc CHARACTER::POSX::TABLE, y
+        bcs next
         sta _character_screenx
 
         clc
@@ -937,6 +938,7 @@ _character_data_timer:
             { _character_screenx }, \
             { _character_screeny }
 
+        next:
         iny
         cpy #CHARACTER::COUNT
         bne loop

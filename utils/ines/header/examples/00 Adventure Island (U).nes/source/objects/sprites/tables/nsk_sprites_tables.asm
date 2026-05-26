@@ -10,6 +10,7 @@
 
 .include "../entities/nsk_sprites_hud.inc"
 .include "../entities/nsk_sprites_character.inc"
+.include "../entities/nsk_sprites_meteorite.inc"
 .include "../entities/nsk_sprites_debris.inc"
 .include "../nsk_sprites_list.inc"
 
@@ -22,6 +23,7 @@ nsk_sprites_table_tick:
     TABLE:
         .addr $0000
         .addr nsk_character_tick
+        .addr nsk_meteorite_tick
         .addr $0000
         .addr $0000
         .addr $0000
@@ -40,6 +42,7 @@ nsk_sprites_table_draw:
     TABLE:
         .addr nsk_hud_draw
         .addr nsk_character_draw
+        .addr nsk_meteorite_draw
         .addr nsk_debris_draw
         .addr nsk_debris_draw
         .addr nsk_debris_draw
@@ -58,6 +61,7 @@ nsk_sprites_table_oob:
     TABLE:
         .addr $0000
         .addr nsk_character_oob
+        .addr nsk_meteorite_oob
         .addr nsk_debris_oob
         .addr nsk_debris_oob
         .addr nsk_debris_oob
@@ -76,6 +80,7 @@ nsk_sprites_table_clean:
     TABLE:
         .addr $0000
         .addr nsk_character_clean
+        .addr nsk_meteorite_clean
         .addr $0000
         .addr $0000
         .addr $0000
@@ -98,6 +103,7 @@ nsk_sprites_table_isonground:
     TABLE:
         .addr $0000
         .addr nsk_character_isonground
+        .addr $0000
         .addr $0000
         .addr $0000
         .addr $0000

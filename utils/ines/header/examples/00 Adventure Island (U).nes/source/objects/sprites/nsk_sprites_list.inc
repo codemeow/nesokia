@@ -10,6 +10,7 @@
 .enum SPRITELIST
     HUD            ; @< HUD object
     CHARACTER      ; @< Main character
+    METEORITE      ; @< Decorative falling meteorite
     DEBRIS_0       ; @< Background debris, layer 0 (farthest)
     DEBRIS_1       ; @< Background debris, layer 1
     DEBRIS_2       ; @< Background debris, layer 2
@@ -23,6 +24,7 @@
 
 .include "entities/nsk_sprites_hud.inc"
 .include "entities/nsk_sprites_character.inc"
+.include "entities/nsk_sprites_meteorite.inc"
 .include "entities/nsk_sprites_debris.inc"
 
 .endif

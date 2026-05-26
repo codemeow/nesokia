@@ -34,6 +34,18 @@ _sweep_index:
 _pool_size:
     .res 1
 
+; @brief First pool index used by the rotated draw pass
+_pool_draw_start:
+    .res 1
+
+; @brief Current pool index used by the rotated draw pass
+_pool_draw_index:
+    .res 1
+
+; @brief Number of objects left to process in the draw pass
+_pool_draw_count:
+    .res 1
+
 .segment "CODE"
 
 ; @brief Ticks object-specific behavior
@@ -297,40 +309,107 @@ _pool_size:
         rts
 .endproc
 
-; @brief Object pool "tick" routine
-; - Calculates the physics
-; - Calls objects draw routines
-.export nsk_pool_tick
-.proc nsk_pool_tick
-    push a, x
-
-    lda nsk_pool_size
-    sta _pool_size
+; @brief Ticks all pool elements in the stable pool order
+.proc _pool_tick_elements
+    push x
 
     ldx #0
     cpx _pool_size
     beq done
 
-
     loop:
         jsr _pool_tick_element
-        jsr _pool_draw_element
 
         inx
         cpx _pool_size
         bne loop
 
+    done:
+        pull x
+        rts
+.endproc
+
+; @brief Moves the next draw pass start index forward
+.proc _pool_draw_advance_start
+    push a
+
+    inc _pool_draw_start
+
+    lda _pool_draw_start
+    cmp _pool_size
+    bcc done
+
+    lda #0
+    sta _pool_draw_start
 
     done:
+        pull a
+        rts
+.endproc
 
-    nsk_todo "Rotate pool elements here"
+; @brief Draws all pool elements in a rotated order
+.proc _pool_draw_elements
+    push a, x
+
+    lda _pool_draw_start
+    cmp _pool_size
+    bcc :+
+        lda #0
+        sta _pool_draw_start
+    :
+
+    lda _pool_draw_start
+    sta _pool_draw_index
+
+    lda _pool_size
+    sta _pool_draw_count
+
+    loop:
+        ldx _pool_draw_index
+        jsr _pool_draw_element
+
+        inc _pool_draw_index
+
+        lda _pool_draw_index
+        cmp _pool_size
+        bcc :+
+            lda #0
+            sta _pool_draw_index
+        :
+
+        dec _pool_draw_count
+        bne loop
+
+    jsr _pool_draw_advance_start
+
+    pull a, x
+    rts
+.endproc
+
+; @brief Object pool "tick" routine
+; - Calculates the physics
+; - Calls objects draw routines
+.export nsk_pool_tick
+.proc nsk_pool_tick
+    push a
+
+    lda nsk_pool_size
+    sta _pool_size
+
+    lda _pool_size
+    beq done
+
+    jsr _pool_tick_elements
+    jsr _pool_draw_elements
+
+    done:
 
     jsr _pool_sweep_deleted
 
     ; Hide the rest of the sprites (if any)
     nsk_sprites_hide
 
-    pull a, x
+    pull a
 
     rts
 .endproc

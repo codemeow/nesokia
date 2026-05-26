@@ -31,6 +31,7 @@
         .addr nsk_hud_init
         .addr nsk_character_init
         .addr nsk_meteorite_init
+        .addr nsk_whirl_init
         .addr nsk_debris_init
 
         .addr nsk_init_tiles_draw

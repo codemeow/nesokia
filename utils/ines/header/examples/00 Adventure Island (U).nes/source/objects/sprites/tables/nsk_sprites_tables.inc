@@ -7,6 +7,9 @@
 ::__NSK_SPRITES_TABLES__ = 1
 
 .ifndef ::__NSK_SPRITES_TABLES_ASM__
+    ; @brief List of the object-specific tick routines
+    .import nsk_sprites_table_tick
+
     ; @brief List of the draw routines
     .import nsk_sprites_table_draw
 

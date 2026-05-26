@@ -15,6 +15,24 @@
 
 .segment "RODATA"
 
+; @brief List of the object-specific tick routines
+.export nsk_sprites_table_tick
+nsk_sprites_table_tick:
+.scope TICK
+    TABLE:
+        .addr $0000
+        .addr nsk_character_tick
+        .addr $0000
+        .addr $0000
+        .addr $0000
+        .addr $0000
+    END:
+
+    SIZE = (END - TABLE) / 2
+
+    .assert SIZE = SPRITELIST::COUNT, error, "Sprites tick table size mismatch"
+.endscope
+
 ; @brief List of the draw routines
 .export nsk_sprites_table_draw
 nsk_sprites_table_draw:

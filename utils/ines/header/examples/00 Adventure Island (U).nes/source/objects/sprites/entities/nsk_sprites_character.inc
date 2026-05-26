@@ -15,6 +15,11 @@
     ; @param[in] X the index of the object in the nsk_pool_*
     .import nsk_character_oob
 
+    ; @brief Routine to tick character-specific behavior
+    ;
+    ; @param[in] X the index of the object in the nsk_pool_*
+    .import nsk_character_tick
+
     ; @brief Routine to clean up character object-specific data
     ;
     ; @param[in] X the index of the object in the nsk_pool_*

@@ -121,6 +121,33 @@ nsk_constructor _init
         HEIGHT = FOOT_Y
     .endscope
 
+    ; @brief Character patrol settings
+    .scope PATROL
+        ; @brief Left patrol edge high byte
+        LEFT_HI = 0
+
+        ; @brief Left patrol edge low byte
+        LEFT_LO = 175
+
+        ; @brief Right patrol edge high byte
+        RIGHT_HI = 1
+
+        ; @brief Right patrol edge low byte
+        RIGHT_LO = 85
+
+        ; @brief Walking speed low byte
+        SPEED_LO = $00
+
+        ; @brief Walking speed fractional byte
+        SPEED_FRAC = $70
+
+        ; @brief Negative walking speed low byte
+        SPEED_NEG_LO = $ff
+
+        ; @brief Negative walking speed fractional byte
+        SPEED_NEG_FRAC = $70
+    .endscope
+
     ; @brief Character object-specific data storage
     .scope DATA
         ; @brief Maximum number of character object-specific data slots
@@ -323,6 +350,18 @@ _character_sprite:
 ; @brief Current character sprite attributes
 _character_attrs:
     .res 1
+; @brief Current draw loop sprite index
+_character_draw_index:
+    .res 1
+; @brief Current draw loop sprite source index
+_character_source_index:
+    .res 1
+; @brief Current draw loop sprite column
+_character_draw_col:
+    .res 1
+; @brief Current draw loop sprite row offset
+_character_draw_row:
+    .res 1
 ; @brief Current foot probe X high byte
 _character_probe_x_hi:
     .res 1
@@ -465,6 +504,144 @@ _character_data_timer:
 
     done:
         pull a, y
+
+    rts
+.endproc
+
+; @brief Stops character horizontal movement
+.proc _character_walk_stop
+    ldx _character_pool_index
+
+    lda #0
+    sta nsk_pool_vectorx_lo, x
+    sta nsk_pool_vectorx_frac, x
+
+    rts
+.endproc
+
+; @brief Sets character horizontal movement to the left
+.proc _character_walk_left
+    ldx _character_pool_index
+
+    lda #CHARACTER::PATROL::SPEED_NEG_LO
+    sta nsk_pool_vectorx_lo, x
+    lda #CHARACTER::PATROL::SPEED_NEG_FRAC
+    sta nsk_pool_vectorx_frac, x
+
+    rts
+.endproc
+
+; @brief Sets character horizontal movement to the right
+.proc _character_walk_right
+    ldx _character_pool_index
+
+    lda #CHARACTER::PATROL::SPEED_LO
+    sta nsk_pool_vectorx_lo, x
+    lda #CHARACTER::PATROL::SPEED_FRAC
+    sta nsk_pool_vectorx_frac, x
+
+    rts
+.endproc
+
+; @brief Snaps character X position to the left patrol edge
+.proc _character_snap_left
+    ldx _character_pool_index
+
+    lda #CHARACTER::PATROL::LEFT_HI
+    sta nsk_pool_worldx_hi, x
+    lda #CHARACTER::PATROL::LEFT_LO
+    sta nsk_pool_worldx_lo, x
+    lda #0
+    sta nsk_pool_worldx_frac, x
+
+    rts
+.endproc
+
+; @brief Snaps character X position to the right patrol edge
+.proc _character_snap_right
+    ldx _character_pool_index
+
+    lda #CHARACTER::PATROL::RIGHT_HI
+    sta nsk_pool_worldx_hi, x
+    lda #CHARACTER::PATROL::RIGHT_LO
+    sta nsk_pool_worldx_lo, x
+    lda #0
+    sta nsk_pool_worldx_frac, x
+
+    rts
+.endproc
+
+; @brief Routine to tick character-specific behavior
+;
+; @param[in] X the index of the object in the nsk_pool_*
+.export nsk_character_tick
+.proc nsk_character_tick
+    push a, x, y
+
+    stx _character_pool_index
+
+    ldy nsk_pool_data_id, x
+    cpy #CHARACTER::DATA::MAX
+    bcs done
+
+    lda _character_data_state, y
+    cmp #CHARACTER::STATE::WALK
+    beq walk
+
+    jsr _character_walk_stop
+    jmp done
+
+    walk:
+        lda _character_data_direction, y
+        cmp #CHARACTER::DIRECTION::LEFT
+        beq walk_left
+
+    walk_right:
+        lda nsk_pool_worldx_hi, x
+        cmp #CHARACTER::PATROL::RIGHT_HI
+        bcc :+
+        bne turn_left
+
+        lda nsk_pool_worldx_lo, x
+        cmp #CHARACTER::PATROL::RIGHT_LO
+        bcs turn_left
+    :
+        jsr _character_walk_right
+        jmp done
+
+    walk_left:
+        lda nsk_pool_worldx_hi, x
+        cmp #CHARACTER::PATROL::LEFT_HI
+        bcc turn_right
+        bne :+
+
+        lda nsk_pool_worldx_lo, x
+        cmp #CHARACTER::PATROL::LEFT_LO
+        bcc turn_right
+        beq turn_right
+    :
+        jsr _character_walk_left
+        jmp done
+
+    turn_left:
+        jsr _character_snap_right
+
+        lda #CHARACTER::DIRECTION::LEFT
+        sta _character_data_direction, y
+
+        jsr _character_walk_left
+        jmp done
+
+    turn_right:
+        jsr _character_snap_left
+
+        lda #CHARACTER::DIRECTION::RIGHT
+        sta _character_data_direction, y
+
+        jsr _character_walk_right
+
+    done:
+        pull a, x, y
 
     rts
 .endproc
@@ -685,6 +862,47 @@ _character_data_timer:
 
     done:
         sta _character_attrs
+    rts
+.endproc
+
+; @brief Selects the source sprite index for the current draw index
+.proc _character_source_index_select
+    lda _character_draw_index
+    sta _character_source_index
+
+    lda _character_attrs
+    cmp #CHARACTER::ATTRS_FLIPPED
+    bne done
+
+    lda _character_draw_index
+    sta _character_draw_col
+    lda #0
+    sta _character_draw_row
+
+    column:
+        lda _character_draw_col
+        cmp #CHARACTER::WIDTH
+        bcc column_done
+
+        sec
+        sbc #CHARACTER::WIDTH
+        sta _character_draw_col
+
+        lda _character_draw_row
+        clc
+        adc #CHARACTER::WIDTH
+        sta _character_draw_row
+        jmp column
+
+    column_done:
+        lda #CHARACTER::WIDTH - 1
+        sec
+        sbc _character_draw_col
+        clc
+        adc _character_draw_row
+        sta _character_source_index
+
+    done:
         rts
 .endproc
 
@@ -694,8 +912,13 @@ _character_data_timer:
     ldy #0
 
     loop:
+        sty _character_draw_index
+
+        jsr _character_source_index_select
+        ldy _character_source_index
         lda (_character_frame_ptr), y
         sta _character_sprite
+        ldy _character_draw_index
 
         clc
         lda nsk_pool_screenx

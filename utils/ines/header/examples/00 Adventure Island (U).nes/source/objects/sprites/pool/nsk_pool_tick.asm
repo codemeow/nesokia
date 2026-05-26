@@ -36,6 +36,20 @@ _pool_size:
 
 .segment "CODE"
 
+; @brief Ticks object-specific behavior
+;
+; @param[in] X Current element index
+.proc _pool_tick_object
+    push y
+
+    ldy nsk_pool_object, x
+    jai _table_ptr, nsk_sprites_table_tick, y
+
+    pull y
+
+    rts
+.endproc
+
 ; @brief Ticks vector forces
 ;
 ; @param[in] X Current element index
@@ -167,6 +181,8 @@ _pool_size:
     lda nsk_pool_flags, x
     and #POOL::FLAGS::DELETED
     bne done
+
+    jsr _pool_tick_object
 
     lda nsk_pool_flags, x
     and #POOL::FLAGS::GRAVITY

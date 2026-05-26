@@ -14,6 +14,11 @@
 
 .segment "CODE"
 
+.assert \
+    ::MAP::SCREEN::WIDTH = 16, \
+    error,                     \
+    "Object collision renderer expects 16-metablock-wide map pages"
+
 ; @brief Assign the object collision to the global map
 ;
 ; @param[in] Y                     Pointer position in the object
@@ -57,7 +62,7 @@
     clc
     adc _nsk_render_quadrant_posx
     sta _nsk_render_offs
-    lda #$00
+    lda #0
     sta _nsk_render_offs + 1
 
     nsk_todo "Need something smarter here"

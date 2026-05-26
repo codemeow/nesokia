@@ -11,8 +11,6 @@
 .include "nsk_render_map.inc"
 .include "../maps/nsk_map_vars.inc"
 
-nsk_todo "Use common constant"
-
 .include "routines/nsk_render_vars.inc"
 .include "routines/nsk_render_clear.inc"
 .include "routines/nsk_render_attributes.inc"

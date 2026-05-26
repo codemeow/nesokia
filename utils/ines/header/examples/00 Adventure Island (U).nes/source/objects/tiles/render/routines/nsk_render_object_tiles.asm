@@ -13,6 +13,11 @@
 
 .segment "CODE"
 
+.assert \
+    ::NSK::SCREEN::TILEMAP::WIDTH = 32, \
+    error,                              \
+    "Object tile renderer expects 32-tile-wide nametables"
+
 ; @brief Renders the object tiles
 ; @param[in] _nsk_render_objx      Object X position
 ; @param[in] _nsk_render_objy      Object Y position
@@ -38,7 +43,7 @@
     ; Init offset
     lda _nsk_render_objy
     sta _nsk_render_offs + 0
-    lda #$00
+    lda #0
     sta _nsk_render_offs + 1
 
     ; y * ::NSK::SCREEN::TILEMAP::WIDTH = y << 5
@@ -78,7 +83,7 @@
     sta _nsk_render_offs + 1
 
     height:
-        nsk_todo "Extract to common PPU and assert for ::NSK::SCREEN::TILEMAP::WIDTH <> 32"
+        nsk_todo "Extract nametable row increment to common PPU helper"
 
         nsk_ppu_addrset _nsk_render_offs
 
@@ -97,7 +102,7 @@
         ; Set the offset to the new Y position
         clc
         lda _nsk_render_offs
-        adc #$20
+        adc #::NSK::SCREEN::TILEMAP::WIDTH
         sta _nsk_render_offs
         lda _nsk_render_offs + 1
         adc #0

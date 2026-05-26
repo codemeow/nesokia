@@ -13,6 +13,23 @@
 
 .segment "CODE"
 
+.assert \
+    ::NSK::SCREEN::ATTR::QUADRANT::WIDTH = 2, \
+    error,                                    \
+    "Object palette renderer expects 2-tile-wide attribute quadrants"
+.assert \
+    ::NSK::SCREEN::ATTR::QUADRANT::HEIGHT = 2, \
+    error,                                     \
+    "Object palette renderer expects 2-tile-high attribute quadrants"
+.assert \
+    ::NSK::SCREEN::ATTR::BLOCK::WIDTH = 4, \
+    error,                                \
+    "Object palette renderer expects 4-tile-wide attribute blocks"
+.assert \
+    ::NSK::SCREEN::ATTR::BLOCK::HEIGHT = 4, \
+    error,                                 \
+    "Object palette renderer expects 4-tile-high attribute blocks"
+
 ; @brief Renders the object palettes
 ; @param[in] _nsk_render_objx      Object X position
 ; @param[in] _nsk_render_objy      Object Y position
@@ -61,12 +78,12 @@
     ; Which starting quadrants should be used
     lda _nsk_render_objy
     lsr
-    and #$01
+    and #::NSK::SCREEN::ATTR::QUADRANT::MASK
     sta _nsk_render_quadrant_posy
 
     lda _nsk_render_objx
     lsr
-    and #$01
+    and #::NSK::SCREEN::ATTR::QUADRANT::MASK
     sta _nsk_render_quadrant_posx
 
     ; Translate the nametable coordinates into attribute coordinates:
@@ -92,7 +109,7 @@
     height:
         ; Overflow the quadrant Y
         lda _nsk_render_quadrant_posy
-        and #$01
+        and #::NSK::SCREEN::ATTR::QUADRANT::MASK
         sta _nsk_render_quadrant_posy
 
         ; Save the Qx position
@@ -110,7 +127,7 @@
         width:
             ; Overflow the quadrant X
             lda _nsk_render_quadrant_posx
-            and #$01
+            and #::NSK::SCREEN::ATTR::QUADRANT::MASK
             sta _nsk_render_quadrant_posx
 
             ; The final formula is
@@ -125,12 +142,13 @@
             sta _nsk_render_quadrant_shift
 
             ; Calculate the quadrant mask
-            lda #%11
+            lda #::NSK::SCREEN::ATTR::PALETTE::MASK
             ldx _nsk_render_quadrant_shift
             beq :++
             :
-                asl
-                asl
+                .repeat ::NSK::SCREEN::ATTR::PALETTE::BITS
+                    asl
+                .endrep
                 dex
                 bne :-
             :
@@ -144,8 +162,9 @@
             ldx _nsk_render_quadrant_shift
             beq :++
             :
-                asl
-                asl
+                .repeat ::NSK::SCREEN::ATTR::PALETTE::BITS
+                    asl
+                .endrep
                 dex
                 bne :-
             :

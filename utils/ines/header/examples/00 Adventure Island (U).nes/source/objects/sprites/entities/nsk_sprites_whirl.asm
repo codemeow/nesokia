@@ -39,7 +39,7 @@ nsk_constructor _init
     PALETTE = %00
 
     ; @brief Object flags
-    FLAGS = 0
+    FLAGS = POOL::FLAGS::COLLISION
 
     ; @brief Whirl start Y
     STARTY = 130
@@ -521,6 +521,10 @@ _whirl_data_timer:
         cmp WHIRL::ANIMATION::FRAMES, x
         bcc set_frame
 
+        lda _whirl_data_state, y
+        cmp #WHIRL::STATE::KILL
+        beq delete
+
         lda WHIRL::ANIMATION::NEXT_STATE, x
         sta _whirl_data_state, y
         tax
@@ -534,6 +538,13 @@ _whirl_data_timer:
         sta _whirl_data_timer, y
 
     done:
+        rts
+
+    delete:
+        ldx _whirl_pool_index
+        lda nsk_pool_flags, x
+        ora #POOL::FLAGS::DELETED
+        sta nsk_pool_flags, x
         rts
 .endproc
 
@@ -688,12 +699,60 @@ _whirl_data_timer:
 .proc nsk_whirl_tick
     push a, x, y
 
+    stx _whirl_pool_index
+
     ldy nsk_pool_data_id, x
     jsr _whirl_animation_tick
 
     pull a, x, y
 
     rts
+.endproc
+
+; @brief Routine to return the whirl collision box size
+;
+; @param[in] X the index of the object in the nsk_pool_*
+.export nsk_whirl_getbox
+.proc nsk_whirl_getbox
+    lda #(WHIRL::WIDTH * NSK::SCREEN::SPRITES::MODE_8X8::SPRITEWIDTH)
+    sta nsk_pool_box_width
+    lda #(WHIRL::HEIGHT * NSK::SCREEN::SPRITES::MODE_8X8::SPRITEHEIGHT)
+    sta nsk_pool_box_height
+
+    rts
+.endproc
+
+; @brief Routine to handle whirl collision
+;
+; @param[in] X the index of the object in the nsk_pool_*
+; @param[in] nsk_pool_collision_other other collided pool index
+.export nsk_whirl_collision
+.proc nsk_whirl_collision
+    ldy nsk_pool_collision_other
+    lda nsk_pool_object, y
+    cmp #SPRITELIST::CHARACTER
+    bne done
+
+    ldy nsk_pool_data_id, x
+    lda _whirl_data_state, y
+    cmp #WHIRL::STATE::KILL
+    beq done
+
+    lda #WHIRL::STATE::KILL
+    sta _whirl_data_state, y
+
+    lda #0
+    sta _whirl_data_frame, y
+
+    lda #WHIRL::ANIMATION::KILL::DURATION
+    sta _whirl_data_timer, y
+
+    lda nsk_pool_flags, x
+    and #($ff - POOL::FLAGS::COLLISION)
+    sta nsk_pool_flags, x
+
+    done:
+        rts
 .endproc
 
 ; @brief Selects the current whirl frame sprite table

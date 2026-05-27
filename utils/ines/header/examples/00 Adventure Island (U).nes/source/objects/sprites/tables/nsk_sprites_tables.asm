@@ -121,4 +121,50 @@ nsk_sprites_table_isonground:
     .assert SIZE = SPRITELIST::COUNT, error, "Sprites ground-check table size mismatch"
 .endscope
 
+; @brief List of the collision box routines
+;
+; @note The routines get X as the pool object index. They write the result to
+;       nsk_pool_box_width and nsk_pool_box_height.
+.export nsk_sprites_table_getbox
+nsk_sprites_table_getbox:
+.scope GETBOX
+    TABLE:
+        .addr $0000
+        .addr nsk_character_getbox
+        .addr $0000
+        .addr nsk_whirl_getbox
+        .addr $0000
+        .addr $0000
+        .addr $0000
+        .addr $0000
+    END:
+
+    SIZE = (END - TABLE) / 2
+
+    .assert SIZE = SPRITELIST::COUNT, error, "Sprites getbox table size mismatch"
+.endscope
+
+; @brief List of the collision handling routines
+;
+; @note The routines get X as the own pool object index and
+;       nsk_pool_collision_other as the other pool object index.
+.export nsk_sprites_table_collision
+nsk_sprites_table_collision:
+.scope COLLISION
+    TABLE:
+        .addr $0000
+        .addr nsk_character_collision
+        .addr $0000
+        .addr nsk_whirl_collision
+        .addr $0000
+        .addr $0000
+        .addr $0000
+        .addr $0000
+    END:
+
+    SIZE = (END - TABLE) / 2
+
+    .assert SIZE = SPRITELIST::COUNT, error, "Sprites collision table size mismatch"
+.endscope
+
 .endif

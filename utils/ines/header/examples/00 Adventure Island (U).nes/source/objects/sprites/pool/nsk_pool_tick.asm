@@ -45,6 +45,42 @@ _pool_draw_index:
 ; @brief Number of objects left to process in the draw pass
 _pool_draw_count:
     .res 1
+; @brief First collision pair pool index
+_collision_a_index:
+    .res 1
+; @brief Second collision pair pool index
+_collision_b_index:
+    .res 1
+; @brief First collision pair box width
+_collision_a_width:
+    .res 1
+; @brief First collision pair box height
+_collision_a_height:
+    .res 1
+; @brief Second collision pair box width
+_collision_b_width:
+    .res 1
+; @brief Second collision pair box height
+_collision_b_height:
+    .res 1
+; @brief First collision pair right X low byte
+_collision_a_right_lo:
+    .res 1
+; @brief First collision pair right X high byte
+_collision_a_right_hi:
+    .res 1
+; @brief Second collision pair right X low byte
+_collision_b_right_lo:
+    .res 1
+; @brief Second collision pair right X high byte
+_collision_b_right_hi:
+    .res 1
+; @brief First collision pair bottom Y
+_collision_a_bottom:
+    .res 1
+; @brief Second collision pair bottom Y
+_collision_b_bottom:
+    .res 1
 
 .segment "CODE"
 
@@ -118,6 +154,12 @@ _pool_draw_count:
 ; @param[in] X Current element index
 .proc _pool_tick_gravity
 
+    ; Negative Y velocity means the object is moving upward. Do not ask the
+    ; object whether it is on the ground yet, otherwise a jump started while
+    ; standing on ground is cancelled before vectors can move the object.
+    lda nsk_pool_vectory_lo, x
+    bmi falling
+
     lda #0
     sta nsk_pool_result
 
@@ -164,16 +206,6 @@ _pool_draw_count:
     rts
 .endproc
 
-; @brief Ticks collision-affected element
-;
-; @param[in] X Current element index
-.proc _pool_tick_collision
-
-    nsk_todo "Collision tick"
-
-    rts
-.endproc
-
 ; @brief Ticks one pool element
 ;
 ; @param[in] X Current element index
@@ -199,14 +231,208 @@ _pool_draw_count:
         jsr _pool_tick_vectors
     :
 
-    lda nsk_pool_flags, x
-    and #POOL::FLAGS::COLLISION
-    beq :+
-        jsr _pool_tick_collision
-    :
+    ; FLAGS::COLLISION is skipped on purpose. Pair collisions are handled
+    ; after all objects finish their regular tick/vector/gravity updates.
 
     done:
     rts
+.endproc
+
+; @brief Checks whether the current collision pair can collide
+;
+; @param[in] X Pool index
+; @param[out] A zero if this object cannot collide
+.proc _pool_collision_flags_check
+    lda nsk_pool_flags, x
+    and #POOL::FLAGS::DELETED
+    bne no
+
+    lda nsk_pool_flags, x
+    and #POOL::FLAGS::COLLISION
+    rts
+
+    no:
+        lda #0
+        rts
+.endproc
+
+; @brief Calculates the current collision pair boxes
+.proc _pool_collision_boxes_calc
+    ldx _collision_a_index
+    lda #0
+    sta nsk_pool_box_width
+    sta nsk_pool_box_height
+    jaic _table_ptr, nsk_sprites_table_getbox, { nsk_pool_object, x }
+    lda nsk_pool_box_width
+    sta _collision_a_width
+    lda nsk_pool_box_height
+    sta _collision_a_height
+
+    ldx _collision_b_index
+    lda #0
+    sta nsk_pool_box_width
+    sta nsk_pool_box_height
+    jaic _table_ptr, nsk_sprites_table_getbox, { nsk_pool_object, x }
+    lda nsk_pool_box_width
+    sta _collision_b_width
+    lda nsk_pool_box_height
+    sta _collision_b_height
+
+    ldx _collision_a_index
+    clc
+    lda nsk_pool_worldx_lo, x
+    adc _collision_a_width
+    sta _collision_a_right_lo
+    lda nsk_pool_worldx_hi, x
+    adc #0
+    sta _collision_a_right_hi
+
+    clc
+    lda nsk_pool_worldy_lo, x
+    adc _collision_a_height
+    sta _collision_a_bottom
+    bcc :+
+        lda #$ff
+        sta _collision_a_bottom
+    :
+
+    ldx _collision_b_index
+    clc
+    lda nsk_pool_worldx_lo, x
+    adc _collision_b_width
+    sta _collision_b_right_lo
+    lda nsk_pool_worldx_hi, x
+    adc #0
+    sta _collision_b_right_hi
+
+    clc
+    lda nsk_pool_worldy_lo, x
+    adc _collision_b_height
+    sta _collision_b_bottom
+    bcc :+
+        lda #$ff
+        sta _collision_b_bottom
+    :
+
+    rts
+.endproc
+
+; @brief Checks whether the current collision pair boxes overlap
+;
+; @param[out] nsk_pool_result non-zero if the boxes overlap
+.proc _pool_collision_pair_check
+    lda #0
+    sta nsk_pool_result
+
+    jsr _pool_collision_boxes_calc
+
+    ; A.left < B.right
+    ldx _collision_a_index
+    lda nsk_pool_worldx_hi, x
+    cmp _collision_b_right_hi
+    bcc :+
+    bne done
+
+    lda nsk_pool_worldx_lo, x
+    cmp _collision_b_right_lo
+    bcs done
+    :
+
+    ; B.left < A.right
+    ldx _collision_b_index
+    lda nsk_pool_worldx_hi, x
+    cmp _collision_a_right_hi
+    bcc :+
+    bne done
+
+    lda nsk_pool_worldx_lo, x
+    cmp _collision_a_right_lo
+    bcs done
+    :
+
+    ; A.top < B.bottom
+    ldx _collision_a_index
+    lda nsk_pool_worldy_lo, x
+    cmp _collision_b_bottom
+    bcs done
+
+    ; B.top < A.bottom
+    ldx _collision_b_index
+    lda nsk_pool_worldy_lo, x
+    cmp _collision_a_bottom
+    bcs done
+
+    lda #1
+    sta nsk_pool_result
+
+    done:
+        rts
+.endproc
+
+; @brief Dispatches both sides of the current collision pair
+.proc _pool_collision_pair_dispatch
+    ldx _collision_a_index
+    lda _collision_b_index
+    sta nsk_pool_collision_other
+    jaic _table_ptr, nsk_sprites_table_collision, { nsk_pool_object, x }
+
+    ldx _collision_b_index
+    lda _collision_a_index
+    sta nsk_pool_collision_other
+    jaic _table_ptr, nsk_sprites_table_collision, { nsk_pool_object, x }
+
+    rts
+.endproc
+
+; @brief Ticks all pool collisions
+.proc _pool_tick_collisions
+    lda #0
+    sta _collision_a_index
+
+    outer:
+        ldx _collision_a_index
+        cpx _pool_size
+        bne :+
+            jmp done
+        :
+
+        jsr _pool_collision_flags_check
+        bne :+
+            jmp next_a
+        :
+
+        lda _collision_a_index
+        clc
+        adc #1
+        sta _collision_b_index
+
+    inner:
+        ldx _collision_b_index
+        cpx _pool_size
+        bne :+
+            jmp next_a
+        :
+
+        jsr _pool_collision_flags_check
+        beq next_b
+
+        jsr _pool_collision_pair_check
+
+        lda nsk_pool_result
+        beq next_b
+
+        jsr _pool_collision_pair_dispatch
+
+    next_b:
+        inc _collision_b_index
+        jmp inner
+
+    next_a:
+        inc _collision_a_index
+        jmp outer
+
+    done:
+        rts
 .endproc
 
 ; @brief Adds the element to the OAM list if it's visible
@@ -374,6 +600,7 @@ _pool_draw_count:
     beq done
 
     jsr _pool_tick_elements
+    jsr _pool_tick_collisions
     jsr _pool_draw_elements
 
     done:

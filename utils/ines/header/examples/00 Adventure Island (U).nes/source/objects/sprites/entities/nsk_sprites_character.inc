@@ -30,6 +30,17 @@
     ; @param[in] X the index of the object in the nsk_pool_*
     .import nsk_character_isonground
 
+    ; @brief Routine to return the character collision box size
+    ;
+    ; @param[in] X the index of the object in the nsk_pool_*
+    .import nsk_character_getbox
+
+    ; @brief Routine to handle character collision
+    ;
+    ; @param[in] X the index of the object in the nsk_pool_*
+    ; @param[in] nsk_pool_collision_other other collided pool index
+    .import nsk_character_collision
+
     ; @brief Routine to draw the character
     ;
     ; @param[in] X the index of the object in the nsk_pool_*

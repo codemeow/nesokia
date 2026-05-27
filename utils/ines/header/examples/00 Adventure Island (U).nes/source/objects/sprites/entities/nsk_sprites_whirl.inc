@@ -37,6 +37,17 @@
     ; @param[in] X the index of the object in the nsk_pool_*
     .import nsk_whirl_clean
 
+    ; @brief Routine to return the whirl collision box size
+    ;
+    ; @param[in] X the index of the object in the nsk_pool_*
+    .import nsk_whirl_getbox
+
+    ; @brief Routine to handle whirl collision
+    ;
+    ; @param[in] X the index of the object in the nsk_pool_*
+    ; @param[in] nsk_pool_collision_other other collided pool index
+    .import nsk_whirl_collision
+
     ; @brief Routine to draw the whirl
     ;
     ; @param[in] X the index of the object in the nsk_pool_*

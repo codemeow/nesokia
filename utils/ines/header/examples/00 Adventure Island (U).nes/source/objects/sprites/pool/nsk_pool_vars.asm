@@ -29,4 +29,19 @@ nsk_pool_screenx:
 nsk_pool_result:
     .res 1
 
+; @brief Shared collision box width result
+.export nsk_pool_box_width
+nsk_pool_box_width:
+    .res 1
+
+; @brief Shared collision box height result
+.export nsk_pool_box_height
+nsk_pool_box_height:
+    .res 1
+
+; @brief Other pool index for collision callbacks
+.export nsk_pool_collision_other
+nsk_pool_collision_other:
+    .res 1
+
 .endif

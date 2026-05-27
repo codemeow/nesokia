@@ -21,6 +21,12 @@
 
     ; @brief List of the ground-check routines
     .import nsk_sprites_table_isonground
+
+    ; @brief List of the collision box routines
+    .import nsk_sprites_table_getbox
+
+    ; @brief List of the collision handling routines
+    .import nsk_sprites_table_collision
 .endif
 
 .endif

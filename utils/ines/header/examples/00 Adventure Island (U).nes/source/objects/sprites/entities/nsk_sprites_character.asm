@@ -42,7 +42,8 @@ nsk_constructor _init
     ; @brief Object flags
     FLAGS = \
         POOL::FLAGS::GRAVITY | \
-        POOL::FLAGS::VECTORS
+        POOL::FLAGS::VECTORS  | \
+        POOL::FLAGS::COLLISION
 
     ; @brief Character start X high byte
     STARTX_HI = 0
@@ -147,6 +148,15 @@ nsk_constructor _init
 
         ; @brief Negative walking speed fractional byte
         SPEED_NEG_FRAC = $90
+    .endscope
+
+    ; @brief Character jump settings
+    .scope JUMP
+        ; @brief Initial jump speed low byte
+        SPEED_NEG_LO = $fb
+
+        ; @brief Initial jump speed fractional byte
+        SPEED_NEG_FRAC = $00
     .endscope
 
     ; @brief Character object-specific data storage
@@ -516,6 +526,31 @@ _character_data_timer:
     rts
 .endproc
 
+; @brief Starts character jump movement
+;
+; @param[in] Y the index of the character data slot
+.proc _character_jump_start
+    ldx _character_pool_index
+
+    lda #CHARACTER::STATE::JUMP
+    sta _character_data_state, y
+
+    lda #0
+    sta _character_data_frame, y
+    sta nsk_pool_vectorx_lo, x
+    sta nsk_pool_vectorx_frac, x
+
+    lda #CHARACTER::ANIMATION::JUMP::DURATION
+    sta _character_data_timer, y
+
+    lda #CHARACTER::JUMP::SPEED_NEG_LO
+    sta nsk_pool_vectory_lo, x
+    lda #CHARACTER::JUMP::SPEED_NEG_FRAC
+    sta nsk_pool_vectory_frac, x
+
+    rts
+.endproc
+
 ; @brief Sets character horizontal movement to the left
 .proc _character_walk_left
     ldx _character_pool_index
@@ -576,6 +611,9 @@ _character_data_timer:
 ;       $70 = $01 if reached, $ff if not reached. If no whirl exists in the
 ;       query direction, $70 is set to $ff.
 .proc _character_whirl_reached_check
+    lda #0
+    sta nsk_pool_result
+
     lda nsk_pool_worldx_hi, x
     sta nsk_whirl_query_x_hi
     lda nsk_pool_worldx_lo, x
@@ -622,11 +660,54 @@ _character_data_timer:
     reached:
         lda #$01
         sta $70
+        sta nsk_pool_result
         rts
 
     not_reached:
+        lda #0
+        sta nsk_pool_result
         lda #$ff
         sta $70
+
+    done:
+        rts
+.endproc
+
+; @brief Ticks character jump state
+;
+; @param[in] Y the index of the character data slot
+.proc _character_tick_jump
+    ldx _character_pool_index
+
+    lda nsk_pool_vectory_lo, x
+    bmi done
+
+    jsr nsk_character_isonground
+
+    lda nsk_pool_result
+    beq done
+
+    ldx _character_pool_index
+    ldy nsk_pool_data_id, x
+
+    lda #CHARACTER::STATE::WALK
+    sta _character_data_state, y
+
+    lda #0
+    sta _character_data_frame, y
+
+    lda #CHARACTER::ANIMATION::WALK::DURATION
+    sta _character_data_timer, y
+
+    lda _character_data_direction, y
+    cmp #CHARACTER::DIRECTION::LEFT
+    beq left
+
+    jsr _character_walk_right
+    rts
+
+    left:
+        jsr _character_walk_left
 
     done:
         rts
@@ -641,19 +722,30 @@ _character_data_timer:
 
     stx _character_pool_index
 
-    jsr _character_whirl_reached_check
-
-    ldx _character_pool_index
     ldy nsk_pool_data_id, x
 
     lda _character_data_state, y
     cmp #CHARACTER::STATE::WALK
     beq walk
 
+    cmp #CHARACTER::STATE::JUMP
+    beq jump
+
     jsr _character_walk_stop
     jmp done
 
     walk:
+        jsr _character_whirl_reached_check
+
+        ldx _character_pool_index
+        ldy nsk_pool_data_id, x
+
+        lda nsk_pool_result
+        beq :+
+            jsr _character_jump_start
+            jmp done
+        :
+
         lda _character_data_direction, y
         cmp #CHARACTER::DIRECTION::LEFT
         beq walk_left
@@ -701,10 +793,36 @@ _character_data_timer:
         sta _character_data_direction, y
 
         jsr _character_walk_right
+        jmp done
+
+    jump:
+        jsr _character_tick_jump
 
     done:
         pull a, x, y
 
+    rts
+.endproc
+
+; @brief Routine to return the character collision box size
+;
+; @param[in] X the index of the object in the nsk_pool_*
+.export nsk_character_getbox
+.proc nsk_character_getbox
+    lda #(CHARACTER::WIDTH * NSK::SCREEN::SPRITES::MODE_8X8::SPRITEWIDTH)
+    sta nsk_pool_box_width
+    lda #(CHARACTER::HEIGHT * NSK::SCREEN::SPRITES::MODE_8X8::SPRITEHEIGHT)
+    sta nsk_pool_box_height
+
+    rts
+.endproc
+
+; @brief Routine to handle character collision
+;
+; @param[in] X the index of the object in the nsk_pool_*
+; @param[in] nsk_pool_collision_other other collided pool index
+.export nsk_character_collision
+.proc nsk_character_collision
     rts
 .endproc
 

@@ -21,6 +21,15 @@
 
     ; @brief Shared callback result scratch byte
     .import nsk_pool_result
+
+    ; @brief Shared collision box width result
+    .import nsk_pool_box_width
+
+    ; @brief Shared collision box height result
+    .import nsk_pool_box_height
+
+    ; @brief Other pool index for collision callbacks
+    .import nsk_pool_collision_other
 .endif
 
 .endif

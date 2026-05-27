@@ -107,7 +107,7 @@ nsk_constructor _init
     ; @brief Whirl object-specific data storage
     .scope DATA
         ; @brief Maximum number of whirl object-specific data slots
-        MAX = 1
+        MAX = 2
 
         ; @brief Free data slot marker
         FREE = $ff
@@ -284,6 +284,37 @@ _whirl_screeny:
 ; @brief Current whirl sprite index
 _whirl_sprite:
     .res 1
+; @brief Current pool scan index
+_whirl_scan_index:
+    .res 1
+; @brief Best pool index found by the nearest query
+_whirl_best_index:
+    .res 1
+; @brief Best distance high byte found by the nearest query
+_whirl_best_distance_hi:
+    .res 1
+; @brief Best distance low byte found by the nearest query
+_whirl_best_distance_lo:
+    .res 1
+; @brief Candidate distance high byte for the nearest query
+_whirl_distance_hi:
+    .res 1
+; @brief Candidate distance low byte for the nearest query
+_whirl_distance_lo:
+    .res 1
+
+; @brief Query X high byte for nsk_whirl_nearest_find
+.export nsk_whirl_query_x_hi
+nsk_whirl_query_x_hi:
+    .res 1
+; @brief Query X low byte for nsk_whirl_nearest_find
+.export nsk_whirl_query_x_lo
+nsk_whirl_query_x_lo:
+    .res 1
+; @brief Query direction for nsk_whirl_nearest_find (LEFT=0, RIGHT=1)
+.export nsk_whirl_query_direction
+nsk_whirl_query_direction:
+    .res 1
 
 ; @brief Whirl data slot usage markers
 _whirl_data_used:
@@ -325,9 +356,14 @@ _whirl_data_timer:
 .proc _whirl_data_alloc
     ldx #0
 
-    lda _whirl_data_used
-    cmp #WHIRL::DATA::FREE
-    beq found
+    loop:
+        lda _whirl_data_used, x
+        cmp #WHIRL::DATA::FREE
+        beq found
+
+        inx
+        cpx #WHIRL::DATA::MAX
+        bne loop
 
     sec
     rts
@@ -390,9 +426,8 @@ _whirl_data_timer:
     rts
 .endproc
 
-; @brief Inits the whirl in the object pool
-.export nsk_whirl_init
-.proc nsk_whirl_init
+; @brief Spawns one whirl in the object pool
+.proc _whirl_spawn
     push a, x, y
 
     lda nsk_pool_size
@@ -424,6 +459,25 @@ _whirl_data_timer:
 
     done:
         pull a, x, y
+
+    rts
+.endproc
+
+; @brief Inits the whirl objects in the object pool
+.export nsk_whirl_init
+.proc nsk_whirl_init
+    push x
+
+    ldx #0
+
+    loop:
+        jsr _whirl_spawn
+
+        inx
+        cpx #WHIRL::DATA::MAX
+        bne loop
+
+    pull x
 
     rts
 .endproc
@@ -480,6 +534,150 @@ _whirl_data_timer:
         sta _whirl_data_timer, y
 
     done:
+        rts
+.endproc
+
+; @brief Stores the current candidate as the nearest whirl
+;
+; @param[in] X candidate pool index
+.proc _whirl_nearest_set
+    stx _whirl_best_index
+
+    lda _whirl_distance_hi
+    sta _whirl_best_distance_hi
+    lda _whirl_distance_lo
+    sta _whirl_best_distance_lo
+
+    rts
+.endproc
+
+; @brief Updates the nearest whirl if the candidate is closer
+;
+; @param[in] X candidate pool index
+.proc _whirl_nearest_update
+    lda _whirl_best_index
+    cmp #$ff
+    beq set
+
+    lda _whirl_distance_hi
+    cmp _whirl_best_distance_hi
+    bcc set
+    bne done
+
+    lda _whirl_distance_lo
+    cmp _whirl_best_distance_lo
+    bcs done
+
+    set:
+        jsr _whirl_nearest_set
+
+    done:
+        rts
+.endproc
+
+; @brief Checks the current whirl candidate for the right direction query
+;
+; @param[in] X candidate pool index
+.proc _whirl_nearest_check_right
+    lda nsk_pool_worldx_hi, x
+    cmp nsk_whirl_query_x_hi
+    bcc done
+    bne distance
+
+    lda nsk_pool_worldx_lo, x
+    cmp nsk_whirl_query_x_lo
+    bcc done
+
+    distance:
+        sec
+        lda nsk_pool_worldx_lo, x
+        sbc nsk_whirl_query_x_lo
+        sta _whirl_distance_lo
+
+        lda nsk_pool_worldx_hi, x
+        sbc nsk_whirl_query_x_hi
+        sta _whirl_distance_hi
+
+        jsr _whirl_nearest_update
+
+    done:
+        rts
+.endproc
+
+; @brief Checks the current whirl candidate for the left direction query
+;
+; @param[in] X candidate pool index
+.proc _whirl_nearest_check_left
+    lda nsk_pool_worldx_hi, x
+    cmp nsk_whirl_query_x_hi
+    bcc distance
+    bne done
+
+    lda nsk_pool_worldx_lo, x
+    cmp nsk_whirl_query_x_lo
+    beq distance
+    bcs done
+
+    distance:
+        sec
+        lda nsk_whirl_query_x_lo
+        sbc nsk_pool_worldx_lo, x
+        sta _whirl_distance_lo
+
+        lda nsk_whirl_query_x_hi
+        sbc nsk_pool_worldx_hi, x
+        sta _whirl_distance_hi
+
+        jsr _whirl_nearest_update
+
+    done:
+        rts
+.endproc
+
+; @brief Finds the nearest whirl in the query direction
+;
+; @param[in] nsk_whirl_query_x_hi        Query X high byte
+; @param[in] nsk_whirl_query_x_lo        Query X low byte
+; @param[in] nsk_whirl_query_direction  LEFT=0, RIGHT=1
+; @param[out] X current pool index of the nearest whirl, or $ff
+.export nsk_whirl_nearest_find
+.proc nsk_whirl_nearest_find
+    push a, y
+
+    lda #$ff
+    sta _whirl_best_index
+
+    ldx #0
+    cpx nsk_pool_size
+    beq done
+
+    loop:
+        stx _whirl_scan_index
+
+        lda nsk_pool_object, x
+        cmp #SPRITELIST::WHIRL
+        bne next
+
+        lda nsk_whirl_query_direction
+        beq left
+
+        jsr _whirl_nearest_check_right
+        jmp next
+
+        left:
+            jsr _whirl_nearest_check_left
+
+        next:
+            ldx _whirl_scan_index
+            inx
+            cpx nsk_pool_size
+            bne loop
+
+    done:
+        ldx _whirl_best_index
+
+        pull a, y
+
         rts
 .endproc
 

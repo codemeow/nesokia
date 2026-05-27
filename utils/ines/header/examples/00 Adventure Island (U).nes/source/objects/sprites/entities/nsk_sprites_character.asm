@@ -568,6 +568,70 @@ _character_data_timer:
     rts
 .endproc
 
+; @brief Checks whether the character has reached the nearest whirl
+;
+; @param[in] X the index of the character in the nsk_pool_*
+;
+; @note Temporary debug output:
+;       $70 = $01 if reached, $ff if not reached. If no whirl exists in the
+;       query direction, $70 is set to $ff.
+.proc _character_whirl_reached_check
+    lda nsk_pool_worldx_hi, x
+    sta nsk_whirl_query_x_hi
+    lda nsk_pool_worldx_lo, x
+    sta nsk_whirl_query_x_lo
+
+    ldy nsk_pool_data_id, x
+    lda _character_data_direction, y
+    sta nsk_whirl_query_direction
+
+    jsr nsk_whirl_nearest_find
+    cpx #$ff
+    beq not_reached
+
+    lda nsk_whirl_query_direction
+    cmp #CHARACTER::DIRECTION::RIGHT
+    beq check_right
+
+    check_left:
+        sec
+        lda nsk_whirl_query_x_lo
+        sbc nsk_pool_worldx_lo, x
+        tay
+        lda nsk_whirl_query_x_hi
+        sbc nsk_pool_worldx_hi, x
+        bcc not_reached
+        jmp distance_check
+
+    check_right:
+        sec
+        lda nsk_pool_worldx_lo, x
+        sbc nsk_whirl_query_x_lo
+        tay
+        lda nsk_pool_worldx_hi, x
+        sbc nsk_whirl_query_x_hi
+        bcc not_reached
+
+    distance_check:
+        bne not_reached
+
+        tya
+        cmp #(CHARACTER::WIDTH * NSK::SCREEN::SPRITES::MODE_8X8::SPRITEWIDTH)
+        bcs not_reached
+
+    reached:
+        lda #$01
+        sta $70
+        rts
+
+    not_reached:
+        lda #$ff
+        sta $70
+
+    done:
+        rts
+.endproc
+
 ; @brief Routine to tick character-specific behavior
 ;
 ; @param[in] X the index of the object in the nsk_pool_*
@@ -577,17 +641,7 @@ _character_data_timer:
 
     stx _character_pool_index
 
-    ldy nsk_pool_data_id, x
-
-    lda nsk_pool_worldx_hi, x
-    sta nsk_whirl_query_x_hi
-    lda nsk_pool_worldx_lo, x
-    sta nsk_whirl_query_x_lo
-    lda _character_data_direction, y
-    sta nsk_whirl_query_direction
-
-    jsr nsk_whirl_nearest_find
-    stx $70
+    jsr _character_whirl_reached_check
 
     ldx _character_pool_index
     ldy nsk_pool_data_id, x

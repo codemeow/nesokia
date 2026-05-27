@@ -52,12 +52,7 @@ _pool_draw_count:
 ;
 ; @param[in] X Current element index
 .proc _pool_tick_object
-    push y
-
-    ldy nsk_pool_object, x
-    jai _table_ptr, nsk_sprites_table_tick, y
-
-    pull y
+    jaic _table_ptr, nsk_sprites_table_tick, { nsk_pool_object, x}
 
     rts
 .endproc
@@ -114,8 +109,7 @@ _pool_draw_count:
     rts
 
     oob:
-        ldy nsk_pool_object, x
-        jai _table_ptr, nsk_sprites_table_oob, y
+        jaic _table_ptr, nsk_sprites_table_oob, { nsk_pool_object, x }
         rts
 .endproc
 
@@ -123,13 +117,11 @@ _pool_draw_count:
 ;
 ; @param[in] X Current element index
 .proc _pool_tick_gravity
-    push y
 
     lda #0
     sta nsk_pool_result
 
-    ldy nsk_pool_object, x
-    jai _table_ptr, nsk_sprites_table_isonground, y
+    jaic _table_ptr, nsk_sprites_table_isonground, { nsk_pool_object, x }
 
     lda nsk_pool_result
     beq falling
@@ -168,7 +160,6 @@ _pool_draw_count:
         sta nsk_pool_vectory_frac, x
 
     done:
-        pull y
 
     rts
 .endproc
@@ -222,7 +213,6 @@ _pool_draw_count:
 ;
 ; @param[in] X Current element index
 .proc _pool_draw_element
-    push y
 
     ; Fixed objects are always visible
     lda nsk_pool_flags, x
@@ -263,20 +253,15 @@ _pool_draw_count:
         ; No borrow: within visible area
 
     visible:
-        ldy nsk_pool_object, x
-        jai _table_ptr, nsk_sprites_table_draw, y
+        jaic _table_ptr, nsk_sprites_table_draw, { nsk_pool_object, x }
 
     not_visible:
-
-    pull y
 
     rts
 .endproc
 
 ; @brief Removes objects marked as deleted
 .proc _pool_sweep_deleted
-    push a, x
-
     ldx #0
     cpx nsk_pool_size
     bne loop
@@ -305,14 +290,11 @@ _pool_draw_count:
             jmp loop
 
     done:
-        pull a, x
         rts
 .endproc
 
 ; @brief Ticks all pool elements in the stable pool order
 .proc _pool_tick_elements
-    push x
-
     ldx #0
     cpx _pool_size
     beq done
@@ -325,14 +307,11 @@ _pool_draw_count:
         bne loop
 
     done:
-        pull x
         rts
 .endproc
 
 ; @brief Moves the next draw pass start index forward
 .proc _pool_draw_advance_start
-    push a
-
     inc _pool_draw_start
 
     lda _pool_draw_start
@@ -343,14 +322,11 @@ _pool_draw_count:
     sta _pool_draw_start
 
     done:
-        pull a
         rts
 .endproc
 
 ; @brief Draws all pool elements in a rotated order
 .proc _pool_draw_elements
-    push a, x
-
     lda _pool_draw_start
     cmp _pool_size
     bcc :+
@@ -381,8 +357,6 @@ _pool_draw_count:
         bne loop
 
     jsr _pool_draw_advance_start
-
-    pull a, x
     rts
 .endproc
 
@@ -391,7 +365,7 @@ _pool_draw_count:
 ; - Calls objects draw routines
 .export nsk_pool_tick
 .proc nsk_pool_tick
-    push a
+    push a, x, y
 
     lda nsk_pool_size
     sta _pool_size
@@ -409,7 +383,7 @@ _pool_draw_count:
     ; Hide the rest of the sprites (if any)
     nsk_sprites_hide
 
-    pull a
+    pull a, x, y
 
     rts
 .endproc

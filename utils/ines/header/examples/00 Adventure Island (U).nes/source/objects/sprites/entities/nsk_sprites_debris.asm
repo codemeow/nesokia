@@ -134,8 +134,6 @@ _debris_worldx_lo:
 ; @brief Temporary buffer for the Y coord
 _debris_worldy_lo:
     .res 1
-; @brief Temporary buffer for the object type
-
 
 .segment "CODE"
 
@@ -152,12 +150,18 @@ _debris_worldy_lo:
     sbc #SPRITELIST::DEBRIS_0
     tay
 
+    ; This optimisation allows to save 5 cycles over every call
+    ; of sprite_draw, as the nsk_sprite_draw doesn't need to
+    ; switch the registers and save them to the stack
+    lda nsk_pool_worldy_lo, x
+    sta _debris_worldy_lo
+
     nsk_sprite_draw \
         { DEBRIS::SPRITE::TABLE, y     }, \
         { DEBRIS::ATTRS::TABLE, y      }, \
         { DEBRIS::PALETTE::TABLE, y    }, \
-        { nsk_pool_screenx      }, \
-        { nsk_pool_worldy_lo, x }
+        { nsk_pool_screenx             }, \
+        { _debris_worldy_lo            }
 
     pull a, y
 

@@ -150,9 +150,11 @@ _debris_worldy_lo:
     sbc #SPRITELIST::DEBRIS_0
     tay
 
-    ; This optimisation allows to save 5 cycles over every call
+    ; This optimization allows to save 5 cycles over every call
     ; of sprite_draw, as the nsk_sprite_draw doesn't need to
     ; switch the registers and save them to the stack
+    ;
+    ; As we spawn a lot of debris, this optimization helps a lot
     lda nsk_pool_worldy_lo, x
     sta _debris_worldy_lo
 

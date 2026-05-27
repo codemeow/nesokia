@@ -18,6 +18,7 @@
 .include "../pool/nsk_pool_settings.inc"
 .include "../pool/nsk_pool_vars.inc"
 .include "../nsk_sprites_list.inc"
+.include "nsk_sprites_whirl.inc"
 .include "../../tiles/maps/nsk_map_vars.inc"
 
 nsk_constructor _init
@@ -495,15 +496,11 @@ _character_data_timer:
 .proc nsk_character_clean
     push a, y
 
-    ldy nsk_pool_data_id, x
-    cpy #CHARACTER::DATA::MAX
-    bcs done
-
     lda #CHARACTER::DATA::FREE
+    ldy nsk_pool_data_id, x
     sta _character_data_used, y
 
-    done:
-        pull a, y
+    pull a, y
 
     rts
 .endproc
@@ -581,8 +578,19 @@ _character_data_timer:
     stx _character_pool_index
 
     ldy nsk_pool_data_id, x
-    cpy #CHARACTER::DATA::MAX
-    bcs done
+
+    lda nsk_pool_worldx_hi, x
+    sta nsk_whirl_query_x_hi
+    lda nsk_pool_worldx_lo, x
+    sta nsk_whirl_query_x_lo
+    lda _character_data_direction, y
+    sta nsk_whirl_query_direction
+
+    jsr nsk_whirl_nearest_find
+    stx $70
+
+    ldx _character_pool_index
+    ldy nsk_pool_data_id, x
 
     lda _character_data_state, y
     cmp #CHARACTER::STATE::WALK
@@ -956,8 +964,6 @@ _character_data_timer:
     stx _character_pool_index
 
     ldy nsk_pool_data_id, x
-    cpy #CHARACTER::DATA::MAX
-    bcs done
 
     jsr _character_animation_tick
 

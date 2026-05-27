@@ -172,7 +172,7 @@ nsk_constructor _init
         ; @brief Idle animation frames
         .scope IDLE
             ; @brief Number of game frames per animation frame
-            DURATION = 4
+            DURATION = 12
 
             ; @brief State to switch to when the animation reaches its end
             NEXT_STATE = WHIRL::STATE::IDLE
@@ -302,8 +302,18 @@ _whirl_data_timer:
 
 ; @brief Initializes the whirl object-specific data pool
 .proc _init
-    lda #WHIRL::DATA::FREE
-    sta _whirl_data_used
+    push a, x
+
+    ldx #0
+
+    loop:
+        lda #WHIRL::DATA::FREE
+        sta _whirl_data_used, x
+        inx
+        cpx #WHIRL::DATA::MAX
+        bne loop
+
+    pull a, x
 
     rts
 .endproc

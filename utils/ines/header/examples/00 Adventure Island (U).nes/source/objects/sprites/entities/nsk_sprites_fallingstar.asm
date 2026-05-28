@@ -140,11 +140,8 @@ nsk_constructor _init
 
     ; @brief Falling star collision probes
     .scope COLLISION
-        ; @brief Left foot probe offset
-        LEFT_X = 0
-
-        ; @brief Right foot probe offset
-        RIGHT_X = FALLINGSTAR::WIDTH * NSK::SCREEN::SPRITES::MODE_8X8::SPRITEWIDTH - 1
+        ; @brief Center foot probe offset
+        CENTER_X = 8
 
         ; @brief Foot probe Y offset while falling
         FOOT_Y = FALLINGSTAR::HEIGHT * NSK::SCREEN::SPRITES::MODE_8X8::SPRITEHEIGHT
@@ -703,12 +700,7 @@ _fallingstar_data_timer:
     bcs done
     sta _fallingstar_probe_y
 
-    lda #FALLINGSTAR::COLLISION::LEFT_X
-    jsr _fallingstar_probe_x_set
-    jsr _fallingstar_ground_probe
-    bne grounded
-
-    lda #FALLINGSTAR::COLLISION::RIGHT_X
+    lda #FALLINGSTAR::COLLISION::CENTER_X
     jsr _fallingstar_probe_x_set
     jsr _fallingstar_ground_probe
     beq done

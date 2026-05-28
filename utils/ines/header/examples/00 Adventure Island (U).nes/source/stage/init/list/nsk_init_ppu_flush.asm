@@ -18,7 +18,6 @@
 .export nsk_init_ppu_flush
 .proc nsk_init_ppu_flush
     jsr nsk_ppu_flush_control
-    jsr nsk_ppu_flush_mask
 
     rts
 .endproc

@@ -331,9 +331,6 @@ _starbit_probe_x_lo:
 ; @brief Current foot probe Y
 _starbit_probe_y:
     .res 1
-; @brief Predicted Y movement for the current frame
-_starbit_probe_dy:
-    .res 1
 ; @brief Current collision map cell index
 _starbit_map_index:
     .res 1
@@ -660,19 +657,7 @@ _starbit_data_timer:
 .proc nsk_starbit_isonground
     stx _starbit_pool_index
 
-    lda nsk_pool_vectory_frac, x
-    clc
-    adc #POOL::GRAVITY::ACCEL_FRAC
-
-    lda nsk_pool_vectory_lo, x
-    adc #POOL::GRAVITY::ACCEL_LO
-    sta _starbit_probe_dy
-
     lda nsk_pool_worldy_lo, x
-    clc
-    adc _starbit_probe_dy
-    bcs done
-
     clc
     adc #STARBIT::COLLISION::FOOT_Y
     bcs done

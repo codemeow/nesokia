@@ -237,7 +237,7 @@ nsk_constructor _init
         ; @brief Falling animation frames
         .scope FALLING
             ; @brief Number of game frames per animation frame
-            DURATION = 1
+            DURATION = 4
 
             ; @brief State to switch to when the animation reaches its end
             NEXT_STATE = FALLINGSTAR::STATE::FALLING
@@ -253,7 +253,7 @@ nsk_constructor _init
         ; @brief Fallen animation frames
         .scope FALLEN
             ; @brief Number of game frames per animation frame
-            DURATION = 2
+            DURATION = 4
 
             ; @brief State to switch to when the animation reaches its end
             NEXT_STATE = FALLINGSTAR::STATE::FALLEN
@@ -375,9 +375,6 @@ _fallingstar_probe_x_lo:
     .res 1
 ; @brief Current foot probe Y
 _fallingstar_probe_y:
-    .res 1
-; @brief Predicted Y movement for the current frame
-_fallingstar_probe_dy:
     .res 1
 ; @brief Current collision map cell index
 _fallingstar_map_index:
@@ -672,27 +669,7 @@ _fallingstar_data_timer:
 .proc nsk_fallingstar_isonground
     stx _fallingstar_pool_index
 
-    lda #0
-    sta nsk_pool_result
-
-    ldy nsk_pool_data_id, x
-    lda _fallingstar_data_state, y
-    cmp #FALLINGSTAR::STATE::FALLING
-    bne done
-
-    lda nsk_pool_vectory_frac, x
-    clc
-    adc #POOL::GRAVITY::ACCEL_FRAC
-
-    lda nsk_pool_vectory_lo, x
-    adc #POOL::GRAVITY::ACCEL_LO
-    sta _fallingstar_probe_dy
-
     lda nsk_pool_worldy_lo, x
-    clc
-    adc _fallingstar_probe_dy
-    bcs done
-
     clc
     adc #FALLINGSTAR::COLLISION::FOOT_Y
     bcs done

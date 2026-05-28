@@ -18,6 +18,7 @@
 .include "../pool/nsk_pool_settings.inc"
 .include "../pool/nsk_pool_vars.inc"
 .include "../nsk_sprites_list.inc"
+.include "nsk_sprites_whirl.inc"
 .include "../../tiles/maps/nsk_map_vars.inc"
 
 nsk_constructor _init
@@ -162,6 +163,27 @@ nsk_constructor _init
 
         ; @brief Used data slot marker
         USED = $00
+    .endscope
+
+    ; @brief Falling star initial movement vectors
+    .scope VECTOR
+        ; @brief Initial X vector low byte
+        X_LO = 2
+
+        ; @brief Initial X vector fractional byte
+        X_FRAC = 0
+
+        ; @brief Initial Y vector low byte
+        Y_LO = 252
+
+        ; @brief Initial Y vector fractional byte
+        Y_FRAC = 0
+    .endscope
+
+    ; @brief Falling star WHIRL respawn settings
+    .scope RESPAWN
+        ; @brief Number of frames before spawning a new WHIRL
+        TIMER = 250
     .endscope
 
     ; @brief Falling star animation frames
@@ -476,11 +498,11 @@ _fallingstar_data_timer:
         { _fallingstar_spawn_worldx_hi    }, \
         { _fallingstar_spawn_worldx_lo    }, \
         { _fallingstar_spawn_worldy_lo    }, \
-        { #0                              }, \
-        { #0                              }, \
-        { #0                              }, \
-        { #0                              }, \
-        { #0                              }, \
+        { #FALLINGSTAR::VECTOR::X_LO      }, \
+        { #FALLINGSTAR::VECTOR::X_FRAC    }, \
+        { #FALLINGSTAR::VECTOR::Y_LO      }, \
+        { #FALLINGSTAR::VECTOR::Y_FRAC    }, \
+        { #FALLINGSTAR::RESPAWN::TIMER    }, \
         { _fallingstar_data_id            }
 
     done:
@@ -707,6 +729,17 @@ _fallingstar_data_timer:
     rts
 .endproc
 
+; @brief Marks the current falling star for removal
+.proc _fallingstar_delete
+    ldx _fallingstar_pool_index
+
+    lda nsk_pool_flags, x
+    ora #POOL::FLAGS::DELETED
+    sta nsk_pool_flags, x
+
+    rts
+.endproc
+
 ; @brief Ticks falling star animation state
 ;
 ; @param[in] Y the index of the falling star data slot
@@ -742,6 +775,26 @@ _fallingstar_data_timer:
         sta _fallingstar_data_timer, y
 
     done:
+    rts
+.endproc
+
+; @brief Ticks the current falling star WHIRL respawn timer
+.proc _fallingstar_respawn_tick
+    ldx _fallingstar_pool_index
+
+    lda nsk_pool_timer_a, x
+    beq respawn
+
+    sec
+    sbc #1
+    sta nsk_pool_timer_a, x
+    bne done
+
+    respawn:
+        jsr nsk_whirl_spawn
+        jsr _fallingstar_delete
+
+    done:
         rts
 .endproc
 
@@ -756,6 +809,8 @@ _fallingstar_data_timer:
 
     ldy nsk_pool_data_id, x
     jsr _fallingstar_animation_tick
+
+    jsr _fallingstar_respawn_tick
 
     pull a, x, y
 

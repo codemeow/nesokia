@@ -27,6 +27,9 @@
     ; @brief Inits the whirl in the object pool
     .import nsk_whirl_init
 
+    ; @brief Spawns one whirl in the object pool
+    .import nsk_whirl_spawn
+
     ; @brief Routine to tick whirl-specific behavior
     ;
     ; @param[in] X the index of the object in the nsk_pool_*

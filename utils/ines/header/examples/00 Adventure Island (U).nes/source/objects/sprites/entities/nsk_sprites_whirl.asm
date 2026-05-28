@@ -19,6 +19,7 @@
 .include "../pool/nsk_pool_vars.inc"
 .include "../nsk_sprites_list.inc"
 .include "nsk_sprites_fallingstar.inc"
+.include "nsk_sprites_starbit.inc"
 .include "../../../utils/nsk_util_rand8.inc"
 
 nsk_constructor _init
@@ -108,7 +109,7 @@ nsk_constructor _init
     ; @brief Whirl object-specific data storage
     .scope DATA
         ; @brief Maximum number of whirl object-specific data slots
-        MAX = 2
+        MAX = 1
 
         ; @brief Free data slot marker
         FREE = $ff
@@ -464,6 +465,14 @@ _whirl_data_timer:
     rts
 .endproc
 
+; @brief Spawns one whirl in the object pool
+.export nsk_whirl_spawn
+.proc nsk_whirl_spawn
+    jsr _whirl_spawn
+
+    rts
+.endproc
+
 ; @brief Inits the whirl objects in the object pool
 .export nsk_whirl_init
 .proc nsk_whirl_init
@@ -544,6 +553,9 @@ _whirl_data_timer:
     delete:
         ldx _whirl_pool_index
         jsr nsk_fallingstar_spawn
+
+        ldx _whirl_pool_index
+        jsr nsk_starbit_spawn_burst
 
         ldx _whirl_pool_index
         lda nsk_pool_flags, x

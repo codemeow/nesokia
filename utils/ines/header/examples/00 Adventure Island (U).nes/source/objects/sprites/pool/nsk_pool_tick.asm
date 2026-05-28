@@ -225,15 +225,15 @@ _collision_b_bottom:
     jsr _pool_tick_object
 
     lda nsk_pool_flags, x
-    and #POOL::FLAGS::GRAVITY
-    beq :+
-        jsr _pool_tick_gravity
-    :
-
-    lda nsk_pool_flags, x
     and #POOL::FLAGS::VECTORS
     beq :+
         jsr _pool_tick_vectors
+    :
+
+    lda nsk_pool_flags, x
+    and #POOL::FLAGS::GRAVITY
+    beq :+
+        jsr _pool_tick_gravity
     :
 
     ; FLAGS::COLLISION is skipped on purpose. Pair collisions are handled

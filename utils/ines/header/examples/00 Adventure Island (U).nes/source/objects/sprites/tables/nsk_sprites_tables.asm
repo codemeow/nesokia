@@ -12,6 +12,7 @@
 .include "../entities/nsk_sprites_character.inc"
 .include "../entities/nsk_sprites_meteorite.inc"
 .include "../entities/nsk_sprites_whirl.inc"
+.include "../entities/nsk_sprites_fallingstar.inc"
 .include "../entities/nsk_sprites_debris.inc"
 .include "../nsk_sprites_list.inc"
 
@@ -26,6 +27,7 @@ nsk_sprites_table_tick:
         .addr nsk_character_tick
         .addr nsk_meteorite_tick
         .addr nsk_whirl_tick
+        .addr nsk_fallingstar_tick
         .addr $0000
         .addr $0000
         .addr $0000
@@ -46,6 +48,7 @@ nsk_sprites_table_draw:
         .addr nsk_character_draw
         .addr nsk_meteorite_draw
         .addr nsk_whirl_draw
+        .addr nsk_fallingstar_draw
         .addr nsk_debris_draw
         .addr nsk_debris_draw
         .addr nsk_debris_draw
@@ -66,6 +69,7 @@ nsk_sprites_table_oob:
         .addr nsk_character_oob
         .addr nsk_meteorite_oob
         .addr $0000
+        .addr nsk_fallingstar_oob
         .addr nsk_debris_oob
         .addr nsk_debris_oob
         .addr nsk_debris_oob
@@ -86,6 +90,7 @@ nsk_sprites_table_clean:
         .addr nsk_character_clean
         .addr nsk_meteorite_clean
         .addr nsk_whirl_clean
+        .addr nsk_fallingstar_clean
         .addr $0000
         .addr $0000
         .addr $0000
@@ -110,6 +115,7 @@ nsk_sprites_table_isonground:
         .addr nsk_character_isonground
         .addr $0000
         .addr $0000
+        .addr nsk_fallingstar_isonground
         .addr $0000
         .addr $0000
         .addr $0000
@@ -137,6 +143,7 @@ nsk_sprites_table_getbox:
         .addr $0000
         .addr $0000
         .addr $0000
+        .addr $0000
     END:
 
     SIZE = (END - TABLE) / 2
@@ -156,6 +163,7 @@ nsk_sprites_table_collision:
         .addr nsk_character_collision
         .addr $0000
         .addr nsk_whirl_collision
+        .addr $0000
         .addr $0000
         .addr $0000
         .addr $0000

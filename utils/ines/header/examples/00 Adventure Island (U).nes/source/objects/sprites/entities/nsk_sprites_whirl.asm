@@ -18,6 +18,7 @@
 .include "../pool/nsk_pool_settings.inc"
 .include "../pool/nsk_pool_vars.inc"
 .include "../nsk_sprites_list.inc"
+.include "nsk_sprites_fallingstar.inc"
 .include "../../../utils/nsk_util_rand8.inc"
 
 nsk_constructor _init
@@ -541,6 +542,9 @@ _whirl_data_timer:
         rts
 
     delete:
+        ldx _whirl_pool_index
+        jsr nsk_fallingstar_spawn
+
         ldx _whirl_pool_index
         lda nsk_pool_flags, x
         ora #POOL::FLAGS::DELETED

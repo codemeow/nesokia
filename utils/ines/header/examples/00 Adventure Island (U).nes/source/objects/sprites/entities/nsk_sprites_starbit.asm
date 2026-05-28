@@ -292,9 +292,6 @@ _starbit_animation_ptr:
 ; @brief Current star bit frame sprite table pointer
 _starbit_frame_ptr:
     .res 2
-; @brief Current collision map page pointer
-_starbit_map_ptr:
-    .res 2
 
 .segment "BSS"
 
@@ -409,7 +406,8 @@ _starbit_data_timer:
     lda #STARBIT::STATE::FALLING
     sta _starbit_data_state, y
 
-    lda #0
+    jsr nsk_util_rand8
+    and %1
     sta _starbit_data_frame, y
 
     lda #STARBIT::ANIMATION::FALLING::DURATION
@@ -529,28 +527,6 @@ _starbit_data_timer:
     rts
 .endproc
 
-; @brief Selects the collision map page for the current foot probe
-.proc _starbit_map_page_select
-    lda #<nsk_map_grid
-    sta _starbit_map_ptr + 0
-    lda #>nsk_map_grid
-    sta _starbit_map_ptr + 1
-
-    lda _starbit_probe_x_hi
-    beq done
-
-    lda _starbit_map_ptr + 0
-    clc
-    adc #<MAP::SCREEN::PAGE
-    sta _starbit_map_ptr + 0
-    lda _starbit_map_ptr + 1
-    adc #>MAP::SCREEN::PAGE
-    sta _starbit_map_ptr + 1
-
-    done:
-        rts
-.endproc
-
 ; @brief Checks if the current foot probe touches a solid collision block
 ;
 ; @param[in] _starbit_probe_x_hi Foot probe X high byte
@@ -566,8 +542,6 @@ _starbit_data_timer:
     cmp #NSK::SCREEN::HEIGHT
     bcs empty
 
-    jsr _starbit_map_page_select
-
     lda _starbit_probe_y
     and #$f0
     sta _starbit_map_index
@@ -581,7 +555,16 @@ _starbit_data_timer:
     adc _starbit_map_index
     tay
 
-    lda (_starbit_map_ptr), y
+    ; Fast path for the current 2-page map layout. Adapt this if collision
+    ; data becomes streamed or MAP::SCREEN::PAGES grows beyond two pages.
+    lda _starbit_probe_x_hi
+    beq :+
+        lda nsk_map_grid + MAP::SCREEN::PAGE, y
+        jmp check
+    :
+        lda nsk_map_grid, y
+
+    check:
     cmp #MAP::COLLISION::SOLID
     beq solid
 
@@ -675,17 +658,7 @@ _starbit_data_timer:
 ; @param[out] nsk_pool_result 0 if empty, non-zero if solid
 .export nsk_starbit_isonground
 .proc nsk_starbit_isonground
-    push a, x, y
-
     stx _starbit_pool_index
-
-    lda #0
-    sta nsk_pool_result
-
-    ldy nsk_pool_data_id, x
-    lda _starbit_data_state, y
-    cmp #STARBIT::STATE::FALLING
-    bne done
 
     lda nsk_pool_vectory_frac, x
     clc
@@ -721,9 +694,7 @@ _starbit_data_timer:
         sta nsk_pool_result
 
     done:
-        pull a, x, y
-
-    rts
+        rts
 .endproc
 
 ; @brief Ticks star bit animation state

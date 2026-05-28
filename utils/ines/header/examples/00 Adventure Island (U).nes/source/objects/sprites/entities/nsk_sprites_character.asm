@@ -930,8 +930,6 @@ _character_data_timer:
 ; @note Writes 0 or 1 to nsk_pool_result and may snap the character Y position
 .export nsk_character_isonground
 .proc nsk_character_isonground
-    push a, x, y
-
     stx _character_pool_index
 
     lda nsk_pool_worldy_lo, x
@@ -957,9 +955,7 @@ _character_data_timer:
         sta nsk_pool_result
 
     done:
-        pull a, x, y
-
-    rts
+        rts
 .endproc
 
 ; @brief Ticks character animation state

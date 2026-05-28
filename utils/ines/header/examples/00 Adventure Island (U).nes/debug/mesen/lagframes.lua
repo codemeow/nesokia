@@ -2,7 +2,10 @@
 -- Mesen 2.x Lua script for Example 00.
 -- Counts frames where NMI happened before main loop reached its sleep point.
 
-local NMI_SLEEP_FLAG = 0x0036
+-- Keep this in sync with example.dbg:
+--   sym ... name="nsk_nmi_sleep_flag" ... val=0x34
+-- Zeropage layout changes can move this address.
+local NMI_SLEEP_FLAG = 0x0034
 
 local mem =
     (emu.memType and emu.memType.nesInternalRam) or

@@ -670,8 +670,6 @@ _fallingstar_data_timer:
 ; @param[out] nsk_pool_result 0 if empty, non-zero if solid
 .export nsk_fallingstar_isonground
 .proc nsk_fallingstar_isonground
-    push a, x, y
-
     stx _fallingstar_pool_index
 
     lda #0
@@ -716,9 +714,7 @@ _fallingstar_data_timer:
         sta nsk_pool_result
 
     done:
-        pull a, x, y
-
-    rts
+        rts
 .endproc
 
 ; @brief Marks the current falling star for removal

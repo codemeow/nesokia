@@ -45,6 +45,9 @@ _pool_draw_index:
 ; @brief Number of objects left to process in the draw pass
 _pool_draw_count:
     .res 1
+; @brief Current gravity-affected pool index
+_pool_gravity_index:
+    .res 1
 ; @brief First collision pair pool index
 _collision_a_index:
     .res 1
@@ -163,7 +166,9 @@ _collision_b_bottom:
     lda #0
     sta nsk_pool_result
 
+    stx _pool_gravity_index
     jaic _table_ptr, nsk_sprites_table_isonground, { nsk_pool_object, x }
+    ldx _pool_gravity_index
 
     lda nsk_pool_result
     beq falling

@@ -111,7 +111,8 @@ nsk_sprites_table_clean:
 ;
 ; @note The routines get X as the pool object index. They write the result to
 ;       nsk_pool_result: 0 means no ground, non-zero means the object is on
-;       ground. The object routine may snap its own Y position.
+;       ground. The object routine may snap its own Y position and may clobber
+;       A/X/Y.
 .export nsk_sprites_table_isonground
 nsk_sprites_table_isonground:
 .scope ISONGROUND

@@ -95,13 +95,63 @@
         pull a, y
 .endmacro
 
+; @brief Jump to Address by Index instruction (clobbering version)
+;
+; This macro works the same as jai, but does clobber the a and y
+; registers. Use this one instead if you're okay with it
+;
+; @arg ramptr Temp RAM 2 bytes area to store the pointer
+; @arg table Table/list of 2-bytes addresses
+; @arg index Index of the table's element
+.macro jaic ramptr, table, index
+    .local done
+
+    .assert .paramcount = 3, error, "Illegal JAIC call"
+
+    .if     (.xmatch({index}, x))
+        txa
+
+    .elseif (.xmatch({index}, y))
+        tya
+
+    .else
+        lda index
+
+    .endif
+
+    asl
+
+    tay
+    lda table + 0, y
+    sta ramptr + 0
+    lda table + 1, y
+    sta ramptr + 1
+
+    ; Failsafe
+    ora ramptr + 0
+    beq done
+
+    lda #>(done - 1)
+    pha
+    lda #<(done - 1)
+    pha
+
+    jmp (ramptr)
+
+    done:
+.endmacro
+
 ; @brief Jump By Address instruction
 ; Takes the provided variable, remembers the original address and jumps
 ; to the address, written in the variable or constant address
 ; @note $0000 value is permitted
 ; @arg address Address to jump (#$xxxx or enum/define)
 .macro jba address
-.scope
+    .local init
+    .local check
+    .local return
+    .local jump
+
     init:
         push a
 
@@ -138,7 +188,6 @@
 
     done:
         pull a
-.endscope
 .endmacro
 
 .endif

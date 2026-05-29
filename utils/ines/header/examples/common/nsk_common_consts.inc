@@ -32,6 +32,25 @@
                 WIDTH   = 8 ; Attribute table width in bytes
                 HEIGHT  = 8 ; Attribute table height in bytes
             .endscope
+
+            ; @brief Nametable tiles covered by one attribute byte
+            .scope BLOCK
+                WIDTH   = 4 ; Width in nametable tiles
+                HEIGHT  = 4 ; Height in nametable tiles
+            .endscope
+
+            ; @brief Nametable tiles covered by one palette quadrant
+            .scope QUADRANT
+                WIDTH   = 2 ; Width in nametable tiles
+                HEIGHT  = 2 ; Height in nametable tiles
+                MASK    = %01 ; Quadrant position mask
+            .endscope
+
+            ; @brief Palette bits inside an attribute byte
+            .scope PALETTE
+                BITS = 2   ; Palette bits per quadrant
+                MASK = %11 ; Palette bits mask
+            .endscope
         .endscope
 
         WIDTH  = \

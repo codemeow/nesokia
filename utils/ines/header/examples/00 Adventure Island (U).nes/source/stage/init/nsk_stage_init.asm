@@ -29,10 +29,14 @@
         .addr nsk_init_ppu_disable
 
         .addr nsk_hud_init
+        .addr nsk_character_init
+        .addr nsk_meteorite_init
+        .addr nsk_whirl_init
         .addr nsk_debris_init
 
         .addr nsk_init_tiles_draw
         .addr nsk_init_sprites_draw
+        
         .addr nsk_init_ppu_enable
         .addr nsk_init_ppu_flush
     END:

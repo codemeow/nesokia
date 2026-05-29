@@ -85,6 +85,20 @@
 .endscope
 .endmacro
 
+; Sets a deterministic backdrop color while rendering is still disabled.
+.macro init_backdrop_black
+    bit NSK::CPU::PPU::PPUSTATUS
+    lda #>NSK::PPU::PALETTE::TILES
+    sta NSK::CPU::PPU::PPUADDR
+    lda #<NSK::PPU::PALETTE::TILES
+    sta NSK::CPU::PPU::PPUADDR
+    lda #$0f
+    sta NSK::CPU::PPU::PPUDATA
+    lda #$00
+    sta NSK::CPU::PPU::PPUADDR
+    sta NSK::CPU::PPU::PPUADDR
+.endmacro
+
 ; moves sprites to x=$ff
 .macro init_oam_reset
     ldx #$00
@@ -122,11 +136,13 @@
 
     init_vblank_wait
 
+    init_backdrop_black
     init_oam_reset
     init_nmi
     init_zeropage_reset
 
     init_vblank_wait
+    init_backdrop_black
 
     jsr nsk_constructors_run
     jsr nsk_stage_init

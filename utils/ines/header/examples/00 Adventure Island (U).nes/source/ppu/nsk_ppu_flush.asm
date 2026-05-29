@@ -11,19 +11,24 @@
 .include "../ppu/nsk_ppu_flush.inc"
 .include "../ppu/nsk_ppu_vars.inc"
 
-; @brief Flushes the current ppu_temp_control variable directly to PPU
+; @brief Waits for VBlank and applies the first shadow PPU control state
 .export nsk_ppu_flush_control
 .proc nsk_ppu_flush_control
+    bit NSK::CPU::PPU::PPUSTATUS
+
+    wait:
+        bit NSK::CPU::PPU::PPUSTATUS
+        bpl wait
+
     lda ppu_temp_control
     sta NSK::CPU::PPU::PPUCTRL
-    rts
-.endproc
 
-; @brief Flushes the current ppu_temp_mask variable directly to PPU
-.export nsk_ppu_flush_mask
-.proc nsk_ppu_flush_mask
-    lda ppu_temp_mask
-    sta NSK::CPU::PPU::PPUMASK
+    bit NSK::CPU::PPU::PPUSTATUS
+    lda ppu_temp_scroll_x
+    sta NSK::CPU::PPU::PPUSCROLL
+    lda ppu_temp_scroll_y
+    sta NSK::CPU::PPU::PPUSCROLL
+
     rts
 .endproc
 

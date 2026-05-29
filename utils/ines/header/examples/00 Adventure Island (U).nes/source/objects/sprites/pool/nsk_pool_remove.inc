@@ -9,6 +9,7 @@
 .include "nsk_pool_attrs.inc"
 .include "nsk_pool_helpers.inc"
 .include "nsk_pool_vars.inc"
+.include "../tables/nsk_sprites_tables.inc"
 
 ; @brief Remove the index-th element from the pool
 ;
@@ -21,17 +22,30 @@
 
     ; Sanity checks
     lda nsk_pool_size
-    beq done
+    bne :+
+        jmp done
+    :
     cmp index
-    beq done
-    bcc done
+    bne :+
+        jmp done
+    :
+    bcs :+
+        jmp done
+    :
+
+    ; # Clean up object-specific data before moving pool slots
+    ldx index
+    ldy nsk_pool_object, x
+    jai _table_ptr, nsk_sprites_table_clean, y
 
     ; # Check if the slot is not the last object
     lda nsk_pool_size
     tay
     dey
     cpy index
-    beq reduce
+    bne :+
+        jmp reduce
+    :
 
     ; # Move the last element into removed slot
     ; Empty slot (target)

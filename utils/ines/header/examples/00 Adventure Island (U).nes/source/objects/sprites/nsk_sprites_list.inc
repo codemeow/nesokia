@@ -9,19 +9,26 @@
 ; @brief List of sprite objects
 .enum SPRITELIST
     HUD            ; @< HUD object
+    CHARACTER      ; @< Main character
+    METEORITE      ; @< Decorative falling meteorite
+    WHIRL          ; @< Static whirl
+    FALLINGSTAR    ; @< Touched whirl falling star
+    STARBIT        ; @< Touched whirl falling star bit
     DEBRIS_0       ; @< Background debris, layer 0 (farthest)
     DEBRIS_1       ; @< Background debris, layer 1
     DEBRIS_2       ; @< Background debris, layer 2
     DEBRIS_3       ; @< Background debris, layer 3
-;    CHARACTER      ; @< Main character
-;    WHIRL          ; @< Static whirl
-;    FALLINGSTAR    ; @< Touched whirl
 ;    LYINGSTAR      ; @< Fallen whirl
 
     COUNT          ; @< Number of objects
 .endenum
 
 .include "entities/nsk_sprites_hud.inc"
+.include "entities/nsk_sprites_character.inc"
+.include "entities/nsk_sprites_meteorite.inc"
+.include "entities/nsk_sprites_whirl.inc"
+.include "entities/nsk_sprites_fallingstar.inc"
+.include "entities/nsk_sprites_starbit.inc"
 .include "entities/nsk_sprites_debris.inc"
 
 .endif

@@ -24,11 +24,34 @@ _nsk_ppu_palette_addr:
 
 .segment "CODE"
 
+; @brief Waits until VBlank starts
+.proc _vblank_wait
+    bit NSK::CPU::PPU::PPUSTATUS
+
+    wait:
+        bit NSK::CPU::PPU::PPUSTATUS
+        bpl wait
+
+    rts
+.endproc
+
+; @brief Moves PPUADDR away from palette RAM after forced-blank writes
+.proc _ppu_addr_reset
+    bit NSK::CPU::PPU::PPUSTATUS
+
+    lda #$00
+    sta NSK::CPU::PPU::PPUADDR
+    sta NSK::CPU::PPU::PPUADDR
+
+    rts
+.endproc
+
 ; @brief Sets the palette (both tiles and sprites)
 .export _nsk_ppu_palette_set
 .proc _nsk_ppu_palette_set
     push a, y
 
+    jsr _vblank_wait
     nsk_ppu_addrset _nsk_ppu_palette_addr
 
     ldy #$00
@@ -39,6 +62,8 @@ _nsk_ppu_palette_addr:
         iny
         cpy #NSK::PPU::PALETTE::SIZE
         bne loop
+
+    jsr _ppu_addr_reset
 
     pull a, y
     rts

@@ -125,10 +125,10 @@ _NSK_BANKSWITCH_FRAME = 30
 
     jsr _bank_switch
 
-    jsr _ppumask_update
     jsr _sprites_update
     jsr _ppuctrl_update
     jsr _ppuscroll_update
+    jsr _ppumask_update
 
     jsr _flag_reset
 

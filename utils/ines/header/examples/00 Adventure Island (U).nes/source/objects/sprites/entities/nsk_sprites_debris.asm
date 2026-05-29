@@ -134,8 +134,6 @@ _debris_worldx_lo:
 ; @brief Temporary buffer for the Y coord
 _debris_worldy_lo:
     .res 1
-; @brief Temporary buffer for the object type
-
 
 .segment "CODE"
 
@@ -144,22 +142,26 @@ _debris_worldy_lo:
 ; @param[in] X the index of the object in the nsk_pool_*
 .export nsk_debris_draw
 .proc nsk_debris_draw
-    push a, y
-
     ; Convert Object index to the DEBRIS tables index
     lda nsk_pool_object, x
     sec
     sbc #SPRITELIST::DEBRIS_0
     tay
 
+    ; This optimization allows to save 5 cycles over every call
+    ; of sprite_draw, as the nsk_sprite_draw doesn't need to
+    ; switch the registers and save them to the stack
+    ;
+    ; As we spawn a lot of debris, this optimization helps a lot
+    lda nsk_pool_worldy_lo, x
+    sta _debris_worldy_lo
+
     nsk_sprite_draw \
         { DEBRIS::SPRITE::TABLE, y     }, \
         { DEBRIS::ATTRS::TABLE, y      }, \
         { DEBRIS::PALETTE::TABLE, y    }, \
-        { nsk_pool_screenx      }, \
-        { nsk_pool_worldy_lo, x }
-
-    pull a, y
+        { nsk_pool_screenx             }, \
+        { _debris_worldy_lo            }
 
     rts
 .endproc
@@ -225,7 +227,8 @@ _debris_worldy_lo:
                 { DEBRIS::WIND_FRAC::TABLE, y }, \
                 { #0                        }, \
                 { DEBRIS::GRAVITY_FRAC::TABLE, y }, \
-                { #0                        }
+                { #0                        }, \
+                { #$ff                      }
 
             inx
             txa
@@ -234,7 +237,9 @@ _debris_worldy_lo:
 
         iny
         cpy #DEBRIS::LAYERS
-        bne layer
+        beq :+
+            jmp layer
+        :
 
     pull a, x, y
 

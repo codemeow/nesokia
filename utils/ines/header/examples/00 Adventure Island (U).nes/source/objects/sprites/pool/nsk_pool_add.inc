@@ -233,7 +233,8 @@ _PA_OBJECTS_COUNT   = nsk_pool_size
     vectorx_frac,   \
     vectory_lo,     \
     vectory_frac,   \
-    timer_a
+    timer_a,        \
+    data_id
 
     _NSK_POOL_ADD_ARGS_START
     _NSK_POOL_ATTRS _NSK_POOL_ADD_ARGS_ENTRY
@@ -265,7 +266,8 @@ _PA_OBJECTS_COUNT   = nsk_pool_size
         { vectorx_frac  }, \
         { vectory_lo    }, \
         { vectory_frac  }, \
-        { timer_a       }
+        { timer_a       }, \
+        { data_id       }
 
     _PA_X_PUSH
     _PA_Y_PUSH
@@ -290,7 +292,8 @@ _PA_OBJECTS_COUNT   = nsk_pool_size
         { vectorx_frac  }, \
         { vectory_lo    }, \
         { vectory_frac  }, \
-        { timer_a       }
+        { timer_a       }, \
+        { data_id       }
 
     inc _PA_OBJECTS_COUNT
 

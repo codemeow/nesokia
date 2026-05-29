@@ -9,11 +9,15 @@
 .include "nsk_common_meta.inc"
 
 .include "nsk_pool_tick.inc"
+.include "nsk_pool_remove.inc"
 .include "nsk_pool_settings.inc"
 .include "nsk_pool_vars.inc"
 .include "../draw/nsk_sprites_hide.inc"
 .include "../tables/nsk_sprites_tables.inc"
 .include "../../../ppu/nsk_ppu_vars.inc"
+
+; @brief Max number of collideable objects handled by the optimized pass
+_POOL_COLLISION_LIST_MAX = 8
 
 .segment "BSS"
 
@@ -24,7 +28,91 @@
 _table_ptr:
     .res 2
 
+; @brief Current sweep index
+_sweep_index:
+    .res 1
+
+; @brief Current pool size copy for safe iteration for the
+; cases when the pool size is manipulated inside of the pool tick
+_pool_size:
+    .res 1
+
+; @brief First pool index used by the rotated draw pass
+_pool_draw_start:
+    .res 1
+
+; @brief Current pool index used by the rotated draw pass
+_pool_draw_index:
+    .res 1
+
+; @brief Number of objects left to process in the draw pass
+_pool_draw_count:
+    .res 1
+; @brief Current gravity-affected pool index
+_pool_gravity_index:
+    .res 1
+; @brief Number of collideable objects in the current frame
+_collision_count:
+    .res 1
+; @brief Set when the optimized collision list is too small
+_collision_list_overflow:
+    .res 1
+; @brief Collideable pool indices for the current frame
+_collision_list:
+    .res _POOL_COLLISION_LIST_MAX
+; @brief First collision pair list index
+_collision_a_list_index:
+    .res 1
+; @brief Second collision pair list index
+_collision_b_list_index:
+    .res 1
+; @brief First collision pair pool index
+_collision_a_index:
+    .res 1
+; @brief Second collision pair pool index
+_collision_b_index:
+    .res 1
+; @brief First collision pair box width
+_collision_a_width:
+    .res 1
+; @brief First collision pair box height
+_collision_a_height:
+    .res 1
+; @brief Second collision pair box width
+_collision_b_width:
+    .res 1
+; @brief Second collision pair box height
+_collision_b_height:
+    .res 1
+; @brief First collision pair right X low byte
+_collision_a_right_lo:
+    .res 1
+; @brief First collision pair right X high byte
+_collision_a_right_hi:
+    .res 1
+; @brief Second collision pair right X low byte
+_collision_b_right_lo:
+    .res 1
+; @brief Second collision pair right X high byte
+_collision_b_right_hi:
+    .res 1
+; @brief First collision pair bottom Y
+_collision_a_bottom:
+    .res 1
+; @brief Second collision pair bottom Y
+_collision_b_bottom:
+    .res 1
+
 .segment "CODE"
+
+; @brief Ticks object-specific behavior
+;
+; @param[in] X Current element index
+.proc _pool_tick_object
+    jaic _table_ptr, nsk_sprites_table_tick, { nsk_pool_object, x}
+
+    rts
+.endproc
 
 ; @brief Ticks vector forces
 ;
@@ -78,8 +166,7 @@ _table_ptr:
     rts
 
     oob:
-        ldy nsk_pool_object, x
-        jai _table_ptr, nsk_sprites_table_oob, y
+        jaic _table_ptr, nsk_sprites_table_oob, { nsk_pool_object, x }
         rts
 .endproc
 
@@ -88,17 +175,56 @@ _table_ptr:
 ; @param[in] X Current element index
 .proc _pool_tick_gravity
 
-    nsk_todo "Gravity tick"
+    ; Negative Y velocity means the object is moving upward. Do not ask the
+    ; object whether it is on the ground yet, otherwise a jump started while
+    ; standing on ground is cancelled before vectors can move the object.
+    lda nsk_pool_vectory_lo, x
+    bmi falling
 
-    rts
-.endproc
+    lda #0
+    sta nsk_pool_result
 
-; @brief Ticks collision-affected element
-;
-; @param[in] X Current element index
-.proc _pool_tick_collision
+    stx _pool_gravity_index
+    jaic _table_ptr, nsk_sprites_table_isonground, { nsk_pool_object, x }
+    ldx _pool_gravity_index
 
-    nsk_todo "Collision tick"
+    lda nsk_pool_result
+    beq falling
+
+    lda #0
+    sta nsk_pool_vectory_lo, x
+    sta nsk_pool_vectory_frac, x
+    jmp done
+
+    falling:
+        clc
+        lda nsk_pool_vectory_frac, x
+        adc #POOL::GRAVITY::ACCEL_FRAC
+        sta nsk_pool_vectory_frac, x
+
+        lda nsk_pool_vectory_lo, x
+        adc #POOL::GRAVITY::ACCEL_LO
+        sta nsk_pool_vectory_lo, x
+
+        ; Clamp only positive falling velocity. Negative velocity is an
+        ; upward movement and gravity should bring it back down naturally.
+        bmi done
+
+        cmp #POOL::GRAVITY::MAX_LO
+        bcc done
+        bne clamp
+
+        lda nsk_pool_vectory_frac, x
+        cmp #POOL::GRAVITY::MAX_FRAC
+        bcc done
+
+    clamp:
+        lda #POOL::GRAVITY::MAX_LO
+        sta nsk_pool_vectory_lo, x
+        lda #POOL::GRAVITY::MAX_FRAC
+        sta nsk_pool_vectory_frac, x
+
+    done:
 
     rts
 .endproc
@@ -111,29 +237,356 @@ _table_ptr:
     ; there's nothing to do there
 
     lda nsk_pool_flags, x
+    and #POOL::FLAGS::DELETED
+    bne done
+
+    jsr _pool_tick_object
+
+    lda nsk_pool_flags, x
     and #POOL::FLAGS::VECTORS
     beq :+
         jsr _pool_tick_vectors
     :
+
     lda nsk_pool_flags, x
     and #POOL::FLAGS::GRAVITY
     beq :+
         jsr _pool_tick_gravity
     :
+
+    ; FLAGS::COLLISION is skipped on purpose. Pair collisions are handled
+    ; after all objects finish their regular tick/vector/gravity updates.
+
+    done:
+    rts
+.endproc
+
+; @brief Checks whether the current collision pair can collide
+;
+; @param[in] X Pool index
+; @param[out] A zero if this object cannot collide
+.proc _pool_collision_flags_check
+    lda nsk_pool_flags, x
+    and #POOL::FLAGS::DELETED
+    bne no
+
     lda nsk_pool_flags, x
     and #POOL::FLAGS::COLLISION
-    beq :+
-        jsr _pool_tick_collision
+    rts
+
+    no:
+        lda #0
+        rts
+.endproc
+
+; @brief Builds a list of pool indices that can collide this frame
+.proc _pool_collision_list_build
+    lda #0
+    sta _collision_count
+    sta _collision_list_overflow
+
+    ldx #0
+    cpx _pool_size
+    beq done
+
+    loop:
+        jsr _pool_collision_flags_check
+        beq next
+
+        lda _collision_count
+        cmp #_POOL_COLLISION_LIST_MAX
+        bcc :+
+            lda #1
+            sta _collision_list_overflow
+            rts
+        :
+
+        txa
+        ldy _collision_count
+        sta _collision_list, y
+        inc _collision_count
+
+    next:
+        inx
+        cpx _pool_size
+        bne loop
+
+    done:
+        rts
+.endproc
+
+; @brief Checks whether the current collision pair can still collide
+;
+; The collision list is built before callbacks are dispatched. A callback may
+; clear COLLISION, so future pairs with that object must be skipped.
+;
+; @param[out] A zero if this pair cannot collide anymore
+.proc _pool_collision_pair_flags_check
+    ldx _collision_a_index
+    jsr _pool_collision_flags_check
+    beq done
+
+    ldx _collision_b_index
+    jsr _pool_collision_flags_check
+
+    done:
+        rts
+.endproc
+
+; @brief Calculates the current collision pair boxes
+.proc _pool_collision_boxes_calc
+    ldx _collision_a_index
+    lda #0
+    sta nsk_pool_box_width
+    sta nsk_pool_box_height
+    jaic _table_ptr, nsk_sprites_table_getbox, { nsk_pool_object, x }
+    lda nsk_pool_box_width
+    sta _collision_a_width
+    lda nsk_pool_box_height
+    sta _collision_a_height
+
+    ldx _collision_b_index
+    lda #0
+    sta nsk_pool_box_width
+    sta nsk_pool_box_height
+    jaic _table_ptr, nsk_sprites_table_getbox, { nsk_pool_object, x }
+    lda nsk_pool_box_width
+    sta _collision_b_width
+    lda nsk_pool_box_height
+    sta _collision_b_height
+
+    ldx _collision_a_index
+    clc
+    lda nsk_pool_worldx_lo, x
+    adc _collision_a_width
+    sta _collision_a_right_lo
+    lda nsk_pool_worldx_hi, x
+    adc #0
+    sta _collision_a_right_hi
+
+    clc
+    lda nsk_pool_worldy_lo, x
+    adc _collision_a_height
+    sta _collision_a_bottom
+    bcc :+
+        lda #$ff
+        sta _collision_a_bottom
+    :
+
+    ldx _collision_b_index
+    clc
+    lda nsk_pool_worldx_lo, x
+    adc _collision_b_width
+    sta _collision_b_right_lo
+    lda nsk_pool_worldx_hi, x
+    adc #0
+    sta _collision_b_right_hi
+
+    clc
+    lda nsk_pool_worldy_lo, x
+    adc _collision_b_height
+    sta _collision_b_bottom
+    bcc :+
+        lda #$ff
+        sta _collision_b_bottom
     :
 
     rts
+.endproc
+
+; @brief Checks whether the current collision pair boxes overlap
+;
+; @param[out] nsk_pool_result non-zero if the boxes overlap
+.proc _pool_collision_pair_check
+    lda #0
+    sta nsk_pool_result
+
+    jsr _pool_collision_boxes_calc
+
+    ; A.left < B.right
+    ldx _collision_a_index
+    lda nsk_pool_worldx_hi, x
+    cmp _collision_b_right_hi
+    bcc :+
+    bne done
+
+    lda nsk_pool_worldx_lo, x
+    cmp _collision_b_right_lo
+    bcs done
+    :
+
+    ; B.left < A.right
+    ldx _collision_b_index
+    lda nsk_pool_worldx_hi, x
+    cmp _collision_a_right_hi
+    bcc :+
+    bne done
+
+    lda nsk_pool_worldx_lo, x
+    cmp _collision_a_right_lo
+    bcs done
+    :
+
+    ; A.top < B.bottom
+    ldx _collision_a_index
+    lda nsk_pool_worldy_lo, x
+    cmp _collision_b_bottom
+    bcs done
+
+    ; B.top < A.bottom
+    ldx _collision_b_index
+    lda nsk_pool_worldy_lo, x
+    cmp _collision_a_bottom
+    bcs done
+
+    lda #1
+    sta nsk_pool_result
+
+    done:
+        rts
+.endproc
+
+; @brief Dispatches both sides of the current collision pair
+.proc _pool_collision_pair_dispatch
+    ldx _collision_a_index
+    lda _collision_b_index
+    sta nsk_pool_collision_other
+    jaic _table_ptr, nsk_sprites_table_collision, { nsk_pool_object, x }
+
+    ldx _collision_b_index
+    lda _collision_a_index
+    sta nsk_pool_collision_other
+    jaic _table_ptr, nsk_sprites_table_collision, { nsk_pool_object, x }
+
+    rts
+.endproc
+
+; @brief Ticks all pool collisions using full pool pair scan
+.proc _pool_tick_collisions_full
+    lda #0
+    sta _collision_a_index
+
+    outer:
+        ldx _collision_a_index
+        cpx _pool_size
+        bne :+
+            jmp done
+        :
+
+        jsr _pool_collision_flags_check
+        bne :+
+            jmp next_a
+        :
+
+        lda _collision_a_index
+        clc
+        adc #1
+        sta _collision_b_index
+
+    inner:
+        ldx _collision_b_index
+        cpx _pool_size
+        bne :+
+            jmp next_a
+        :
+
+        jsr _pool_collision_flags_check
+        beq next_b
+
+        jsr _pool_collision_pair_check
+
+        lda nsk_pool_result
+        beq next_b
+
+        jsr _pool_collision_pair_dispatch
+
+    next_b:
+        inc _collision_b_index
+        jmp inner
+
+    next_a:
+        inc _collision_a_index
+        jmp outer
+
+    done:
+        rts
+.endproc
+
+; @brief Ticks all pool collisions
+.proc _pool_tick_collisions
+    jsr _pool_collision_list_build
+
+    ; Fallback just in case we didn't fit into _POOL_COLLISION_LIST_MAX
+    ; (won't be used in this demo)
+    lda _collision_list_overflow
+    beq :+
+        jmp _pool_tick_collisions_full
+    :
+
+    lda _collision_count
+    cmp #2
+    bcs :+
+        rts
+    :
+
+    lda #0
+    sta _collision_a_list_index
+
+    outer:
+        lda _collision_a_list_index
+        clc
+        adc #1
+        cmp _collision_count
+        bcc :+
+            jmp done
+        :
+
+        ldy _collision_a_list_index
+        lda _collision_list, y
+        sta _collision_a_index
+
+        lda _collision_a_list_index
+        clc
+        adc #1
+        sta _collision_b_list_index
+
+    inner:
+        lda _collision_b_list_index
+        cmp _collision_count
+        bcc :+
+            jmp next_a
+        :
+
+        ldy _collision_b_list_index
+        lda _collision_list, y
+        sta _collision_b_index
+
+        jsr _pool_collision_pair_flags_check
+        beq next_b
+
+        jsr _pool_collision_pair_check
+
+        lda nsk_pool_result
+        beq next_b
+
+        jsr _pool_collision_pair_dispatch
+
+    next_b:
+        inc _collision_b_list_index
+        jmp inner
+
+    next_a:
+        inc _collision_a_list_index
+        jmp outer
+
+    done:
+        rts
 .endproc
 
 ; @brief Adds the element to the OAM list if it's visible
 ;
 ; @param[in] X Current element index
 .proc _pool_draw_element
-    push y
 
     ; Fixed objects are always visible
     lda nsk_pool_flags, x
@@ -174,13 +627,110 @@ _table_ptr:
         ; No borrow: within visible area
 
     visible:
-        ldy nsk_pool_object, x
-        jai _table_ptr, nsk_sprites_table_draw, y
+        jaic _table_ptr, nsk_sprites_table_draw, { nsk_pool_object, x }
 
     not_visible:
 
-    pull y
+    rts
+.endproc
 
+; @brief Removes objects marked as deleted
+.proc _pool_sweep_deleted
+    ldx #0
+    cpx nsk_pool_size
+    bne loop
+        jmp done
+
+    loop:
+        lda nsk_pool_flags, x
+        and #POOL::FLAGS::DELETED
+        bne :+
+            jmp next
+        :
+
+            stx _sweep_index
+            nsk_pool_remove _sweep_index
+
+            ; Do not increment X: remove swaps the last object into
+            ; the current slot, so the same index must be checked again.
+            cpx nsk_pool_size
+            beq done
+            jmp loop
+
+        next:
+            inx
+            cpx nsk_pool_size
+            beq done
+            jmp loop
+
+    done:
+        rts
+.endproc
+
+; @brief Ticks all pool elements in the stable pool order
+.proc _pool_tick_elements
+    ldx #0
+    cpx _pool_size
+    beq done
+
+    loop:
+        jsr _pool_tick_element
+
+        inx
+        cpx _pool_size
+        bne loop
+
+    done:
+        rts
+.endproc
+
+; @brief Moves the next draw pass start index forward
+.proc _pool_draw_advance_start
+    inc _pool_draw_start
+
+    lda _pool_draw_start
+    cmp _pool_size
+    bcc done
+
+    lda #0
+    sta _pool_draw_start
+
+    done:
+        rts
+.endproc
+
+; @brief Draws all pool elements in a rotated order
+.proc _pool_draw_elements
+    lda _pool_draw_start
+    cmp _pool_size
+    bcc :+
+        lda #0
+        sta _pool_draw_start
+    :
+
+    lda _pool_draw_start
+    sta _pool_draw_index
+
+    lda _pool_size
+    sta _pool_draw_count
+
+    loop:
+        ldx _pool_draw_index
+        jsr _pool_draw_element
+
+        inc _pool_draw_index
+
+        lda _pool_draw_index
+        cmp _pool_size
+        bcc :+
+            lda #0
+            sta _pool_draw_index
+        :
+
+        dec _pool_draw_count
+        bne loop
+
+    jsr _pool_draw_advance_start
     rts
 .endproc
 
@@ -189,30 +739,26 @@ _table_ptr:
 ; - Calls objects draw routines
 .export nsk_pool_tick
 .proc nsk_pool_tick
-    push a, x
+    push a, x, y
 
-    ldx #0
-    cpx nsk_pool_size
+    lda nsk_pool_size
+    sta _pool_size
+
+    lda _pool_size
     beq done
 
-
-    loop:
-        jsr _pool_tick_element
-        jsr _pool_draw_element
-
-        inx
-        cpx nsk_pool_size
-        bne loop
-
+    jsr _pool_tick_elements
+    jsr _pool_tick_collisions
+    jsr _pool_draw_elements
 
     done:
 
-    nsk_todo "Rotate pool elements here"
+    jsr _pool_sweep_deleted
 
     ; Hide the rest of the sprites (if any)
     nsk_sprites_hide
 
-    pull a, x
+    pull a, x, y
 
     rts
 .endproc

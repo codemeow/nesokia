@@ -11,7 +11,7 @@ ASM_OUTPUT := $(DIR_BIN)/$(PROJECT_NAME)
 ASM_OUTPUT_DIR := $(dir $(ASM_OUTPUT))
 ASM_DBGFILE ?= $(DIR_BUILD)/$(notdir $(basename $(PROJECT_NAME))).dbg
 
-ASM_CAFLAGS ?= -I $(COMMON_DIR) -g
+ASM_CAFLAGS ?= -I $(COMMON_DIR) --bin-include-dir $(DIR_BUILD) -g
 ASM_LDFLAGS ?= --dbgfile $(ASM_DBGFILE)
 
 NSK_HEADER_DIR ?= $(DIR_ROOT)/utils/ines/header

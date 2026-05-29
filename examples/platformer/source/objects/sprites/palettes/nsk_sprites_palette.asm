@@ -13,6 +13,6 @@
 ; @brief Sprites palette
 .export nsk_sprites_palette
 nsk_sprites_palette:
-    .incbin "build/pal/sprites.pal"
+    .incbin "pal/sprites.pal"
 
 .endif

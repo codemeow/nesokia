@@ -5,8 +5,6 @@ DIR_ROOT := ../..
 
 # CHR ROM banks
 CHR_BANKS := CHR0 CHR1 CHR2 CHR3
-CHR_OUTPUT_DIR := build/chr
-PAL_OUTPUT_DIR := build/pal
 
 CHR_BANK_CHR0_PNG := chrrom/png/bank-0.png
 CHR_BANK_CHR0_CFG := chrrom/png/bank-0.cfg
@@ -32,5 +30,3 @@ CHR_BANK_CHR3_RIGHT = $(CHR_OUTPUT_DIR)/bank-3.1000.chr
 
 include $(DIR_ROOT)/scripts/make/common.mk
 include $(DIR_ROOT)/scripts/make/asm.mk
-
-CLEAN_ENTRIES += build

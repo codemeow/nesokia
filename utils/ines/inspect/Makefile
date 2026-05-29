@@ -2,8 +2,8 @@ override PROJECT_NAME := nesokia-ines-inspect
 
 # Version data
 VER_MAJOR := 0
-VER_MINOR := 4
-VER_BUILD := 13
+VER_MINOR := 5
+VER_BUILD := 15
 
 # Common root directory
 DIR_ROOT := ../../..

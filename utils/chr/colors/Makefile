@@ -2,7 +2,7 @@ override PROJECT_NAME := nesokia-chr-colors
 
 # Version data
 VER_MAJOR := 0
-VER_MINOR := 1
+VER_MINOR := 2
 VER_BUILD := 1
 
 # Common root directory

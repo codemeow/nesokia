@@ -2,7 +2,7 @@ override PROJECT_NAME := nesokia-ines-header
 
 # Version data
 VER_MAJOR := 0
-VER_MINOR := 2
+VER_MINOR := 4
 VER_BUILD := 1
 
 # Common root directory

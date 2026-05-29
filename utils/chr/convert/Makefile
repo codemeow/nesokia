@@ -2,7 +2,7 @@ override PROJECT_NAME := nesokia-chr-convert
 
 # Version data
 VER_MAJOR := 0
-VER_MINOR := 4
+VER_MINOR := 5
 VER_BUILD := 10
 
 # Common root directory

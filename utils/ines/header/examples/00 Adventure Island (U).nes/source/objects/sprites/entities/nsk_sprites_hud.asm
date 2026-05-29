@@ -152,8 +152,6 @@ _temp_y:
 ;
 ; @param[in] X the index of the object in the nsk_pool_*
 .proc _hud_fixed_draw
-    push a, y
-
     ldy #0
 
     loop:
@@ -177,8 +175,6 @@ _temp_y:
         iny
         cpy #HUD::CAPTION::COUNT
         bne loop
-
-    pull a, y
 
     rts
 .endproc
@@ -251,7 +247,6 @@ _temp_y:
 ;
 ; @param[in] X the index of the object in the nsk_pool_*
 .proc _hud_counter_draw
-    push a, x, y
 
     ; Save the HUD position as the X register is needed
     lda nsk_pool_worldx_lo, x
@@ -287,8 +282,6 @@ _temp_y:
     show_u:
         _hud_digit_draw nsk_bcd_outu
         inx
-
-    pull a, x, y
 
     rts
 .endproc

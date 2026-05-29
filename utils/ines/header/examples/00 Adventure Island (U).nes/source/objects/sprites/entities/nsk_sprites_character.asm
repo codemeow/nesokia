@@ -1127,8 +1127,6 @@ _character_data_timer:
 ; @param[in] X the index of the object in the nsk_pool_*
 .export nsk_character_draw
 .proc nsk_character_draw
-    push a, x, y
-
     stx _character_pool_index
 
     ldy nsk_pool_data_id, x
@@ -1146,8 +1144,7 @@ _character_data_timer:
     jsr _character_frame_draw
 
     done:
-        pull a, x, y
-
+    
     rts
 .endproc
 

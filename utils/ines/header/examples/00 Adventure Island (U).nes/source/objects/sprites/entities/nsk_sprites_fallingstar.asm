@@ -886,8 +886,6 @@ _fallingstar_data_timer:
 ; @param[in] X the index of the object in the nsk_pool_*
 .export nsk_fallingstar_draw
 .proc nsk_fallingstar_draw
-    push a, x, y
-
     stx _fallingstar_pool_index
 
     ldy nsk_pool_data_id, x
@@ -898,8 +896,6 @@ _fallingstar_data_timer:
     jsr _fallingstar_draw_count_select
 
     jsr _fallingstar_frame_draw
-
-    pull a, x, y
 
     rts
 .endproc

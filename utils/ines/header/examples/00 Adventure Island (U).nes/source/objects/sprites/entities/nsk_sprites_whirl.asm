@@ -837,7 +837,6 @@ _whirl_data_timer:
 ; @param[in] X the index of the object in the nsk_pool_*
 .export nsk_whirl_draw
 .proc nsk_whirl_draw
-    push a, x, y
 
     stx _whirl_pool_index
 
@@ -845,8 +844,6 @@ _whirl_data_timer:
     jsr _whirl_frame_select
 
     jsr _whirl_frame_draw
-
-    pull a, x, y
 
     rts
 .endproc

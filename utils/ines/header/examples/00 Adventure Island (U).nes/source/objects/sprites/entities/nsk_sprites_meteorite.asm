@@ -1061,7 +1061,6 @@ _meteorite_data_timer:
 ; @param[in] X the index of the object in the nsk_pool_*
 .export nsk_meteorite_draw
 .proc nsk_meteorite_draw
-    push a, x, y
 
     stx _meteorite_pool_index
 
@@ -1078,8 +1077,6 @@ _meteorite_data_timer:
     jsr _meteorite_draw_count_select
 
     jsr _meteorite_frame_draw
-
-    pull a, x, y
 
     rts
 .endproc

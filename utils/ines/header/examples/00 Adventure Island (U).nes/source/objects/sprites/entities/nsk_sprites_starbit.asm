@@ -825,16 +825,12 @@ _starbit_data_timer:
 ; @param[in] X the index of the object in the nsk_pool_*
 .export nsk_starbit_draw
 .proc nsk_starbit_draw
-    push a, x, y
-
     stx _starbit_pool_index
 
     ldy nsk_pool_data_id, x
     jsr _starbit_frame_select
 
     jsr _starbit_frame_draw
-
-    pull a, x, y
 
     rts
 .endproc

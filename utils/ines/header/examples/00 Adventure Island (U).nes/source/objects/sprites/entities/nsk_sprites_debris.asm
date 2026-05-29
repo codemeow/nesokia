@@ -142,8 +142,6 @@ _debris_worldy_lo:
 ; @param[in] X the index of the object in the nsk_pool_*
 .export nsk_debris_draw
 .proc nsk_debris_draw
-    push a, y
-
     ; Convert Object index to the DEBRIS tables index
     lda nsk_pool_object, x
     sec
@@ -164,8 +162,6 @@ _debris_worldy_lo:
         { DEBRIS::PALETTE::TABLE, y    }, \
         { nsk_pool_screenx             }, \
         { _debris_worldy_lo            }
-
-    pull a, y
 
     rts
 .endproc

@@ -18,12 +18,26 @@ local eventEndFrame =
 local eventNmi =
     (emu.eventType and emu.eventType.nmi)
 
+local callbackWrite =
+    (emu.callbackType and emu.callbackType.write)
+
+local GRAPH_RECORDS = 250
+local GRAPH_X = 3
+local GRAPH_Y = 174
+local GRAPH_W = 250
+local GRAPH_H = 58
+local GRAPH_SCANLINES = 262
+local GRAPH_VBLANK_SCANLINE = 241
+
 local lagFrames = 0
 local nmiFrames = 0
 local measuredFrames = 0
 local warmupNmis = 8
 local lastLag = false
 local lastLagFlash = 0
+local frameDoneScanline = nil
+local frameDoneRecorded = false
+local scanlineHistory = {}
 
 local prevResetKey = false
 local drawCalls = 0
@@ -42,6 +56,12 @@ end
 local function drawBox(x, y, w, h, color)
     pcall(function()
         emu.drawRectangle(x, y, w, h, color, true, 1, 0)
+    end)
+end
+
+local function drawLine(x1, y1, x2, y2, color)
+    pcall(function()
+        emu.drawLine(x1, y1, x2, y2, color, 1)
     end)
 end
 
@@ -64,6 +84,29 @@ local function drawText(x, y, text, fg, bg)
     end
 end
 
+local function currentScanline()
+    local ok, state = pcall(function()
+        return emu.getState()
+    end)
+
+    if ok and state and state["ppu.scanline"] ~= nil then
+        return state["ppu.scanline"]
+    end
+
+    return nil
+end
+
+local function pushScanlineRecord(scanline, isLag)
+    table.insert(scanlineHistory, 1, {
+        scanline = scanline,
+        lag = isLag
+    })
+
+    while #scanlineHistory > GRAPH_RECORDS do
+        table.remove(scanlineHistory)
+    end
+end
+
 local function resetCounters()
     lagFrames = 0
     nmiFrames = 0
@@ -71,6 +114,24 @@ local function resetCounters()
     warmupNmis = 8
     lastLag = false
     lastLagFlash = 0
+    frameDoneScanline = nil
+    frameDoneRecorded = false
+    scanlineHistory = {}
+end
+
+local function onSleepFlagWrite(address, value)
+    -- nsk_main marks the frame loop as complete with:
+    --   inc nsk_nmi_sleep_flag
+    --
+    -- 6502 INC does a dummy write with the old value first, so only the
+    -- non-zero write is the actual "main reached sleep" signal. NMI writes
+    -- zero to reset the flag and is ignored here.
+    if value == 0 or frameDoneRecorded then
+        return
+    end
+
+    frameDoneScanline = currentScanline()
+    frameDoneRecorded = true
 end
 
 local function onNmi()
@@ -88,6 +149,8 @@ local function onNmi()
 
     if warmupNmis > 0 then
         warmupNmis = warmupNmis - 1
+        frameDoneScanline = nil
+        frameDoneRecorded = false
         return
     end
 
@@ -97,9 +160,85 @@ local function onNmi()
         lagFrames = lagFrames + 1
         lastLag = true
         lastLagFlash = 20
+        pushScanlineRecord(GRAPH_SCANLINES - 1, true)
     else
         lastLag = false
+        pushScanlineRecord(frameDoneScanline or 0, false)
     end
+
+    frameDoneScanline = nil
+    frameDoneRecorded = false
+end
+
+local function graphY(scanline)
+    if scanline < 0 then
+        scanline = 0
+    elseif scanline >= GRAPH_SCANLINES then
+        scanline = GRAPH_SCANLINES - 1
+    end
+
+    return GRAPH_Y + math.floor(scanline * (GRAPH_H - 1) / (GRAPH_SCANLINES - 1))
+end
+
+local function drawScanlineGraph()
+    local bg = 0x44000000
+    local grid = 0x66505050
+    local vblank = 0x99F0D050
+    local okColor = 0xDD40E060
+    local warnColor = 0xDDF0D050
+    local lagColor = 0xDDE04040
+
+    drawBox(GRAPH_X - 1, GRAPH_Y - 1, GRAPH_W + 2, GRAPH_H + 2, bg)
+    drawLine(GRAPH_X, GRAPH_Y, GRAPH_X + GRAPH_W, GRAPH_Y, grid)
+    drawLine(GRAPH_X, GRAPH_Y + GRAPH_H - 1, GRAPH_X + GRAPH_W, GRAPH_Y + GRAPH_H - 1, grid)
+
+    local midY = graphY(120)
+    local vblankY = graphY(GRAPH_VBLANK_SCANLINE)
+    drawLine(GRAPH_X, midY, GRAPH_X + GRAPH_W, midY, grid)
+    drawLine(GRAPH_X, vblankY, GRAPH_X + GRAPH_W, vblankY, vblank)
+
+    local prevX = nil
+    local prevY = nil
+    local prevLag = false
+
+    for i, record in ipairs(scanlineHistory) do
+        local x = GRAPH_X + GRAPH_W - i
+        if x < GRAPH_X then
+            break
+        end
+
+        local y = graphY(record.scanline)
+        local color = okColor
+
+        if record.lag then
+            color = lagColor
+        elseif record.scanline >= GRAPH_VBLANK_SCANLINE then
+            color = warnColor
+        end
+
+        drawLine(x, y, x, y, color)
+
+        if prevX and not prevLag and not record.lag then
+            drawLine(prevX, prevY, x, y, color)
+        end
+
+        prevX = x
+        prevY = y
+        prevLag = record.lag
+    end
+
+    local latest = scanlineHistory[1]
+    local latestText = "line: --"
+    if latest then
+        if latest.lag then
+            latestText = "line: LAG"
+        else
+            latestText = string.format("line: %03d", latest.scanline)
+        end
+    end
+
+    drawText(GRAPH_X + 4, GRAPH_Y + 4, latestText, 0xFFFFFF, 0x000000)
+    drawText(GRAPH_X + 4, GRAPH_Y + GRAPH_H - 12, "vblank", 0xF0D050, 0x000000)
 end
 
 local function drawOverlay()
@@ -124,6 +263,8 @@ local function drawOverlay()
     drawText(4, 34, string.format("last: %s  flag:$%02X", status, flag), fg, bg)
     drawText(4, 44, string.format("draw: %d  R: reset", drawCalls), 0xB0B0B0, bg)
 
+    drawScanlineGraph()
+
     if lastLagFlash > 0 then
         lastLagFlash = lastLagFlash - 1
     end
@@ -145,6 +286,12 @@ else
     emu.log("lagframes.lua: emu.eventType.nmi is not available")
 end
 
+if callbackWrite then
+    emu.addMemoryCallback(onSleepFlagWrite, callbackWrite, NMI_SLEEP_FLAG)
+else
+    emu.log("lagframes.lua: emu.callbackType.write is not available")
+end
+
 emu.addEventCallback(drawOverlay, eventEndFrame)
 
-emu.displayMessage("Example 00", "Lag frame overlay enabled")
+emu.displayMessage("Example 00", "Lag/scanline overlay enabled")

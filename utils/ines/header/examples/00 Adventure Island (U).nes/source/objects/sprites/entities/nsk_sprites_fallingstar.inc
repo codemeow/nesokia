@@ -33,6 +33,17 @@
     ; @param[out] nsk_pool_result 0 if empty, non-zero if solid
     .import nsk_fallingstar_isonground
 
+    ; @brief Routine to return the falling star collision box size
+    ;
+    ; @param[in] X the index of the object in the nsk_pool_*
+    .import nsk_fallingstar_getbox
+
+    ; @brief Routine to handle falling star collision
+    ;
+    ; @param[in] X the index of the object in the nsk_pool_*
+    ; @param[in] nsk_pool_collision_other other collided pool index
+    .import nsk_fallingstar_collision
+
     ; @brief Routine to draw the falling star
     ;
     ; @param[in] X the index of the object in the nsk_pool_*

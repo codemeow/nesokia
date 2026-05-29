@@ -146,7 +146,7 @@ nsk_sprites_table_getbox:
         .addr nsk_character_getbox
         .addr $0000
         .addr nsk_whirl_getbox
-        .addr $0000
+        .addr nsk_fallingstar_getbox
         .addr $0000
         .addr $0000
         .addr $0000
@@ -171,7 +171,7 @@ nsk_sprites_table_collision:
         .addr nsk_character_collision
         .addr $0000
         .addr nsk_whirl_collision
-        .addr $0000
+        .addr nsk_fallingstar_collision
         .addr $0000
         .addr $0000
         .addr $0000

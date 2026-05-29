@@ -181,6 +181,9 @@ nsk_constructor _init
     .scope RESPAWN
         ; @brief Number of frames before spawning a new WHIRL
         TIMER = 250
+
+        ; @brief Number of frames after character interaction
+        TOUCHED_TIMER = 60
     .endscope
 
     ; @brief Falling star animation frames
@@ -651,6 +654,7 @@ _fallingstar_data_timer:
 
     lda nsk_pool_flags, x
     and #($ff - POOL::FLAGS::GRAVITY - POOL::FLAGS::VECTORS)
+    ora #POOL::FLAGS::COLLISION
     sta nsk_pool_flags, x
 
     lda nsk_pool_worldy_lo, x
@@ -700,6 +704,35 @@ _fallingstar_data_timer:
 
     lda nsk_pool_flags, x
     ora #POOL::FLAGS::DELETED
+    sta nsk_pool_flags, x
+
+    rts
+.endproc
+
+; @brief Routine to return the falling star collision box size
+;
+; @param[in] X the index of the object in the nsk_pool_*
+.export nsk_fallingstar_getbox
+.proc nsk_fallingstar_getbox
+    lda #(FALLINGSTAR::FALLEN_WIDTH * NSK::SCREEN::SPRITES::MODE_8X8::SPRITEWIDTH)
+    sta nsk_pool_box_width
+    lda #(FALLINGSTAR::FALLEN_HEIGHT * NSK::SCREEN::SPRITES::MODE_8X8::SPRITEHEIGHT)
+    sta nsk_pool_box_height
+
+    rts
+.endproc
+
+; @brief Routine to handle falling star collision
+;
+; @param[in] X the index of the object in the nsk_pool_*
+; @param[in] nsk_pool_collision_other other collided pool index
+.export nsk_fallingstar_collision
+.proc nsk_fallingstar_collision
+    lda #FALLINGSTAR::RESPAWN::TOUCHED_TIMER
+    sta nsk_pool_timer_a, x
+
+    lda nsk_pool_flags, x
+    and #($ff - POOL::FLAGS::COLLISION)
     sta nsk_pool_flags, x
 
     rts

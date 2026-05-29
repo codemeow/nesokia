@@ -790,6 +790,25 @@ _character_data_timer:
 ; @param[in] nsk_pool_collision_other other collided pool index
 .export nsk_character_collision
 .proc nsk_character_collision
+    ldy nsk_pool_collision_other
+    lda nsk_pool_object, y
+    cmp #SPRITELIST::FALLINGSTAR
+    bne done
+
+    ldy nsk_pool_data_id, x
+
+    lda #CHARACTER::STATE::CROUCH
+    sta _character_data_state, y
+
+    lda #0
+    sta _character_data_frame, y
+    sta nsk_pool_vectorx_lo, x
+    sta nsk_pool_vectorx_frac, x
+
+    lda #CHARACTER::ANIMATION::CROUCH::DURATION
+    sta _character_data_timer, y
+
+    done:
     rts
 .endproc
 

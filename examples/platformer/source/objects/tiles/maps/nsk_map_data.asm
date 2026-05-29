@@ -132,7 +132,4 @@ nsk_map_right:
     ; Stars remover
     nsk_map_object 24, 14, nsk_object_void
 
-    nsk_todo "animated small meteors in the sky"
-
-
 .endif

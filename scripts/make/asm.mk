@@ -53,6 +53,7 @@ CHR_OUTPUT := $(strip $(foreach b,$(CHR_BANKS),$(call chr_bank_left,$(b)) $(call
 PAL_OUTPUT := $(strip $(foreach b,$(CHR_BANKS),$(call chr_bank_pal_back,$(b)) $(call chr_bank_pal_sprites,$(b))))
 PAL_BACK := $(firstword $(strip $(foreach b,$(CHR_BANKS),$(call chr_bank_pal_back,$(b)))))
 PAL_SPRITES := $(firstword $(strip $(foreach b,$(CHR_BANKS),$(call chr_bank_pal_sprites,$(b)))))
+CHR_CATEGORY := $(DIR_BUILD)/.chr-category
 
 CLEAN_ENTRIES += $(ASM_DBGFILE)
 
@@ -85,9 +86,12 @@ $(DIR_BUILD)/%.o: $(SOURCE_DIR)/%.asm $(ASM_INCLUDES) | $(DIR_BUILD)
 	@$(call print_entry,Compiling $<)
 
 ifneq ($(strip $(CHR_BANKS)),)
+$(CHR_CATEGORY): | $(DIR_BUILD)
+	@$(call print_category,Converting CHR)
+	@$(CMD_TOUCH) $@
+
 define CHR_BANK_RULE
-$(call chr_bank_outputs,$(1)): $(call chr_bank_png,$(1)) $(call chr_bank_cfg,$(1)) $(NSK_UTIL_CONVERT) $(NSK_UTIL_CFG2EXP)
-	@$$(call print_category,Converting CHR)
+$(call chr_bank_outputs,$(1)): $(call chr_bank_png,$(1)) $(call chr_bank_cfg,$(1)) $(NSK_UTIL_CONVERT) $(NSK_UTIL_CFG2EXP) | $(CHR_CATEGORY)
 	@$$(CMD_MKDIR) $(sort $(dir $(call chr_bank_outputs,$(1))))
 	@$$(NSK_UTIL_CONVERT) \
 		-i $(call chr_bank_png,$(1)) \

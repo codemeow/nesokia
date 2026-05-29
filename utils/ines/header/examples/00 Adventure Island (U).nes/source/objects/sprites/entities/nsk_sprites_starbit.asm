@@ -531,13 +531,17 @@ _starbit_data_timer:
 ; @param[in] _starbit_probe_y    Foot probe Y position
 ; @param[out] A 0 if empty, 1 if solid
 .proc _starbit_ground_probe
-    lda _starbit_probe_x_hi
-    cmp #MAP::SCREEN::PAGES
-    bcs empty
-
-    lda _starbit_probe_y
-    cmp #NSK::SCREEN::HEIGHT
-    bcs empty
+    ; These sanity checks are useless for our case
+    ; as we guarantee that the starbits won't fly
+    ; far enough for this.
+    ;
+    ;lda _starbit_probe_x_hi
+    ;cmp #MAP::SCREEN::PAGES
+    ;bcs empty
+    ;
+    ;lda _starbit_probe_y
+    ;cmp #NSK::SCREEN::HEIGHT
+    ;bcs empty
 
     lda _starbit_probe_y
     and #$f0
@@ -658,9 +662,13 @@ _starbit_data_timer:
     stx _starbit_pool_index
 
     lda nsk_pool_worldy_lo, x
-    clc
-    adc #STARBIT::COLLISION::FOOT_Y
-    bcs done
+    
+    ; This sanity check isn't needed in our case
+    ;
+    ;clc
+    ;adc #STARBIT::COLLISION::FOOT_Y
+    ;bcs done
+
     sta _starbit_probe_y
 
     lda #STARBIT::COLLISION::CENTER_X

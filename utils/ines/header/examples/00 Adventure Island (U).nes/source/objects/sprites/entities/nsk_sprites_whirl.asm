@@ -304,18 +304,17 @@ _whirl_distance_hi:
 ; @brief Candidate distance low byte for the nearest query
 _whirl_distance_lo:
     .res 1
+; @brief Whirl spawned flag
+_whirl_is_onscreen:
+    .res 1
 
-; @brief Query X high byte for nsk_whirl_nearest_find
+; @brief Requested whirl X high byte
 .export nsk_whirl_query_x_hi
 nsk_whirl_query_x_hi:
     .res 1
-; @brief Query X low byte for nsk_whirl_nearest_find
+; @brief Requested whirl X low byte
 .export nsk_whirl_query_x_lo
 nsk_whirl_query_x_lo:
-    .res 1
-; @brief Query direction for nsk_whirl_nearest_find (LEFT=0, RIGHT=1)
-.export nsk_whirl_query_direction
-nsk_whirl_query_direction:
     .res 1
 
 ; @brief Whirl data slot usage markers
@@ -345,6 +344,9 @@ _whirl_data_timer:
         inx
         cpx #WHIRL::DATA::MAX
         bne loop
+
+    lda #0
+    sta _whirl_is_onscreen
 
     pull a, x
 
@@ -459,6 +461,9 @@ _whirl_data_timer:
         { #0                        }, \
         { _whirl_data_id            }
 
+    lda #1
+    sta _whirl_is_onscreen
+
     done:
         pull a, x, y
 
@@ -557,6 +562,9 @@ _whirl_data_timer:
         ldx _whirl_pool_index
         jsr nsk_starbit_spawn_burst
 
+        lda #0
+        sta _whirl_is_onscreen
+
         ldx _whirl_pool_index
         lda nsk_pool_flags, x
         ora #POOL::FLAGS::DELETED
@@ -564,147 +572,43 @@ _whirl_data_timer:
         rts
 .endproc
 
-; @brief Stores the current candidate as the nearest whirl
+; @brief Requests the current whirl position
 ;
-; @param[in] X candidate pool index
-.proc _whirl_nearest_set
-    stx _whirl_best_index
-
-    lda _whirl_distance_hi
-    sta _whirl_best_distance_hi
-    lda _whirl_distance_lo
-    sta _whirl_best_distance_lo
-
-    rts
-.endproc
-
-; @brief Updates the nearest whirl if the candidate is closer
+; This will work only for the first whirl so if
+; there will be more than one this should be reverted back
+; to 06e69b142b6e198f8d17a81e06d05c8b4d9d0963 or rewritten
 ;
-; @param[in] X candidate pool index
-.proc _whirl_nearest_update
-    lda _whirl_best_index
-    cmp #$ff
-    beq set
+; @param[out] nsk_whirl_query_x_hi Hi X byte
+; @param[out] nsk_whirl_query_x_lo Lo X byte
+;
+; This will also assume, that the whirl is 2x2 sprites
+.export nsk_whirl_requestx
+.proc nsk_whirl_requestx
+    ; We use the following assumptions:
+    ; - There is only one Whirl on the screen.
+    ; - It does not move.
+    ;
+    ; Based on this, when returning the Whirl coordinates,
+    ; we can safely return the last values used during spawn.
 
-    lda _whirl_distance_hi
-    cmp _whirl_best_distance_hi
-    bcc set
-    bne done
+    .assert WHIRL::DATA::MAX = 1, error, "This assumption will break"
+    .assert WHIRL::WIDTH = 2, error, "This assumption will break"
 
-    lda _whirl_distance_lo
-    cmp _whirl_best_distance_lo
-    bcs done
+    lda _whirl_is_onscreen
+    beq destroyed
 
-    set:
-        jsr _whirl_nearest_set
-
-    done:
+    alive:
+        lda _whirl_spawn_worldx_hi
+        sta nsk_whirl_query_x_hi
+        lda _whirl_spawn_worldx_lo
+        sta nsk_whirl_query_x_lo
         rts
-.endproc
 
-; @brief Checks the current whirl candidate for the right direction query
-;
-; @param[in] X candidate pool index
-.proc _whirl_nearest_check_right
-    lda nsk_pool_worldx_hi, x
-    cmp nsk_whirl_query_x_hi
-    bcc done
-    bne distance
-
-    lda nsk_pool_worldx_lo, x
-    cmp nsk_whirl_query_x_lo
-    bcc done
-
-    distance:
-        sec
-        lda nsk_pool_worldx_lo, x
-        sbc nsk_whirl_query_x_lo
-        sta _whirl_distance_lo
-
-        lda nsk_pool_worldx_hi, x
-        sbc nsk_whirl_query_x_hi
-        sta _whirl_distance_hi
-
-        jsr _whirl_nearest_update
-
-    done:
-        rts
-.endproc
-
-; @brief Checks the current whirl candidate for the left direction query
-;
-; @param[in] X candidate pool index
-.proc _whirl_nearest_check_left
-    lda nsk_pool_worldx_hi, x
-    cmp nsk_whirl_query_x_hi
-    bcc distance
-    bne done
-
-    lda nsk_pool_worldx_lo, x
-    cmp nsk_whirl_query_x_lo
-    beq distance
-    bcs done
-
-    distance:
-        sec
-        lda nsk_whirl_query_x_lo
-        sbc nsk_pool_worldx_lo, x
-        sta _whirl_distance_lo
-
-        lda nsk_whirl_query_x_hi
-        sbc nsk_pool_worldx_hi, x
-        sta _whirl_distance_hi
-
-        jsr _whirl_nearest_update
-
-    done:
-        rts
-.endproc
-
-; @brief Finds the nearest whirl in the query direction
-;
-; @param[in] nsk_whirl_query_x_hi        Query X high byte
-; @param[in] nsk_whirl_query_x_lo        Query X low byte
-; @param[in] nsk_whirl_query_direction  LEFT=0, RIGHT=1
-; @param[out] X current pool index of the nearest whirl, or $ff
-.export nsk_whirl_nearest_find
-.proc nsk_whirl_nearest_find
-    push a, y
-
-    lda #$ff
-    sta _whirl_best_index
-
-    ldx #0
-    cpx nsk_pool_size
-    beq done
-
-    loop:
-        stx _whirl_scan_index
-
-        lda nsk_pool_object, x
-        cmp #SPRITELIST::WHIRL
-        bne next
-
-        lda nsk_whirl_query_direction
-        beq left
-
-        jsr _whirl_nearest_check_right
-        jmp next
-
-        left:
-            jsr _whirl_nearest_check_left
-
-        next:
-            ldx _whirl_scan_index
-            inx
-            cpx nsk_pool_size
-            bne loop
-
-    done:
-        ldx _whirl_best_index
-
-        pull a, y
-
+    destroyed:
+        lda #$ff
+        sta nsk_whirl_query_x_hi
+        lda #$ff
+        sta nsk_whirl_query_x_lo
         rts
 .endproc
 

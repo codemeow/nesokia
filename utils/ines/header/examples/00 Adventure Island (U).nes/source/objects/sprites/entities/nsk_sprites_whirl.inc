@@ -7,22 +7,23 @@
 ::__NSK_SPRITES_WHIRL__ = 1
 
 .ifndef ::__NSK_SPRITES_WHIRL_ASM__
-    ; @brief Query X high byte for nsk_whirl_nearest_find
+    ; @brief Requested whirl X high byte
     .import nsk_whirl_query_x_hi
 
-    ; @brief Query X low byte for nsk_whirl_nearest_find
+    ; @brief Requested whirl X low byte
     .import nsk_whirl_query_x_lo
 
-    ; @brief Query direction for nsk_whirl_nearest_find (LEFT=0, RIGHT=1)
-    .import nsk_whirl_query_direction
-
-    ; @brief Finds the nearest whirl in the query direction
+    ; @brief Requests the current whirl position
     ;
-    ; @param[in] nsk_whirl_query_x_hi        Query X high byte
-    ; @param[in] nsk_whirl_query_x_lo        Query X low byte
-    ; @param[in] nsk_whirl_query_direction  LEFT=0, RIGHT=1
-    ; @param[out] X current pool index of the nearest whirl, or $ff
-    .import nsk_whirl_nearest_find
+    ; This will work only for the first whirl so if
+    ; there will be more than one this should be reverted back
+    ; to 06e69b142b6e198f8d17a81e06d05c8b4d9d0963
+    ;
+    ; @param[out] nsk_whirl_query_x_hi Hi X byte
+    ; @param[out] nsk_whirl_query_x_lo Lo X byte
+    ;
+    ; This will also assume, that the whirl is 2x2 sprites
+    .import nsk_whirl_requestx
 
     ; @brief Inits the whirl in the object pool
     .import nsk_whirl_init

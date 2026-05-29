@@ -603,71 +603,38 @@ _character_data_timer:
     rts
 .endproc
 
-; @brief Checks whether the character has reached the nearest whirl
+; @brief Checks whether the character has reached the current whirl
 ;
 ; @param[in] X the index of the character in the nsk_pool_*
-;
-; @note Temporary debug output:
-;       $70 = $01 if reached, $ff if not reached. If no whirl exists in the
-;       query direction, $70 is set to $ff.
 .proc _character_whirl_reached_check
     lda #0
     sta nsk_pool_result
 
-    lda nsk_pool_worldx_hi, x
-    sta nsk_whirl_query_x_hi
+    jsr nsk_whirl_requestx
+
     lda nsk_pool_worldx_lo, x
-    sta nsk_whirl_query_x_lo
+    clc
+    adc #(CHARACTER::WIDTH * NSK::SCREEN::SPRITES::MODE_8X8::SPRITEWIDTH - 1)
+    sta _character_probe_x_lo
+    lda nsk_pool_worldx_hi, x
+    adc #0
+    sta _character_probe_x_hi
 
-    ldy nsk_pool_data_id, x
-    lda _character_data_direction, y
-    sta nsk_whirl_query_direction
+    sec
+    lda _character_probe_x_lo
+    sbc nsk_whirl_query_x_lo
+    tay
+    lda _character_probe_x_hi
+    sbc nsk_whirl_query_x_hi
+    bne done
 
-    jsr nsk_whirl_nearest_find
-    cpx #$ff
-    beq not_reached
-
-    lda nsk_whirl_query_direction
-    cmp #CHARACTER::DIRECTION::RIGHT
-    beq check_right
-
-    check_left:
-        sec
-        lda nsk_whirl_query_x_lo
-        sbc nsk_pool_worldx_lo, x
-        tay
-        lda nsk_whirl_query_x_hi
-        sbc nsk_pool_worldx_hi, x
-        bcc not_reached
-        jmp distance_check
-
-    check_right:
-        sec
-        lda nsk_pool_worldx_lo, x
-        sbc nsk_whirl_query_x_lo
-        tay
-        lda nsk_pool_worldx_hi, x
-        sbc nsk_whirl_query_x_hi
-        bcc not_reached
-
-    distance_check:
-        bne not_reached
-
-        tya
-        cmp #(CHARACTER::WIDTH * NSK::SCREEN::SPRITES::MODE_8X8::SPRITEWIDTH)
-        bcs not_reached
+    tya
+    cmp #((CHARACTER::WIDTH + 2) * NSK::SCREEN::SPRITES::MODE_8X8::SPRITEWIDTH - 1)
+    bcs done
 
     reached:
         lda #$01
-        sta $70
         sta nsk_pool_result
-        rts
-
-    not_reached:
-        lda #0
-        sta nsk_pool_result
-        lda #$ff
-        sta $70
 
     done:
         rts

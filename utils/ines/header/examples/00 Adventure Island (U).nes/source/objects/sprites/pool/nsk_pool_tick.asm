@@ -16,6 +16,9 @@
 .include "../tables/nsk_sprites_tables.inc"
 .include "../../../ppu/nsk_ppu_vars.inc"
 
+; @brief Max number of collideable objects handled by the optimized pass
+_POOL_COLLISION_LIST_MAX = 8
+
 .segment "BSS"
 
 ; Index of the object in the pool leads to the objects table,
@@ -47,6 +50,21 @@ _pool_draw_count:
     .res 1
 ; @brief Current gravity-affected pool index
 _pool_gravity_index:
+    .res 1
+; @brief Number of collideable objects in the current frame
+_collision_count:
+    .res 1
+; @brief Set when the optimized collision list is too small
+_collision_list_overflow:
+    .res 1
+; @brief Collideable pool indices for the current frame
+_collision_list:
+    .res _POOL_COLLISION_LIST_MAX
+; @brief First collision pair list index
+_collision_a_list_index:
+    .res 1
+; @brief Second collision pair list index
+_collision_b_list_index:
     .res 1
 ; @brief First collision pair pool index
 _collision_a_index:
@@ -261,6 +279,60 @@ _collision_b_bottom:
         rts
 .endproc
 
+; @brief Builds a list of pool indices that can collide this frame
+.proc _pool_collision_list_build
+    lda #0
+    sta _collision_count
+    sta _collision_list_overflow
+
+    ldx #0
+    cpx _pool_size
+    beq done
+
+    loop:
+        jsr _pool_collision_flags_check
+        beq next
+
+        lda _collision_count
+        cmp #_POOL_COLLISION_LIST_MAX
+        bcc :+
+            lda #1
+            sta _collision_list_overflow
+            rts
+        :
+
+        txa
+        ldy _collision_count
+        sta _collision_list, y
+        inc _collision_count
+
+    next:
+        inx
+        cpx _pool_size
+        bne loop
+
+    done:
+        rts
+.endproc
+
+; @brief Checks whether the current collision pair can still collide
+;
+; The collision list is built before callbacks are dispatched. A callback may
+; clear COLLISION, so future pairs with that object must be skipped.
+;
+; @param[out] A zero if this pair cannot collide anymore
+.proc _pool_collision_pair_flags_check
+    ldx _collision_a_index
+    jsr _pool_collision_flags_check
+    beq done
+
+    ldx _collision_b_index
+    jsr _pool_collision_flags_check
+
+    done:
+        rts
+.endproc
+
 ; @brief Calculates the current collision pair boxes
 .proc _pool_collision_boxes_calc
     ldx _collision_a_index
@@ -389,8 +461,8 @@ _collision_b_bottom:
     rts
 .endproc
 
-; @brief Ticks all pool collisions
-.proc _pool_tick_collisions
+; @brief Ticks all pool collisions using full pool pair scan
+.proc _pool_tick_collisions_full
     lda #0
     sta _collision_a_index
 
@@ -434,6 +506,77 @@ _collision_b_bottom:
 
     next_a:
         inc _collision_a_index
+        jmp outer
+
+    done:
+        rts
+.endproc
+
+; @brief Ticks all pool collisions
+.proc _pool_tick_collisions
+    jsr _pool_collision_list_build
+
+    ; Fallback just in case we didn't fit into _POOL_COLLISION_LIST_MAX
+    ; (won't be used in this demo)
+    lda _collision_list_overflow
+    beq :+
+        jmp _pool_tick_collisions_full
+    :
+
+    lda _collision_count
+    cmp #2
+    bcs :+
+        rts
+    :
+
+    lda #0
+    sta _collision_a_list_index
+
+    outer:
+        lda _collision_a_list_index
+        clc
+        adc #1
+        cmp _collision_count
+        bcc :+
+            jmp done
+        :
+
+        ldy _collision_a_list_index
+        lda _collision_list, y
+        sta _collision_a_index
+
+        lda _collision_a_list_index
+        clc
+        adc #1
+        sta _collision_b_list_index
+
+    inner:
+        lda _collision_b_list_index
+        cmp _collision_count
+        bcc :+
+            jmp next_a
+        :
+
+        ldy _collision_b_list_index
+        lda _collision_list, y
+        sta _collision_b_index
+
+        jsr _pool_collision_pair_flags_check
+        beq next_b
+
+        jsr _pool_collision_pair_check
+
+        lda nsk_pool_result
+        beq next_b
+
+        jsr _pool_collision_pair_dispatch
+
+    next_b:
+        inc _collision_b_list_index
+        jmp inner
+
+    next_a:
+        inc _collision_a_list_index
         jmp outer
 
     done:

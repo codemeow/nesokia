@@ -1,7 +1,18 @@
 # ca65/ld65 project build rules
 
+ifneq ($(filter undefined default,$(origin CA)),)
 CA := ca65
+endif
+ifneq ($(filter undefined default,$(origin LD)),)
 LD := ld65
+endif
+CA_TOOL := $(firstword $(CA))
+LD_TOOL := $(firstword $(LD))
+ASM_MISSING_TOOLS := $(strip \
+	$(if $(shell command -v $(CA_TOOL) 2>/dev/null),,$(CA_TOOL)) \
+	$(if $(shell command -v $(LD_TOOL) 2>/dev/null),,$(LD_TOOL)) \
+)
+ASM_C_COMPILER := $(firstword $(foreach cc,gcc clang,$(shell command -v $(cc) 2>/dev/null)))
 
 SOURCE_DIR ?= source
 COMMON_DIR ?= ../common
@@ -29,12 +40,16 @@ ASM_INCLUDES := $(shell find "$(SOURCE_DIR)" "$(COMMON_DIR)" -type f -name '*.in
 ASM_OBJECTS := $(patsubst $(SOURCE_DIR)/%.asm,$(DIR_BUILD)/%.o,$(ASM_SOURCES))
 
 CHR_BANKS ?=
-CHR_INPUT_DIR ?= chrrom/png
 CHR_OUTPUT_DIR ?= $(DIR_BUILD)/chr
 PAL_OUTPUT_DIR ?= $(DIR_BUILD)/pal
 
 NSK_UTIL_CONVERT ?= $(DIR_BIN)/nesokia-chr-convert
 NSK_UTIL_CFG2EXP ?= $(DIR_ROOT)/scripts/conv/nsk_conv_file2exp.sh
+ifeq ($(strip $(ASM_C_COMPILER)$(wildcard $(NSK_UTIL_CONVERT))),)
+ifneq ($(strip $(CHR_BANKS)),)
+ASM_MISSING_TOOLS += nesokia-chr-convert
+endif
+endif
 
 chr_bank_required = $(if $(strip $($(1))),$($(1)),$(error Missing required CHR setting: $(1)))
 chr_bank_png = $(call chr_bank_required,CHR_BANK_$(1)_PNG)
@@ -56,6 +71,12 @@ PAL_SPRITES := $(firstword $(strip $(foreach b,$(CHR_BANKS),$(call chr_bank_pal_
 CHR_CATEGORY := $(DIR_BUILD)/.chr-category
 
 CLEAN_ENTRIES += $(ASM_DBGFILE)
+
+ifneq ($(ASM_MISSING_TOOLS),)
+$(ASM_OUTPUT): | $(ASM_OUTPUT_DIR)
+	@$(call print_category,Skipping)
+	@$(call print_entry,Skipping $(PROJECT_NAME): missing ASM tool(s) $(ASM_MISSING_TOOLS))
+else
 
 .PHONY: chr
 chr: $(CHR_OUTPUT) $(PAL_OUTPUT)
@@ -115,4 +136,6 @@ endif
 ifneq ($(strip $(PAL_SPRITES)),)
 $(DIR_BUILD)/objects/sprites/palettes/nsk_sprites_palette.o: $(PAL_SPRITES)
 endif
+endif
+
 endif

@@ -20,8 +20,18 @@ LIST_HEADERS := $(shell find $(DIR_INCLUDES) -type f -name '*.h')
 INCLUDE_HEADERS := $(addprefix -include ,$(LIST_HEADERS))
 
 # Compiler and flags
-CC      := gcc
+ifeq ($(origin CC),default)
+CC := $(firstword $(foreach cc,gcc clang,$(shell command -v $(cc) 2>/dev/null)))
+endif
 #CC := x86_64-w64-mingw32-gcc -mno-ms-bitfields -static-libgcc
+C_COMPILER := $(firstword $(CC))
+C_MISSING_TOOL := $(if $(strip $(C_COMPILER)),$(if $(shell command -v $(C_COMPILER) 2>/dev/null),,$(C_COMPILER)),gcc/clang)
+
+ifneq ($(strip $(C_MISSING_TOOL)),)
+$(DIR_BIN)/$(PROJECT_NAME):
+	@$(call print_category,Skipping)
+	@$(call print_entry,Skipping $(PROJECT_NAME): missing C compiler $(C_MISSING_TOOL))
+else
 
 # Compilation flags
 CFLAGS  += -std=c11 -Wall -Wextra -Werror -O0 -g \
@@ -68,3 +78,5 @@ $(DIR_BUILD)/common/%.c.o: $(DIR_COMMON)/%.c $(COMPILE_STAMP) | $(DIR_BUILD)
 	@$(CMD_MKDIR) -p $(dir $@)
 	@$(CC) $(CFLAGS) -c $< -o $@
 	@$(call print_entry,Compiling $<)
+
+endif

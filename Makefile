@@ -7,14 +7,20 @@ UTIL_MODULES := \
   $(UTILS_DIR)/chr/colors   \
   $(UTILS_DIR)/chr/convert
 
+EXAMPLES_DIR := examples
+EXAMPLE_MODULES := \
+  $(EXAMPLES_DIR)/platformer
+
+MODULES := $(UTIL_MODULES) $(EXAMPLE_MODULES)
+
 .DEFAULT_GOAL := all
 .PHONY: all build test test-valgrind clean
 
-all:   $(addprefix   all-,$(UTIL_MODULES))
-build: $(addprefix build-,$(UTIL_MODULES))
-test:  $(addprefix  test-,$(UTIL_MODULES))
-test-valgrind:  $(addprefix test-valgrind-,$(UTIL_MODULES))
-clean: $(addprefix clean-,$(UTIL_MODULES))
+all:   $(addprefix   all-,$(MODULES))
+build: $(addprefix build-,$(MODULES))
+test:  $(addprefix  test-,$(MODULES))
+test-valgrind:  $(addprefix test-valgrind-,$(MODULES))
+clean: $(addprefix clean-,$(MODULES))
 
 define MODULE_RULES
 .PHONY: all-$(1) build-$(1) test-$(1) test-valgrind-$(1) clean-$(1)
@@ -35,4 +41,4 @@ clean-$(1):
 	@$$(MAKE) -C "$(1)" clean
 endef
 
-$(foreach m,$(UTIL_MODULES),$(eval $(call MODULE_RULES,$(m))))
+$(foreach m,$(MODULES),$(eval $(call MODULE_RULES,$(m))))

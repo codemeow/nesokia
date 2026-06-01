@@ -13,6 +13,6 @@
 ; @brief Tiles palette
 .export nsk_tiles_palette
 nsk_tiles_palette:
-    .incbin "build/pal/back.pal"
+    .incbin "pal/back.pal"
 
 .endif

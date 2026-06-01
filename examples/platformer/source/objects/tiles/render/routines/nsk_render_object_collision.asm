@@ -65,7 +65,6 @@
     lda #0
     sta _nsk_render_offs + 1
 
-    nsk_todo "Need something smarter here"
     ; --- Page select ---
     lda _nsk_render_nametable + 1
     cmp #>NSK::PPU::NAMETABLE::TABLE1

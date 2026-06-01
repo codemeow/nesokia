@@ -24,10 +24,3 @@ tests/nes/*/*.o
 tests/nes/*/test.nes
 # NES test cases generated debug files
 tests/nes/*/*.dbg
-
-# utils/ines/header examples build directory
-utils/ines/header/examples/*/bin
-# utils/ines/header examples binary files
-utils/ines/header/examples/*/*.nes
-# utils/ines/header examples debug files
-utils/ines/header/examples/*/*.dbg

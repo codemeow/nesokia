@@ -47,9 +47,19 @@ DIR_TEMPLATES_TARGET := $(DIR_BIN)/templates
 
 TEMPLATE_FILES := $(shell [ -d "$(DIR_TEMPLATES_PROJECT)" ] && $(CMD_FIND) "$(DIR_TEMPLATES_PROJECT)" -type f -print || true)
 TEMPLATE_TARGET := $(patsubst $(DIR_TEMPLATES_PROJECT)/%, $(DIR_TEMPLATES_TARGET)/%, $(TEMPLATE_FILES))
+TEMPLATE_CATEGORY := $(DIR_BUILD)/.templates-category
 
 .PHONY: templates
-$(DIR_TEMPLATES_TARGET)/%: $(DIR_TEMPLATES_PROJECT)/% |
+ifneq ($(strip $(TEMPLATE_TARGET)),)
+$(TEMPLATE_CATEGORY): |
+	@$(CMD_MKDIR) $(dir $@)
+	@$(call print_category,Copying)
+	@$(CMD_TOUCH) $@
+
+$(TEMPLATE_TARGET): | $(TEMPLATE_CATEGORY)
+endif
+
+$(DIR_TEMPLATES_TARGET)/%: $(DIR_TEMPLATES_PROJECT)/%
 	@$(CMD_MKDIR) $(dir $@)
 	@$(CMD_CP) $< $@
 	@$(call print_entry,Copying $<)

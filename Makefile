@@ -5,7 +5,8 @@ UTIL_MODULES := \
   $(UTILS_DIR)/ines/header  \
   $(UTILS_DIR)/ines/inspect \
   $(UTILS_DIR)/chr/colors   \
-  $(UTILS_DIR)/chr/convert
+  $(UTILS_DIR)/chr/convert  \
+  $(UTILS_DIR)/sound/analyze
 
 EXAMPLES_DIR := examples
 EXAMPLE_MODULES := \

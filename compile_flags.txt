@@ -11,6 +11,7 @@
 -DNSK_VERSION_MINOR=0
 -DNSK_VERSION_BUILD=0
 
+-include nsk_platform_endianness.h
 -include nsk_platform_format.h
 -include nsk_platform_os.h
 -include nsk_platform_posix.h

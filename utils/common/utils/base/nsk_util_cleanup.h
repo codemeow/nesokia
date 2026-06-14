@@ -27,4 +27,22 @@ void _nsk_auto_free(void *ptr);
  */
 void _nsk_auto_fclose(FILE **file);
 
+/*!
+ * \brief  "Steals" the pointer from the cleanup function,
+ * allowing to return the value in successfull branches:
+ * ~~~
+ * nsk_auto_type type var = ...
+ *
+ * if (!check)
+ *     return false; // safe, var will be cleaned
+ *
+ * return nsk_steal(var); // also safe, stealer will cancel cleaning
+ * ~~~
+ *
+ * \param[in]  ptr  The pointer
+ * \return Same data via another pointer
+ */
+#define nsk_steal(ptr) \
+    ({ __auto_type _ret = (ptr); (ptr) = NULL; _ret; })
+
 #endif

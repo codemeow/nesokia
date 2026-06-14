@@ -5,6 +5,7 @@
 #include "nsk_wav_read.h"
 
 #include "process/nsk_wav_center.h"
+#include "process/nsk_wav_boundaries.h"
 
 /*!
  * \brief  Prints the WAV info
@@ -69,12 +70,17 @@ bool nsk_wav_process(const char *filename) {
     static const struct {
         const char *name;
         bool (*func) (
-            struct nsk_wav *wav
+            struct nsk_wav      *wav,
+            struct nsk_wav_cnds *cnds
         );
     } _table[] = {
         {
             .name = "Center and peak-normalize",
             .func = nsk_wav_center
+        },
+        {
+            .name = "Find boundaries",
+            .func = nsk_wav_boundaries
         }
     };
 
@@ -90,11 +96,13 @@ bool nsk_wav_process(const char *filename) {
         return false;
     }
 
+    nsk_auto_cnds struct nsk_wav_cnds *cnds = nsk_wav_cnds_alloc();
+
     _wav_print(wav);
 
     for (size_t i = 0; i < NSK_SIZE(_table); i++) {
         nsk_inf("Step: %s\n", _table[i].name);
-        if (!_table[i].func(wav)) {
+        if (!_table[i].func(wav, cnds)) {
             return false;
         }
     }

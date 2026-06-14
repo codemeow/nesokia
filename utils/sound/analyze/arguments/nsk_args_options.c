@@ -52,6 +52,32 @@ size_t nsk_options_count = NSK_SIZE(nsk_options_table);
 /*!
  * \brief  Provided program options
  */
-struct nsk_options_program nsk_options_program = { 0 };
+struct nsk_options_program nsk_options_program = {
+    .profile = {
+        .boundary = {
+            .rmsenv = {
+                /*! <TODO> reassign as the whole profile */
+                .energywindow     = 0.0015,
+                .minactive        = 0.001,
+                .energytreshold   = 0.06,
+                .strengthonset    = 1.0,
+                .strengthoffset   = 1.0,
+                /*
+                 * Energy onset is fairly reliable: a clear rise from silence usually means a
+                 * note starts here.  The confidence is intentionally below 1.0 because the RMS
+                 * window can shift the measured onset, attacks can be smeared, and short noise
+                 * bursts may still cross the threshold.
+                 */
+                .confidenceonset  = 0.75,
+                /*
+                 * Energy offset is slightly less reliable than onset.  A drop in energy may
+                 * mark a real note-off, but it can also be affected by envelope tails, exporter
+                 * artifacts, or the smoothing delay of the RMS active-span detector.
+                 */
+                .confidenceoffset = 0.70
+            }
+        }
+    }
+};
 
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>
 
@@ -61,6 +62,63 @@ struct nsk_wav {
 };
 
 /*!
+ * \brief  Candidate detection methods
+ */
+enum nsk_wav_cnd_method {
+    /*! Detected by energy change, onset  */
+    NSK_WAV_CND_METHOD_ENERGY_ONSET,
+    /*! Detected by energy change, offset */
+    NSK_WAV_CND_METHOD_ENERGY_OFFSET,
+};
+
+/*!
+ * \brief  Candidate kind
+ *
+ * Physicall of musical candidate meaning
+ */
+enum nsk_wav_cnd_kind {
+    /*! Energy rising at this point */
+    NSK_WAV_CND_KIND_ENERGY_ONSET,
+    /*! Energy fall at this point   */
+    NSK_WAV_CND_KIND_ENERGY_OFFSET
+};
+
+/*!
+ * \brief  WAV candidate
+ */
+struct nsk_wav_cnd {
+    /*! Method of detection   */
+    enum nsk_wav_cnd_method method;
+
+    /*! Kind of the detection */
+    enum nsk_wav_cnd_kind   kind;
+
+    /*! Candidate timestamp */
+    double timestamp;
+
+    /*! Detection strength */
+    double strength;
+
+    /*! Detection confidence */
+    double confidence;
+
+    /*! Tagged union by the candidate source */
+    union {
+        struct {
+
+        } energy;
+    };
+};
+
+/*!
+ * \brief  List of WAV candidates
+ */
+struct nsk_wav_cnds {
+    size_t count;                   /*!< Number of candidates */
+    struct nsk_wav_cnd *candidate;  /*!< Array of candidates  */
+};
+
+/*!
  * \brief  Converts the enum value of the format to constant string
  *
  * \param[in] format  The format
@@ -71,6 +129,32 @@ const char *nsk_wav_aftostring(enum nsk_wav_audioformat format);
 /*!
  * \brief  Frees the WAV data
  *
- * \param[in] wav  The WAV data
+ * \param[in,out] wav  The WAV data
  */
 void nsk_wav_free(struct nsk_wav *wav);
+
+/*!
+ * \brief  Creates empty list of candidates
+ *
+ * \return Empty allocated list
+ */
+struct nsk_wav_cnds *nsk_wav_cnds_alloc(void);
+
+/*!
+ * \brief  Appends new candidate
+ *
+ * \param[in,out] cnds       List of candidates
+ * \param[in]     candidate  The candidate data
+ * \return True if successfully appended
+ */
+bool nsk_wav_cnds_new(
+    struct nsk_wav_cnds *cnds,
+    struct nsk_wav_cnd candidate
+);
+
+/*!
+ * \brief  Frees the WAV candidates data
+ *
+ * \param[in,out]  cnds  The WAV candidates data
+ */
+void nsk_wav_cnds_free(struct nsk_wav_cnds *cnds);

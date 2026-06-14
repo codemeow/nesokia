@@ -126,8 +126,8 @@ bool nsk_wav_reader_datafloat(
         nsk_err("Cannot allocate memory for WAV sample values\n");
         return false;
     }
-    wav->samples.raw.max   = FLT_MIN;
-    wav->samples.raw.min   = FLT_MAX;
+    wav->samples.raw.max   = DBL_MIN;
+    wav->samples.raw.min   = DBL_MAX;
 
 
     for (size_t sample = 0 ; sample < wav->samples.raw.count; sample++) {

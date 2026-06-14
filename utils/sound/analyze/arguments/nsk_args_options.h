@@ -42,6 +42,38 @@ struct nsk_options_program {
         const char *file; /*!< Input filename */
     } input;
 
+    /*! Profile settings */
+    struct {
+
+        /*! Boundary detectors settings */
+        struct {
+
+            /*! RMS envelope detector settings */
+            struct {
+                /*! Detector window in seconds */
+                double energywindow;
+
+                /*! Minimum active energy window in seconds */
+                double minactive;
+
+                /*! Energy treshold, 0..1 */
+                double energytreshold;
+
+                /*! Candidate strength for onset candidate */
+                double strengthonset;
+
+                /*! Candidate strength for offset candidate */
+                double strengthoffset;
+
+                /*! Candidate confidence for onset candidate */
+                double confidenceonset;
+
+                /*! Candidate confidence for offset candidate */
+                double confidenceoffset;
+            } rmsenv;
+        } boundary;
+    } profile;
+
     char *const *files; /*!< Compability list of files */
 };
 

@@ -9,10 +9,8 @@
  *
  * <TODO>
  *
- * \param[in]  wav   The wav
- * \param[in,out]      cnds  The list of candidates
+ * \param[in,out]  wav   The wav
  */
 bool nsk_wav_bf_rmsenv(
-    const struct nsk_wav *wav,
-    struct nsk_wav_cnds  *cnds
+    struct nsk_wav *wav
 );

@@ -16,8 +16,7 @@
  * \param[in]      cnds  The list of candidates (unused)
  */
 bool nsk_wav_center(
-    struct nsk_wav      *wav,
-    struct nsk_wav_cnds *cnds __attribute__((unused))
+    struct nsk_wav      *wav
 ) {
     wav->samples.raw.center = (
         wav->samples.raw.max +

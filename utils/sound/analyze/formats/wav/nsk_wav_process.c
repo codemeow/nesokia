@@ -70,8 +70,7 @@ bool nsk_wav_process(const char *filename) {
     static const struct {
         const char *name;
         bool (*func) (
-            struct nsk_wav      *wav,
-            struct nsk_wav_cnds *cnds
+            struct nsk_wav      *wav
         );
     } _table[] = {
         {
@@ -96,13 +95,11 @@ bool nsk_wav_process(const char *filename) {
         return false;
     }
 
-    nsk_auto_cnds struct nsk_wav_cnds *cnds = nsk_wav_cnds_alloc();
-
     _wav_print(wav);
 
     for (size_t i = 0; i < NSK_SIZE(_table); i++) {
         nsk_inf("Step: %s\n", _table[i].name);
-        if (!_table[i].func(wav, cnds)) {
+        if (!_table[i].func(wav)) {
             return false;
         }
     }

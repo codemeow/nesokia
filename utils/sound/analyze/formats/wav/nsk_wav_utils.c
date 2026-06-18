@@ -13,17 +13,3 @@ void _nsk_auto_wav(struct nsk_wav **wav) {
 
     nsk_wav_free(*wav);
 }
-
-
-/*!
- * \brief  Autocleaner for allocated WAV candidates data
- *
- * \param[in, out]  cnds  The WAV candidates data
- */
-void _nsk_auto_cnds(struct nsk_wav_cnds **cnds) {
-    if (!cnds || !*cnds) {
-        return;
-    }
-
-    nsk_wav_cnds_free(*cnds);
-}

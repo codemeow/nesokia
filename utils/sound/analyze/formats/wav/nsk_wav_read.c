@@ -5,7 +5,6 @@
 #include <limits.h>
 #include <sys/types.h>
 #include <stdbool.h>
-#include <math.h>
 
 #include <nsk_util_meta.h>
 #include "nsk_wav_read.h"
@@ -141,6 +140,12 @@ struct nsk_wav *nsk_wav_read(FILE *file) {
     nsk_auto_wav struct nsk_wav *wav = calloc(1, sizeof(*wav));
     if (!wav) {
         nsk_err("Cannot allocate memory for WAV data\n");
+        return NULL;
+    }
+
+    wav->candidates.candidate = calloc(sizeof(*wav->candidates.candidate), 1);
+    if (!wav->candidates.candidate) {
+        nsk_err("Cannot allocate memory for the candidates list\n");
         return NULL;
     }
 

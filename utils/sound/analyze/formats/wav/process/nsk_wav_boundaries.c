@@ -10,19 +10,16 @@
  * <TODO>
  *
  * \param[in,out]  wav   The wav
- * \param[in]      cnds  The list of candidates
  */
 bool nsk_wav_boundaries(
-    struct nsk_wav      *wav,
-    struct nsk_wav_cnds *cnds
+    struct nsk_wav      *wav
 ) {
     // TODO declare function that runs over arrays
 
     static const struct {
         const char *name;
         bool (*func)(
-            const struct nsk_wav  *wav,
-            struct nsk_wav_cnds   *cnds
+            struct nsk_wav  *wav
         );
     } _table[] = {
         {
@@ -32,10 +29,13 @@ bool nsk_wav_boundaries(
     };
 
     for (size_t i = 0; i < NSK_SIZE(_table); i++) {
+        size_t old = wav->candidates.count;
         nsk_inf("    Step: %s\n", _table[i].name);
-        if (!_table[i].func(wav, cnds)) {
+        if (!_table[i].func(wav)) {
             return false;
         }
+        size_t new = wav->candidates.count;
+        nsk_inf("        (%+zd candidates)\n", (ssize_t)new - old);
     }
 
     return true;

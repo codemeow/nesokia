@@ -75,6 +75,23 @@ struct nsk_options_program nsk_options_program = {
                  * artifacts, or the smoothing delay of the RMS active-span detector.
                  */
                 .confidenceoffset = 0.70
+            },
+            .schmitt = {
+                /*
+                 * Generous default settings
+                 *
+                 * 44.1 kHz -> round(44100 * 0.020) = 882 samples
+                 * 48 kHz   -> round(48000 * 0.020) = 960 samples
+                 * 96 kHz   -> round(96000 * 0.020) = 1920 samples
+                 * 192 kHz  -> round(192000 * 0.020) = 3840 samples
+                 */
+                .window           = 0.02,
+
+                .hysteresis       = 0.25,
+
+                .strength         = 0.01,
+
+                .confidence       = 0.05
             }
         }
     }

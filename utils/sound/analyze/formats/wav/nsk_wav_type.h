@@ -25,6 +25,8 @@ enum nsk_wav_cnd_method {
     NSK_WAV_CND_METHOD_ENERGY_ONSET,
     /*! Detected by energy change, offset */
     NSK_WAV_CND_METHOD_ENERGY_OFFSET,
+    /*! Detected by edge probing */
+    NSK_WAV_CND_METHOD_EDGE_PROBE
 };
 
 /*!
@@ -36,7 +38,11 @@ enum nsk_wav_cnd_kind {
     /*! Energy rising at this point */
     NSK_WAV_CND_KIND_ENERGY_ONSET,
     /*! Energy fall at this point   */
-    NSK_WAV_CND_KIND_ENERGY_OFFSET
+    NSK_WAV_CND_KIND_ENERGY_OFFSET,
+    /*! Edge rise */
+    NSK_WAV_CND_KIND_EDGE_RISE,
+    /*! Edge fall */
+    NSK_WAV_CND_KIND_EDGE_FALL
 };
 
 /*!

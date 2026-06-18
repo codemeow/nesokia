@@ -3,6 +3,7 @@
 #include "nsk_wav_boundaries.h"
 
 #include "boundaries/nsk_wav_bf_rmsenv.h"
+#include "boundaries/nsk_wav_bf_schmitt.h"
 
 /*!
  * \brief  Finds the boundaries between notes
@@ -25,6 +26,10 @@ bool nsk_wav_boundaries(
         {
             .name = "Active spans by RMS envelope",
             .func = nsk_wav_bf_rmsenv
+        },
+        {
+            .name = "Schmitt-trigger edges",
+            .func = nsk_wav_bf_schmitt
         }
     };
 

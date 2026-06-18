@@ -160,9 +160,7 @@ static double *_bf_rmsenv_envelopes(
     double max = 0.0;
     for (size_t i = 0; i < wav->samples.raw.count; i++) {
         envelope[i] = sqrt(sum / window);
-        if (envelope[i] > max) {
-            max = envelope[i];
-        }
+        max = NSK_MAX(max, envelope[i]);
 
         sum -= squares[i];
         sum += squares[i + window];

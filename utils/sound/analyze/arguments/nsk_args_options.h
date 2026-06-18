@@ -71,6 +71,20 @@ struct nsk_options_program {
                 /*! Candidate confidence for offset candidate */
                 double confidenceoffset;
             } rmsenv;
+
+            struct {
+                /*! Schmitt window in seconds */
+                double window;
+
+                /*! Hysteresis */
+                double hysteresis;
+
+                /*! Schmitt candidates strength */
+                double strength;
+
+                /*! Schmitt candidates confidence */
+                double confidence;
+            } schmitt;
         } boundary;
     } profile;
 

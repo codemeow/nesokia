@@ -29,9 +29,7 @@ bool nsk_wav_center(
         wav->samples.raw.value[i] -= wav->samples.raw.center;
 
         double abs_value = fabs(wav->samples.raw.value[i]);
-        if (abs_value > peak) {
-            peak = abs_value;
-        }
+        peak = NSK_MAX(peak, abs_value);
     }
 
     if (peak <= 0.0) {

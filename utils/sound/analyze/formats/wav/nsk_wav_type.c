@@ -47,11 +47,13 @@ void nsk_wav_free(struct nsk_wav *wav) {
     free(wav->meta.artist);
     free(wav->meta.comment);
     free(wav->meta.software);
+    free(wav->samples.raw.value);
 
     free(wav->candidates.candidate);
     free(wav->spans.span);
+    free(wav->edges.rise.edge);
+    free(wav->edges.fall.edge);
 
-    free(wav->samples.raw.value);
     free(wav);
 }
 
@@ -107,6 +109,35 @@ bool nsk_wav_span(
 
     wav->spans.span = ptr;
     wav->spans.span[wav->spans.count++] = span;
+
+    return true;
+}
+
+/*!
+ * \brief  Appends new detected egde
+ *
+ * \param[in,out]  edge       The edge
+ * \param[in]      timestamp  The timestamp
+ * \return True if successfully appended
+ */
+bool nsk_wav_edge(
+    struct nsk_wav_edges *edge,
+    double                timestamp
+) {
+    __typeof__(edge->edge) ptr = realloc(
+        edge->edge,
+        sizeof(*ptr) * (edge->count + 1)
+    );
+
+    if (!ptr) {
+        nsk_err(
+            "Cannot realloc the edge list"
+        );
+        return false;
+    }
+
+    edge->edge = ptr;
+    edge->edge[edge->count++] = timestamp;
 
     return true;
 }

@@ -1,2 +1,2 @@
-common_deps_math :=
-common_ldlibs_math :=
+common_deps_math := base log
+common_ldlibs_math := -lm

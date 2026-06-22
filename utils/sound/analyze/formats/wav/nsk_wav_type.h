@@ -26,7 +26,19 @@ enum nsk_wav_cnd_method {
     /*! Detected by energy change, offset */
     NSK_WAV_CND_METHOD_ENERGY_OFFSET,
     /*! Detected by edge probing */
-    NSK_WAV_CND_METHOD_EDGE_PROBE
+    NSK_WAV_CND_METHOD_EDGE_PROBE,
+    /*! Detected by edge change */
+    NSK_WAV_CND_METHOD_EDGE_CHANGE,
+    /*! Transitional probes in suspicious interval */
+    NSK_WAV_CND_METHOD_TRANSITION_PROBES,
+    /*! Mixed period solve candidates */
+    NSK_WAV_CND_METHOD_MIXED_PERIOD_SOLVE,
+    /*! Short period edge candidates */
+    NSK_WAV_CND_METHOD_SHORT_PERIOD_EDGE,
+    /*! Span start period probe */
+    NSK_WAV_CND_METHOD_SPAN_START_PERIOD_PROBE,
+    /*! Span end period probe */
+    NSK_WAV_CND_METHOD_SPAN_END_PERIOD_PROBE
 };
 
 /*!
@@ -42,7 +54,19 @@ enum nsk_wav_cnd_kind {
     /*! Edge rise */
     NSK_WAV_CND_KIND_EDGE_RISE,
     /*! Edge fall */
-    NSK_WAV_CND_KIND_EDGE_FALL
+    NSK_WAV_CND_KIND_EDGE_FALL,
+    /*! Edge detection */
+    NSK_WAV_CND_KIND_EDGE,
+    /*! Transition probe */
+    NSK_WAV_CND_KIND_TRANSITION_PROBE,
+    /*! Legato candidates */
+    NSK_WAV_CND_KIND_LEGATO,
+    /*! Waveform reset detection */
+    NSK_WAV_CND_KIND_WAVEFORM_RESET,
+    /*! Span start probe */
+    NSK_WAV_CND_KIND_SPAN_START_PROBE,
+    /*! Span end probe */
+    NSK_WAV_CND_KIND_SPAN_END_PROBE
 };
 
 /*!
@@ -73,6 +97,16 @@ struct nsk_wav_span {
     size_t start;
     /*! End of the span in sample index */
     size_t end;
+};
+
+/*!
+ * \brief  Detected edges
+ */
+struct nsk_wav_edges {
+    /*! Number of edges */
+    size_t count;
+    /*! Array of edged */
+    double *edge;
 };
 
 /*!
@@ -117,6 +151,12 @@ struct nsk_wav {
         /*! Array of detected spans */
         struct nsk_wav_span *span;
     } spans;
+
+    /*! Lists of detected edges */
+    struct {
+        struct nsk_wav_edges rise; /*!< Rising edges  */
+        struct nsk_wav_edges fall; /*!< Falling edges */
+    } edges;
 
     struct {
         enum nsk_wav_audioformat    audioformat;
@@ -174,4 +214,17 @@ __attribute__((warn_unused_result))
 bool nsk_wav_span(
     struct nsk_wav     *wav,
     struct nsk_wav_span span
+);
+
+/*!
+ * \brief  Appends new detected egde
+ *
+ * \param[in,out]  edge       The edge
+ * \param[in]      timestamp  The timestamp
+ * \return True if successfully appended
+ */
+__attribute__((warn_unused_result))
+bool nsk_wav_edge(
+    struct nsk_wav_edges *edge,
+    double                timestamp
 );

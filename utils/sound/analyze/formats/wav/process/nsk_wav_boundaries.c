@@ -4,6 +4,7 @@
 
 #include "boundaries/nsk_wav_bf_rmsenv.h"
 #include "boundaries/nsk_wav_bf_schmitt.h"
+#include "boundaries/nsk_wav_bf_edgetrains.h"
 
 /*!
  * \brief  Finds the boundaries between notes
@@ -30,17 +31,29 @@ bool nsk_wav_boundaries(
         {
             .name = "Schmitt-trigger edges",
             .func = nsk_wav_bf_schmitt
+        },
+        {
+            .name = "Same polarity edge trains",
+            .func = nsk_wav_bf_edgetrains
         }
     };
 
     for (size_t i = 0; i < NSK_SIZE(_table); i++) {
-        size_t old = wav->candidates.count;
+        size_t cold  = wav->candidates.count;
+        size_t eoldr = wav->edges.rise.count;
+        size_t eoldf = wav->edges.fall.count;
+
         nsk_inf("    Step: %s\n", _table[i].name);
         if (!_table[i].func(wav)) {
             return false;
         }
-        size_t new = wav->candidates.count;
-        nsk_inf("        (%+zd candidates)\n", (ssize_t)new - old);
+        size_t cnew  = wav->candidates.count;
+        size_t enewr = wav->edges.rise.count;
+        size_t enewf = wav->edges.fall.count;
+
+        nsk_inf("        (%+zd candidates)\n",    (ssize_t)cnew - cold);
+        nsk_inf("        (%+zd rising edges)\n",  (ssize_t)enewr - eoldr);
+        nsk_inf("        (%+zd falling edges)\n", (ssize_t)enewf - eoldf);
     }
 
     return true;

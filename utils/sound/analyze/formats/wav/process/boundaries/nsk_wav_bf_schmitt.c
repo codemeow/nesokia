@@ -5,9 +5,12 @@
 #include "../../../../arguments/nsk_args_options.h"
 #include "nsk_wav_bf_schmitt.h"
 
+/*!
+ * \brief  States, used in the trigger detection
+ */
 enum _schmitt_trigger_state {
-    _SCHMITT_TRIG_LO,
-    _SCHMITT_TRIG_HI
+    _SCHMITT_TRIG_LO, /*!< Low signal  */
+    _SCHMITT_TRIG_HI  /*!< High signal */
 };
 
 /*!
@@ -576,6 +579,13 @@ static bool _bf_schmitt_addrising(
         midline
     );
 
+    if (!nsk_wav_edge(
+        &wav->edges.rise,
+        timestamp
+    )) {
+        return false;
+    }
+
     return nsk_wav_candidate(
         wav,
         (struct nsk_wav_candidate) {
@@ -616,6 +626,13 @@ static bool _bf_schmitt_addfalling(
         index,
         midline
     );
+
+    if (!nsk_wav_edge(
+        &wav->edges.fall,
+        timestamp
+    )) {
+        return false;
+    }
 
     return nsk_wav_candidate(
         wav,

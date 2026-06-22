@@ -80,18 +80,27 @@ struct nsk_options_program nsk_options_program = {
                 /*
                  * Generous default settings
                  *
-                 * 44.1 kHz -> round(44100 * 0.020) = 882 samples
-                 * 48 kHz   -> round(48000 * 0.020) = 960 samples
-                 * 96 kHz   -> round(96000 * 0.020) = 1920 samples
-                 * 192 kHz  -> round(192000 * 0.020) = 3840 samples
+                 * 44.1 kHz -> 44100  * 0.020 ~ 882 samples
+                 * 48 kHz   -> 48000  * 0.020 ~ 960 samples
+                 * 96 kHz   -> 96000  * 0.020 ~ 1920 samples
+                 * 192 kHz  -> 192000 * 0.020 ~ 3840 samples
                  */
                 .window           = 0.02,
-
                 .hysteresis       = 0.25,
-
                 .strength         = 0.01,
-
                 .confidence       = 0.05
+            },
+            .edgetrain = {
+                .periodcontext      = 1,
+                .mindeltast         = 0.5,
+                .maxperiodcv        = 0.08,
+                .confidencescalepec = 0.5,
+                .confidencescaletp  = 0.1,
+                .shortresetratio    = 0.55,
+                .strengthspanstartprobe = 0.01,
+                .confidencespanstartprobe = 0.05,
+                .strengthspanendprobe = 0.01,
+                .confidencespanendprobe = 0.05
             }
         }
     }

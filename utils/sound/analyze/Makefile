@@ -9,7 +9,7 @@ VER_BUILD := 1
 DIR_ROOT := ../../..
 
 # Common modules
-COMMON_MODULES := io log
+COMMON_MODULES := io log math
 
 # Test dependencies
 #TEST_DEPS = $(DIR_BIN)/$(PROJECT_NAME)

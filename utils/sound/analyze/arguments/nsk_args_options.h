@@ -72,6 +72,7 @@ struct nsk_options_program {
                 double confidenceoffset;
             } rmsenv;
 
+            /*! Schmitt trigger settings */
             struct {
                 /*! Schmitt window in seconds */
                 double window;
@@ -85,6 +86,80 @@ struct nsk_options_program {
                 /*! Schmitt candidates confidence */
                 double confidence;
             } schmitt;
+
+            /*! Same polarity edge train settings */
+            struct {
+                /*!
+                 * Number of stable same-polarity periods required on each
+                 * side of a suspected mixed period.  With 1, the detector can
+                 * react to very short notes while still comparing a left and a
+                 * right full waveform period.
+                 */
+                size_t periodcontext;
+
+                /*!
+                 * Minimum pitch distance, in semitones, required between the
+                 * robust left and right periods.  Smaller changes are treated
+                 * as the same note or harmless period jitter.
+                 */
+                double mindeltast;
+
+                /*!
+                 * Maximum robust coefficient of variation allowed for the
+                 * left and right period windows.  Larger values mean the local
+                 * edge train is too unstable for reliable period evidence.
+                 */
+                double maxperiodcv;
+
+                /*!
+                 * Confidence scale for weak period-edge-change candidates.
+                 * The raw confidence already reflects local period stability;
+                 * this factor keeps observed-edge fallback evidence below
+                 * stronger candidates that can estimate the boundary inside
+                 * the mixed period.
+                 */
+                double confidencescalepec;
+
+                /*!
+                 * Confidence scale for weak transition probe candidates.
+                 * These probes mark possible positions inside the mixed
+                 * interval and should stay weaker than observed-edge fallback
+                 * evidence.
+                 */
+                double confidencescaletp;
+
+                /*!
+                 * Maximum ratio between the mixed period and the stable local
+                 * period for reset-like edge detection.  Smaller mixed periods
+                 * indicate that a phase reset may have produced the next
+                 * same-polarity edge early.
+                 */
+                double shortresetratio;
+
+                /*!
+                 * Strength for weak probes extrapolated from the first
+                 * same-polarity period inside an active span.
+                 */
+                double strengthspanstartprobe;
+
+                /*!
+                 * Confidence for weak probes extrapolated from the first
+                 * same-polarity period inside an active span.
+                 */
+                double confidencespanstartprobe;
+
+                /*!
+                 * Strength for weak probes extrapolated from the last
+                 * same-polarity period inside an active span.
+                 */
+                double strengthspanendprobe;
+
+                /*!
+                 * Confidence for weak probes extrapolated from the last
+                 * same-polarity period inside an active span.
+                 */
+                double confidencespanendprobe;
+            } edgetrain;
         } boundary;
     } profile;
 

@@ -160,6 +160,27 @@ struct nsk_options_program {
                  */
                 double confidencespanendprobe;
             } edgetrain;
+
+            /*! Grid-locked boundary evidence settings */
+            struct {
+                /*!
+                 * FPS of the target platform, eg. NTSC is 60 fps,
+                 * PAL is 50 fps
+                 */
+                size_t fps;
+
+                /*!
+                 * Minimum positive RMS increase across a grid frame required
+                 * to emit an energy-rise onset candidate.
+                 */
+                double energyrisethreshold;
+
+                /*!
+                 * Multiplier that maps RMS rise magnitude to candidate
+                 * strength.
+                 */
+                double strengthscale;
+            } grid;
         } boundary;
     } profile;
 

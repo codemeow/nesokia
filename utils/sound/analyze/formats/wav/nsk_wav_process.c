@@ -98,7 +98,7 @@ bool nsk_wav_process(const char *filename) {
     _wav_print(wav);
 
     for (size_t i = 0; i < NSK_SIZE(_table); i++) {
-        nsk_inf("Step: %s\n", _table[i].name);
+        nsk_inf("# %s\n", _table[i].name);
         if (!_table[i].func(wav)) {
             return false;
         }

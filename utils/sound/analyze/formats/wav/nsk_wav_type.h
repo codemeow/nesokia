@@ -38,7 +38,9 @@ enum nsk_wav_cnd_method {
     /*! Span start period probe */
     NSK_WAV_CND_METHOD_SPAN_START_PERIOD_PROBE,
     /*! Span end period probe */
-    NSK_WAV_CND_METHOD_SPAN_END_PERIOD_PROBE
+    NSK_WAV_CND_METHOD_SPAN_END_PERIOD_PROBE,
+    /*! Energy rise on grid */
+    NSK_WAV_CND_METHOD_GRID_ENERGY_RISE
 };
 
 /*!
@@ -66,7 +68,9 @@ enum nsk_wav_cnd_kind {
     /*! Span start probe */
     NSK_WAV_CND_KIND_SPAN_START_PROBE,
     /*! Span end probe */
-    NSK_WAV_CND_KIND_SPAN_END_PROBE
+    NSK_WAV_CND_KIND_SPAN_END_PROBE,
+    /*! Energy rise on grid */
+    NSK_WAV_CND_KIND_GRID_ENERGY_RISE
 };
 
 /*!

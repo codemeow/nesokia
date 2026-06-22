@@ -101,6 +101,11 @@ struct nsk_options_program nsk_options_program = {
                 .confidencespanstartprobe = 0.05,
                 .strengthspanendprobe = 0.01,
                 .confidencespanendprobe = 0.05
+            },
+            .grid = {
+                .fps                    = 60,
+                .energyrisethreshold    = 0.08,
+                .strengthscale          = 10.0
             }
         }
     }

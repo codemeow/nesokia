@@ -114,6 +114,15 @@ struct nsk_wav_edges {
 };
 
 /*!
+ * \brief  Quantized time marks
+ */
+struct nsk_wav_mark {
+    size_t frame;                                 /*!< Frame index          */
+    size_t count;                                 /*!< Number of candidates */
+    const struct nsk_wav_candidate **candidates;  /*!< Candidates list      */
+};
+
+/*!
  * \brief  WAV data
  */
 struct nsk_wav {
@@ -140,6 +149,23 @@ struct nsk_wav {
         } raw;
     } samples;
 
+    struct {
+        enum nsk_wav_audioformat    audioformat;
+        uint16_t                    channels;
+        uint32_t                    samplerate;
+        uint32_t                    byterate;
+        uint16_t                    blockalign;
+        uint16_t                    bitspersample;
+    } format;
+
+    struct {
+        char *title;
+        char *artist;
+        char *comment;
+        char *software;
+    } meta;
+
+
     /*! List of event candidates */
     struct {
         /*! Number of candidates */
@@ -162,21 +188,11 @@ struct nsk_wav {
         struct nsk_wav_edges fall; /*!< Falling edges */
     } edges;
 
+    /*! Quantized time marks */
     struct {
-        enum nsk_wav_audioformat    audioformat;
-        uint16_t                    channels;
-        uint32_t                    samplerate;
-        uint32_t                    byterate;
-        uint16_t                    blockalign;
-        uint16_t                    bitspersample;
-    } format;
-
-    struct {
-        char *title;
-        char *artist;
-        char *comment;
-        char *software;
-    } meta;
+        size_t count;              /*!< Number of marks */
+        struct nsk_wav_mark *list; /*!< Marks */
+    } marks;
 };
 
 /*!

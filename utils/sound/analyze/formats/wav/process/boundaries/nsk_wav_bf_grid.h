@@ -7,8 +7,10 @@
 /*!
  * \brief  Finds grid-locked energy-rise boundary candidates
  *
- * Compares RMS energy around target grid frames and emits onset candidates
- * when energy rises sharply across a frame boundary.
+ * For every internal target frame, the detector compares RMS energy in one
+ * frame-sized window before the grid time with RMS energy in one frame-sized
+ * window after it.  A sufficiently strong positive rise becomes a weak onset
+ * candidate placed exactly on the frame grid.
  *
  * \param[in,out]  wav   The wav
  * \return True if processed successfully

@@ -159,6 +159,20 @@ struct nsk_options_program {
                  * same-polarity period inside an active span.
                  */
                 double confidencespanendprobe;
+
+                /*!
+                 * Lowest available frequency.
+                 *
+                 * A1  ->   55.0000 Hz
+                 */
+                double frequencylowest;
+
+                /*!
+                 * Highest available frequency.
+                 *
+                 * D#9 -> 9956.0634 Hz
+                 */
+                double frequencyhighest;
             } edgetrain;
 
             /*! Grid-locked boundary evidence settings */
@@ -166,6 +180,8 @@ struct nsk_options_program {
                 /*!
                  * FPS of the target platform, eg. NTSC is 60 fps,
                  * PAL is 50 fps
+                 *
+                 * TODO: move to global profile settings
                  */
                 size_t fps;
 
@@ -182,6 +198,10 @@ struct nsk_options_program {
                 double strengthscale;
             } grid;
         } boundary;
+
+        struct {
+            double windowerror;
+        } quantization;
     } profile;
 
     char *const *files; /*!< Compability list of files */

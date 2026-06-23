@@ -97,16 +97,21 @@ struct nsk_options_program nsk_options_program = {
                 .confidencescalepec = 0.5,
                 .confidencescaletp  = 0.1,
                 .shortresetratio    = 0.55,
-                .strengthspanstartprobe = 0.01,
+                .strengthspanstartprobe = 0.02,
                 .confidencespanstartprobe = 0.05,
-                .strengthspanendprobe = 0.01,
-                .confidencespanendprobe = 0.05
+                .strengthspanendprobe = 0.02,
+                .confidencespanendprobe = 0.05,
+                .frequencylowest        = 55.0000,
+                .frequencyhighest       = 9956.063
             },
             .grid = {
                 .fps                    = 60,
                 .energyrisethreshold    = 0.08,
                 .strengthscale          = 10.0
             }
+        },
+        .quantization = {
+            .windowerror = 0.001667
         }
     }
 };

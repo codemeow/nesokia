@@ -390,6 +390,20 @@ static void _bf_edgetrains_spanedgerange(
 }
 
 /*!
+ * \brief  Checks if the frequency in the supported range
+ *
+ * \param[in] frequency  The frequency
+ * \return    True if the frequence is in range
+ */
+static bool _bf_edgetrains_inrange(
+    double frequency
+) {
+    return
+        frequency >= nsk_options_program.profile.boundary.edgetrain.frequencylowest &&
+        frequency <= nsk_options_program.profile.boundary.edgetrain.frequencyhighest;
+}
+
+/*!
  * \brief  Processes transition candidates inside one span edge range
  *
  * \param[in] wav   The wav
@@ -485,6 +499,11 @@ static bool _bf_edgetrains_process_transitioncandidates(
 
         const double leftfrequency = 1.0 / leftperiod;
         const double rightfrequency = 1.0 / rightperiod;
+
+        if (!_bf_edgetrains_inrange(leftfrequency) ||
+            !_bf_edgetrains_inrange(rightfrequency)) {
+            continue;
+        }
 
         const double deltast =
             _semitones_peroctave *

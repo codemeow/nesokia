@@ -53,6 +53,10 @@ void nsk_wav_free(struct nsk_wav *wav) {
     free(wav->spans.span);
     free(wav->edges.rise.edge);
     free(wav->edges.fall.edge);
+    for (size_t i = 0; i < wav->marks.count; i++) {
+        free(wav->marks.list[i].candidates);
+    }
+    free(wav->marks.list);
 
     free(wav);
 }

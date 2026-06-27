@@ -6,6 +6,7 @@
 #include "nsk_wav_quantization.h"
 
 #include "../../../arguments/nsk_args_options.h"
+#include "../nsk_wav_candidate.h"
 
 /*!
  * \brief  Adds one candidate to a quantized frame mark
@@ -38,6 +39,17 @@ static bool _mark_add(
 
     slot->candidates = ptr;
     slot->candidates[slot->count++] = candidate;
+    slot->maxstrength   = NSK_MAX(
+        slot->maxstrength,
+        candidate->strength
+    );
+    slot->maxabsdeltast = NSK_MAX(
+        slot->maxabsdeltast,
+        fabs(candidate->deltast)
+    );
+
+    slot->types[candidate->method]++;
+
     return true;
 }
 

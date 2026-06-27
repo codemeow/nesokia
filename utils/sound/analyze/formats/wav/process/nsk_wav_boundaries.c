@@ -38,7 +38,7 @@ bool nsk_wav_boundaries(
             .func = nsk_wav_bf_edgetrains
         },
         {
-            .name = "Energy rise on 60 Hz grid",
+            .name = "Energy rise on 60/50 Hz grid",
             .func = nsk_wav_bf_grid
         }
     };

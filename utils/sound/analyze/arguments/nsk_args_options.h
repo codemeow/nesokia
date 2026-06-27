@@ -202,6 +202,124 @@ struct nsk_options_program {
         struct {
             double windowerror;
         } quantization;
+
+        struct {
+            /*!
+             * Minimum number of grid-close energy candidates required for
+             * energy-boundary selection.  Zero disables this selector.
+             */
+            size_t energycandidatesthreshold;
+
+            /*!
+             * Maximum grid timing error for energy candidates to accept a mark.
+             */
+            double energygriderror;
+
+            /*!
+             * Minimum number of strong period candidates required for
+             * strong-real selection.  Zero disables this selector.
+             */
+            size_t strongcandidatesthreshold;
+
+            /*!
+             * Minimum strength for strong-real selection.
+             */
+            double strengththreshold;
+
+            /*!
+             * Minimum number of real period candidates required for real-count
+             * selection.  Zero disables this selector.
+             */
+            size_t periodcandidatesthreshold;
+
+            /*!
+             * Minimum absolute pitch distance, in semitones, for real-count
+             * selection.
+             */
+            double deltastthreshold;
+
+            /*!
+             * Minimum number of real period candidates required for transition
+             * rescue selection.  Zero disables this selector.
+             */
+            size_t transitionperiodcandidatesthreshold;
+
+            /*!
+             * Minimum number of transition probes required for transition
+             * rescue selection.  Zero disables this selector.
+             */
+            size_t transitionprobecandidatesthreshold;
+
+            /*!
+             * Minimum mark strength for transition rescue selection.
+             */
+            double transitionstrengththreshold;
+
+            /*!
+             * Minimum absolute pitch distance, in semitones, for transition
+             * rescue selection.
+             */
+            double transitiondeltastthreshold;
+
+            /*!
+             * Minimum number of mixed-period candidates required for
+             * single-mixed selection.  Zero disables this selector.
+             */
+            size_t singlemixedcandidatesthreshold;
+
+            /*!
+             * Minimum mixed-period strength for single-mixed selection.
+             */
+            double singlemixedstrengththreshold;
+
+            /*!
+             * Minimum absolute mixed-period pitch distance, in semitones, for
+             * single-mixed selection.
+             */
+            double singlemixeddeltastthreshold;
+
+            /*!
+             * Maximum grid timing error for single-mixed selection.
+             */
+            double singlemixedgriderror;
+
+            /*!
+             * Number of frames on each side used to test local dense context.
+             */
+            size_t denseradius;
+
+            /*!
+             * Minimum accepted marks count inside a dense-context window.
+             */
+            size_t densecountthreshold;
+
+            /*!
+             * Minimum accepted marks ratio inside a dense-context window.
+             */
+            double denseratiothreshold;
+
+            /*!
+             * Minimum transition-probe candidates required for dense probe
+             * rescue.
+             */
+            size_t densetransitionsthreshold;
+
+            /*!
+             * Minimum real period candidates required for dense period rescue.
+             */
+            size_t denseperiodsthreshold;
+
+            /*!
+             * Minimum absolute pitch distance, in semitones, for dense period
+             * rescue.
+             */
+            double densedeltastthreshold;
+
+            /*!
+             * Minimum candidate strength for dense period rescue.
+             */
+            double densestrengththreshold;
+        } select;
     } profile;
 
     char *const *files; /*!< Compability list of files */

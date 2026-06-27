@@ -112,8 +112,29 @@ struct nsk_options_program nsk_options_program = {
         },
         .quantization = {
             .windowerror = 0.001667
+        },
+        .select = {
+            .energycandidatesthreshold     = 1,
+            .energygriderror               = 0.00120,
+            .strongcandidatesthreshold     = 1,
+            .strengththreshold             = 0.90,
+            .periodcandidatesthreshold     = 2,
+            .deltastthreshold              = 0.75,
+            .transitionperiodcandidatesthreshold = 1,
+            .transitionprobecandidatesthreshold  = 1,
+            .transitionstrengththreshold   = 0.13,
+            .transitiondeltastthreshold    = 1.30,
+            .singlemixedcandidatesthreshold = 1,
+            .singlemixedstrengththreshold  = 0.90,
+            .singlemixeddeltastthreshold   = 0.90,
+            .singlemixedgriderror          = 0.00150,
+            .denseradius                   = 16,
+            .densecountthreshold           = 10,
+            .denseratiothreshold           = 0.55,
+            .densetransitionsthreshold     = 2,
+            .denseperiodsthreshold         = 2,
+            .densedeltastthreshold         = 0.50,
+            .densestrengththreshold        = 0.50
         }
     }
 };
-
-

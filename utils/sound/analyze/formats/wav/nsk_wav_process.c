@@ -7,6 +7,7 @@
 #include "process/nsk_wav_center.h"
 #include "process/nsk_wav_boundaries.h"
 #include "process/nsk_wav_quantization.h"
+#include "process/nsk_wav_select.h"
 
 /*!
  * \brief  Prints the WAV info
@@ -85,6 +86,10 @@ bool nsk_wav_process(const char *filename) {
         {
             .name = "Grid quantization",
             .func = nsk_wav_quantization
+        },
+        {
+            .name = "Marks selection",
+            .func = nsk_wav_select
         }
     };
 

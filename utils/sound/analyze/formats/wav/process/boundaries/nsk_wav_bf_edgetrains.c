@@ -156,7 +156,8 @@ static bool _bf_edgetrains_addedgechange(
             .kind       = NSK_WAV_CND_KIND_EDGE,
             .timestamp  = timestamp,
             .strength   = strength,
-            .confidence = confidence
+            .confidence = confidence,
+            .deltast    = deltast
         }
     );
 }
@@ -210,7 +211,8 @@ static bool _bf_edgetrains_addtransitionprobes(
                 .kind       = NSK_WAV_CND_KIND_TRANSITION_PROBE,
                 .timestamp  = timestamp,
                 .strength   = strength,
-                .confidence = confidence
+                .confidence = confidence,
+                .deltast    = deltast
             }
         )) {
             return false;
@@ -277,7 +279,8 @@ static bool _bf_edgetrains_addmixedsolve(
             .kind       = NSK_WAV_CND_KIND_LEGATO,
             .timestamp  = tau,
             .strength   = strength,
-            .confidence = confidence
+            .confidence = confidence,
+            .deltast    = deltast
         }
     );
 }
@@ -345,7 +348,8 @@ static bool _bf_edgetrains_addshortperiod(
             .kind       = NSK_WAV_CND_KIND_WAVEFORM_RESET,
             .timestamp  = rightedge,
             .strength   = strength,
-            .confidence = confidence
+            .confidence = confidence,
+            .deltast    = deltast
         }
     );
 }

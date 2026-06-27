@@ -24,7 +24,7 @@ static bool _wav_reader_datapcm8(
         return false;
     }
 
-    *value = ((double)raw - 128.0) / 128.0;
+    *value = ((double)raw - 128) / 128.0;
     return true;
 }
 

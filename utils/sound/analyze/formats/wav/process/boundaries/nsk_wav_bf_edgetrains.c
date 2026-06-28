@@ -237,8 +237,8 @@ static bool _bf_edgetrains_addtransitionprobes(
  * \param[in,out] wav             The wav
  * \param[in]     leftedge        Left edge of the mixed interval, in seconds
  * \param[in]     rightedge       Right edge of the mixed interval, in seconds
- * \param[in]     leftfrequency   Frequency before transition
- * \param[in]     rightfrequency  Frequency after transition
+ * \param[in]     leftperiod      Period before transition, in seconds
+ * \param[in]     rightperiod     Period after transition, in seconds
  * \param[in]     leftcv          Stability estimate before transition
  * \param[in]     rightcv         Stability estimate after transition
  * \param[in]     deltast         Pitch distance in semitones
@@ -248,21 +248,23 @@ static bool _bf_edgetrains_addmixedsolve(
     struct nsk_wav *wav,
     double leftedge,
     double rightedge,
-    double leftfrequency,
-    double rightfrequency,
+    double leftperiod,
+    double rightperiod,
     double leftcv,
     double rightcv,
     double deltast
 ) {
     static const double frequency_mindiff = 1e-12;
 
+    const double leftfrequency = 1.0 / leftperiod;
+    const double rightfrequency = 1.0 / rightperiod;
     const double denominator = leftfrequency - rightfrequency;
     if (fabs(denominator) <= frequency_mindiff) {
         return true;
     }
 
     const double tau =
-        (1.0 - rightedge * rightfrequency + leftedge * leftfrequency) /
+        (1.0 - rightedge / rightperiod + leftedge / leftperiod) /
         denominator;
 
     if (tau < leftedge || tau > rightedge) {
@@ -402,10 +404,21 @@ static void _bf_edgetrains_spanedgerange(
 static bool _bf_edgetrains_inrange(
     double frequency
 ) {
+    const double halfsemitone = pow(2.0, 1.0 / 24.0);
+
+    const double lowest =
+        nsk_options_program.profile.boundary.edgetrain.frequencylowest /
+        halfsemitone;
+
+    const double highest =
+        nsk_options_program.profile.boundary.edgetrain.frequencyhighest *
+        halfsemitone;
+
     return
-        frequency >= nsk_options_program.profile.boundary.edgetrain.frequencylowest &&
-        frequency <= nsk_options_program.profile.boundary.edgetrain.frequencyhighest;
+        frequency >= lowest &&
+        frequency <= highest;
 }
+
 
 /*!
  * \brief  Processes transition candidates inside one span edge range
@@ -537,8 +550,8 @@ static bool _bf_edgetrains_process_transitioncandidates(
             wav,
             leftedge,
             rightedge,
-            leftfrequency,
-            rightfrequency,
+            leftperiod,
+            rightperiod,
             leftcv,
             rightcv,
             deltast

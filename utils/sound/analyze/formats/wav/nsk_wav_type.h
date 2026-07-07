@@ -73,6 +73,25 @@ struct nsk_wav_mark {
     bool indense;
 };
 
+struct nsk_wav_segment {
+    size_t framestart;
+    size_t frameend;
+
+    size_t samplestart;
+    size_t sampleend;
+
+    bool active; /*!< Rough check - active or rest */
+
+    double p2p; /*!< Peak-to-peak amplitude */
+    double volume; /*!< Relative volume level */
+
+    int midi;
+    double frequency;
+    double confidence;
+    double harmonicratio;
+    double duty;
+};
+
 /*!
  * \brief  WAV data
  */
@@ -144,6 +163,12 @@ struct nsk_wav {
         size_t count;              /*!< Number of marks */
         struct nsk_wav_mark *list; /*!< Marks */
     } marks;
+
+    struct {
+        size_t count;
+        struct nsk_wav_segment *list;
+        double silence; /*!< Global silence level */
+    } segments;
 };
 
 /*!

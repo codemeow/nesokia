@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 /*!
  * \brief  The starting point of the short-option replacing value
@@ -320,6 +321,460 @@ struct nsk_options_program {
              */
             double densestrengththreshold;
         } select;
+
+        struct {
+            /*!
+             * Minimum per-frame peak-to-peak amplitude treated as nonzero
+             * while estimating the global silence threshold.
+             */
+            double silencep2pfloor;
+
+            /*!
+             * Quantile of nonzero per-frame peak-to-peak amplitudes used
+             * as the base for the global silence threshold.
+             */
+            double silencequantile;
+
+            /*!
+             * Multiplier applied to the selected peak-to-peak percentile.
+             */
+            double silencescale;
+
+            /*!
+             * Minimum global silence threshold.
+             */
+            double silencemin;
+
+            /*!
+             * Maximum global silence threshold.
+             */
+            double silencemax;
+
+            /*!
+             * Global silence threshold used when no nonzero frame amplitudes
+             * are available.
+             */
+            double silencefallback;
+
+            /*!
+             * Minimum Hann window value used before square-root shaping.
+             */
+            double hannwindowlimit;
+
+            /*!
+             * Minimum segment sample count required to apply Hann windowing.
+             */
+            size_t hannwindowthreshold;
+
+            /*!
+             * Base FFT size used for segment pitch scoring.
+             */
+            size_t fftsize;
+
+            /*!
+             * Minimum accepted-mark ratio that enables dense-direct segment
+             * analysis behavior.
+             */
+            double densedirectminacceptedratio;
+
+            /*!
+             * Maximum base FFT size used in dense-direct segment analysis.
+             */
+            size_t densedirectfftsize;
+
+            /*!
+             * Maximum segment length, in frames, for candidate-mark split.
+             */
+            size_t candidatesplitmaxframes;
+
+            /*!
+             * Maximum segment-list size for candidate-mark split.
+             */
+            size_t candidatesplitmaxsegments;
+
+            /*!
+             * Minimum absolute pitch delta, in semitones, for non-dense
+             * candidate-mark split.
+             */
+            double candidatesplitmindeltast;
+
+            /*!
+             * FFT size used for short segments at high sample rates.
+             */
+            size_t shortfftsize;
+
+            /*!
+             * Maximum segment length, in frames, for short FFT override.
+             */
+            size_t shortfftmaxframes;
+
+            /*!
+             * Minimum sample rate required for short FFT override.
+             */
+            uint32_t shortfftminsamplerate;
+
+            /*!
+             * Number of frames trimmed from both sides before pitch scoring
+             * when the segment is long enough.
+             */
+            size_t marginframes;
+
+            /*!
+             * Maximum number of seconds trimmed from both sides before
+             * pitch scoring.
+             */
+            double trim;
+
+            /*!
+             * Maximum fraction of segment duration trimmed from both sides.
+             */
+            double trimratio;
+
+            /*!
+             * Minimum remaining core duration required to apply trimming.
+             */
+            double mincore;
+
+            /*!
+             * Maximum segment length, in frames, that disables trim.
+             */
+            size_t notrimshortframes;
+
+            /*!
+             * Maximum number of harmonics used for segment pitch scoring.
+             */
+            size_t maxharmonics;
+
+            /*!
+             * Minimum number of harmonics required for segment pitch scoring.
+             */
+            size_t minharmonics;
+
+            /*!
+             * Minimum harmonic-vector magnitude required for pitch scoring.
+             */
+            double spectralfloor;
+
+            /*!
+             * Base multiplier for harmonic template score shaping.
+             */
+            double scorefundamentalbase;
+
+            /*!
+             * Additional multiplier controlled by fundamental strength.
+             */
+            double scorefundamentalweight;
+
+            /*!
+             * Base multiplier for segment pitch confidence.
+             */
+            double confidencebase;
+
+            /*!
+             * Harmonic-ratio value that reaches full confidence weight.
+             */
+            double confidenceratioscale;
+
+            /*!
+             * Additional confidence multiplier controlled by harmonic ratio.
+             */
+            double confidenceratioweight;
+
+            /*!
+             * Minimum confidence required to accept segment pitch.
+             */
+            double minconfidence;
+
+            /*!
+             * Minimum harmonic ratio required to accept segment pitch.
+             */
+            double minharmonicratio;
+
+            /*!
+             * Maximum volume difference for merging equal neighboring
+             * segments.
+             */
+            double mergevolumeequalitythreshold;
+
+            /*!
+             * Maximum duty difference for merging equal neighboring segments.
+             */
+            double mergedutyequalitythreshold;
+
+            /*!
+             * Minimum number of samples required for edge-period scoring.
+             */
+            size_t edgeperiodminsamples;
+
+            /*!
+             * Minimum peak-to-peak amplitude required for edge-period scoring.
+             */
+            double edgeperiodp2pfloor;
+
+            /*!
+             * Maximum relative distance from the median period for stable
+             * edge-period intervals.
+             */
+            double edgeperiodcloseperiodratio;
+
+            /*!
+             * Multiplier that maps edge-period variation to confidence loss.
+             */
+            double edgeperiodcvscale;
+
+            /*!
+             * Cents error that maps edge-period pitch confidence to zero.
+             */
+            double edgeperiodcentsscale;
+
+            /*!
+             * Minimum edge-period confidence required for regular override.
+             */
+            double edgeperiodminconfidence;
+
+            /*!
+             * Minimum edge-period confidence required for short segments.
+             */
+            double edgeperiodshortminconfidence;
+
+            /*!
+             * Maximum segment length, in frames, that uses short edge-period
+             * confidence threshold.
+             */
+            size_t edgeperiodshortmaxframes;
+
+            /*!
+             * Minimum edge-period confidence required for octave-down guard.
+             */
+            double edgeperiodoctaveminconfidence;
+
+            /*!
+             * Minimum edge-period support required for octave-down guard.
+             */
+            size_t edgeperiodoctaveminsupport;
+
+            /*!
+             * Maximum segment length, in frames, for cycle-edge override.
+             */
+            size_t cycleedgeoverridemaxframes;
+
+            /*!
+             * Maximum pitch distance, in semitones, for cycle-edge override.
+             */
+            size_t cycleedgeoverridemaxdeltast;
+
+            /*!
+             * Minimum edge-period confidence for cycle-edge override.
+             */
+            double cycleedgeoverrideminconfidence;
+
+            /*!
+             * Minimum edge-period support for cycle-edge override.
+             */
+            size_t cycleedgeoverrideminsupport;
+
+            /*!
+             * FFT confidence threshold that blocks weaker one-semitone edge
+             * nudges.
+             */
+            double semitoneguardminconfidence;
+
+            /*!
+             * Minimum MIDI note for the high 12.5 percent duty guard.
+             */
+            int high125guardminmidi;
+
+            /*!
+             * Duty value used by the high 12.5 percent duty guard.
+             */
+            double high125guardduty;
+
+            /*!
+             * Minimum FFT confidence for the high 12.5 percent duty guard.
+             */
+            double high125guardminconfidence;
+
+            /*!
+             * Maximum score loss allowed when preferring a lower octave.
+             */
+            double octaveguardscoremargin;
+
+            /*!
+             * Minimum harmonic-ratio gain required to prefer a lower octave.
+             */
+            double octaveguardratiomultiplier;
+
+            /*! Minimum autocorrelation score for period note evidence. */
+            double periodminscore;
+
+            /*! Enable residual pulse-template scorer. */
+            bool templateresidualenabled;
+
+            /*! Maximum template phase steps. */
+            size_t templateresidualmaxphasesteps;
+
+            /*! Minimum residual-template score. */
+            double templateresidualminscore;
+
+            /*! Minimum template improvement for generic override. */
+            double templateresidualminimprovement;
+
+            /*! Minimum template improvement for octave override. */
+            double templateresidualoctaveminimprovement;
+
+            /*! Minimum template improvement for semitone override. */
+            double templateresidualsemitoneminimprovement;
+
+            /*! Minimum template improvement for short low-note override. */
+            double templateresiduallowshortminimprovement;
+
+            /*! Maximum MIDI note for short low-note template override. */
+            int templateresiduallowshortmaxmidi;
+
+            /*! Maximum frame count that enables full template MIDI search. */
+            size_t templateresidualfullsearchmaxframes;
+
+            /*!
+             * Minimum confidence that lets long segments skip template-risk
+             * probing before edge/period evidence is computed.
+             */
+            double templateresidualprefilterminconfidence;
+
+            /*! Maximum segment-list size for global template override pass. */
+            size_t templateresidualmaxsegments;
+
+            /*! Minimum long neighbor length for zero-delta merge. */
+            size_t zerodeltaneighborminframes;
+
+            /*! Maximum p2p delta at a zero-delta boundary. */
+            double zerodeltaneighbormaxp2pdelta;
+
+            /*! Minimum confidence for zero-delta neighbor merge. */
+            double zerodeltaneighborminconfidence;
+
+            /*! Minimum edge confidence for two-frame split. */
+            double edgeconfirmedsplitminconfidence;
+
+            /*! Minimum edge support for two-frame split. */
+            size_t edgeconfirmedsplitminsupport;
+
+            /*! Minimum state confidence for two-frame split. */
+            double edgeconfirmedsplitminstateconfidence;
+
+            /*! Maximum segment length for pulse-width split. */
+            size_t pulsewidthsplitmaxframes;
+
+            /*! Maximum MIDI note for pulse-width low-note split. */
+            int pulsewidthsplitmaxmidi;
+
+            /*! Minimum template score for pulse-width split. */
+            double pulsewidthsplitmintemplatescore;
+
+            /*! Minimum template margin for pulse-width split. */
+            double pulsewidthsplitmintemplatemargin;
+
+            /*! Minimum confidence for the remaining split segment. */
+            double pulsewidthsplitremainingminconfidence;
+
+            /*! Cents error that maps pulse-width edge score to zero. */
+            double pulsewidthcentsscale;
+
+            /*! Maximum segment length for confident frame-grid split. */
+            size_t framegridsplitmaxframes;
+
+            /*! Minimum frame confidence for frame-grid split. */
+            double framegridsplitminconfidence;
+
+            /*! Minimum pulse score for frame-grid split. */
+            double framegridsplitpulseminscore;
+
+            /*! Minimum pulse margin for frame-grid split. */
+            double framegridsplitpulsemargin;
+
+            /*! Maximum MIDI note for frame-grid pulse evidence. */
+            int framegridsplitpulsemaxmidi;
+
+            /*! Minimum pulse-to-FFT confidence ratio for frame-grid pulse evidence. */
+            double framegridsplitpulseconfidenceratio;
+
+            /*! Maximum pitch delta for frame-grid pulse evidence. */
+            size_t framegridsplitpulsemaxdelta;
+
+            /*! Minimum dense mark ratio for frame-grid split. */
+            double framegridsplitmindensesratio;
+
+            /*! Confidence that blocks frame-grid split if original state is absent. */
+            double framegridsplitstrongconfidence;
+
+            /*! Maximum outer segment length for pulse-width reclassify. */
+            size_t outerpulsemaxframes;
+
+            /*! Maximum MIDI note for outer pulse-width reclassify. */
+            int outerpulsemaxmidi;
+
+            /*! Minimum template score for outer pulse-width reclassify. */
+            double outerpulsemintemplatescore;
+
+            /*! Minimum template margin for outer pulse-width reclassify. */
+            double outerpulsemintemplatemargin;
+
+            /*! Minimum template improvement for outer pulse-width reclassify. */
+            double outerpulseminimprovement;
+
+            /*! Minimum dense mark ratio for dense single-frame reclassify. */
+            double denseframemindensesratio;
+
+            /*! Minimum pulse confidence for dense one-frame reclassify. */
+            double denseframepulseminconfidence;
+
+            /*! Minimum template score for dense one-frame pulse reclassify. */
+            double denseframepulsemintemplatescore;
+
+            /*! Minimum template margin for dense one-frame pulse reclassify. */
+            double denseframepulsemargin;
+
+            /*! Maximum MIDI note for dense one-frame pulse reclassify. */
+            int denseframepulsemaxmidi;
+
+            /*! Minimum MIDI note for dense one-frame octave-up reclassify. */
+            int denseframehighoctaveminmidi;
+
+            /*! Minimum template score for dense one-frame octave-up reclassify. */
+            double denseframehighoctaveminscore;
+
+            /*! Minimum template improvement for dense one-frame octave-up reclassify. */
+            double denseframehighoctaveminimprovement;
+
+            /*! Minimum segment count for dense chromatic sweep repair. */
+            size_t densechromaticsweepminsegments;
+
+            /*! Minimum active-segment ratio for dense chromatic sweep repair. */
+            double densechromaticsweepminactiveratio;
+
+            /*! Required endpoint duration, in frames, for lowest sweep notes. */
+            size_t densechromaticsweependpointframes;
+
+            /*! Duty assigned by dense chromatic sweep repair. */
+            double densechromaticsweepduty;
+
+            /*! Confidence assigned by dense chromatic sweep repair. */
+            double densechromaticsweepconfidence;
+
+            /*! Folded duty upper threshold for 12.5 percent duty. */
+            double foldedduty12max;
+
+            /*! Folded duty lower threshold for 25 percent duty. */
+            double foldedduty25min;
+
+            /*! Folded duty upper threshold for 25 percent duty. */
+            double foldedduty25max;
+
+            /*! Folded duty lower threshold for 50 percent duty. */
+            double foldedduty50min;
+
+            /*! Maximum MIDI note for low 12.5 percent duty guard. */
+            int foldedduty125guardmaxmidi;
+        } segments;
     } profile;
 
     char *const *files; /*!< Compability list of files */

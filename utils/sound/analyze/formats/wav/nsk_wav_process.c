@@ -8,6 +8,7 @@
 #include "process/nsk_wav_boundaries.h"
 #include "process/nsk_wav_quantization.h"
 #include "process/nsk_wav_select.h"
+#include "process/nsk_wav_segments.h"
 
 /*!
  * \brief  Prints the WAV info
@@ -90,6 +91,10 @@ bool nsk_wav_process(const char *filename) {
         {
             .name = "Marks selection",
             .func = nsk_wav_select
+        },
+        {
+            .name = "Process segments",
+            .func = nsk_wav_segment
         }
     };
 

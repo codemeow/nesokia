@@ -35,22 +35,22 @@ static double _bf_grid_rms(
  * left-side RMS by at least the configured threshold.  The timestamp is locked
  * to the target frame grid instead of the raw sample position.
  *
- * \param[in,out] wav    The wav
+ * \param[in,out] ctx    Processing context
  * \param[in]     frame  Target grid frame
  * \param[in]     rise   Energy increase across the frame
  * \return        True if processing can continue
  */
 static bool _bf_grid_addenergyrise(
-    struct nsk_wav *wav,
-    size_t          frame,
-    double          rise
+    struct nsk_wav_ctx *ctx,
+    size_t              frame,
+    double              rise
 ) {
     if (rise < nsk_options_program.profile.boundary.grid.energyrisethreshold) {
         return true;
     }
 
-    return nsk_wav_candidate(
-        wav,
+    return nsk_wav_ctx_candidate(
+        ctx,
         (struct nsk_wav_candidate) {
             .method = NSK_WAV_CND_METHOD_GRID_ENERGY_RISE,
             .kind   = NSK_WAV_CND_KIND_GRID_ENERGY_RISE,
@@ -73,11 +73,13 @@ static bool _bf_grid_addenergyrise(
  * window after it.  A sufficiently strong positive rise becomes a weak onset
  * candidate placed exactly on the frame grid.
  *
- * \param[in,out]  wav   The wav
+ * \param[in]      wav  Source WAV data
+ * \param[in,out]  ctx  Processing context receiving candidates
  * \return True if processed successfully
  */
 bool nsk_wav_bf_grid(
-    struct nsk_wav *wav
+    const struct nsk_wav *wav,
+    struct nsk_wav_ctx  *ctx
 ) {
     const size_t samplesperframe = NSK_MAX(
         (size_t)round(
@@ -88,7 +90,7 @@ bool nsk_wav_bf_grid(
     );
 
     const size_t framemax = floor(
-        (double)wav->samples.raw.count *
+        (double)ctx->samples.count *
         nsk_options_program.profile.boundary.grid.fps /
         wav->format.samplerate
     );
@@ -106,7 +108,7 @@ bool nsk_wav_bf_grid(
             0;
 
         const size_t endright = NSK_MIN(
-            wav->samples.raw.count,
+            ctx->samples.count,
             center + samplesperframe
         );
 
@@ -118,19 +120,19 @@ bool nsk_wav_bf_grid(
         }
 
         const double rmsleft = _bf_grid_rms(
-            &wav->samples.raw.value[startleft],
+            &ctx->samples.value[startleft],
             countleft
         );
 
         const double rmsright = _bf_grid_rms(
-            &wav->samples.raw.value[center],
+            &ctx->samples.value[center],
             countright
         );
 
         const double rise = rmsright - rmsleft;
 
         if (!_bf_grid_addenergyrise(
-            wav,
+            ctx,
             frame,
             rise
         )) {

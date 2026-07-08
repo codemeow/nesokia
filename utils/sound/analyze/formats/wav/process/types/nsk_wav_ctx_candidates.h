@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdbool.h>
+#include <stddef.h>
 
 /*!
  * \brief  Candidate detection methods
@@ -34,12 +35,12 @@ enum nsk_wav_cnd_method {
 /*!
  * \brief  Candidate kind
  *
- * Physicall of musical candidate meaning
+ * Physical or musical candidate meaning.
  */
 enum nsk_wav_cnd_kind {
     /*! Energy rising at this point */
     NSK_WAV_CND_KIND_ENERGY_ONSET,
-    /*! Energy fall at this point   */
+    /*! Energy fall at this point */
     NSK_WAV_CND_KIND_ENERGY_OFFSET,
     /*! Edge rise */
     NSK_WAV_CND_KIND_EDGE_RISE,
@@ -49,7 +50,7 @@ enum nsk_wav_cnd_kind {
     NSK_WAV_CND_KIND_EDGE,
     /*! Transition probe */
     NSK_WAV_CND_KIND_TRANSITION_PROBE,
-    /*! Legato candidates */
+    /*! Legato candidate */
     NSK_WAV_CND_KIND_LEGATO,
     /*! Waveform reset detection */
     NSK_WAV_CND_KIND_WAVEFORM_RESET,
@@ -62,30 +63,43 @@ enum nsk_wav_cnd_kind {
 };
 
 /*!
- * \brief  WAV candidate
+ * \brief  Boundary candidate
  */
 struct nsk_wav_candidate {
-    /*! Method of detection   */
-    enum nsk_wav_cnd_method method;
+    enum nsk_wav_cnd_method method; /*!< Detection method */
+    enum nsk_wav_cnd_kind   kind;   /*!< Candidate kind */
 
-    /*! Kind of the detection */
-    enum nsk_wav_cnd_kind   kind;
-
-    /*! Candidate timestamp */
-    double timestamp;
-
-    /*! Detection strength */
-    double strength;
-
-    /*! Detection confidence */
-    double confidence;
+    double timestamp;  /*!< Candidate timestamp in seconds */
+    double strength;   /*!< Detection strength */
+    double confidence; /*!< Detection confidence */
 
     /*!
-     * Pitch distance, in semitones, between the stable same-polarity periods
-     * measured before and after this candidate.  Positive values mean the right
+     * Pitch distance, in semitones, between stable same-polarity periods
+     * measured before and after this candidate. Positive values mean the right
      * side is higher in pitch; negative values mean the right side is lower.
-     *
-     * Valid only for period-transition candidates. Optional field.
      */
     double deltast;
 };
+
+struct nsk_wav_ctx;
+
+/*!
+ * \brief  Boundary candidate storage owned by the processing context
+ */
+struct nsk_wav_ctx_candidates {
+    size_t count;                         /*!< Number of candidates */
+    struct nsk_wav_candidate *candidate;  /*!< Array of candidates */
+};
+
+/*!
+ * \brief  Appends a boundary candidate to the processing context
+ *
+ * \param[in,out] ctx        Processing context
+ * \param[in]     candidate  Candidate to append
+ * \return True if the candidate was appended successfully
+ */
+__attribute__((warn_unused_result))
+bool nsk_wav_ctx_candidate(
+    struct nsk_wav_ctx      *ctx,
+    struct nsk_wav_candidate candidate
+);

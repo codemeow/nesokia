@@ -6,26 +6,25 @@
 #include "nsk_wav_quantization.h"
 
 #include "../../../arguments/nsk_args_options.h"
-#include "../nsk_wav_candidate.h"
 
 /*!
  * \brief  Adds one candidate to a quantized frame mark
  *
  * The mark stores pointers to already-created boundary candidates.  Candidate
- * ownership stays with \p wav->candidates; the mark only groups candidates that
+ * ownership stays with \p ctx->candidates; the mark only groups candidates that
  * were close enough to the same grid frame.
  *
- * \param[in,out] wav        The wav
+ * \param[in,out] ctx        Processing context
  * \param[in]     frame      Target frame index
  * \param[in]     candidate  Candidate assigned to the frame
  * \return        True if the candidate pointer was appended successfully
  */
 static bool _mark_add(
-    struct nsk_wav                 *wav,
+    struct nsk_wav_ctx             *ctx,
     size_t                          frame,
     const struct nsk_wav_candidate *candidate
 ) {
-    __typeof__(&wav->marks.list[frame]) slot = &wav->marks.list[frame];
+    __typeof__(&ctx->marks.list[frame]) slot = &ctx->marks.list[frame];
 
     __typeof__(slot->candidates) ptr =
         realloc(slot->candidates, (slot->count + 1) * sizeof(*ptr));
@@ -54,24 +53,6 @@ static bool _mark_add(
 }
 
 /*!
- * \brief  Logs the parameters of the time marks
- *
- * \param[in] wav  The wav
- */
-static void _mark_log(
-    const struct nsk_wav *wav
-) {
-    size_t filled = 0;
-    for (size_t i = 0; i < wav->marks.count; i++) {
-        if (wav->marks.list[i].count > 0) {
-            filled++;
-        }
-    }
-
-    nsk_inf("    - (+%zu marks)\n", filled);
-}
-
-/*!
  * \brief  Creates mark pools based on the candidates
  *
  * Boundary candidates are continuous-time events.  This stage maps them onto
@@ -83,23 +64,25 @@ static void _mark_log(
  * later selector/decoder stages can then reason in integer frame coordinates
  * without losing the original candidate timestamps.
  *
- * \param[in,out]  wav   The wav
+ * \param[in]      wav  Source WAV data
+ * \param[in,out]  ctx  Processing context receiving quantized marks
  * \return True if quantization completed successfully
  */
 bool nsk_wav_quantization(
-    struct nsk_wav      *wav
+    const struct nsk_wav *wav,
+    struct nsk_wav_ctx  *ctx
 ) {
     const size_t framemax =
-        wav->samples.raw.count *
+        ctx->samples.count *
         nsk_options_program.profile.boundary.grid.fps /
         wav->format.samplerate;
 
-    wav->marks.count = framemax;
-    wav->marks.list  = calloc(
-        wav->marks.count,
-        sizeof(*wav->marks.list)
+    ctx->marks.count = framemax;
+    ctx->marks.list  = calloc(
+        ctx->marks.count,
+        sizeof(*ctx->marks.list)
     );
-    if (!wav->marks.list) {
+    if (!ctx->marks.list) {
         nsk_err(
             "Cannot allocate memory for the marks list"
         );
@@ -107,12 +90,12 @@ bool nsk_wav_quantization(
     }
 
     for (size_t i = 0; i < framemax; i++) {
-        wav->marks.list[i].frame = i;
+        ctx->marks.list[i].frame = i;
     }
 
-    for (size_t i = 0; i < wav->candidates.count; i++) {
+    for (size_t i = 0; i < ctx->candidates.count; i++) {
         const struct nsk_wav_candidate *candidate =
-            &wav->candidates.candidate[i];
+            &ctx->candidates.candidate[i];
 
         const size_t frame = round(
             candidate->timestamp *
@@ -142,15 +125,13 @@ bool nsk_wav_quantization(
         }
 
         if (!_mark_add(
-            wav,
+            ctx,
             frame,
             candidate
         )) {
             return false;
         }
     }
-
-    _mark_log(wav);
 
     return true;
 }

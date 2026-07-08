@@ -3,6 +3,7 @@
 #include <stdbool.h>
 
 #include "../nsk_wav_type.h"
+#include "types/nsk_wav_ctx_meta.h"
 
 /*!
  * \brief  Centers and peak-normalizes sample values
@@ -12,8 +13,11 @@
  * peak amplitude to 1.0 while preserving pulse/square shape; using midrange
  * instead of arithmetic mean avoids duty-cycle bias for asymmetric pulse waves.
  *
- * \param[in,out]  wav   The wav
+ * \param[in]      wav  Source WAV data
+ * \param[in,out]  ctx  Processing context receiving centered samples
+ * \return True if the working sample buffer was prepared successfully
  */
 bool nsk_wav_center(
-    struct nsk_wav      *wav
+    const struct nsk_wav *wav,
+    struct nsk_wav_ctx  *ctx
 );

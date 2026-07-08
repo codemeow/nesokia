@@ -143,12 +143,6 @@ struct nsk_wav *nsk_wav_read(FILE *file) {
         return NULL;
     }
 
-    wav->candidates.candidate = calloc(sizeof(*wav->candidates.candidate), 1);
-    if (!wav->candidates.candidate) {
-        nsk_err("Cannot allocate memory for the candidates list\n");
-        return NULL;
-    }
-
     if (!nsk_wav_read_header(file, wav)) {
         return NULL;
     }

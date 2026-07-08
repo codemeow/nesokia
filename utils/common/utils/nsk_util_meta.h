@@ -28,6 +28,7 @@ END {
 #include "./base/nsk_util_min.h"                     // IWYU pragma: export
 #include "./base/nsk_util_multimap.h"                // IWYU pragma: export
 #include "./base/nsk_util_size.h"                    // IWYU pragma: export
+#include "./base/nsk_util_time.h"                    // IWYU pragma: export
 #include "./error/nsk_util_errno.h"                  // IWYU pragma: export
 #include "./io/nsk_io_dirname.h"                     // IWYU pragma: export
 #include "./io/nsk_io_fopen.h"                       // IWYU pragma: export

@@ -3,6 +3,7 @@
 #include <stdbool.h>
 
 #include "../nsk_wav_type.h"
+#include "types/nsk_wav_ctx_meta.h"
 
 /*!
  * \brief  Creates mark pools based on the candidates
@@ -16,9 +17,11 @@
  * later selector/decoder stages can then reason in integer frame coordinates
  * without losing the original candidate timestamps.
  *
- * \param[in,out]  wav   The wav
+ * \param[in]      wav  Source WAV data
+ * \param[in,out]  ctx  Processing context receiving quantized marks
  * \return True if quantization completed successfully
  */
 bool nsk_wav_quantization(
-    struct nsk_wav      *wav
+    const struct nsk_wav *wav,
+    struct nsk_wav_ctx  *ctx
 );

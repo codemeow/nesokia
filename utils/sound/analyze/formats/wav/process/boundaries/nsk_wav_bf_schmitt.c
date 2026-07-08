@@ -18,6 +18,7 @@ enum _schmitt_trigger_state {
  */
 struct _schmitt_roll_common {
     const struct nsk_wav      *wav;      /*!< WAV being processed           */
+    const struct nsk_wav_ctx  *ctx;      /*!< Processing context            */
     const struct nsk_wav_span *span;     /*!< Active span being scanned     */
     size_t                     count;    /*!< Number of real span samples   */
     size_t                     lpad;     /*!< Virtual samples before span   */
@@ -79,10 +80,10 @@ static bool _bf_schmitt_rollalloc(
  *
  * The \p index parameter is an index in that virtual padded layout, not in the
  * original WAV sample array.  The returned value always comes from
- * wav->samples.raw.value and is clamped to the nearest real span endpoint when
+ * ctx->samples.value and is clamped to the nearest real span endpoint when
  * \p index points into the virtual padding.
  *
- * \param[in] wav    The WAV being processed
+ * \param[in] ctx    Processing context containing the working samples
  * \param[in] span   Active span whose samples are being virtually padded
  * \param[in] count  Number of real samples in the span
  * \param[in] lpad   Number of virtual samples before the span
@@ -90,22 +91,22 @@ static bool _bf_schmitt_rollalloc(
  * \return Sample value at \p index after edge-padding rules are applied
  */
 static double _bf_schmitt_span_padded_value(
-    const struct nsk_wav      *wav,
+    const struct nsk_wav_ctx  *ctx,
     const struct nsk_wav_span *span,
     size_t count,
     size_t lpad,
     size_t index
 ) {
     if (index < lpad) {
-        return wav->samples.raw.value[span->start];
+        return ctx->samples.value[span->start];
     }
 
     const size_t local = index - lpad;
     if (local >= count) {
-        return wav->samples.raw.value[span->end - 1];
+        return ctx->samples.value[span->end - 1];
     }
 
-    return wav->samples.raw.value[span->start + local];
+    return ctx->samples.value[span->start + local];
 }
 
 /*!
@@ -286,7 +287,7 @@ static void _bf_schmitt_deque_prune_tail(
             extreme->tail - 1
         );
         const double tailvalue = _bf_schmitt_span_padded_value(
-            common->wav,
+            common->ctx,
             common->span,
             common->count,
             common->lpad,
@@ -373,7 +374,7 @@ static void _bf_schmitt_deque_write_value(
     );
 
     extreme->value[out] = _bf_schmitt_span_padded_value(
-        common->wav,
+        common->ctx,
         common->span,
         common->count,
         common->lpad,
@@ -384,7 +385,8 @@ static void _bf_schmitt_deque_write_value(
 /*!
  * \brief  Calculates the rolling min and max of the span
  *
- * \param[in]  wav      The wav
+ * \param[in]  wav      Source WAV data
+ * \param[in]  ctx      Processing context containing the working samples
  * \param[in]  span     The span
  * \param[in]  count    The span size
  * \param[in]  window   Rolling window size
@@ -395,6 +397,7 @@ static void _bf_schmitt_deque_write_value(
  */
 static bool _bf_schmitt_rollminmax(
     const struct nsk_wav      *wav,
+    const struct nsk_wav_ctx  *ctx,
     const struct nsk_wav_span *span,
     size_t count,
     size_t window,
@@ -452,6 +455,7 @@ static bool _bf_schmitt_rollminmax(
 
     const struct _schmitt_roll_common common = {
         .wav      = wav,
+        .ctx      = ctx,
         .span     = span,
         .count    = count,
         .lpad     = lpad,
@@ -475,7 +479,7 @@ static bool _bf_schmitt_rollminmax(
 
     for (size_t i = 0; i < virtcount; i++) {
         const double value = _bf_schmitt_span_padded_value(
-            wav,
+            ctx,
             span,
             count,
             lpad,
@@ -526,7 +530,7 @@ static bool _bf_schmitt_rollminmax(
  * \return Interpolated edge timestamp in seconds
  */
 static double _bf_schmitt_timebymidline(
-    struct nsk_wav              *wav,
+    const struct nsk_wav        *wav,
     double                       sample,
     double                       prev,
     size_t                       index,
@@ -557,7 +561,8 @@ static double _bf_schmitt_timebymidline(
  * is intentionally weak: it records a physical waveform edge for diagnostics
  * and later evidence aggregation, but it should not decide a boundary by itself.
  *
- * \param[in,out] wav      The WAV being processed
+ * \param[in]     wav      Source WAV data
+ * \param[in,out] ctx      Processing context receiving edges and candidates
  * \param[in]     sample   Current sample value
  * \param[in]     prev     Previous sample value
  * \param[in]     index    Global sample index of \p sample
@@ -565,7 +570,8 @@ static double _bf_schmitt_timebymidline(
  * \return True if the candidate was appended
  */
 static bool _bf_schmitt_addrising(
-    struct nsk_wav              *wav,
+    const struct nsk_wav        *wav,
+    struct nsk_wav_ctx          *ctx,
     double                       sample,
     double                       prev,
     size_t                       index,
@@ -579,15 +585,15 @@ static bool _bf_schmitt_addrising(
         midline
     );
 
-    if (!nsk_wav_edge(
-        &wav->edges.rise,
+    if (!nsk_wav_ctx_edge(
+        &ctx->edges.rise,
         timestamp
     )) {
         return false;
     }
 
-    return nsk_wav_candidate(
-        wav,
+    return nsk_wav_ctx_candidate(
+        ctx,
         (struct nsk_wav_candidate) {
             .method     = NSK_WAV_CND_METHOD_EDGE_PROBE,
             .kind       = NSK_WAV_CND_KIND_EDGE_RISE,
@@ -605,7 +611,8 @@ static bool _bf_schmitt_addrising(
  * _bf_schmitt_addrising().  It uses the same weak edge-probe scoring but marks
  * the candidate as a falling edge.
  *
- * \param[in,out] wav      The WAV being processed
+ * \param[in]     wav      Source WAV data
+ * \param[in,out] ctx      Processing context receiving edges and candidates
  * \param[in]     sample   Current sample value
  * \param[in]     prev     Previous sample value
  * \param[in]     index    Global sample index of \p sample
@@ -613,7 +620,8 @@ static bool _bf_schmitt_addrising(
  * \return True if the candidate was appended
  */
 static bool _bf_schmitt_addfalling(
-    struct nsk_wav              *wav,
+    const struct nsk_wav        *wav,
+    struct nsk_wav_ctx          *ctx,
     double                       sample,
     double                       prev,
     size_t                       index,
@@ -627,15 +635,15 @@ static bool _bf_schmitt_addfalling(
         midline
     );
 
-    if (!nsk_wav_edge(
-        &wav->edges.fall,
+    if (!nsk_wav_ctx_edge(
+        &ctx->edges.fall,
         timestamp
     )) {
         return false;
     }
 
-    return nsk_wav_candidate(
-        wav,
+    return nsk_wav_ctx_candidate(
+        ctx,
         (struct nsk_wav_candidate) {
             .method     = NSK_WAV_CND_METHOD_EDGE_PROBE,
             .kind       = NSK_WAV_CND_KIND_EDGE_FALL,
@@ -655,7 +663,8 @@ static bool _bf_schmitt_addfalling(
  * high threshold; a falling edge is accepted only when the state is high and
  * the sample crosses the low threshold.
  *
- * \param[in,out] wav      The WAV being processed
+ * \param[in]     wav      Source WAV data
+ * \param[in,out] ctx      Processing context receiving edges and candidates
  * \param[in]     sample   Current sample value
  * \param[in]     prev     Previous sample value
  * \param[in]     rollmax  Rolling maximum at this sample
@@ -665,7 +674,8 @@ static bool _bf_schmitt_addfalling(
  * \return True if any generated candidate was appended successfully
  */
 static bool _bf_schmitt_span_sample(
-    struct nsk_wav              *wav,
+    const struct nsk_wav        *wav,
+    struct nsk_wav_ctx          *ctx,
     double                       sample,
     double                       prev,
     double                       rollmax,
@@ -693,6 +703,7 @@ static bool _bf_schmitt_span_sample(
     if (*state == _SCHMITT_TRIG_LO && sample > hi) {
         if (!_bf_schmitt_addrising(
             wav,
+            ctx,
             sample,
             prev,
             index,
@@ -706,6 +717,7 @@ static bool _bf_schmitt_span_sample(
     } else if (*state == _SCHMITT_TRIG_HI && sample < lo) {
         if (!_bf_schmitt_addfalling(
             wav,
+            ctx,
             sample,
             prev,
             index,
@@ -727,7 +739,8 @@ static bool _bf_schmitt_span_sample(
  * midline.  Processing then starts at the second sample because edge timing
  * uses the interval between previous and current samples.
  *
- * \param[in,out] wav      The WAV being processed
+ * \param[in]     wav      Source WAV data
+ * \param[in,out] ctx      Processing context receiving edges and candidates
  * \param[in]     span     Active span being scanned
  * \param[in]     count    Number of samples in \p span
  * \param[in]     rollmax  Rolling maximum array for \p span
@@ -735,7 +748,8 @@ static bool _bf_schmitt_span_sample(
  * \return True if the span was processed successfully
  */
 static bool _bf_schmitt_span_process(
-    struct nsk_wav             *wav,
+    const struct nsk_wav       *wav,
+    struct nsk_wav_ctx         *ctx,
     const struct nsk_wav_span  *span,
     size_t                      count,
     const               double *rollmax,
@@ -744,15 +758,16 @@ static bool _bf_schmitt_span_process(
     const double mid0 = (rollmax[0] + rollmin[0]) / 2.0;
 
     enum _schmitt_trigger_state state =
-        wav->samples.raw.value[span->start] > mid0 ?
+        ctx->samples.value[span->start] > mid0 ?
         _SCHMITT_TRIG_HI :
         _SCHMITT_TRIG_LO;
 
     for (size_t i = 1; i < count; i++) {
         if (!_bf_schmitt_span_sample(
             wav,
-            wav->samples.raw.value[span->start + i],
-            wav->samples.raw.value[span->start + i - 1],
+            ctx,
+            ctx->samples.value[span->start + i],
+            ctx->samples.value[span->start + i - 1],
             rollmax[i],
             rollmin[i],
             &state,
@@ -778,13 +793,15 @@ static bool _bf_schmitt_span_process(
  * them to derive a local midline, local amplitude, and high/low hysteresis
  * thresholds for each sample.
  *
- * \param[in,out]   wav     The wav
+ * \param[in]       wav     Source WAV data
+ * \param[in,out]   ctx     Processing context containing samples and receiving candidates
  * \param[in]       span    The span data
  * \param[in]       window  Window size in samples
  * \return    True if processed
  */
 static bool _bf_schmitt_span(
-    struct nsk_wav             *wav,
+    const struct nsk_wav       *wav,
+    struct nsk_wav_ctx         *ctx,
     const struct nsk_wav_span  *span,
     size_t                      window
 ) {
@@ -801,6 +818,7 @@ static bool _bf_schmitt_span(
 
     if (!_bf_schmitt_rollminmax(
         wav,
+        ctx,
         span,
         count,
         window,
@@ -812,6 +830,7 @@ static bool _bf_schmitt_span(
 
     if (!_bf_schmitt_span_process(
         wav,
+        ctx,
         span,
         count,
         rollmax,
@@ -831,11 +850,13 @@ static bool _bf_schmitt_span(
  * seconds to samples and clamped to a small minimum size so rolling extrema have
  * enough context to describe a local waveform neighborhood.
  *
- * \param[in,out]  wav   The wav
+ * \param[in]      wav   Source WAV data
+ * \param[in,out]  ctx   Processing context containing spans and receiving candidates
  * \return True if all spans were processed successfully
  */
 bool nsk_wav_bf_schmitt(
-    struct nsk_wav *wav
+    const struct nsk_wav *wav,
+    struct nsk_wav_ctx  *ctx
 ) {
     /* Minimal samples count per window */
     static const size_t windowmin = 3;
@@ -848,8 +869,8 @@ bool nsk_wav_bf_schmitt(
         windowmin
     );
 
-    for (size_t i = 0; i < wav->spans.count; i++) {
-        if (!_bf_schmitt_span(wav, &wav->spans.span[i], window)) {
+    for (size_t i = 0; i < ctx->spans.count; i++) {
+        if (!_bf_schmitt_span(wav, ctx, &ctx->spans.span[i], window)) {
             return false;
         }
     }

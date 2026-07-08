@@ -1,0 +1,17 @@
+#pragma once
+
+#include "../nsk_wav_sg_types.h"
+
+/*!
+ * \brief  Runs template-fit override over all eligible segments.
+ *
+ * \param[in]  wav  Source WAV data.
+ * \param[in,out]  ctx  Processing context used by the segment pipeline.
+ * \param[out]  changed  Set to true when the function modifies segment data.
+ * \return True on success, false on failure.
+ */
+bool nsk_wav_sg_template_override(
+    const struct nsk_wav *wav,
+    struct nsk_wav_ctx  *ctx,
+    bool *changed
+);

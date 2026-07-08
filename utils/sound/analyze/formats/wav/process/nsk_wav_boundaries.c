@@ -1,6 +1,7 @@
 #include <nsk_util_meta.h>
 
 #include "nsk_wav_boundaries.h"
+#include "../nsk_wav_utils.h"
 
 #include "boundaries/nsk_wav_bf_edgetrains.h"
 #include "boundaries/nsk_wav_bf_grid.h"
@@ -10,19 +11,24 @@
 /*!
  * \brief  Finds the boundaries between notes
  *
- * <TODO>
+ * Runs all configured boundary detectors and accumulates candidates in the
+ * processing context.
  *
- * \param[in,out]  wav   The wav
+ * \param[in]      wav  Source WAV data
+ * \param[in,out]  ctx  Processing context
+ * \return True if all boundary detectors completed successfully
  */
 bool nsk_wav_boundaries(
-    struct nsk_wav      *wav
+    const struct nsk_wav *wav,
+    struct nsk_wav_ctx  *ctx
 ) {
     // TODO declare function that runs over arrays
 
     static const struct {
         const char *name;
         bool (*func)(
-            struct nsk_wav  *wav
+            const struct nsk_wav *wav,
+            struct nsk_wav_ctx  *ctx
         );
     } _table[] = {
         {
@@ -44,15 +50,13 @@ bool nsk_wav_boundaries(
     };
 
     for (size_t i = 0; i < NSK_SIZE(_table); i++) {
-        size_t cold  = wav->candidates.count;
-
         nsk_inf("    ## %s\n", _table[i].name);
-        if (!_table[i].func(wav)) {
+        const double start = nsk_time_stamp();
+        if (!_table[i].func(wav, ctx)) {
             return false;
         }
-        size_t cnew  = wav->candidates.count;
-
-        nsk_inf("        - (%+zd candidates)\n",    (ssize_t)cnew - cold);
+        const double end = nsk_time_stamp();
+        nsk_time_log(start, end, 8);
     }
 
     return true;

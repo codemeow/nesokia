@@ -3,6 +3,7 @@
 #include <stdbool.h>
 
 #include "../../nsk_wav_type.h"
+#include "../types/nsk_wav_ctx_meta.h"
 
 /*!
  * \brief  Finds grid-locked energy-rise boundary candidates
@@ -12,9 +13,11 @@
  * window after it.  A sufficiently strong positive rise becomes a weak onset
  * candidate placed exactly on the frame grid.
  *
- * \param[in,out]  wav   The wav
+ * \param[in]      wav  Source WAV data
+ * \param[in,out]  ctx  Processing context receiving candidates
  * \return True if processed successfully
  */
 bool nsk_wav_bf_grid(
-    struct nsk_wav *wav
+    const struct nsk_wav *wav,
+    struct nsk_wav_ctx  *ctx
 );

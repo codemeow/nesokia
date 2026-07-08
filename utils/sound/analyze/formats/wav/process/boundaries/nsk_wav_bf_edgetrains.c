@@ -123,7 +123,7 @@ static double _bf_edgetrains_confidence(
  * keeps this candidate below stronger period solvers because the true musical
  * boundary may lie inside the interval before the observed edge.
  *
- * \param[in,out] wav         The wav
+ * \param[in,out] ctx         Processing context receiving candidates
  * \param[in]     timestamp   Candidate time in seconds
  * \param[in]     leftcv      Stability estimate for periods before transition
  * \param[in]     rightcv     Stability estimate for periods after transition
@@ -132,7 +132,7 @@ static double _bf_edgetrains_confidence(
  * \return        True if the candidate was added successfully
  */
 static bool _bf_edgetrains_addedgechange(
-    struct nsk_wav *wav,
+    struct nsk_wav_ctx *ctx,
     double timestamp,
     double leftcv,
     double rightcv,
@@ -149,8 +149,8 @@ static bool _bf_edgetrains_addedgechange(
 
     const double strength = fabs(deltast) * confidence;
 
-    return nsk_wav_candidate(
-        wav,
+    return nsk_wav_ctx_candidate(
+        ctx,
         (struct nsk_wav_candidate) {
             .method     = NSK_WAV_CND_METHOD_EDGE_CHANGE,
             .kind       = NSK_WAV_CND_KIND_EDGE,
@@ -170,7 +170,7 @@ static bool _bf_edgetrains_addedgechange(
  * edges that form the mixed interval.  This helper places weak candidates at
  * fixed fractions inside that interval.
  *
- * \param[in,out] wav         The wav
+ * \param[in,out] ctx         Processing context receiving candidates
  * \param[in]     timestampl  Left edge of the mixed interval, in seconds
  * \param[in]     timestampr  Right edge of the mixed interval, in seconds
  * \param[in]     leftcv      Stability estimate before transition
@@ -179,7 +179,7 @@ static bool _bf_edgetrains_addedgechange(
  * \return        True if all probe candidates were added successfully
  */
 static bool _bf_edgetrains_addtransitionprobes(
-    struct nsk_wav *wav,
+    struct nsk_wav_ctx *ctx,
     double timestampl,
     double timestampr,
     double leftcv,
@@ -204,8 +204,8 @@ static bool _bf_edgetrains_addtransitionprobes(
         const double timestamp =
             timestampl + (timestampr - timestampl) * _table[i].fraction;
 
-        if (!nsk_wav_candidate(
-            wav,
+        if (!nsk_wav_ctx_candidate(
+        ctx,
             (struct nsk_wav_candidate) {
                 .method     = NSK_WAV_CND_METHOD_TRANSITION_PROBES,
                 .kind       = NSK_WAV_CND_KIND_TRANSITION_PROBE,
@@ -234,7 +234,7 @@ static bool _bf_edgetrains_addtransitionprobes(
  * falls outside the interval.  It reports failure only when a valid candidate
  * could not be appended.
  *
- * \param[in,out] wav             The wav
+ * \param[in,out] ctx             Processing context receiving candidates
  * \param[in]     leftedge        Left edge of the mixed interval, in seconds
  * \param[in]     rightedge       Right edge of the mixed interval, in seconds
  * \param[in]     leftperiod      Period before transition, in seconds
@@ -245,7 +245,7 @@ static bool _bf_edgetrains_addtransitionprobes(
  * \return        True if processing can continue
  */
 static bool _bf_edgetrains_addmixedsolve(
-    struct nsk_wav *wav,
+    struct nsk_wav_ctx *ctx,
     double leftedge,
     double rightedge,
     double leftperiod,
@@ -274,8 +274,8 @@ static bool _bf_edgetrains_addmixedsolve(
     const double confidence = _bf_edgetrains_confidence(leftcv, rightcv);
     const double strength = fabs(deltast) * confidence;
 
-    return nsk_wav_candidate(
-        wav,
+    return nsk_wav_ctx_candidate(
+        ctx,
         (struct nsk_wav_candidate) {
             .method     = NSK_WAV_CND_METHOD_MIXED_PERIOD_SOLVE,
             .kind       = NSK_WAV_CND_KIND_LEGATO,
@@ -298,7 +298,7 @@ static bool _bf_edgetrains_addmixedsolve(
  * The reset boost increases strength according to how much shorter the mixed
  * period is than the stable local period.
  *
- * \param[in,out] wav          The wav
+ * \param[in,out] ctx          Processing context receiving candidates
  * \param[in]     rightedge    Edge after the mixed interval, in seconds
  * \param[in]     leftperiod   Representative period before transition
  * \param[in]     rightperiod  Representative period after transition
@@ -310,7 +310,7 @@ static bool _bf_edgetrains_addmixedsolve(
  * \return        True if processing can continue
  */
 static bool _bf_edgetrains_addshortperiod(
-    struct nsk_wav  *wav,
+    struct nsk_wav_ctx *ctx,
     double           rightedge,
     double           leftperiod,
     double           rightperiod,
@@ -343,8 +343,8 @@ static bool _bf_edgetrains_addshortperiod(
 
     *added = true;
 
-    return nsk_wav_candidate(
-        wav,
+    return nsk_wav_ctx_candidate(
+        ctx,
         (struct nsk_wav_candidate) {
             .method     = NSK_WAV_CND_METHOD_SHORT_PERIOD_EDGE,
             .kind       = NSK_WAV_CND_KIND_WAVEFORM_RESET,
@@ -370,7 +370,7 @@ static bool _bf_edgetrains_addshortperiod(
  * \param[out] last       One-past-last edge index inside the span
  */
 static void _bf_edgetrains_spanedgerange(
-    const struct nsk_wav_edges *edge,
+    const struct nsk_wav_ctx_edge_list *edge,
     double                      spanstart,
     double                      spanend,
     size_t                     *first,
@@ -423,15 +423,15 @@ static bool _bf_edgetrains_inrange(
 /*!
  * \brief  Processes transition candidates inside one span edge range
  *
- * \param[in] wav   The wav
+ * \param[in,out] ctx   Processing context receiving candidates
  * \param[in] edge  The edge list
  * \param[in] first First edge index inside the span
  * \param[in] last  One-past-last edge index inside the span
  * \return  True if successfully processed
  */
 static bool _bf_edgetrains_process_transitioncandidates(
-    struct nsk_wav             *wav,
-    const struct nsk_wav_edges *edge,
+    struct nsk_wav_ctx          *ctx,
+    const struct nsk_wav_ctx_edge_list *edge,
     size_t                      first,
     size_t                      last
 ) {
@@ -536,7 +536,7 @@ static bool _bf_edgetrains_process_transitioncandidates(
         }
 
         if (!_bf_edgetrains_addtransitionprobes(
-            wav,
+            ctx,
             leftedge,
             rightedge,
             leftcv,
@@ -547,7 +547,7 @@ static bool _bf_edgetrains_process_transitioncandidates(
         }
 
         if (!_bf_edgetrains_addmixedsolve(
-            wav,
+            ctx,
             leftedge,
             rightedge,
             leftperiod,
@@ -562,7 +562,7 @@ static bool _bf_edgetrains_process_transitioncandidates(
         bool shortperiod = false;
 
         if (!_bf_edgetrains_addshortperiod(
-            wav,
+            ctx,
             rightedge,
             leftperiod,
             rightperiod,
@@ -576,7 +576,7 @@ static bool _bf_edgetrains_process_transitioncandidates(
         }
 
         if (!_bf_edgetrains_addedgechange(
-            wav,
+            ctx,
             rightedge,
             leftcv,
             rightcv,
@@ -603,7 +603,7 @@ static bool _bf_edgetrains_process_transitioncandidates(
  * not cut into an attack or noisy edge.  The candidate is emitted only when
  * the extrapolated timestamp lies strictly inside the active span.
  *
- * \param[in,out] wav          The wav
+ * \param[in,out] ctx          Processing context receiving candidates
  * \param[in]     spanstart    Active span start in seconds
  * \param[in]     spanend      Active span end in seconds
  * \param[in]     probestart   Candidate timestamp candidate in seconds
@@ -611,7 +611,7 @@ static bool _bf_edgetrains_process_transitioncandidates(
  * \return        True if processing can continue
  */
 static bool _bf_edgetrains_addspanstartprobe(
-    struct nsk_wav *wav,
+    struct nsk_wav_ctx *ctx,
     double          spanstart,
     double          spanend,
     double          probestart,
@@ -621,8 +621,8 @@ static bool _bf_edgetrains_addspanstartprobe(
         return true;
     }
 
-    return nsk_wav_candidate(
-        wav,
+    return nsk_wav_ctx_candidate(
+        ctx,
         (struct nsk_wav_candidate) {
             .method = NSK_WAV_CND_METHOD_SPAN_START_PERIOD_PROBE,
             .kind   = NSK_WAV_CND_KIND_SPAN_START_PROBE,
@@ -641,7 +641,7 @@ static bool _bf_edgetrains_addspanstartprobe(
  * the active-span threshold.  The candidate is emitted only when the
  * extrapolated timestamp lies strictly inside the active span.
  *
- * \param[in,out] wav         The wav
+ * \param[in,out] ctx         Processing context receiving candidates
  * \param[in]     spanstart   Active span start in seconds
  * \param[in]     spanend     Active span end in seconds
  * \param[in]     probeend    Candidate timestamp candidate in seconds
@@ -649,7 +649,7 @@ static bool _bf_edgetrains_addspanstartprobe(
  * \return        True if processing can continue
  */
 static bool _bf_edgetrains_addspanendprobe(
-    struct nsk_wav *wav,
+    struct nsk_wav_ctx *ctx,
     double          spanstart,
     double          spanend,
     double          probeend,
@@ -659,8 +659,8 @@ static bool _bf_edgetrains_addspanendprobe(
         return true;
     }
 
-    return nsk_wav_candidate(
-        wav,
+    return nsk_wav_ctx_candidate(
+        ctx,
         (struct nsk_wav_candidate) {
             .method = NSK_WAV_CND_METHOD_SPAN_END_PERIOD_PROBE,
             .kind   = NSK_WAV_CND_KIND_SPAN_END_PROBE,
@@ -680,15 +680,17 @@ static bool _bf_edgetrains_addspanendprobe(
  * from the span end.  Both probes are intentionally weak: they preserve edge
  * train evidence near RMS span boundaries without claiming an exact boundary.
  *
- * \param[in,out] wav   The wav
+ * \param[in]     wav   Source WAV data
+ * \param[in,out] ctx   Processing context receiving candidates
  * \param[in]     span  Active span being processed
  * \param[in]     edge  Same-polarity edge list
  * \return        True if processing can continue
  */
 static bool _bf_edgetrains_process_spanprobes(
-    struct nsk_wav             *wav,
+    const struct nsk_wav       *wav,
+    struct nsk_wav_ctx         *ctx,
     const struct nsk_wav_span  *span,
-    const struct nsk_wav_edges *edge
+    const struct nsk_wav_ctx_edge_list *edge
 ) {
     static const size_t _count_spanmin = 2;
 
@@ -724,7 +726,7 @@ static bool _bf_edgetrains_process_spanprobes(
     const double probeend   = spanend   - periodlast;
 
     if (!_bf_edgetrains_addspanstartprobe(
-        wav,
+        ctx,
         spanstart,
         spanend,
         probestart,
@@ -734,7 +736,7 @@ static bool _bf_edgetrains_process_spanprobes(
     }
 
     if (!_bf_edgetrains_addspanendprobe(
-        wav,
+        ctx,
         spanstart,
         spanend,
         probeend,
@@ -759,25 +761,27 @@ static bool _bf_edgetrains_process_spanprobes(
  * These candidates are evidence that a musical boundary is nearby; later grid
  * and decoder stages decide whether they become accepted note boundaries.
  *
- * \param[in,out]  wav   The wav
+ * \param[in]      wav  Source WAV data
+ * \param[in,out]  ctx  Processing context containing spans and edges
  * \return True if all edges were processed successfully
  */
 bool nsk_wav_bf_edgetrains(
-    struct nsk_wav *wav
+    const struct nsk_wav *wav,
+    struct nsk_wav_ctx  *ctx
 ) {
     const struct {
-        const struct nsk_wav_edges *edge;
+        const struct nsk_wav_ctx_edge_list *edge;
     } _table[] = {
         {
-            .edge = &wav->edges.rise
+            .edge = &ctx->edges.rise
         },
         {
-            .edge = &wav->edges.fall
+            .edge = &ctx->edges.fall
         }
     };
 
-    for (size_t ispan = 0; ispan < wav->spans.count; ispan++) {
-        const struct nsk_wav_span *span = &wav->spans.span[ispan];
+    for (size_t ispan = 0; ispan < ctx->spans.count; ispan++) {
+        const struct nsk_wav_span *span = &ctx->spans.span[ispan];
         const double spanstart =
             (double)span->start / wav->format.samplerate;
         const double spanend =
@@ -796,7 +800,7 @@ bool nsk_wav_bf_edgetrains(
             );
 
             if (!_bf_edgetrains_process_transitioncandidates(
-                wav,
+                ctx,
                 _table[iedge].edge,
                 edgefirst,
                 edgelast
@@ -806,6 +810,7 @@ bool nsk_wav_bf_edgetrains(
 
             if (!_bf_edgetrains_process_spanprobes(
                 wav,
+                ctx,
                 span,
                 _table[iedge].edge
             )) {

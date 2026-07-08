@@ -9,18 +9,18 @@
 /*!
  * \brief  Creates an array of squared samples values
  *
- * \param[in] wav    The wav
+ * \param[in] ctx    Processing context containing working samples
  * \param[in] window Number of elements that will be used as window
  * \return    Allocated array
  */
 static double *_bf_rmsenv_squares(
-    const struct nsk_wav *wav,
-    size_t window
+    const struct nsk_wav_ctx *ctx,
+    size_t                    window
 ) {
     const size_t half = window / 2;
 
     double *squared = calloc(
-        wav->samples.raw.count + window,
+        ctx->samples.count + window,
         sizeof(*squared)
     );
     if (!squared) {
@@ -30,10 +30,10 @@ static double *_bf_rmsenv_squares(
         return NULL;
     }
 
-    for (size_t i = 0; i < wav->samples.raw.count; i++) {
+    for (size_t i = 0; i < ctx->samples.count; i++) {
         squared[i + half] =
-            wav->samples.raw.value[i] *
-            wav->samples.raw.value[i];
+            ctx->samples.value[i] *
+            ctx->samples.value[i];
     }
 
     return squared;
@@ -42,18 +42,20 @@ static double *_bf_rmsenv_squares(
 /*!
  * \brief  Adds new onset candidate
  *
- * \param[in,out]  wav   The wav
+ * \param[in]      wav   Source WAV data
+ * \param[in,out]  ctx   Processing context receiving candidates
  * \param[in]      index The index of the sample
  * \return  True if added
  */
 static bool _bf_rmsenv_addonset(
-    struct nsk_wav *wav,
-    size_t          index
+    const struct nsk_wav *wav,
+    struct nsk_wav_ctx  *ctx,
+    size_t               index
 ) {
     double timestamp = (double)index / wav->format.samplerate;
 
-    return nsk_wav_candidate(
-        wav,
+    return nsk_wav_ctx_candidate(
+        ctx,
         (struct nsk_wav_candidate) {
             .method     = NSK_WAV_CND_METHOD_ENERGY_ONSET,
             .kind       = NSK_WAV_CND_KIND_ENERGY_ONSET,
@@ -67,18 +69,20 @@ static bool _bf_rmsenv_addonset(
 /*!
  * \brief  Adds new offset candidate
  *
- * \param[in,out]  wav   The wav
+ * \param[in]      wav   Source WAV data
+ * \param[in,out]  ctx   Processing context receiving candidates
  * \param[in]      index The index of the sample
  * \return  True if added
  */
 static bool _bf_rmsenv_addoffset(
-    struct nsk_wav *wav,
-    size_t          index
+    const struct nsk_wav *wav,
+    struct nsk_wav_ctx  *ctx,
+    size_t               index
 ) {
     double timestamp = (double)index / wav->format.samplerate;
 
-    return nsk_wav_candidate(
-        wav,
+    return nsk_wav_ctx_candidate(
+        ctx,
         (struct nsk_wav_candidate) {
             .method     = NSK_WAV_CND_METHOD_ENERGY_OFFSET,
             .kind       = NSK_WAV_CND_KIND_ENERGY_OFFSET,
@@ -92,18 +96,18 @@ static bool _bf_rmsenv_addoffset(
 /*!
  * \brief  Adds new detected energy span
  *
- * \param[in,out] wav    The wav
+ * \param[in,out] ctx    Processing context receiving spans
  * \param[in]     start  The span start
  * \param[in]     end    The span end
  * \return    True if added
  */
 static bool _bf_rmsenv_addspan(
-    struct nsk_wav *wav,
-    size_t          start,
-    size_t          end
+    struct nsk_wav_ctx *ctx,
+    size_t              start,
+    size_t              end
 ) {
-    return nsk_wav_span(
-        wav,
+    return nsk_wav_ctx_span(
+        ctx,
         (struct nsk_wav_span) {
             .start = start,
             .end   = end
@@ -128,16 +132,16 @@ static bool _bf_rmsenv_addspan(
  * thresholds can be expressed in the stable 0..1 range, independent of WAV
  * amplitude.
  *
- * \param[in] wav     The wav
+ * \param[in] ctx     Processing context containing working samples
  * \param[in] window  The window size
  * \return Allocated normalized RMS envelope, or NULL on allocation failure
  */
 static double *_bf_rmsenv_envelopes(
-    const struct nsk_wav *wav,
-    size_t                window
+    const struct nsk_wav_ctx *ctx,
+    size_t                    window
 ) {
     nsk_auto_free double *envelope = calloc(
-        wav->samples.raw.count,
+        ctx->samples.count,
         sizeof(*envelope)
     );
     if (!envelope) {
@@ -145,7 +149,7 @@ static double *_bf_rmsenv_envelopes(
     }
 
     nsk_auto_free double *squares = _bf_rmsenv_squares(
-        wav,
+        ctx,
         window
     );
     if (!squares) {
@@ -158,7 +162,7 @@ static double *_bf_rmsenv_envelopes(
     }
 
     double max = 0.0;
-    for (size_t i = 0; i < wav->samples.raw.count; i++) {
+    for (size_t i = 0; i < ctx->samples.count; i++) {
         envelope[i] = sqrt(sum / window);
         max = NSK_MAX(max, envelope[i]);
 
@@ -172,7 +176,7 @@ static double *_bf_rmsenv_envelopes(
     }
 
     /* Normalize to 0..1 */
-    for (size_t i = 0; i < wav->samples.raw.count; i++) {
+    for (size_t i = 0; i < ctx->samples.count; i++) {
         envelope[i] /= max;
     }
 
@@ -194,13 +198,15 @@ static double *_bf_rmsenv_envelopes(
  * position, so a span that reaches the end of the file ends at sample count,
  * not at the last sample index.
  *
- * \param[in,out]     wav       The wav
+ * \param[in]         wav       Source WAV data
+ * \param[in,out]     ctx       Processing context receiving candidates and spans
  * \param[in]         envelope  RMS envelopes list
  * \return True if candidates were added successfully
  */
 static bool _bf_rmsenv_spansearch(
-    struct nsk_wav *wav,
-    const double   *envelope
+    const struct nsk_wav *wav,
+    struct nsk_wav_ctx  *ctx,
+    const double        *envelope
 ) {
     bool   active    = false;
     size_t spanstart = 0;
@@ -212,7 +218,7 @@ static bool _bf_rmsenv_spansearch(
     const double treshhi = nsk_options_program.profile.boundary.rmsenv.energytreshold;
     const double treshlo = treshhi * 0.5;
 
-    for (size_t i = 0; i < wav->samples.raw.count; i++) {
+    for (size_t i = 0; i < ctx->samples.count; i++) {
         if (!active && envelope[i] >= treshhi) {
             active    = true;
             spanstart = i;
@@ -223,9 +229,9 @@ static bool _bf_rmsenv_spansearch(
             const size_t spanend = i;
 
             if (spanend - spanstart >= minsamples) {
-                if (!_bf_rmsenv_addonset (wav, spanstart) ||
-                    !_bf_rmsenv_addoffset(wav, spanend  ) ||
-                    !_bf_rmsenv_addspan  (wav, spanstart, spanend)
+                if (!_bf_rmsenv_addonset (wav, ctx, spanstart) ||
+                    !_bf_rmsenv_addoffset(wav, ctx, spanend  ) ||
+                    !_bf_rmsenv_addspan  (ctx, spanstart, spanend)
                 ) {
                     return false;
                 }
@@ -236,11 +242,11 @@ static bool _bf_rmsenv_spansearch(
     }
 
     if (active) {
-        const size_t spanend = wav->samples.raw.count;
+        const size_t spanend = ctx->samples.count;
         if (spanend - spanstart >= minsamples) {
-            if (!_bf_rmsenv_addonset (wav, spanstart) ||
-                !_bf_rmsenv_addoffset(wav, spanend  ) ||
-                !_bf_rmsenv_addspan  (wav, spanstart, spanend)
+            if (!_bf_rmsenv_addonset (wav, ctx, spanstart) ||
+                !_bf_rmsenv_addoffset(wav, ctx, spanend  ) ||
+                !_bf_rmsenv_addspan  (ctx, spanstart, spanend)
             ) {
                 return false;
             }
@@ -260,11 +266,13 @@ static bool _bf_rmsenv_spansearch(
  * candidates to the shared candidate list for later grid selection and
  * decoding.
  *
- * \param[in,out]      wav   The wav
+ * \param[in]          wav  Source WAV data
+ * \param[in,out]      ctx  Processing context receiving candidates and spans
  * \return True if the RMS envelope detector completed successfully
  */
 bool nsk_wav_bf_rmsenv(
-    struct nsk_wav *wav
+    const struct nsk_wav *wav,
+    struct nsk_wav_ctx  *ctx
 ) {
     const size_t window = NSK_MAX(
         round(
@@ -275,7 +283,7 @@ bool nsk_wav_bf_rmsenv(
     );
 
     nsk_auto_free double *envelope = _bf_rmsenv_envelopes(
-        wav,
+        ctx,
         window
     );
     if (!envelope) {
@@ -284,6 +292,7 @@ bool nsk_wav_bf_rmsenv(
 
     return _bf_rmsenv_spansearch(
         wav,
+        ctx,
         envelope
     );
 }

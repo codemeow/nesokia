@@ -13,7 +13,8 @@ struct nsk_wav_mark {
     size_t count;                                /*!< Number of candidates */
     const struct nsk_wav_candidate **candidates; /*!< Candidates list */
 
-    bool accepted; /*!< Whether this mark is accepted as a note change */
+    bool accepted; /*!< Whether this mark is accepted as boundary evidence */
+    bool strict;   /*!< Whether this mark was accepted by a primary selector */
 
     double maxstrength;   /*!< Maximum strength of all candidates */
     double maxabsdeltast; /*!< Maximum absolute deltast of all candidates */

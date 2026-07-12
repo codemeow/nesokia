@@ -68,6 +68,7 @@ bool nsk_wav_sg_isdensedirect(
     struct nsk_wav_ctx  *ctx
 ) {
     return
+        ctx->segments.densedirect ||
         nsk_wav_sg_accepted_ratio(wav, ctx) >=
         nsk_options_program.profile.segments.densedirectminacceptedratio;
 }

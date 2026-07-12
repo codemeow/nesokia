@@ -206,6 +206,190 @@ struct nsk_options_program {
 
         struct {
             /*!
+             * Maximum decoded segment length considered by sparse dynamic
+             * programming.
+             */
+            size_t maxsegmentframes;
+
+            /*!
+             * Minimum note length before short-note penalty is applied.
+             */
+            size_t minnoteframes;
+
+            /*!
+             * Base cost for adding a decoded boundary.
+             */
+            double boundarypenalty;
+
+            /*!
+             * Quadratic penalty scale for notes shorter than minnoteframes.
+             */
+            double shortnotepenalty;
+
+            /*!
+             * Boundary cost for snapping to a non-strict evidence mark.
+             */
+            double snappenalty;
+
+            /*!
+             * Boundary cost when no evidence mark is nearby.
+             */
+            double nonmarkboundarypenalty;
+
+            /*!
+             * Frame radius used when searching for nearby evidence marks.
+             */
+            size_t boundarynearradius;
+
+            /*!
+             * Weight applied to edge frames when scoring a trimmed interval.
+             */
+            double edgecostweight;
+
+            /*!
+             * Minimum normalized p2p delta that creates decoder mark evidence.
+             */
+            double markp2pdeltathreshold;
+
+            /*!
+             * Minimum normalized p2p activity for decoder p2p mark evidence.
+             */
+            double markp2pactivethreshold;
+
+            /*!
+             * Cost of choosing note for a rest-like frame, or rest for a
+             * note-like frame.
+             */
+            double restnotemismatchcost;
+
+            /*!
+             * Maximum per-frame MIDI distance cost.
+             */
+            double maxmididistancecost;
+
+            /*!
+             * Cost added per semitone from the one-frame MIDI estimate.
+             */
+            double mididistanceweight;
+
+            /*!
+             * Minimum autocorrelation score for decoder period evidence.
+             */
+            double periodminscore;
+
+            /*!
+             * Cost weight for period evidence residual.
+             */
+            double periodresidualweight;
+
+            /*!
+             * Cost added per semitone from the period MIDI estimate.
+             */
+            double periodmididistanceweight;
+
+            /*!
+             * Enable chromatic transition smear boundary adjustment.
+             */
+            bool enabletransitionsmear;
+
+            /*!
+             * Maximum length for a short smeared transition interval.
+             */
+            size_t smearmaxshortframes;
+
+            /*!
+             * Target length for a smeared chromatic transition interval.
+             */
+            size_t smeartargetframes;
+
+            /*!
+             * Minimum length for the long note following a smeared interval.
+             */
+            size_t smearminlongframes;
+
+            /*!
+             * Enable five-frame note boundary adjustment.
+             */
+            bool enablesixframesnap;
+
+            /*!
+             * Enable residual boundary pattern adjustment.
+             */
+            bool enableresidualsnap;
+
+            /*!
+             * Enable octave boundary adjustment from period evidence.
+             */
+            bool enableoctaveboundarysnap;
+
+            /*!
+             * Minimum period score for octave boundary adjustment.
+             */
+            double octaveboundaryperiodminscore;
+
+            /*!
+             * Enable whole-file dense-direct decoder selection.
+             */
+            bool adaptivedenseenabled;
+
+            /*!
+             * Minimum strict-mark ratio for whole-file dense-direct decoding.
+             */
+            double adaptivedenseboundaryratio;
+
+            /*!
+             * Minimum strict-mark count required for a local dense region.
+             */
+            size_t localdenseminstrictcount;
+
+            /*!
+             * Maximum frame gap between neighboring strict marks in one local
+             * dense cluster.
+             */
+            size_t localdensemaxgap;
+
+            /*!
+             * Minimum strict-mark density inside a local dense cluster.
+             */
+            double localdensemindensity;
+
+            /*!
+             * Extra frame allowance for including the previous strict boundary
+             * before a local dense cluster.
+             */
+            size_t localdensepreviousextension;
+
+            /*!
+             * Extra frame allowance for including following strict boundaries
+             * after a local dense cluster.
+             */
+            size_t localdensenextextension;
+
+            /*!
+             * Maximum frame gap used when merging neighboring local dense
+             * regions.
+             */
+            size_t localdensemergegap;
+
+            /*!
+             * Score penalty per active frame whose final note is unknown.
+             */
+            double unknownnotepenalty;
+
+            /*!
+             * Score penalty multiplier for excessive segment fragmentation.
+             */
+            double fragmentationweight;
+
+            /*!
+             * Minimum score margin required for all-dense to beat local-hybrid
+             * arbitration.
+             */
+            double densearbitrationmargin;
+        } decoder;
+
+        struct {
+            /*!
              * Minimum number of grid-close energy candidates required for
              * energy-boundary selection.  Zero disables this selector.
              */

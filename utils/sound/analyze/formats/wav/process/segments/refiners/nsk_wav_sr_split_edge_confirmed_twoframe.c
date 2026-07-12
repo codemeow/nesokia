@@ -30,17 +30,6 @@ bool nsk_wav_sg_split_edge_confirmed_twoframe(
             continue;
         }
 
-        if (
-            fabs(segment.duty - 12.5) <=
-            nsk_options_program.profile.segments
-                .mergedutyequalitythreshold &&
-            segment.confidence >=
-            nsk_options_program.profile.segments
-                .framegridsplitstrongconfidence
-        ) {
-            continue;
-        }
-
         const size_t splitframe = segment.framestart + 1;
         struct nsk_wav_segment left = nsk_wav_sg_fromframes(
             wav, ctx,
@@ -58,6 +47,16 @@ bool nsk_wav_sg_split_edge_confirmed_twoframe(
         }
 
         if (!nsk_wav_sg_recalc(wav, ctx, &right)) {
+            return false;
+        }
+
+        bool templatechanged = false;
+
+        if (!nsk_wav_sg_segment_template_override(wav, ctx, &left, &templatechanged)) {
+            return false;
+        }
+
+        if (!nsk_wav_sg_segment_template_override(wav, ctx, &right, &templatechanged)) {
             return false;
         }
 

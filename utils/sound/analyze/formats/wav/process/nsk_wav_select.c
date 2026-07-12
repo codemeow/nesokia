@@ -164,6 +164,7 @@ bool nsk_wav_select(
         for (size_t i = 0; i < NSK_SIZE(selectors_primary); i++) {
             if (_selector_step_accept(&selectors_primary[i], mark)) {
                 mark->accepted = true;
+                mark->strict = true;
                 break;
             }
         }

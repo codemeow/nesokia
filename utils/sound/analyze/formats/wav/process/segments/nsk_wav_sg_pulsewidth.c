@@ -35,18 +35,52 @@ bool nsk_wav_sg_pulse_width_note_oneframe(
         return true;
     }
 
-    double peak = ctx->samples.value[samplestart];
-    double trough = peak;
+    const size_t window = NSK_MAX(
+        (size_t)3,
+        (size_t)lround(
+            (double)wav->format.samplerate *
+            nsk_options_program.profile.boundary.schmitt.window
+        )
+    );
+    const size_t leftpad = window / 2;
 
-    for (size_t i = samplestart + 1; i < sampleend; i++) {
-        peak = NSK_MAX(peak, ctx->samples.value[i]);
-        trough = NSK_MIN(trough, ctx->samples.value[i]);
+    nsk_auto_free double *rollingmax = calloc(samplecount, sizeof(*rollingmax));
+    nsk_auto_free double *rollingmin = calloc(samplecount, sizeof(*rollingmin));
+
+    if (!rollingmax || !rollingmin) {
+        nsk_err("Cannot allocate memory for pulse-width rolling Schmitt data");
+        return false;
     }
 
-    if (
-        peak - trough <=
-        nsk_options_program.profile.segments.edgeperiodp2pfloor
-    ) {
+    for (size_t i = 0; i < samplecount; i++) {
+        double max = ctx->samples.value[samplestart];
+        double min = max;
+
+        for (size_t wi = 0; wi < window; wi++) {
+            const size_t padded = i + wi;
+            size_t source = 0;
+
+            if (padded < leftpad) {
+                source = 0;
+
+            } else if (padded >= leftpad + samplecount) {
+                source = samplecount - 1;
+
+            } else {
+                source = padded - leftpad;
+            }
+
+            const double sample = ctx->samples.value[samplestart + source];
+
+            max = NSK_MAX(max, sample);
+            min = NSK_MIN(min, sample);
+        }
+
+        rollingmax[i] = max;
+        rollingmin[i] = min;
+    }
+
+    if (samplecount == 0) {
         return true;
     }
 
@@ -55,21 +89,25 @@ bool nsk_wav_sg_pulse_width_note_oneframe(
         int kind;
     } events[samplecount];
     size_t eventcount = 0;
-    const double midline = (peak + trough) * 0.5;
-    const double amplitude = (peak - trough) * 0.5;
-    const double highthreshold =
-        midline +
-        amplitude *
-        nsk_options_program.profile.boundary.schmitt.hysteresis;
-    const double lowthreshold =
-        midline -
-        amplitude *
-        nsk_options_program.profile.boundary.schmitt.hysteresis;
-    int state = ctx->samples.value[samplestart] > midline ? 1 : -1;
+    const double firstmidline = (rollingmax[0] + rollingmin[0]) * 0.5;
+    int state = ctx->samples.value[samplestart] > firstmidline ? 1 : -1;
 
     for (size_t i = 1; i < samplecount; i++) {
         const double previous = ctx->samples.value[samplestart + i - 1];
         const double current = ctx->samples.value[samplestart + i];
+        const double midline = (rollingmax[i] + rollingmin[i]) * 0.5;
+        const double amplitude = NSK_MAX(
+            (rollingmax[i] - rollingmin[i]) * 0.5,
+            1e-9
+        );
+        const double highthreshold =
+            midline +
+            amplitude *
+            nsk_options_program.profile.boundary.schmitt.hysteresis;
+        const double lowthreshold =
+            midline -
+            amplitude *
+            nsk_options_program.profile.boundary.schmitt.hysteresis;
         int kind = 0;
 
         if (state <= 0 && current > highthreshold) {
@@ -83,10 +121,12 @@ bool nsk_wav_sg_pulse_width_note_oneframe(
 
         if (kind != 0) {
             const double denominator = current - previous;
-            const double fraction =
+            double fraction =
                 denominator == 0.0 ?
                 0.0 :
                 (midline - previous) / denominator;
+
+            fraction = nsk_math_clampd(fraction, 0.0, 1.0);
 
             events[eventcount++] = (__typeof__(events[0])) {
                 .time = ((double)i - 1.0 + fraction) /

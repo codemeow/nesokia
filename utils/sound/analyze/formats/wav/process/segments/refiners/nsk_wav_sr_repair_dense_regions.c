@@ -167,17 +167,42 @@ bool nsk_wav_sg_repair_dense_chromatic_at(
     size_t cursor = framestart;
 
     for (size_t i = 0; i < itemcount; i++) {
+        const size_t itemstart = cursor;
+        const size_t itemend = cursor + durations[i];
+        double duty = nsk_options_program.profile.segments
+            .densechromaticsweepduty;
+        size_t bestoverlap = 0;
+
+        for (size_t j = 0; j < removecount; j++) {
+            const struct nsk_wav_segment *source =
+                &ctx->segments.list[index + j];
+            const size_t overlapstart = NSK_MAX(itemstart, source->framestart);
+            const size_t overlapend = NSK_MIN(itemend, source->frameend);
+
+            if (
+                !source->active ||
+                overlapend <= overlapstart ||
+                overlapend - overlapstart <= bestoverlap
+            ) {
+                continue;
+            }
+
+            bestoverlap = overlapend - overlapstart;
+            duty = source->duty;
+        }
+
         if (!nsk_wav_sg_dense_chromatic_item(
             wav, ctx,
-            cursor,
-            cursor + durations[i],
+            itemstart,
+            itemend,
             midis[i],
             &items[i]
         )) {
             return false;
         }
 
-        cursor += durations[i];
+        items[i].duty = duty;
+        cursor = itemend;
     }
 
     if (!nsk_wav_sg_replace_range(wav, ctx, index, removecount, items, itemcount)) {
@@ -311,10 +336,6 @@ bool nsk_wav_sg_repair_dense_regions(
     bool *changed
 ) {
     *changed = false;
-
-    if (nsk_wav_sg_isdensedirect(wav, ctx)) {
-        return true;
-    }
 
     if (!nsk_wav_sg_repair_dense_chromatic_sweep(wav, ctx, changed)) {
         return false;

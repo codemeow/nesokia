@@ -32,4 +32,5 @@ struct nsk_wav_ctx_segments {
     size_t count;                 /*!< Number of segments */
     struct nsk_wav_segment *list; /*!< Segment list */
     double silence;               /*!< Global silence level */
+    bool densedirect;             /*!< Whether current processing uses dense-direct scoring */
 };

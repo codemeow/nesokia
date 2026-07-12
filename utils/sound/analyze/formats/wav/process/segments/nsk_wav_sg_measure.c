@@ -181,7 +181,18 @@ double nsk_wav_sg_mark_p2p_delta(
         return DBL_MAX;
     }
 
-    return fabs(nsk_wav_sg_frame_p2p(wav, ctx, frame) - nsk_wav_sg_frame_p2p(wav, ctx, frame - 1));
+    if (
+        ctx->marks.list[frame].count == 0 &&
+        !ctx->marks.list[frame].accepted &&
+        !ctx->marks.list[frame].strict
+    ) {
+        return DBL_MAX;
+    }
+
+    return fabs(
+        nsk_wav_sg_frame_p2p(wav, ctx, frame) -
+        nsk_wav_sg_frame_p2p(wav, ctx, frame - 1)
+    );
 }
 
 /*!

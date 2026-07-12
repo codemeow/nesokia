@@ -1,6 +1,11 @@
 #include "nsk_wav_sg_period.h"
 
 /*!
+ * \brief  Score delta required to replace the current period candidate.
+ */
+static const double periodscoretieepsilon = 1e-12;
+
+/*!
  * \brief  Estimates pitch from autocorrelation period scoring.
  *
  * \param[in]  wav  Source WAV data.
@@ -97,7 +102,7 @@ bool nsk_wav_sg_period_note(
 
             const double score = dot / denom;
 
-            if (score > bestscore) {
+            if (score > bestscore + periodscoretieepsilon) {
                 bestscore = score;
                 bestmidi = midi;
             }

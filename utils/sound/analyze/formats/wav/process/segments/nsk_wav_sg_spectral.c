@@ -189,7 +189,13 @@ bool nsk_wav_sg_analyze_window(
     const size_t bincount = fftsize / 2 + 1;
     nsk_auto_free double *magnitude = calloc(bincount, sizeof(*magnitude));
     if (!magnitude) {
-        nsk_err("Cannot allocate memory for segment magnitude values");
+        nsk_err(
+            "Cannot allocate memory for segment magnitude values "
+            "(samples=%zu, fft=%zu, bins=%zu)",
+            samplecount,
+            fftsize,
+            bincount
+        );
         return false;
     }
 

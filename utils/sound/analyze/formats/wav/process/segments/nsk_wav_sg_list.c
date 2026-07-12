@@ -65,6 +65,56 @@ bool nsk_wav_sg_appendframes(
 }
 
 /*!
+ * \brief  Clears the current segment list.
+ *
+ * \param[in,out]  ctx  Processing context used by the segment pipeline.
+ */
+void nsk_wav_sg_clear(struct nsk_wav_ctx *ctx) {
+    free(ctx->segments.list);
+    ctx->segments.list = NULL;
+    ctx->segments.count = 0;
+}
+
+/*!
+ * \brief  Builds the initial segment list from explicit frame boundaries.
+ *
+ * \param[in]      wav         Source WAV data.
+ * \param[in,out]  ctx         Processing context used by the segment pipeline.
+ * \param[in]      boundaries  Ordered frame boundary list.
+ * \param[in]      count       Number of frame boundaries.
+ * \return True on success, false on failure.
+ */
+bool nsk_wav_sg_create_boundaries(
+    const struct nsk_wav *wav,
+    struct nsk_wav_ctx  *ctx,
+    const size_t *boundaries,
+    size_t count
+) {
+    nsk_wav_sg_clear(ctx);
+
+    if (count < 2) {
+        return true;
+    }
+
+    for (size_t i = 1; i < count; i++) {
+        if (boundaries[i] <= boundaries[i - 1]) {
+            nsk_err("Segment boundaries must be strictly increasing");
+            return false;
+        }
+
+        if (!nsk_wav_sg_appendframes(
+            wav, ctx,
+            boundaries[i - 1],
+            boundaries[i]
+        )) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/*!
  * \brief  Appends a segment covering a contiguous accepted mark range.
  *
  * \param[in]  wav  Source WAV data.
@@ -97,6 +147,8 @@ bool nsk_wav_sg_create(
     const struct nsk_wav *wav,
     struct nsk_wav_ctx  *ctx
 ) {
+    nsk_wav_sg_clear(ctx);
+
     size_t acceptedstart = 0;
 
     for (size_t i = 0; i < ctx->marks.count; i++) {

@@ -6,9 +6,10 @@
 
 #include "process/nsk_wav_center.h"
 #include "process/nsk_wav_boundaries.h"
+#include "process/nsk_wav_decoder.h"
+#include "process/nsk_wav_output.h"
 #include "process/nsk_wav_quantization.h"
 #include "process/nsk_wav_select.h"
-#include "process/nsk_wav_segments.h"
 
 /*!
  * \brief  Converts the WAV file to music sheets
@@ -41,8 +42,12 @@ bool nsk_wav_process(const char *filename) {
             .func = nsk_wav_select
         },
         {
-            .name = "Process segments",
-            .func = nsk_wav_segment
+            .name = "Decode notes",
+            .func = nsk_wav_decoder
+        },
+        {
+            .name = "Output notes",
+            .func = nsk_wav_output
         }
     };
 

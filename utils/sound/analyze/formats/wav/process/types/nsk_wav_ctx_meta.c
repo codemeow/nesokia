@@ -22,4 +22,5 @@ void nsk_wav_ctx_free(struct nsk_wav_ctx *ctx) {
     }
     free(ctx->marks.list);
     free(ctx->segments.list);
+    free(ctx->notes.list);
 }

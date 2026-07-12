@@ -4,6 +4,32 @@
 #include "../nsk_wav_sg_template.h"
 
 /*!
+ * \brief  Checks whether neighboring segments belong to the same state and note run.
+ *
+ * \param[in]  left  Left segment.
+ * \param[in]  right  Right segment.
+ * \return True when the segments should be analyzed as one run.
+ */
+static bool _sr_equal_neighbor_same_run(
+    const struct nsk_wav_segment *left,
+    const struct nsk_wav_segment *right
+) {
+    if (left->frameend != right->framestart) {
+        return false;
+    }
+
+    if (left->active != right->active) {
+        return false;
+    }
+
+    if (!left->active) {
+        return true;
+    }
+
+    return left->midi == right->midi;
+}
+
+/*!
  * \brief  Reclassifies a run of equal neighboring segments as one analysis window.
  *
  * \param[in]  wav  Source WAV data.
@@ -40,7 +66,7 @@ bool nsk_wav_sg_reclassify_equal_neighbors(
 
         while (
             end < ctx->segments.count &&
-            nsk_wav_sg_isequal(
+            _sr_equal_neighbor_same_run(
                 &ctx->segments.list[end - 1],
                 &ctx->segments.list[end]
             )
@@ -50,26 +76,6 @@ bool nsk_wav_sg_reclassify_equal_neighbors(
 
         if (end - start == 1) {
             items[itemcount++] = ctx->segments.list[start];
-            index = end;
-            continue;
-        }
-
-        const bool pulse25 =
-            ctx->segments.list[start].active &&
-            (
-                fabs(ctx->segments.list[start].duty - 25.0) <=
-                nsk_options_program.profile.segments
-                    .mergedutyequalitythreshold ||
-                fabs(ctx->segments.list[start].duty - 75.0) <=
-                nsk_options_program.profile.segments
-                    .mergedutyequalitythreshold
-            );
-
-        if (pulse25) {
-            for (size_t i = start; i < end; i++) {
-                items[itemcount++] = ctx->segments.list[i];
-            }
-
             index = end;
             continue;
         }

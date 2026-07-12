@@ -5,6 +5,7 @@
 #include "nsk_wav_ctx_candidates.h"
 #include "nsk_wav_ctx_edges.h"
 #include "nsk_wav_ctx_marks.h"
+#include "nsk_wav_ctx_notes.h"
 #include "nsk_wav_ctx_samples.h"
 #include "nsk_wav_ctx_segments.h"
 #include "nsk_wav_ctx_spans.h"
@@ -19,6 +20,7 @@ struct nsk_wav_ctx {
     struct nsk_wav_ctx_edges      edges;      /*!< Edge lists */
     struct nsk_wav_ctx_marks      marks;      /*!< Quantized marks */
     struct nsk_wav_ctx_segments   segments;   /*!< Classified segments */
+    struct nsk_wav_ctx_notes      notes;      /*!< Final decoded events */
 };
 
 /*!

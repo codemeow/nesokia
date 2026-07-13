@@ -1,10 +1,10 @@
 
 # Extra headers to cover platform-specific stuff
-DIR_INCLUDES := $(DIR_ROOT)/utils/common/includes
+DIR_INCLUDES := $(DIR_ROOT)/utils/common/c/includes
 # Extra common sources
-DIR_COMMON := $(DIR_ROOT)/utils/common/utils
+DIR_COMMON := $(DIR_ROOT)/utils/common/c/utils
 # Extra headers access
-DIR_COMMON_X := $(DIR_ROOT)/utils/common/xmacro
+DIR_COMMON_X := $(DIR_ROOT)/utils/common/c/xmacro
 
 # Version defines
 VER_STRING := \

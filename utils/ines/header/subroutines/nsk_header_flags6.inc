@@ -19,14 +19,14 @@
 ; @error Emits a error if @p input is not a supported layout constant.
 .macro _convert_nametable_hardwired input, out_bit
     .if                                                   \
-        input = NSK::NM_LAYOUT::VERTICAL_ARRANGEMENT   || \
-        input = NSK::NM_LAYOUT::HORIZONTAL_MIRRORING   || \
-        input = NSK::NM_LAYOUT::MAPPER_CONTROLLED
+        input = NSKHW::NM_LAYOUT::VERTICAL_ARRANGEMENT   || \
+        input = NSKHW::NM_LAYOUT::HORIZONTAL_MIRRORING   || \
+        input = NSKHW::NM_LAYOUT::MAPPER_CONTROLLED
 
         out_bit = 0
     .elseif                                               \
-        input = NSK::NM_LAYOUT::HORIZONTAL_ARRANGEMENT || \
-        input = NSK::NM_LAYOUT::VERTICAL_MIRRORING
+        input = NSKHW::NM_LAYOUT::HORIZONTAL_ARRANGEMENT || \
+        input = NSKHW::NM_LAYOUT::VERTICAL_MIRRORING
 
         out_bit = 1
     .elseif
@@ -42,9 +42,9 @@
 ;
 ; @error Emits a error if @p input is not recognized.
 .macro _convert_battery input, out_bit
-    .if   input = NSK::BATTERY::NOT_PRESENT
+    .if   input = NSKHW::BATTERY::NOT_PRESENT
         out_bit = 0
-    .elseif input = NSK::BATTERY::PRESENT
+    .elseif input = NSKHW::BATTERY::PRESENT
         out_bit = 1
     .elseif
         .error .sprintf("Invalid value: NSK_HEADER_BATTERY: %d", input)
@@ -59,9 +59,9 @@
 ;
 ; @error Emits a error if @p input is not recognized.
 .macro _convert_trainer input, out_bit
-    .if   input = NSK::TRAINER::NOT_PRESENT
+    .if   input = NSKHW::TRAINER::NOT_PRESENT
         out_bit = 0
-    .elseif input = NSK::TRAINER::PRESENT
+    .elseif input = NSKHW::TRAINER::PRESENT
         out_bit = 1
     .elseif
         .error .sprintf("Invalid value: NSK_HEADER_TRAINER: %d", input)
@@ -76,9 +76,9 @@
 ;
 ; @error Emits a error if @p input is not a supported mode constant.
 .macro _convert_nametable_alternative input, out_bit
-    .if   input = NSK::NM_ALTERNATIVE::NORMAL
+    .if   input = NSKHW::NM_ALTERNATIVE::NORMAL
         out_bit = 0
-    .elseif input = NSK::NM_ALTERNATIVE::ALTERNATIVE
+    .elseif input = NSKHW::NM_ALTERNATIVE::ALTERNATIVE
         out_bit = 1
     .elseif
         .error .sprintf("Invalid value: NSK_HEADER_NAMETABLE_ALTERNATIVE: %d", input)

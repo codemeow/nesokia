@@ -43,28 +43,28 @@
 ;
 ; Defines the target console type
 ;
-; See `NSK::CONSOLE` in `nsk_header_consts.inc` for a list of possible values.
+; See `NSKHW::CONSOLE` in `nsk_common_hw.inc` for a list of possible values.
 ;
 ; Common values:
-;   - NSK::CONSOLE::FAMICOM
-;   - NSK::CONSOLE::VRTECHNOLOGY_VT03
-;   - NSK::CONSOLE::NINTENDO_VS
+;   - NSKHW::CONSOLE::FAMICOM
+;   - NSKHW::CONSOLE::VRTECHNOLOGY_VT03
+;   - NSKHW::CONSOLE::NINTENDO_VS
 ;
-::NSK_HEADER_CONSOLE_TYPE = NSK::CONSOLE::FAMICOM
+::NSK_HEADER_CONSOLE_TYPE = NSKHW::CONSOLE::FAMICOM
 
 ; @brief Release Region
 ;
 ; Specifies the target region (which affects CPU and PPU timing behavior) that
 ; the emulator should use when launching the ROM image.
 ;
-; See `NSK::REGION` in `nsk_header_consts.inc` for a list of possible values.
+; See `NSKHW::REGION` in `nsk_common_hw.inc` for a list of possible values.
 ;
 ; Common values:
-;   NSK::REGION::NTSC
-;   NSK::REGION::PAL
-;   NSK::REGION::MULTIPLE
+;   NSKHW::REGION::NTSC
+;   NSKHW::REGION::PAL
+;   NSKHW::REGION::MULTIPLE
 ;
-::NSK_HEADER_REGION = NSK::REGION::JAPAN
+::NSK_HEADER_REGION = NSKHW::REGION::JAPAN
 
 ; @brief Mapper ID
 ;
@@ -94,14 +94,14 @@
 ;
 ; Defines the hardwired nametables layout/mirroring
 ;
-; See `NSK::NM_LAYOUT` in `nsk_header_consts.inc` for a list of possible values.
+; See `NSKHW::NM_LAYOUT` in `nsk_common_hw.inc` for a list of possible values.
 ;
 ; Common values:
-;   - NSK::NM_LAYOUT::MAPPER_CONTROLLED
-;   - NSK::NM_LAYOUT::HORIZONTAL_MIRRORING
-;   - NSK::NM_LAYOUT::VERTICAL_MIRROIRNG
+;   - NSKHW::NM_LAYOUT::MAPPER_CONTROLLED
+;   - NSKHW::NM_LAYOUT::HORIZONTAL_MIRRORING
+;   - NSKHW::NM_LAYOUT::VERTICAL_MIRROIRNG
 ;
-::NSK_HEADER_NAMETABLE_HARDWIRED = NSK::NM_LAYOUT::MAPPER_CONTROLLED
+::NSK_HEADER_NAMETABLE_HARDWIRED = NSKHW::NM_LAYOUT::MAPPER_CONTROLLED
 
 ; @brief Alternative nametables layout flag
 ;
@@ -126,18 +126,18 @@
 ; - ² When supported
 ;
 ; Common values:
-;   - NSK::NM_ALTERNATIVE::NORMAL
-;   - NSK::NM_ALTERNATIVE::ALTERNATIVE
+;   - NSKHW::NM_ALTERNATIVE::NORMAL
+;   - NSKHW::NM_ALTERNATIVE::ALTERNATIVE
 ;
-::NSK_HEADER_NAMETABLE_ALTERNATIVE = NSK::NM_ALTERNATIVE::NORMAL
+::NSK_HEADER_NAMETABLE_ALTERNATIVE = NSKHW::NM_ALTERNATIVE::NORMAL
 
 ; @brief Battery-backed or other non-volatile memory
 ;
 ; Common values:
-;   - NSK::BATTERY::NOT_PRESENT
-;   - NSK::BATTERY::PRESENT
+;   - NSKHW::BATTERY::NOT_PRESENT
+;   - NSKHW::BATTERY::PRESENT
 ;
-::NSK_HEADER_BATTERY = NSK::BATTERY::NOT_PRESENT
+::NSK_HEADER_BATTERY = NSKHW::BATTERY::NOT_PRESENT
 
 ; @brief Trainer area
 ;
@@ -146,10 +146,10 @@
 ; into CPU memory at $7000.
 ;
 ; Common values:
-;   - NSK::TRAINER::NOT_PRESENT
-;   - NSK::TRAINER::PRESENT
+;   - NSKHW::TRAINER::NOT_PRESENT
+;   - NSKHW::TRAINER::PRESENT
 ;
-::NSK_HEADER_TRAINER = NSK::TRAINER::NOT_PRESENT
+::NSK_HEADER_TRAINER = NSKHW::TRAINER::NOT_PRESENT
 
 ; @brief PRG ROM in bytes
 ;
@@ -250,28 +250,28 @@
 ; @brief Vs. System PPU type
 ;
 ; @note This field is relevant only if `NSK_HEADER_CONSOLE_TYPE` is set to
-;       `NSK::CONSOLE::NINTENDO_VS`. Otherwise, it is recommended to set the
-;       value to `NSK::VSPPU::NONE`.
+;       `NSKHW::CONSOLE::NINTENDO_VS`. Otherwise, it is recommended to set the
+;       value to `NSKHW::VSPPU::NONE`.
 ;
 ; Common values:
-;   - NSK::VSHARDWARE::NONE
-;   - NSK::VSHARDWARE::RP2C04_001
-;   - NSK::VSHARDWARE::RP2C04_002
+;   - NSKHW::VSHARDWARE::NONE
+;   - NSKHW::VSHARDWARE::RP2C04_001
+;   - NSKHW::VSHARDWARE::RP2C04_002
 ;
-::NSK_HEADER_VS_PPU = NSK::VSPPU::NONE
+::NSK_HEADER_VS_PPU = NSKHW::VSPPU::NONE
 
 ; @brief Vs. System Hardware type
 ;
 ; @note This field is relevant only if `NSK_HEADER_CONSOLE_TYPE` is set to
-;       `NSK::CONSOLE::NINTENDO_VS`. Otherwise, it is recommended to set the
-;       value to `NSK::VSHARDWARE::NONE`.
+;       `NSKHW::CONSOLE::NINTENDO_VS`. Otherwise, it is recommended to set the
+;       value to `NSKHW::VSHARDWARE::NONE`.
 ;
 ; Common values:
-;   - NSK::VSHARDWARE::NONE
-;   - NSK::VSHARDWARE::VSUNI_NORMAL
-;   - NSK::VSHARDWARE::VSDUAL_NORMAL
+;   - NSKHW::VSHARDWARE::NONE
+;   - NSKHW::VSHARDWARE::VSUNI_NORMAL
+;   - NSKHW::VSHARDWARE::VSDUAL_NORMAL
 ;
-::NSK_HEADER_VS_HARDWARE = NSK::VSHARDWARE::NONE
+::NSK_HEADER_VS_HARDWARE = NSKHW::VSHARDWARE::NONE
 
 ; @brief Default expansion device
 ;
@@ -280,11 +280,11 @@
 ; which the game cannot be played at all.
 ;
 ; Common values:
-;   - NSK::DEVICES::NINTENDO::CONTROLLERS
-;   - NSK::DEVICES::NONE::MULTICART
-;   - NSK::DEVICES::NINTENDO::ZAPPER_P4017
-;   - NSK::DEVICES::NINTENDO::FOURSCORE
+;   - NSKHW::DEVICES::NINTENDO::CONTROLLERS
+;   - NSKHW::DEVICES::NONE::MULTICART
+;   - NSKHW::DEVICES::NINTENDO::ZAPPER_P4017
+;   - NSKHW::DEVICES::NINTENDO::FOURSCORE
 ;
-::NSK_HEADER_EXPANSION_DEVICE = NSK::DEVICES::NINTENDO::CONTROLLERS
+::NSK_HEADER_EXPANSION_DEVICE = NSKHW::DEVICES::NINTENDO::CONTROLLERS
 
 .endif

@@ -106,7 +106,7 @@ def build_setup() -> BuildSetup:
         ),
         config=BuildSetup.BuildConfig(
             consts=required_file(
-                ROOT / "utils/ines/header/nsk_header_consts.inc"
+                ROOT / "utils/common/6502/nsk_common_hw.inc"
             ),
             source=required_file(
                 ROOT / "utils/ines/header/nsk_header_code.asm"
@@ -269,6 +269,7 @@ def test_source_compile(setup: BuildSetup, cases: List[CaseSetup]) -> None:
         cmd = [
             str(setup.compiler.ca65),
             "-I", str(case.root),
+            "-I", str(setup.root / "utils/common/6502"),
             "-o", str(case.object_file),
             str(setup.config.source)
         ]

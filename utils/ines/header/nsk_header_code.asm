@@ -8,7 +8,7 @@
 
 .linecont +
 
-.include "nsk_header_consts.inc"
+.include "nsk_common_hw.inc"
 .include "nsk_header_config.inc"
 
 .include "subroutines/nsk_header_magic.inc"
@@ -92,4 +92,3 @@ nsk_header_rom_misc                         \
 ; 15: Default expansion device
 nsk_header_device                           \
     ::NSK_HEADER_EXPANSION_DEVICE
-

@@ -26,14 +26,15 @@ ASM_CAFLAGS ?= -I $(COMMON_DIR) --bin-include-dir $(DIR_BUILD) -g
 ASM_LDFLAGS ?= --dbgfile $(ASM_DBGFILE)
 
 NSK_HEADER_DIR ?= $(DIR_ROOT)/utils/ines/header
+NSK_COMMON_6502_DIR ?= $(DIR_ROOT)/utils/common/6502
 NSK_HEADER_SOURCE := $(NSK_HEADER_DIR)/nsk_header_code.asm
 NSK_HEADER_DEPS :=              \
 	$(NSK_HEADER_SOURCE)        \
-	$(NSK_HEADER_DIR)/nsk_header_consts.inc \
+	$(NSK_COMMON_6502_DIR)/nsk_common_hw.inc \
 	nsk_header_config.inc       \
 	$(shell find "$(NSK_HEADER_DIR)/subroutines" -type f -name '*.inc' 2>/dev/null)
 NSK_HEADER_OBJECT := $(DIR_BUILD)/header.o
-NSK_HEADER_CAFLAGS ?= -I . -I $(NSK_HEADER_DIR)
+NSK_HEADER_CAFLAGS ?= -I . -I $(NSK_HEADER_DIR) -I $(NSK_COMMON_6502_DIR)
 
 ASM_SOURCES := $(shell find "$(SOURCE_DIR)" -type f -name '*.asm' 2>/dev/null | sort)
 ASM_INCLUDES := $(shell find "$(SOURCE_DIR)" "$(COMMON_DIR)" -type f -name '*.inc' 2>/dev/null | sort)

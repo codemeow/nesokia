@@ -38,24 +38,24 @@
 ; @error Emits an error when @p input is not a recognized console identifier.
 .macro _convert_console input, out_bits
     .if                                                    \
-        input = NSK::CONSOLE::FAMICOM                   || \
-        input = NSK::CONSOLE::NES                       || \
-        input = NSK::CONSOLE::DENDY                     || \
-        input = NSK::CONSOLE::NINTENDO_VS               || \
-        input = NSK::CONSOLE::PLAYCHOICE10
+        input = NSKHW::CONSOLE::FAMICOM                   || \
+        input = NSKHW::CONSOLE::NES                       || \
+        input = NSKHW::CONSOLE::DENDY                     || \
+        input = NSKHW::CONSOLE::NINTENDO_VS               || \
+        input = NSKHW::CONSOLE::PLAYCHOICE10
 
         out_bits = input
     .elseif                                                \
-        input = NSK::CONSOLE::FAMICLONE_DEC             || \
-        input = NSK::CONSOLE::FAMICOM_EPSM              || \
-        input = NSK::CONSOLE::VR_TECHNOLOGY_VT01        || \
-        input = NSK::CONSOLE::VR_TECHNOLOGY_VT02        || \
-        input = NSK::CONSOLE::VR_TECHNOLOGY_VT03        || \
-        input = NSK::CONSOLE::VR_TECHNOLOGY_VT09        || \
-        input = NSK::CONSOLE::VR_TECHNOLOGY_VT32        || \
-        input = NSK::CONSOLE::VR_TECHNOLOGY_VT369       || \
-        input = NSK::CONSOLE::UMC_UM6578                || \
-        input = NSK::CONSOLE::FAMICOM_NETWORK_SYSTEM    || \
+        input = NSKHW::CONSOLE::FAMICLONE_DEC             || \
+        input = NSKHW::CONSOLE::FAMICOM_EPSM              || \
+        input = NSKHW::CONSOLE::VR_TECHNOLOGY_VT01        || \
+        input = NSKHW::CONSOLE::VR_TECHNOLOGY_VT02        || \
+        input = NSKHW::CONSOLE::VR_TECHNOLOGY_VT03        || \
+        input = NSKHW::CONSOLE::VR_TECHNOLOGY_VT09        || \
+        input = NSKHW::CONSOLE::VR_TECHNOLOGY_VT32        || \
+        input = NSKHW::CONSOLE::VR_TECHNOLOGY_VT369       || \
+        input = NSKHW::CONSOLE::UMC_UM6578                || \
+        input = NSKHW::CONSOLE::FAMICOM_NETWORK_SYSTEM    || \
 
         out_bits = ::NSK_HEADER_CONSOLE_EXTENDED
     .elseif

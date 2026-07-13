@@ -31,18 +31,18 @@ def parseconst_scopes(
     re_endscope = re.compile(r'^\s*\.endscope\b')
     re_kv = re.compile(r'^\s*([A-Za-z_]\w*)\s*=\s*([0-9]+)\b')
 
-    # Stack of the recursive scope lists (`["NSK", "DEVICES", "KEDA"]`)
+    # Stack of the recursive scope lists (`["NSKHW", "DEVICES", "KEDA"]`)
     stack: list[str] = []
     scope_maps: Dict[str, Dict[int, str]] = {}
 
     def fold_key_and_name(
         name: str
     ) -> Tuple[Optional[str], Optional[str]]:
-        if len(stack) < 2 or stack[0] != "NSK":
+        if len(stack) < 2 or stack[0] != "NSKHW":
             return None, None
         first_level = stack[1]
         rest_levels = stack[2:]
-        scoped_key = f"NSK::{first_level}"
+        scoped_key = f"NSKHW::{first_level}"
         if rest_levels:
             folded_name = "::".join(rest_levels + [name])
         else:
@@ -354,11 +354,11 @@ def parserxml_expansion_device(
 CONFIG_DICT: Dict[str, ConfigEntry] = {
     "NSK_HEADER_CONSOLE_TYPE": {
         "func": parserxml_console_type,
-        "scope": "NSK::CONSOLE"
+        "scope": "NSKHW::CONSOLE"
     },
     "NSK_HEADER_REGION": {
         "func": parserxml_region,
-        "scope": "NSK::REGION"
+        "scope": "NSKHW::REGION"
     },
     "NSK_HEADER_MAPPER_ID": {
         "func": parserxml_mapper_id,
@@ -370,19 +370,19 @@ CONFIG_DICT: Dict[str, ConfigEntry] = {
     },
     "NSK_HEADER_NAMETABLE_HARDWIRED": {
         "func": parserxml_nametable_hardwired,
-        "scope": "NSK::NM_LAYOUT"
+        "scope": "NSKHW::NM_LAYOUT"
     },
     "NSK_HEADER_NAMETABLE_ALTERNATIVE": {
         "func": parserxml_nametable_alternative,
-        "scope": "NSK::NM_ALTERNATIVE"
+        "scope": "NSKHW::NM_ALTERNATIVE"
     },
     "NSK_HEADER_BATTERY": {
         "func": parserxml_battery,
-        "scope": "NSK::BATTERY"
+        "scope": "NSKHW::BATTERY"
     },
     "NSK_HEADER_TRAINER": {
         "func": parserxml_trainer,
-        "scope": "NSK::TRAINER"
+        "scope": "NSKHW::TRAINER"
     },
     "NSK_HEADER_PRGROM_SIZE": {
         "func": parserxml_prgrom_size,
@@ -414,15 +414,15 @@ CONFIG_DICT: Dict[str, ConfigEntry] = {
     },
     "NSK_HEADER_VS_PPU": {
         "func": parserxml_vs_ppu,
-        "scope": "NSK::VSPPU"
+        "scope": "NSKHW::VSPPU"
     },
     "NSK_HEADER_VS_HARDWARE": {
         "func": parserxml_vs_hardware,
-        "scope": "NSK::VSHARDWARE"
+        "scope": "NSKHW::VSHARDWARE"
     },
     "NSK_HEADER_EXPANSION_DEVICE": {
         "func": parserxml_expansion_device,
-        "scope": "NSK::DEVICES"
+        "scope": "NSKHW::DEVICES"
     },
 }
 
@@ -455,7 +455,7 @@ def main() -> None:
         "-c",
         "--consts",
         required=True,
-        help="Path to nsk_header_consts.inc to parse scopes"
+        help="Path to nsk_common_hw.inc to parse scopes"
     )
     args = ap.parse_args()
 

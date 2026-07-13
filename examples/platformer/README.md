@@ -50,7 +50,7 @@ battery or trainer area.
 ::NSK_HEADER_SUBMAPPER_ID = 2
 
 ; Horizontal arrangment / Vertical mirroring
-::NSK_HEADER_NAMETABLE_HARDWIRED = NSK::NM_LAYOUT::HORIZONTAL_ARRANGEMENT
+::NSK_HEADER_NAMETABLE_HARDWIRED = NSKHW::NM_LAYOUT::HORIZONTAL_ARRANGEMENT
 
 ; PRG ROM size
 ::NSK_HEADER_PRGROM_SIZE = 32768
@@ -58,7 +58,7 @@ battery or trainer area.
 ::NSK_HEADER_CHRROM_SIZE = 32768
 
 ; Standard Famicom/NES controllers
-::NSK_HEADER_EXPANSION_DEVICE = NSK::DEVICES::NINTENDO::CONTROLLERS
+::NSK_HEADER_EXPANSION_DEVICE = NSKHW::DEVICES::NINTENDO::CONTROLLERS
 ```
 
 Any non-listed values will be set as 0. Default header segment name will be set as "HEADER"

@@ -18,9 +18,9 @@
 -include windows/nsk_windows_winver.h
 
 # Common
--Iutils/common/xmacro
--Iutils/common/utils
--Iutils/common/includes
+-Iutils/common/c/xmacro
+-Iutils/common/c/utils
+-Iutils/common/c/includes
 
 # OS
 -D__gnu_linux__

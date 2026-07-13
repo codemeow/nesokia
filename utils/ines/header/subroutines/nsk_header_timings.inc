@@ -21,12 +21,12 @@
 ; @error Emits a error if @p console is one of the VTxx values.
 .macro _validate_vrtech regionid, consoleid
     .if                                                 \
-        consoleid = NSK::CONSOLE::VRTECHNOLOGY_VT01  || \
-        consoleid = NSK::CONSOLE::VRTECHNOLOGY_VT02  || \
-        consoleid = NSK::CONSOLE::VRTECHNOLOGY_VT03  || \
-        consoleid = NSK::CONSOLE::VRTECHNOLOGY_VT09  || \
-        consoleid = NSK::CONSOLE::VRTECHNOLOGY_VT32  || \
-        consoleid = NSK::CONSOLE::VRTECHNOLOGY_VT369
+        consoleid = NSKHW::CONSOLE::VRTECHNOLOGY_VT01  || \
+        consoleid = NSKHW::CONSOLE::VRTECHNOLOGY_VT02  || \
+        consoleid = NSKHW::CONSOLE::VRTECHNOLOGY_VT03  || \
+        consoleid = NSKHW::CONSOLE::VRTECHNOLOGY_VT09  || \
+        consoleid = NSKHW::CONSOLE::VRTECHNOLOGY_VT32  || \
+        consoleid = NSKHW::CONSOLE::VRTECHNOLOGY_VT369
 
         .error                                                  \
             .sprintf(                                           \
@@ -45,12 +45,12 @@
 ; @param    out_found  Symbol set to 1 if a match was found (otherwise unchanged).
 .macro _convert_ifntsc regionid, consoleid, out_bits, out_found
     .if                                              \
-        regionid = NSK::REGION::RP2C02            || \
-        regionid = NSK::REGION::NTSC              || \
-        regionid = NSK::REGION::NORTH_AMERICA     || \
-        regionid = NSK::REGION::JAPAN             || \
-        regionid = NSK::REGION::SOUTH_KOREA       || \
-        regionid = NSK::REGION::TAIWAN
+        regionid = NSKHW::REGION::RP2C02            || \
+        regionid = NSKHW::REGION::NTSC              || \
+        regionid = NSKHW::REGION::NORTH_AMERICA     || \
+        regionid = NSKHW::REGION::JAPAN             || \
+        regionid = NSKHW::REGION::SOUTH_KOREA       || \
+        regionid = NSKHW::REGION::TAIWAN
 
         out_bits = regionid
         out_found .set 1
@@ -70,10 +70,10 @@
 
     ; convert:
     .if                                              \
-        regionid = NSK::REGION::RP2C07            || \
-        regionid = NSK::REGION::PAL               || \
-        regionid = NSK::REGION::WESTERN_EUROPE    || \
-        regionid = NSK::REGION::AUSTRALIA
+        regionid = NSKHW::REGION::RP2C07            || \
+        regionid = NSKHW::REGION::PAL               || \
+        regionid = NSKHW::REGION::WESTERN_EUROPE    || \
+        regionid = NSKHW::REGION::AUSTRALIA
 
         out_bits = regionid
         out_found .set 1
@@ -93,7 +93,7 @@
 
     ; convert:
     .if                                            \
-        regionid = NSK::REGION::MULTIPLE
+        regionid = NSKHW::REGION::MULTIPLE
 
         out_bits = regionid
         out_found .set 1
@@ -109,13 +109,13 @@
 ; @param    out_found  Symbol set to 1 if a match was found (otherwise unchanged).
 .macro _convert_ifdendy regionid, consoleid, out_bits, out_found
     .if                                              \
-        regionid = NSK::REGION::UA6538            || \
-        regionid = NSK::REGION::DENDY             || \
-        regionid = NSK::REGION::EASTERN_EUROPE    || \
-        regionid = NSK::REGION::RUSSIA            || \
-        regionid = NSK::REGION::MAINLAND_CHINA    || \
-        regionid = NSK::REGION::INDIA             || \
-        regionid = NSK::REGION::AFRICA
+        regionid = NSKHW::REGION::UA6538            || \
+        regionid = NSKHW::REGION::DENDY             || \
+        regionid = NSKHW::REGION::EASTERN_EUROPE    || \
+        regionid = NSKHW::REGION::RUSSIA            || \
+        regionid = NSKHW::REGION::MAINLAND_CHINA    || \
+        regionid = NSKHW::REGION::INDIA             || \
+        regionid = NSKHW::REGION::AFRICA
 
         out_bits = regionid
         out_found .set 1
@@ -145,7 +145,7 @@
 ; @param    consoleid Console selector (`nsk::console::xxx` values).
 ; @param    mapperid  Mapper ID
 .macro _check_vssystem consoleid, mapperid
-    .if consoleid = NSK::CONSOLE::NINTENDO_VS
+    .if consoleid = NSKHW::CONSOLE::NINTENDO_VS
         .if !(                 \
             mapperid =    1 || \
             mapperid =    2 || \

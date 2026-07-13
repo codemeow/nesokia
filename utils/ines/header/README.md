@@ -51,14 +51,14 @@ Example (from the sample configuration file):
 ; Specifies the target region (affecting CPU/PPU timings) that the emulator
 ; should use when launching the ROM image.
 ;
-; See `NSK::REGION` in `nsk_header_consts.inc` for a list of possible values.
+; See `NSKHW::REGION` in `nsk_common_hw.inc` for a list of possible values.
 ;
 ; Commonly used values:
-;   NSK::REGION::NTSC
-;   NSK::REGION::PAL
-;   NSK::REGION::MULTIPLE
+;   NSKHW::REGION::NTSC
+;   NSKHW::REGION::PAL
+;   NSKHW::REGION::MULTIPLE
 ;
-::NSK_HEADER_REGION = NSK::REGION::JAPAN
+::NSK_HEADER_REGION = NSKHW::REGION::JAPAN
 ```
 
 --
@@ -71,7 +71,7 @@ To run automatic tests execute the `tests/nsk_auto_test.py` script. It will auto
 
 ## Updating the consts file
 
-If, by some reason, you have changed any file in the `utils/common` directory, call the `utils/create/scripts/nsk_consts_update.sh` script to update the `nsk_header_consts.inc` accordingly.
+If, by some reason, you have changed any file in the `utils/common` directory, call the `scripts/conv/nsk_conv_hw.sh` script to update the `nsk_common_hw.inc` accordingly.
 
 ---
 

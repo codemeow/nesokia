@@ -25,20 +25,10 @@ ASM_DBGFILE ?= $(DIR_BUILD)/$(notdir $(basename $(PROJECT_NAME))).dbg
 ASM_CAFLAGS ?= -I $(COMMON_DIR) --bin-include-dir $(DIR_BUILD) -g
 ASM_LDFLAGS ?= --dbgfile $(ASM_DBGFILE)
 
-NSK_HEADER_DIR ?= $(DIR_ROOT)/utils/ines/header
-NSK_COMMON_6502_DIR ?= $(DIR_ROOT)/utils/common/6502
-NSK_HEADER_SOURCE := $(NSK_HEADER_DIR)/nsk_header_code.asm
-NSK_HEADER_DEPS :=              \
-	$(NSK_HEADER_SOURCE)        \
-	$(NSK_COMMON_6502_DIR)/nsk_common_hw.inc \
-	nsk_header_config.inc       \
-	$(shell find "$(NSK_HEADER_DIR)/subroutines" -type f -name '*.inc' 2>/dev/null)
-NSK_HEADER_OBJECT := $(DIR_BUILD)/header.o
-NSK_HEADER_CAFLAGS ?= -I . -I $(NSK_HEADER_DIR) -I $(NSK_COMMON_6502_DIR)
-
 ASM_SOURCES := $(shell find "$(SOURCE_DIR)" -type f -name '*.asm' 2>/dev/null | sort)
 ASM_INCLUDES := $(shell find "$(SOURCE_DIR)" "$(COMMON_DIR)" -type f -name '*.inc' 2>/dev/null | sort)
 ASM_OBJECTS := $(patsubst $(SOURCE_DIR)/%.asm,$(DIR_BUILD)/%.o,$(ASM_SOURCES))
+ASM_EXTRA_OBJECTS ?=
 
 CHR_BANKS ?=
 CHR_OUTPUT_DIR ?= $(DIR_BUILD)/chr
@@ -91,16 +81,10 @@ $(DIR_BUILD):
 $(NSK_UTIL_CONVERT):
 	@$(MAKE) -C "$(DIR_ROOT)/utils/chr/convert" build
 
-$(ASM_OUTPUT): $(MEMORY_CONFIG) $(NSK_HEADER_OBJECT) $(ASM_OBJECTS) | $(ASM_OUTPUT_DIR)
+$(ASM_OUTPUT): $(MEMORY_CONFIG) $(ASM_EXTRA_OBJECTS) $(ASM_OBJECTS) | $(ASM_OUTPUT_DIR)
 	@$(call print_category,Linking)
-	@$(LD) -C $(MEMORY_CONFIG) -o $@ $(NSK_HEADER_OBJECT) $(ASM_OBJECTS) $(ASM_LDFLAGS)
+	@$(LD) -C $(MEMORY_CONFIG) -o $@ $(ASM_EXTRA_OBJECTS) $(ASM_OBJECTS) $(ASM_LDFLAGS)
 	@$(call print_entry,Linking $@)
-
-$(NSK_HEADER_OBJECT): $(NSK_HEADER_DEPS) | $(DIR_BUILD)
-	@$(call print_category,Compiling)
-	@$(CMD_MKDIR) $(dir $@)
-	@$(CA) $(ASM_CAFLAGS) $(NSK_HEADER_CAFLAGS) $(NSK_HEADER_SOURCE) -o $@
-	@$(call print_entry,Compiling $(NSK_HEADER_SOURCE))
 
 $(DIR_BUILD)/%.o: $(SOURCE_DIR)/%.asm $(ASM_INCLUDES) | $(DIR_BUILD)
 	@$(CMD_MKDIR) $(dir $@)
@@ -128,7 +112,7 @@ endef
 
 $(foreach b,$(CHR_BANKS),$(eval $(call CHR_BANK_RULE,$(b))))
 
-$(NSK_HEADER_OBJECT) $(ASM_OBJECTS): | $(CHR_OUTPUT) $(PAL_OUTPUT)
+$(ASM_OBJECTS): | $(CHR_OUTPUT) $(PAL_OUTPUT)
 
 $(DIR_BUILD)/chr/nsk_chr_banks.o: $(CHR_OUTPUT)
 ifneq ($(strip $(PAL_BACK)),)

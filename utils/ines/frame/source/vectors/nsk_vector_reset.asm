@@ -9,7 +9,15 @@
 .linecont +
 
 .include "nsk_common_consts.inc"
-.include "nsk_header_reset.inc"
+.include "nsk_common_hw.inc"
+.include "nsk_common_mapper.inc"
+
+; Configs
+.include "nsk_frame_reset.inc"
+.include "mapper/nsk_frame_mapper.inc"
+.include "../nsk_frame_defaults.inc"
+
+.include "../mapper/nsk_mapper_init.inc"
 
 .if .defined(NSK_FEATURE_RESET)
 
@@ -25,15 +33,6 @@
         error, "NSK_RESET_PPUMASK must keep sprite rendering disabled during reset"
 .endif
 
-.if .defined(NSK_RESET_BSSCLEAR)
-    .import __BSS_RUN__
-    .import __BSS_SIZE__
-.endif
-
-.if .defined(NSK_HEADER_MAPPER_ID)
-    .import nsk_mapper_init
-.endif
-
 .if .defined(NSK_FEATURE_CONSTRUCTORS)
     .import nsk_constructors_run
 .endif
@@ -41,74 +40,26 @@
 .import NSK_RESET_INITADDR
 .import NSK_RESET_MAINADDR
 
-; Reset scratch bytes are used only before optional ZP clearing. Project linker
-; configs reserve $00-$0F outside of the ZEROPAGE segment for frame temporaries.
-_NSK_RESET_BSS_PTR_LO = $00
-_NSK_RESET_BSS_PTR_HI = $01
-_NSK_RESET_BSS_LEFT_LO = $02
-_NSK_RESET_BSS_LEFT_HI = $03
-
-.segment NSK_RESET_SEGMENT
+.segment NSK_SEGMENT_RESETCODE
 
 ; @brief Waits for the next VBlank start.
 .proc _nsk_reset_vblank_wait
     bit NSK::CPU::PPU::PPUSTATUS
-loop:
-    bit NSK::CPU::PPU::PPUSTATUS
-    bpl loop
+    loop:
+        bit NSK::CPU::PPU::PPUSTATUS
+        bpl loop
     rts
 .endproc
-
-; @brief Clears the complete BSS segment.
-;
-; Uses the linker symbols emitted by `BSS: ... define = yes`.
-.if .defined(NSK_RESET_BSSCLEAR)
-.proc _nsk_reset_bss_clear
-    lda #<__BSS_RUN__
-    sta _NSK_RESET_BSS_PTR_LO
-    lda #>__BSS_RUN__
-    sta _NSK_RESET_BSS_PTR_HI
-    lda #<__BSS_SIZE__
-    sta _NSK_RESET_BSS_LEFT_LO
-    lda #>__BSS_SIZE__
-    sta _NSK_RESET_BSS_LEFT_HI
-
-loop:
-    lda _NSK_RESET_BSS_LEFT_LO
-    ora _NSK_RESET_BSS_LEFT_HI
-    beq done
-
-    ldy #0
-    lda #0
-    sta (_NSK_RESET_BSS_PTR_LO), y
-
-    inc _NSK_RESET_BSS_PTR_LO
-    bne :+
-    inc _NSK_RESET_BSS_PTR_HI
-:
-    sec
-    lda _NSK_RESET_BSS_LEFT_LO
-    sbc #1
-    sta _NSK_RESET_BSS_LEFT_LO
-    lda _NSK_RESET_BSS_LEFT_HI
-    sbc #0
-    sta _NSK_RESET_BSS_LEFT_HI
-    jmp loop
-
-done:
-    rts
-.endproc
-.endif
 
 ; @brief Clears the complete CPU zero page.
 .if .defined(NSK_RESET_ZPCLEAR)
 .proc _nsk_reset_zp_clear
     lda #0
     ldx #0
-loop:
-    sta $00, x
-    inx
-    bne loop
+    loop:
+        sta $00, x
+        inx
+        bne loop
     rts
 .endproc
 .endif
@@ -118,13 +69,13 @@ loop:
 .proc _nsk_reset_sprites_clear
     lda #$ff
     ldx #0
-loop:
-    sta NSK::CPU::RAM::OAMBUFFER, x
-    inx
-    inx
-    inx
-    inx
-    bne loop
+    loop:
+        sta NSK::CPU::RAM::OAMBUFFER, x
+        inx
+        inx
+        inx
+        inx
+        bne loop
     rts
 .endproc
 .endif
@@ -155,7 +106,7 @@ loop:
 .endproc
 
 ; @brief Writes an optional universal background color while rendering is off.
-.if .defined(NSK_RESET_BACKDROP_SET) && .defined(NSK_RESET_BACKDROP_COLOR)
+.if .defined(NSK_RESET_BACKDROP_SET) .and .defined(NSK_RESET_BACKDROP_COLOR)
 .proc _nsk_reset_backdrop_set
     bit NSK::CPU::PPU::PPUSTATUS
     lda #$3f
@@ -170,7 +121,6 @@ loop:
 
 ; @brief Reset handler routine.
 ; @note Never returns: control is transferred to NSK_RESET_MAINADDR.
-.export nsk_vector_reset
 .proc nsk_vector_reset
     sei
     cld
@@ -178,13 +128,8 @@ loop:
     txs
 
     jsr _nsk_reset_hardware_init
-
-    ; Two VBlank waits are a reset invariant, not a project configuration.
     jsr _nsk_reset_vblank_wait
 
-.if .defined(NSK_RESET_BSSCLEAR)
-    jsr _nsk_reset_bss_clear
-.endif
 .if .defined(NSK_RESET_ZPCLEAR)
     jsr _nsk_reset_zp_clear
 .endif
@@ -192,13 +137,16 @@ loop:
     jsr _nsk_reset_sprites_clear
 .endif
 
+.if ::NSK_FEATURE_MAPPER = 1
 .if .defined(NSK_HEADER_MAPPER_ID)
+
     jsr nsk_mapper_init
+.endif
 .endif
 
     jsr _nsk_reset_vblank_wait
 
-.if .defined(NSK_RESET_BACKDROP_SET) && .defined(NSK_RESET_BACKDROP_COLOR)
+.if .defined(NSK_RESET_BACKDROP_SET) .and .defined(NSK_RESET_BACKDROP_COLOR)
     jsr _nsk_reset_backdrop_set
 .endif
 .if .defined(NSK_FEATURE_CONSTRUCTORS)
@@ -208,6 +156,13 @@ loop:
 
     jmp NSK_RESET_MAINADDR
 .endproc
+
+; @brief Reset vector at $FFFC.
+;
+; NSK_SEGMENT_VECTORRESET is required whenever NSK_FEATURE_RESET is enabled.
+; NMI and IRQ vectors belong to their respective independent segments.
+.segment NSK_SEGMENT_VECTORRESET
+.addr nsk_vector_reset
 
 .endif
 

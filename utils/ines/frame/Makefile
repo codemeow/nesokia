@@ -1,29 +1,17 @@
-override PROJECT_NAME := nesokia-ines-header
-
-# Version data
-VER_MAJOR := 0
-VER_MINOR := 4
-VER_BUILD := 1
+override PROJECT_NAME := nesokia-ines-frame
 
 # Common root directory
 DIR_ROOT := ../../..
 
-# Test dependencies
-TEST_DEPS = $(DIR_BIN)/nesokia-ines-inspect
-
 include $(DIR_ROOT)/scripts/make/common.mk
-
-$(DIR_BIN)/nesokia-ines-inspect:
-	@$(MAKE) -C "$(DIR_ROOT)/utils/ines/inspect" build
-
 include $(DIR_ROOT)/scripts/make/lang/dummy.mk
 
 SDK_MAKE_DIR := $(DIR_ROOT)/bin/make
 SDK_COMMON_SOURCE_DIR := $(DIR_ROOT)/utils/common/6502
 SDK_COMMON_TARGET_DIR := $(DIR_ROOT)/bin/includes/6502
 SDK_COMMON_SOURCES := $(sort $(wildcard $(SDK_COMMON_SOURCE_DIR)/*.inc))
-SDK_HEADER_MAKE_SOURCE := make/nsk_header.mk
-SDK_HEADER_MAKE_TARGET := $(SDK_MAKE_DIR)/nsk_header.mk
+SDK_FRAME_MAKE_SOURCE := make/nsk_frame.mk
+SDK_FRAME_MAKE_TARGET := $(SDK_MAKE_DIR)/nsk_frame.mk
 
 .PHONY: nsk-sdk-common-sync
 nsk-sdk-common-sync:
@@ -41,10 +29,10 @@ nsk-sdk-common-sync:
 		[ -f "$$source" ] || $(CMD_RM) "$$target"; \
 	done
 
-$(SDK_HEADER_MAKE_TARGET): $(SDK_HEADER_MAKE_SOURCE)
+$(SDK_FRAME_MAKE_TARGET): $(SDK_FRAME_MAKE_SOURCE)
 	@$(CMD_MKDIR) "$(SDK_MAKE_DIR)"
 	@if ! cmp -s "$<" "$@"; then $(CMD_CP) "$<" "$@"; fi
 
-all build: nsk-sdk-common-sync $(SDK_HEADER_MAKE_TARGET)
+all build: nsk-sdk-common-sync $(SDK_FRAME_MAKE_TARGET)
 
-CLEAN_ENTRIES += $(SDK_HEADER_MAKE_TARGET)
+CLEAN_ENTRIES += $(SDK_FRAME_MAKE_TARGET)

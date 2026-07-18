@@ -109,7 +109,7 @@ def build_setup() -> BuildSetup:
                 ROOT / "utils/common/6502/nsk_common_hw.inc"
             ),
             source=required_file(
-                ROOT / "utils/ines/header/nsk_header_code.asm"
+                ROOT / "utils/ines/header/source/nsk_header_code.asm"
             ),
             memory=required_file(HERE / "memory/nsk_header_memory.cfg")
         )

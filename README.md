@@ -15,9 +15,13 @@ _Each module provides its own documentation inside its respective subdirectory._
 
   NES 2.0 ROM header generator
 
+- **NES assembly framework** (`utils/ines/frame`)
+
+  NES application framework
+
 - **Tiles converter** (`utils/chr/convert`)
 
-  Image to CHR data/PAL data converter
+  Image to CHR data/PAL; CHR data/PAL to image data converter
 
 - **Palette converter** (`utils/chr/colors`)
 

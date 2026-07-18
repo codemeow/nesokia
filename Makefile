@@ -3,6 +3,7 @@ MAKEFLAGS += --no-print-directory
 UTILS_DIR := utils
 UTIL_MODULES := \
   $(UTILS_DIR)/ines/header  \
+  $(UTILS_DIR)/ines/frame   \
   $(UTILS_DIR)/ines/inspect \
   $(UTILS_DIR)/chr/colors   \
   $(UTILS_DIR)/chr/convert
@@ -42,3 +43,8 @@ clean-$(1):
 endef
 
 $(foreach m,$(MODULES),$(eval $(call MODULE_RULES,$(m))))
+
+all-$(EXAMPLES_DIR)/platformer: all-$(UTILS_DIR)/ines/header all-$(UTILS_DIR)/ines/frame all-$(UTILS_DIR)/chr/convert
+build-$(EXAMPLES_DIR)/platformer: build-$(UTILS_DIR)/ines/header build-$(UTILS_DIR)/ines/frame build-$(UTILS_DIR)/chr/convert
+test-$(EXAMPLES_DIR)/platformer: test-$(UTILS_DIR)/ines/header test-$(UTILS_DIR)/ines/frame test-$(UTILS_DIR)/chr/convert
+test-valgrind-$(EXAMPLES_DIR)/platformer: test-valgrind-$(UTILS_DIR)/ines/header test-valgrind-$(UTILS_DIR)/ines/frame test-valgrind-$(UTILS_DIR)/chr/convert

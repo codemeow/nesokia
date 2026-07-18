@@ -54,7 +54,7 @@ _PA_OBJECTS_COUNT   = nsk_pool_size
 ; @brief Local macro variable "switch" constructor
 .define _NSK_VAR_SWITCH_(index) .ident(.sprintf("switch_%d", index))
 
-; @brief Local macro variable "switch" constructor
+; @brief Local macro variable "argtype" constructor
 .define _NSK_VAR_ARGTYPE_(index) .ident(.sprintf("argtype_%d", index))
 
 ; @brief Detects the argument type

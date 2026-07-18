@@ -6,8 +6,6 @@
 .ifndef ::__NSK_COMMON_CONSTS__
 ::__NSK_COMMON_CONSTS__ = 1
 
-.include "nsk_common_hw.inc"
-
 .linecont +
 
 ; @brief Global project namespace

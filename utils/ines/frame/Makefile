@@ -10,6 +10,9 @@ SDK_MAKE_DIR := $(DIR_ROOT)/bin/make
 SDK_COMMON_SOURCE_DIR := $(DIR_ROOT)/utils/common/6502
 SDK_COMMON_TARGET_DIR := $(DIR_ROOT)/bin/includes/6502
 SDK_COMMON_SOURCES := $(sort $(wildcard $(SDK_COMMON_SOURCE_DIR)/*.inc))
+SDK_FRAME_INCLUDE_SOURCE_DIR := includes
+SDK_FRAME_INCLUDE_SOURCES := $(sort $(wildcard $(SDK_FRAME_INCLUDE_SOURCE_DIR)/*.inc))
+SDK_INCLUDE_SOURCES := $(sort $(SDK_COMMON_SOURCES) $(SDK_FRAME_INCLUDE_SOURCES))
 SDK_FRAME_MAKE_SOURCE := make/nsk_frame.mk
 SDK_FRAME_MAKE_TARGET := $(SDK_MAKE_DIR)/nsk_frame.mk
 
@@ -17,7 +20,7 @@ SDK_FRAME_MAKE_TARGET := $(SDK_MAKE_DIR)/nsk_frame.mk
 nsk-sdk-common-sync:
 	@$(CMD_MKDIR) "$(SDK_COMMON_TARGET_DIR)"
 	@set -e; \
-	for source in $(SDK_COMMON_SOURCES); do \
+	for source in $(SDK_INCLUDE_SOURCES); do \
 		target="$(SDK_COMMON_TARGET_DIR)/$$(basename "$$source")"; \
 		if ! cmp -s "$$source" "$$target"; then \
 			$(CMD_CP) "$$source" "$$target"; \
@@ -25,8 +28,10 @@ nsk-sdk-common-sync:
 	done; \
 	for target in "$(SDK_COMMON_TARGET_DIR)"/*.inc; do \
 		[ -e "$$target" ] || continue; \
-		source="$(SDK_COMMON_SOURCE_DIR)/$$(basename "$$target")"; \
-		[ -f "$$source" ] || $(CMD_RM) "$$target"; \
+		filename="$$(basename "$$target")"; \
+		common_source="$(SDK_COMMON_SOURCE_DIR)/$$filename"; \
+		frame_source="$(SDK_FRAME_INCLUDE_SOURCE_DIR)/$$filename"; \
+		[ -f "$$common_source" ] || [ -f "$$frame_source" ] || $(CMD_RM) "$$target"; \
 	done
 
 $(SDK_FRAME_MAKE_TARGET): $(SDK_FRAME_MAKE_SOURCE)

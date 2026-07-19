@@ -13,6 +13,7 @@
 
 .include "../mapper/nsk_mapper_init.inc"
 .include "../nsk_frame_entry.inc"
+.include "nsk_vector_nmi.inc"
 
 .if .defined(::NSK_FEATURE_RESET) \ 
     .and ::NSK_FEATURE_RESET = 1
@@ -141,6 +142,34 @@
 .endproc
 .endif
 
+; @brief Initialize the temp NMI buffers if present
+.proc _nsk_reset_nmi_init
+
+    .if .defined(::NSK_NMI_UPDATEPPUCTRL) \
+        .and ::NSK_NMI_UPDATEPPUCTRL = 1
+
+        lda #NSK_RESET_PPUCTRL
+        sta nsk_ppu_temp_ctrl
+    .endif
+
+    .if .defined(::NSK_NMI_UPDATEPPUSCROLL) \
+        .and ::NSK_NMI_UPDATEPPUSCROLL = 1
+
+        lda #0
+        sta nsk_ppu_temp_scroll_x
+        sta nsk_ppu_temp_scroll_y
+    .endif
+
+    .if .defined(::NSK_NMI_UPDATEPPUMASK) \
+        .and ::NSK_NMI_UPDATEPPUMASK = 1
+
+        lda #NSK_RESET_PPUMASK
+        sta nsk_ppu_temp_mask
+    .endif
+
+    rts
+.endproc
+
 ; @brief Reset handler routine.
 ; @note Never returns: control is transferred to NSK_RESET_MAINADDR.
 .proc nsk_vector_reset
@@ -179,6 +208,8 @@
     jsr _nsk_reset_backdrop_set
 .endif
 
+    jsr _nsk_reset_nmi_init
+
 .if .defined(::NSK_FEATURE_CONSTRUCTORS) \
     .and ::NSK_FEATURE_CONSTRUCTORS = 1
 
@@ -189,7 +220,6 @@
     .and ::NSK_FEATURE_MAIN = 1
 
     jmp nsk_frame_main
-
 .else
 
     jmp NSK_MAIN_TRAMPOLINE

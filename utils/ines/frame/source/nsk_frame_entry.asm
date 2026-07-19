@@ -23,6 +23,7 @@
     .error "NSK_FEATURE_MAIN and NSK_FEATURE_NMI should be both set or unset"
 .endif
 
+.import NSK_MAIN_INIT
 .import NSK_MAIN_FUNCTION
 
 .segment NSK_SEGMENT_BSS
@@ -46,6 +47,8 @@ nsk_nmi_flag:
 .export nsk_frame_main
 .proc nsk_frame_main
     jsr _main_init
+
+    jsr NSK_MAIN_INIT
 
     main:
         jsr NSK_MAIN_FUNCTION

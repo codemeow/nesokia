@@ -26,6 +26,36 @@
 
 .import NSK_NMI_FUNCTION
 
+.segment NSK_SEGMENT_BSS
+
+.if .defined(::NSK_NMI_UPDATEPPUCTRL) \
+    .and ::NSK_NMI_UPDATEPPUCTRL = 1
+
+    .export nsk_ppu_temp_ctrl
+    nsk_ppu_temp_ctrl:
+        .res 1
+.endif
+
+.if .defined(::NSK_NMI_UPDATEPPUSCROLL) \
+    .and ::NSK_NMI_UPDATEPPUSCROLL = 1
+
+    .export nsk_ppu_temp_scroll_x
+    nsk_ppu_temp_scroll_x:
+        .res 1
+
+    .export nsk_ppu_temp_scroll_y
+    nsk_ppu_temp_scroll_y:
+        .res 1
+.endif
+
+.if .defined(::NSK_NMI_UPDATEPPUMASK) \
+    .and ::NSK_NMI_UPDATEPPUMASK = 1
+
+    .export nsk_ppu_temp_mask
+    nsk_ppu_temp_mask:
+        .res 1
+.endif
+
 .segment NSK_SEGMENT_NMICODE
 
 ; @brief Resets NMI flag, allowing to process another NMI
@@ -35,18 +65,102 @@
     rts
 .endproc
 
+.if .defined(::NSK_NMI_UPDATEPPUCTRL) \
+    .and ::NSK_NMI_UPDATEPPUCTRL = 1
+
+; @brief Updates PPUCTRL value
+.proc _ppuctrl_update
+    push a
+
+    lda nsk_ppu_temp_ctrl
+    sta NSK::CPU::PPU::PPUCTRL
+
+    pull a
+    rts
+.endproc
+.endif
+
+.if .defined(::NSK_NMI_UPDATEPPUMASK) \
+    .and ::NSK_NMI_UPDATEPPUMASK = 1
+
+; @brief Updates PPUMASK value
+.proc _ppumask_update
+    push a
+
+    lda nsk_ppu_temp_mask
+    sta NSK::CPU::PPU::PPUMASK
+
+    pull a
+    rts
+.endproc
+.endif
+
+.if .defined(::NSK_NMI_UPDATEPPUSCROLL) \
+    .and ::NSK_NMI_UPDATEPPUSCROLL = 1
+
+; @brief Updates PPUSCROLL value
+.proc _ppuscroll_update
+    push a
+
+    bit NSK::CPU::PPU::PPUSTATUS
+    lda nsk_ppu_temp_scroll_x
+    sta NSK::CPU::PPU::PPUSCROLL
+    lda nsk_ppu_temp_scroll_y
+    sta NSK::CPU::PPU::PPUSCROLL
+
+    pull a
+    rts
+.endproc
+.endif
+
+.if .defined(::NSK_NMI_UPDATESPRITES) \
+    .and ::NSK_NMI_UPDATESPRITES = 1
+
+; @brief Updates sprites data
+.proc _sprites_update
+    push a
+
+    lda #$00
+    sta NSK::CPU::PPU::OAMADDR
+    lda #.hibyte(::NSK_NMI_UPDATESPRITES_ADDR)
+    sta NSK::CPU::PPU::OAMDMA
+
+    pull a
+    rts
+.endproc
+.endif
+
 ; @brief NMI handler routine.
 .proc nsk_vector_nmi
     push a, x, y
 
     jsr NSK_NMI_FUNCTION
 
-    ; TODO:
-    ; sprites update
-    ; ppuctrl update
-    ; ppuscroll update
-    ; ppumask update
-    ; music update
+    .if .defined(::NSK_NMI_UPDATESPRITES) \
+        .and ::NSK_NMI_UPDATESPRITES = 1
+
+        jsr _sprites_update
+    .endif
+
+    .if .defined(::NSK_NMI_UPDATEPPUCTRL) \
+        .and ::NSK_NMI_UPDATEPPUCTRL = 1
+
+        jsr _ppuctrl_update
+    .endif
+
+    .if .defined(::NSK_NMI_UPDATEPPUSCROLL) \
+        .and ::NSK_NMI_UPDATEPPUSCROLL = 1
+
+        jsr _ppuscroll_update
+    .endif
+
+    .if .defined(::NSK_NMI_UPDATEPPUMASK) \
+        .and ::NSK_NMI_UPDATEPPUMASK = 1
+
+        jsr _ppumask_update
+    .endif
+
+    ; TODO music update
 
     jsr _nmi_flag
 

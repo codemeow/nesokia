@@ -21,6 +21,7 @@
 .include "nsk_sprites_fallingstar.inc"
 .include "nsk_sprites_starbit.inc"
 .include "../../../utils/nsk_util_rand8.inc"
+.include "../../../utils/nsk_constructors.inc"
 
 nsk_constructor _init
 

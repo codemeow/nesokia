@@ -8,16 +8,15 @@
 
 .linecont +
 
-.include "nsk_common_hw.inc"
-.include "nsk_common_mapper.inc"
-.include "mapper/nsk_frame_mapper.inc"
-.include "../nsk_frame_defaults.inc"
+.include "nsk_common_meta.inc"
+.include "../nsk_frame_configs.inc"
 
-.if ::NSK_FEATURE_MAPPER = 1
-.if .defined(NSK_HEADER_MAPPER_ID)
-.if ::NSK_HEADER_MAPPER_ID = 4
-.if .defined(NSK_HEADER_SUBMAPPER_ID)
-.if ::NSK_HEADER_SUBMAPPER_ID = 0
+.if .defined(::NSK_FEATURE_MAPPER)              \
+    .and ::NSK_FEATURE_MAPPER = 1               \
+    .and .defined(::NSK_HEADER_MAPPER_ID)       \
+    .and ::NSK_HEADER_MAPPER_ID = 4             \
+    .and .defined(::NSK_HEADER_SUBMAPPER_ID)    \
+    .and ::NSK_HEADER_SUBMAPPER_ID = 0
 
 .assert (NSK_MMC3_INIT_MODE & NSKMP::MMC3::SELECT::MODE_MASK) = NSK_MMC3_INIT_MODE, \
     error, "NSK_MMC3_INIT_MODE contains unsupported bits"
@@ -86,10 +85,6 @@
     rts
 .endproc
 
-.endif
-.endif
-.endif
-.endif
 .endif
 
 .endif

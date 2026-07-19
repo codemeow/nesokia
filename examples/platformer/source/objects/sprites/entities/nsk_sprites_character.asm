@@ -20,6 +20,7 @@
 .include "../nsk_sprites_list.inc"
 .include "nsk_sprites_whirl.inc"
 .include "../../tiles/maps/nsk_map_vars.inc"
+.include "../../../utils/nsk_constructors.inc"
 
 nsk_constructor _init
 

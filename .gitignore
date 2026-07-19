@@ -9,7 +9,7 @@ build
 bin
 
 # Editors files
-.vscode
+*.vscode
 *.sublime-workspace
 
 # Python cache files

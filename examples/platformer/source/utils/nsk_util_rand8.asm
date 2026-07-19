@@ -12,6 +12,7 @@
 .include "nsk_common_meta.inc"
 
 .include "../utils/nsk_util_rand8.inc"
+.include "nsk_constructors.inc"
 
 nsk_constructor _init
 

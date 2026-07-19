@@ -6,9 +6,7 @@
 .ifndef ::__NSK_FRAME_DEFAULTS__
 ::__NSK_FRAME_DEFAULTS__ = 1
 
-; Mapper initialization is enabled unless the project disables it explicitly.
-.if !.defined(::NSK_FEATURE_MAPPER)
-    ::NSK_FEATURE_MAPPER = 1
-.endif
+.include "defaults/nsk_default_reset.inc"
+.include "defaults/nsk_default_mapper.inc"
 
 .endif

@@ -20,6 +20,7 @@
 .include "../nsk_sprites_list.inc"
 .include "../../../utils/nsk_util_rand8.inc"
 .include "../../tiles/maps/nsk_map_vars.inc"
+.include "../../../utils/nsk_constructors.inc"
 
 nsk_constructor _init
 

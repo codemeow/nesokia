@@ -9,6 +9,7 @@
 .include "nsk_common_meta.inc"
 
 .include "nsk_pool_vars.inc"
+.include "../../../utils/nsk_constructors.inc"
 
 nsk_constructor _init
 

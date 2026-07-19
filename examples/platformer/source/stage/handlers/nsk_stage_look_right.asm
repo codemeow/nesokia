@@ -12,6 +12,7 @@
 .include "../../ppu/nsk_ppu_vars.inc"
 .include "../nsk_stage_control.inc"
 .include "nsk_stage_sprites.inc"
+.include "../../utils/nsk_constructors.inc"
 
 nsk_constructor _init
 

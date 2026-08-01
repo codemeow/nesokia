@@ -10,6 +10,7 @@
 .include "nsk_frame_segments.inc"
 .include "nsk_frame_main.inc"
 .include "header/nsk_header_config.inc"
+.include "ppu/nsk_frame_ppu.inc"
 .include "vectors/nsk_frame_reset.inc"
 .include "vectors/nsk_frame_nmi.inc"
 .include "vectors/reset/nsk_frame_constructor.inc"

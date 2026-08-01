@@ -13,20 +13,19 @@
 
 .include "../mapper/nsk_mapper_init.inc"
 .include "../nsk_frame_entry.inc"
+.include "../ppu/nsk_ppu_vars.inc"
 .include "nsk_vector_nmi.inc"
 
 .if .defined(::NSK_FEATURE_RESET) \ 
     .and ::NSK_FEATURE_RESET = 1
 
-.if .defined(::NSK_RESET_PPUCTRL) \
-    .and ::NSK_RESET_PPUCTRL = 1
+.if .defined(::NSK_RESET_PPUCTRL)
 
     .assert (::NSK_RESET_PPUCTRL & NSK::CPU::PPU::BITS::PPUCTRL::NMI_BIT) = 0, \
         error, "NSK_RESET_PPUCTRL must keep NMI disabled during reset"
 .endif
 
-.if .defined(::NSK_RESET_PPUMASK) \
-    .and ::NSK_RESET_PPUMASK = 1
+.if .defined(::NSK_RESET_PPUMASK)
 
     .assert (::NSK_RESET_PPUMASK & NSK::CPU::PPU::BITS::PPUMASK::RENDER_BACK_BIT) = 0, \
         error, "NSK_RESET_PPUMASK must keep background rendering disabled during reset"
@@ -142,7 +141,10 @@
 .endproc
 .endif
 
-; @brief Initialize the temp NMI buffers if present
+; @brief Initialize PPU shadows used by configured NMI register updates.
+.if .defined(::NSK_FEATURE_PPU) \
+    .and ::NSK_FEATURE_PPU = 1
+
 .proc _nsk_reset_nmi_init
 
     .if .defined(::NSK_NMI_UPDATEPPUCTRL) \
@@ -169,6 +171,7 @@
 
     rts
 .endproc
+.endif
 
 ; @brief Reset handler routine.
 ; @note Never returns: control is transferred to NSK_RESET_MAINADDR.
@@ -208,7 +211,11 @@
     jsr _nsk_reset_backdrop_set
 .endif
 
+.if .defined(::NSK_FEATURE_PPU) \
+    .and ::NSK_FEATURE_PPU = 1
+
     jsr _nsk_reset_nmi_init
+.endif
 
 .if .defined(::NSK_FEATURE_CONSTRUCTORS) \
     .and ::NSK_FEATURE_CONSTRUCTORS = 1

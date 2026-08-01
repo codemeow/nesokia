@@ -8,6 +8,7 @@
 
 .include "defaults/nsk_default_reset.inc"
 .include "defaults/nsk_default_mapper.inc"
+.include "defaults/nsk_default_ppu.inc"
 .include "defaults/vectors/nsk_default_nmi.inc"
 
 .endif

@@ -11,6 +11,7 @@
 .include "nsk_common_meta.inc"
 .include "../nsk_frame_configs.inc"
 .include "../nsk_frame_entry.inc"
+.include "../ppu/nsk_ppu_vars.inc"
 
 .if .defined(::NSK_FEATURE_NMI) \ 
     .and ::NSK_FEATURE_NMI = 1
@@ -26,34 +27,40 @@
 
 .import NSK_NMI_FUNCTION
 
-.segment NSK_SEGMENT_BSS
-
 .if .defined(::NSK_NMI_UPDATEPPUCTRL) \
     .and ::NSK_NMI_UPDATEPPUCTRL = 1
 
-    .export nsk_ppu_temp_ctrl
-    nsk_ppu_temp_ctrl:
-        .res 1
+    .if !.defined(::NSK_FEATURE_PPU)
+        .error "NSK_NMI_UPDATEPPUCTRL requires NSK_FEATURE_PPU = 1"
+    .else
+        .if ::NSK_FEATURE_PPU <> 1
+            .error "NSK_NMI_UPDATEPPUCTRL requires NSK_FEATURE_PPU = 1"
+        .endif
+    .endif
 .endif
 
 .if .defined(::NSK_NMI_UPDATEPPUSCROLL) \
     .and ::NSK_NMI_UPDATEPPUSCROLL = 1
 
-    .export nsk_ppu_temp_scroll_x
-    nsk_ppu_temp_scroll_x:
-        .res 1
-
-    .export nsk_ppu_temp_scroll_y
-    nsk_ppu_temp_scroll_y:
-        .res 1
+    .if !.defined(::NSK_FEATURE_PPU)
+        .error "NSK_NMI_UPDATEPPUSCROLL requires NSK_FEATURE_PPU = 1"
+    .else
+        .if ::NSK_FEATURE_PPU <> 1
+            .error "NSK_NMI_UPDATEPPUSCROLL requires NSK_FEATURE_PPU = 1"
+        .endif
+    .endif
 .endif
 
 .if .defined(::NSK_NMI_UPDATEPPUMASK) \
     .and ::NSK_NMI_UPDATEPPUMASK = 1
 
-    .export nsk_ppu_temp_mask
-    nsk_ppu_temp_mask:
-        .res 1
+    .if !.defined(::NSK_FEATURE_PPU)
+        .error "NSK_NMI_UPDATEPPUMASK requires NSK_FEATURE_PPU = 1"
+    .else
+        .if ::NSK_FEATURE_PPU <> 1
+            .error "NSK_NMI_UPDATEPPUMASK requires NSK_FEATURE_PPU = 1"
+        .endif
+    .endif
 .endif
 
 .segment NSK_SEGMENT_NMICODE
@@ -65,7 +72,9 @@
     rts
 .endproc
 
-.if .defined(::NSK_NMI_UPDATEPPUCTRL) \
+.if .defined(::NSK_FEATURE_PPU)            \
+    .and ::NSK_FEATURE_PPU = 1             \
+    .and .defined(::NSK_NMI_UPDATEPPUCTRL) \
     .and ::NSK_NMI_UPDATEPPUCTRL = 1
 
 ; @brief Updates PPUCTRL value
@@ -80,7 +89,9 @@
 .endproc
 .endif
 
-.if .defined(::NSK_NMI_UPDATEPPUMASK) \
+.if .defined(::NSK_FEATURE_PPU)            \
+    .and ::NSK_FEATURE_PPU = 1             \
+    .and .defined(::NSK_NMI_UPDATEPPUMASK) \
     .and ::NSK_NMI_UPDATEPPUMASK = 1
 
 ; @brief Updates PPUMASK value
@@ -95,7 +106,9 @@
 .endproc
 .endif
 
-.if .defined(::NSK_NMI_UPDATEPPUSCROLL) \
+.if .defined(::NSK_FEATURE_PPU)              \
+    .and ::NSK_FEATURE_PPU = 1               \
+    .and .defined(::NSK_NMI_UPDATEPPUSCROLL) \
     .and ::NSK_NMI_UPDATEPPUSCROLL = 1
 
 ; @brief Updates PPUSCROLL value
@@ -142,19 +155,25 @@
         jsr _sprites_update
     .endif
 
-    .if .defined(::NSK_NMI_UPDATEPPUCTRL) \
+    .if .defined(::NSK_FEATURE_PPU)            \
+        .and ::NSK_FEATURE_PPU = 1             \
+        .and .defined(::NSK_NMI_UPDATEPPUCTRL) \
         .and ::NSK_NMI_UPDATEPPUCTRL = 1
 
         jsr _ppuctrl_update
     .endif
 
-    .if .defined(::NSK_NMI_UPDATEPPUSCROLL) \
+    .if .defined(::NSK_FEATURE_PPU)              \
+        .and ::NSK_FEATURE_PPU = 1               \
+        .and .defined(::NSK_NMI_UPDATEPPUSCROLL) \
         .and ::NSK_NMI_UPDATEPPUSCROLL = 1
 
         jsr _ppuscroll_update
     .endif
 
-    .if .defined(::NSK_NMI_UPDATEPPUMASK) \
+    .if .defined(::NSK_FEATURE_PPU)            \
+        .and ::NSK_FEATURE_PPU = 1             \
+        .and .defined(::NSK_NMI_UPDATEPPUMASK) \
         .and ::NSK_NMI_UPDATEPPUMASK = 1
 
         jsr _ppumask_update

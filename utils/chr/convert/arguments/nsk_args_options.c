@@ -5,6 +5,7 @@
 #include "../arguments/processors/nsk_option_mode.h"
 #include "../arguments/processors/nsk_option_back_address.h"
 #include "../arguments/processors/nsk_option_input.h"
+#include "../arguments/processors/nsk_option_input_object.h"
 #include "../arguments/processors/nsk_option_input_patpal_explicit.h"
 #include "../arguments/processors/nsk_option_input_ppu_colors.h"
 #include "../arguments/processors/nsk_option_input_palettes.h"
@@ -14,6 +15,8 @@
 #include "../arguments/processors/nsk_option_input_left_table.h"
 #include "../arguments/processors/nsk_option_input_right_table.h"
 #include "../arguments/processors/nsk_option_output.h"
+#include "../arguments/processors/nsk_option_output_object.h"
+#include "../arguments/processors/nsk_option_output_object_attributes.h"
 #include "../arguments/processors/nsk_option_output_ppu_colors.h"
 #include "../arguments/processors/nsk_option_output_palettes.h"
 #include "../arguments/processors/nsk_option_output_palette_back.h"
@@ -73,6 +76,18 @@ struct nsk_options_entry nsk_options_table[] = {
         "\n"
     },
     {
+        "input-object", 'o', required_argument,
+        nsk_option_input_object,
+        "Provides input background object PNG file.\n"
+        "\n"
+        "t2c mode\n"
+        "    * Standalone background object PNG\n"
+        "Notes\n"
+        "    * Requires PPU colors and a background palette input.\n"
+        "    * Mutually exclusive with full and pattern table PNG inputs.\n"
+        "\n"
+    },
+    {
         "input-ppu-colors", 'c', required_argument,
         nsk_option_input_ppu_colors,
         "Provides input PPU colors file.\n"
@@ -103,6 +118,8 @@ struct nsk_options_entry nsk_options_table[] = {
         "Provides input background palette file.\n"
         "\n"
         "c2t mode\n"
+        "    * Background palette (`$3f00–$3f0f`)\n"
+        "t2c object mode\n"
         "    * Background palette (`$3f00–$3f0f`)\n"
         "Notes\n"
         "    * Mutually exclusive with `--input-palettes`.\n"
@@ -196,13 +213,15 @@ struct nsk_options_entry nsk_options_table[] = {
         "    expr  ::= pair ('&' pair)*\n"
         "    pair  ::= key op value\n"
         "    op    ::= '='\n"
-        "    key   ::= [lr][0-f][0-f]\n"
+        "    key   ::= [lro][0-f][0-f]\n"
         "    value ::= 0..3 (decimal)\n"
         "\n"
         "Key syntax\n"
         "\n"
         "    * 'l'/'r' - Left or right pattern table\n"
         "    * 00..ff  - Index of the tile in hex format\n"
+        "    * 'o' - Standalone background object\n"
+        "    * XY - Object group coordinates in hex format\n"
         "\n"
         "Value syntax\n"
         "\n"
@@ -215,6 +234,8 @@ struct nsk_options_entry nsk_options_table[] = {
         "      - Request palette #0 for the $ab tile of the right pattern table\n"
         "    * \"l00=3\"\n"
         "      - Request palette #0 for the $00 tile of the left pattern table\n"
+        "    * \"o10=2\"\n"
+        "      - Request palette #2 for object group (1, 0)\n"
         "\n"
     },
 
@@ -226,6 +247,24 @@ struct nsk_options_entry nsk_options_table[] = {
         "\n"
         "c2t mode\n"
         "    * PNG full template\n"
+        "\n"
+    },
+    {
+        "output-object", 'D', required_argument,
+        nsk_option_output_object,
+        "Provides output background object CHR tiles file.\n"
+        "\n"
+        "t2c mode\n"
+        "    * Raw row-major object tiles (.pat)\n"
+        "\n"
+    },
+    {
+        "output-object-attributes", 'G', required_argument,
+        nsk_option_output_object_attributes,
+        "Provides output background object attribute file.\n"
+        "\n"
+        "t2c mode\n"
+        "    * Raw PPU-compatible object palette selectors (.atr)\n"
         "\n"
     },
     {

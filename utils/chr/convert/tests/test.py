@@ -6,6 +6,7 @@ from pathlib import Path
 from subroutines.cli import run_cli_tests
 from subroutines.errors import run_error_tests
 from subroutines.golden import run_golden_tests
+from subroutines.object import run_object_tests
 from subroutines.semantic import run_semantic_tests
 from subroutines.smoke import run_smoke_tests
 
@@ -26,6 +27,8 @@ def main() -> int:
     print()
     semantic_status = run_semantic_tests(ROOT, PROGRAM)
     print()
+    object_status = run_object_tests(ROOT, PROGRAM)
+    print()
     error_status = run_error_tests(ROOT, PROGRAM)
 
     if (
@@ -33,6 +36,7 @@ def main() -> int:
         and cli_status == 0
         and golden_status == 0
         and semantic_status == 0
+        and object_status == 0
         and error_status == 0
     ):
         return 0

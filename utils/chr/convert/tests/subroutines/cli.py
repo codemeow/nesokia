@@ -38,6 +38,7 @@ def duplicate_cases(root: Path) -> List[CliCase]:
         ("mode", ["-M", "t2c", "-M", "c2t"], "mode"),
         ("back-address", ["-A", "0000", "-A", "1000"], "back-address"),
         ("input", ["-i", full, "-i", full], "input"),
+        ("input-object", ["-o", full, "-o", full], "input-object"),
         ("input-ppu-colors", ["-c", colors, "-c", colors], "input-ppu-colors"),
         ("input-palettes", ["-p", palettes, "-p", palettes], "input-palettes"),
         ("input-palette-back", ["-b", "a", "-b", "b"], "input-palette-back"),
@@ -67,6 +68,12 @@ def duplicate_cases(root: Path) -> List[CliCase]:
             "explicit-palettes"
         ),
         ("output", ["-O", "a", "-O", "b"], "output"),
+        ("output-object", ["-D", "a", "-D", "b"], "output-object"),
+        (
+            "output-object-attributes",
+            ["-G", "a", "-G", "b"],
+            "output-object-attributes"
+        ),
         ("output-ppu-colors", ["-C", "a", "-C", "b"], "output-ppu-colors"),
         ("output-palettes", ["-P", "a", "-P", "b"], "output-palettes"),
         (
@@ -113,6 +120,22 @@ def cli_cases(root: Path) -> List[CliCase]:
             args=["-z"],
             expected_code=1,
             stderr_contains=["Unknown option"],
+            stdout_forbidden=True
+        ),
+        section_case(
+            "Basic",
+            name="missing object input argument",
+            args=["-o"],
+            expected_code=1,
+            stderr_contains=["Option -o requires an argument"],
+            stdout_forbidden=True
+        ),
+        section_case(
+            "Basic",
+            name="missing object attributes output argument",
+            args=["--output-object-attributes"],
+            expected_code=1,
+            stderr_contains=["Option --output-object-attributes requires an argument"],
             stdout_forbidden=True
         ),
         section_case(

@@ -163,6 +163,68 @@ PPU color output:
 
 ---
 
+## Background Object PNG to CHR Conversion
+
+An object PNG is a standalone background object, rather than a full PPU
+template or a pattern table. The converter encodes it as row-major CHR tiles
+and emits the palette selectors needed to render the object on a nametable.
+
+Object dimensions must be multiples of two tiles (`16×16 px`) and must not
+exceed `256×256 px`. Each `2×2` tile group must use one background palette.
+
+### Required input and output
+
+```
+-o, --input-object <object.png>
+-c, --input-ppu-colors <colors.png>
+one of:
+  -p, --input-palettes <palettes.png>
+  -b, --input-palette-back <background.spal>
+-D, --output-object <object.pat>
+-G, --output-object-attributes <object.atr>
+```
+
+`--input-object` cannot be combined with `-i`, `-l`, `-r`, `-t`, or a sprite
+palette input. Object mode accepts no standard template output option and does
+not use `--back-address`.
+
+### Object `.pat` format
+
+The output is a headerless row-major stream of 16-byte NES CHR tiles: tile
+`(0, 0)`, then `(1, 0)`, through the first row, followed by the next row.
+
+### Object `.atr` format
+
+The output is a headerless cropped stream of PPU attribute bytes. One byte
+covers `4×4` tiles, made of four `2×2` tile quadrants:
+
+```
+bits 0–1: top-left     bits 2–3: top-right
+bits 4–5: bottom-left  bits 6–7: bottom-right
+```
+
+Bytes are row-major. Its size is
+`ceil(object_width_tiles / 4) * ceil(object_height_tiles / 4)`. Unused fields
+in the final byte row or column are zero, but as zero is a palette index 0, not a
+transparent or skipped field, the renderer must use object dimensions to avoid
+writing fields outside the object.
+
+### Explicit object palettes
+
+When multiple background palettes contain a `2×2` group but encode its colors
+at different CHR indexes, select the palette explicitly:
+
+```
+-e "oXY=N"
+```
+
+`X` and `Y` are hexadecimal object-group coordinates and `N` is palette index
+`0..3`. For example, `-e "o10=2"` selects palette 2 for the group one step to
+the right of the object origin. Object palette keys cannot be mixed with the
+ordinary pattern table keys (`lXX` and `rXX`).
+
+---
+
 ## CHR to PNG Template Conversion
 
 ### Input Options
@@ -249,6 +311,22 @@ nesokia-chr-convert     \
   -P palettes.spals     \
   -T patterns.pats
 ```
+
+---
+
+### Convert a background object
+
+```
+nesokia-chr-convert             \
+  -o cloud.png                  \
+  -c colors.png                 \
+  -p palettes.png               \
+  -D cloud.pat                  \
+  -G cloud.atr
+```
+
+The next build stage may match `cloud.pat` against a chosen CHR bank and use
+`cloud.atr` while drawing the object into a nametable.
 
 ---
 

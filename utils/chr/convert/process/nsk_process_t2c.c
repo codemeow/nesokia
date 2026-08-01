@@ -1,8 +1,27 @@
 #include <nsk_util_meta.h>
 
 #include "../process/nsk_process_t2c.h"
+#include "../process/nsk_process_object.h"
 #include "../arguments/nsk_args_options.h"
 
+/*!
+ * \brief  Reject object explicit palette keys outside object mode
+ */
+static bool _explicit_validate(void) {
+    const struct nsk_pair *pair = nsk_options_program.input.explicit;
+    while (pair) {
+        if (pair->name[0] == 'o') {
+            nsk_err(
+                "Explicit object palette \"%s\" requires --input-object\n",
+                pair->name
+            );
+            return false;
+        }
+        pair = nsk_pair_next(pair);
+    }
+
+    return true;
+}
 /*!
  * \brief  Validate input combinations
  */
@@ -71,6 +90,19 @@ static void _options_validate(void) {
             );
             exit(EXIT_FAILURE);
         }
+    }
+
+    if (nsk_options_program.output.object ||
+        nsk_options_program.output.object_attributes
+    ) {
+        nsk_err(
+            "Invalid output: object outputs require --input-object\n"
+        );
+        exit(EXIT_FAILURE);
+    }
+
+    if (!_explicit_validate()) {
+        exit(EXIT_FAILURE);
     }
 }
 
@@ -290,6 +322,11 @@ static void _output_save(
  * \brief  Processes t2c mode
  */
 void nsk_process_t2c(void) {
+    if (nsk_options_program.input.object) {
+        nsk_process_object();
+        return;
+    }
+
     _options_validate();
 
     struct nsk_type_ppucolors ppucolors = { 0 };

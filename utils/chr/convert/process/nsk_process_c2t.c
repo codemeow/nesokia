@@ -14,6 +14,22 @@ static void _options_validate(void) {
         exit(EXIT_FAILURE);
     }
 
+    if (nsk_options_program.input.object) {
+        nsk_err(
+            "Invalid input: object PNG cannot be used in c2t mode\n"
+        );
+        exit(EXIT_FAILURE);
+    }
+
+    if (nsk_options_program.output.object ||
+        nsk_options_program.output.object_attributes
+    ) {
+        nsk_err(
+            "Invalid output: object outputs cannot be used in c2t mode\n"
+        );
+        exit(EXIT_FAILURE);
+    }
+
     if (!nsk_options_program.input.ppucolors) {
         nsk_err(
             "Invalid input: PPU colors file must be provided\n"

@@ -2,7 +2,7 @@
 #define NSK_PROCESS_OBJECT
 
 /*!
- * \brief  Processes a standalone background object PNG in t2c mode
+ * \brief  Processes a standalone background PNG in t2c mode
  */
 void nsk_process_object(void);
 

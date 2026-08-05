@@ -5,7 +5,7 @@
 #include "../../arguments/nsk_args_options.h"
 
 /*!
- * \brief  Sets output background object CHR tiles file
+ * \brief  Sets output background CHR tiles file
  */
 enum nsk_args_result nsk_option_output_object(void) {
     if (nsk_options_program.output.object) {

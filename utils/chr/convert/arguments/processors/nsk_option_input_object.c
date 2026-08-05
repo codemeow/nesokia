@@ -5,7 +5,7 @@
 #include "../../arguments/nsk_args_options.h"
 
 /*!
- * \brief  Sets input background object PNG file
+ * \brief  Sets input background PNG file
  */
 enum nsk_args_result nsk_option_input_object(void) {
     if (nsk_options_program.input.object) {

@@ -5,7 +5,7 @@
 #include "../../arguments/nsk_args_options.h"
 
 /*!
- * \brief  Sets output background object attribute file
+ * \brief  Sets output background attribute file
  */
 enum nsk_args_result nsk_option_output_object_attributes(void) {
     if (nsk_options_program.output.object_attributes) {

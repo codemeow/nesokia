@@ -12,9 +12,8 @@
 static enum nsk_args_result _explicit_read(void) {
     const char partnames[]  = "lr";
     const size_t partsize   = 256;
-    const size_t partscount = 2;
-    const size_t objectsize = 16 * 16;
-    const size_t list_size  = partsize * partscount + objectsize;
+    const size_t partscount = sizeof(partnames) - 1;
+    const size_t list_size  = partsize * partscount;
 
     char **list = nsk_util_malloc(sizeof(*list) * (list_size + 1));
     for (size_t p = 0; p < partscount; p++) {
@@ -38,27 +37,6 @@ static enum nsk_args_result _explicit_read(void) {
         }
     }
 
-    for (size_t y = 0; y < 16; y++) {
-        for (size_t x = 0; x < 16; x++) {
-            const size_t index = partsize * partscount + y * 16 + x;
-            int res = asprintf(
-                &list[index],
-                "o%zx%zx",
-                x,
-                y
-            );
-            if (res == -1) {
-                nsk_err(
-                    "Cannot allocate memory for explicit palette list"
-                );
-                for (size_t j = 0; j < index; j++) {
-                    free(list[j]);
-                }
-                free(list);
-                return NSK_ARGS_EXIT_FAILURE;
-            }
-        }
-    }
     list[list_size] = NULL;
 
     nsk_options_program.input.explicit = nsk_pair_parse(

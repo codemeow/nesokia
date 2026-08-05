@@ -3,7 +3,7 @@ from __future__ import annotations
 import tempfile
 
 from pathlib import Path
-from typing import List, Optional, Sequence, Tuple
+from typing import List, Tuple
 
 from tests.helpers.output import print_failed, print_indented, print_passed
 
@@ -73,8 +73,7 @@ def _valid_case(
     tmpdir: Path,
     title: str,
     object_name: str,
-    palette_name: str = "palettes.png",
-    extra: Optional[Sequence[str]] = None
+    palette_name: str = "palettes.png"
 ) -> bool:
     """Run one valid object fixture against static .pat and .atr goldens."""
 
@@ -83,7 +82,6 @@ def _valid_case(
         program,
         [
             *_base_args(root, object_name, palette_name),
-            *(extra or []),
             *output_args,
         ]
     )
@@ -117,37 +115,26 @@ def _invalid_dimensions(program: Path, root: Path, tmpdir: Path) -> bool:
     return True
 
 
-def _explicit_cases(program: Path, root: Path, tmpdir: Path) -> bool:
-    """Require -e for ambiguity and verify object palette key validation."""
+def _ambiguous_palette(program: Path, root: Path, tmpdir: Path) -> bool:
+    """Select the first matching palette for an ambiguous background group."""
 
     pat, atr, output_args = _outputs(tmpdir, "ambiguous")
     base = _base_args(root, "ambiguous-2x2.png", "palettes-ambiguous.png")
     proc = run_command(program, [*base, *output_args])
-    if proc.returncode == 0 or "Matching palettes" not in proc.stderr:
-        print_failed("object explicit required", "ambiguous object was accepted")
+    if not _success("object first matching palette", proc):
+        return False
+    if not _same_file("object first matching .pat", _fixture(root, "ambiguous-2x2.pat"), pat):
+        return False
+    if not _same_file("object first matching .atr", _fixture(root, "ambiguous-2x2.atr"), atr):
+        return False
+
+    proc = run_command(program, [*base, "-e", "l00=0", *output_args])
+    if proc.returncode == 0 or "cannot be used in object mode" not in proc.stderr:
+        print_failed("object rejects explicit palettes", "-e was accepted")
         print_process_output(proc)
         return False
 
-    proc = run_command(program, [*base, "-e", "o00=3", *output_args])
-    if not _success("object explicit correct", proc):
-        return False
-    if not _same_file("object explicit .pat", _fixture(root, "ambiguous-2x2.pat"), pat):
-        return False
-    if not _same_file("object explicit .atr", _fixture(root, "ambiguous-2x2.atr"), atr):
-        return False
-
-    for label, explicit, expected in (
-        ("out of range", "o10=0", "outside the object"),
-        ("wrong key family", "l00=0", "not an object palette key"),
-        ("palette index", "o00=4", "must be in range 0..3"),
-    ):
-        proc = run_command(program, [*base, "-e", explicit, *output_args])
-        if proc.returncode == 0 or expected not in proc.stderr:
-            print_failed(f"object explicit {label}", "invalid -e was accepted")
-            print_process_output(proc)
-            return False
-
-    print_passed("object explicit palettes")
+    print_passed("object first matching palette")
     return True
 
 
@@ -184,8 +171,9 @@ def run_object_tests(root: Path, program: Path) -> int:
         lambda tmp: _valid_case(binary, root, tmp, "object 4x4 tiles", "window-4x4.png"),
         lambda tmp: _valid_case(binary, root, tmp, "object 8x6 tiles", "lighthouse-8x6.png"),
         lambda tmp: _valid_case(binary, root, tmp, "object 2x2 tiles", "lynx-2x2.png"),
+        lambda tmp: _valid_case(binary, root, tmp, "object wider than 256 pixels", "wide-34x2.png"),
         lambda tmp: _invalid_dimensions(binary, root, tmp),
-        lambda tmp: _explicit_cases(binary, root, tmp),
+        lambda tmp: _ambiguous_palette(binary, root, tmp),
         lambda tmp: _background_spal(binary, root, tmp),
     )
 

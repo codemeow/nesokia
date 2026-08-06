@@ -55,7 +55,7 @@ enum nsk_mode_values {
 struct nsk_options_program {
     struct {
         const char *full;           /*!< Full PNG template (PNG only)   */
-        const char *object;         /*!< Background object PNG (PNG)    */
+        const char *object;         /*!< Background PNG (PNG)           */
         const char *ppucolors;      /*!< PPU colors (PNG/CHR)           */
         struct {
             const char *both;       /*!< Palettes (PNG/CHR)             */
@@ -74,8 +74,8 @@ struct nsk_options_program {
 
     struct {
         const char *full;           /*!< Full PNG template (PNG only)   */
-        const char *object;         /*!< Background object CHR tiles    */
-        const char *object_attributes; /*!< Background object attributes */
+        const char *object;         /*!< Background CHR tiles           */
+        const char *object_attributes; /*!< Background attributes        */
         const char *ppucolors;      /*!< PPU colors (PNG/CHR)           */
         struct {
             const char *both;       /*!< Palettes (PNG/CHR)             */

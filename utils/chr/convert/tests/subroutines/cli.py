@@ -195,6 +195,14 @@ def cli_cases(root: Path) -> List[CliCase]:
             stdout_forbidden=True
         ),
         section_case(
+            "Explicit",
+            name="object explicit-palettes key is unsupported",
+            args=["-e", "o00=0"],
+            expected_code=1,
+            stderr_contains=["cannot parse list string", "o00=0"],
+            stdout_forbidden=True
+        ),
+        section_case(
             "Files",
             name="positional after valid options",
             args=["-q", "-i", full, "-T", "out.pats", "extra"],

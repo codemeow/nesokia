@@ -1,4 +1,3 @@
-#include <errno.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,69 +11,7 @@
 enum nsk_object_size {
     NSK_OBJECTSIZE_TILEGROUP = 2,
     NSK_OBJECTSIZE_PIXELS_MIN = NSK_TILESIZE_WIDTH * NSK_OBJECTSIZE_TILEGROUP,
-    NSK_OBJECTSIZE_PIXELS_MAX = 256,
 };
-
-/*!
- * \brief  Returns the explicitly selected palette for an object group
- */
-static ssize_t _explicit_find(
-    const struct nsk_pair *explicit,
-    size_t                 x,
-    size_t                 y
-) {
-    char name[4];
-    snprintf(name, sizeof(name), "o%zx%zx", x, y);
-
-    while (explicit) {
-        if (strcmp(explicit->name, name) == 0) {
-            return (ssize_t)explicit->value;
-        }
-        explicit = nsk_pair_next(explicit);
-    }
-
-    return -1;
-}
-
-/*!
- * \brief  Checks that the explicit palette keys belong to object groups
- */
-static bool _explicit_validate(
-    const struct nsk_pair *explicit,
-    size_t                 groups_width,
-    size_t                 groups_height
-) {
-    while (explicit) {
-        if (explicit->name[0] != 'o') {
-            nsk_err(
-                "Explicit palette \"%s\" is not an object palette key\n",
-                explicit->name
-            );
-            return false;
-        }
-
-        size_t x = (size_t)(explicit->name[1] - '0');
-        size_t y = (size_t)(explicit->name[2] - '0');
-        if (explicit->name[1] >= 'a') {
-            x = (size_t)(explicit->name[1] - 'a' + 10);
-        }
-        if (explicit->name[2] >= 'a') {
-            y = (size_t)(explicit->name[2] - 'a' + 10);
-        }
-
-        if (x >= groups_width || y >= groups_height) {
-            nsk_err(
-                "Explicit object palette \"%s\" is outside the object\n",
-                explicit->name
-            );
-            return false;
-        }
-
-        explicit = nsk_pair_next(explicit);
-    }
-
-    return true;
-}
 
 /*!
  * \brief  Checks whether a color occurs in a palette group
@@ -82,14 +19,10 @@ static bool _explicit_validate(
 static bool _palette_contains(
     const struct nsk_type_palette *palette,
     size_t                         group,
-    union nsk_type_color4          color,
-    size_t                        *index
+    union nsk_type_color4          color
 ) {
     for (size_t i = 0; i < NSK_PALETTESIZE_COLORS; i++) {
         if (palette->group[group].color[i].raw == color.raw) {
-            if (index) {
-                *index = i;
-            }
             return true;
         }
     }
@@ -98,7 +31,7 @@ static bool _palette_contains(
 }
 
 /*!
- * \brief  Checks if an object group can be encoded by a palette group
+ * \brief  Checks if a 2x2 background group matches a palette group
  */
 static bool _group_matches(
     const struct nsk_type_pngimage *image,
@@ -112,8 +45,7 @@ static bool _group_matches(
             if (!_palette_contains(
                 palette,
                 palette_group,
-                image->data[starty + y][startx + x],
-                NULL
+                image->data[starty + y][startx + x]
             )) {
                 return false;
             }
@@ -124,115 +56,37 @@ static bool _group_matches(
 }
 
 /*!
- * \brief  Checks whether matching palettes encode every used color alike
- */
-static bool _group_indexesmatch(
-    const struct nsk_type_pngimage *image,
-    const struct nsk_type_palette  *palette,
-    size_t                          group0,
-    size_t                          group1,
-    size_t                          startx,
-    size_t                          starty
-) {
-    for (size_t y = 0; y < NSK_OBJECTSIZE_PIXELS_MIN; y++) {
-        for (size_t x = 0; x < NSK_OBJECTSIZE_PIXELS_MIN; x++) {
-            const union nsk_type_color4 color = image->data[starty + y][startx + x];
-            size_t index0;
-            size_t index1;
-            bool found0 = _palette_contains(palette, group0, color, &index0);
-            bool found1 = _palette_contains(palette, group1, color, &index1);
-
-            if (!found0 || !found1 || index0 != index1) {
-                return false;
-            }
-        }
-    }
-
-    return true;
-}
-
-/*!
- * \brief  Selects a palette for one 2x2 object tile group
+ * \brief  Selects the first matching palette for one 2x2 tile group
  */
 static bool _group_selectpalette(
     const struct nsk_type_pngimage *image,
     const struct nsk_type_palette  *palette,
     size_t                          groupx,
     size_t                          groupy,
-    ssize_t                         explicit,
     size_t                         *selected
 ) {
     const size_t startx = groupx * NSK_OBJECTSIZE_PIXELS_MIN;
     const size_t starty = groupy * NSK_OBJECTSIZE_PIXELS_MIN;
-    bool matches[NSK_PALETTESIZE_GROUPS] = { false };
-    size_t count = 0;
 
     for (size_t group = 0; group < NSK_PALETTESIZE_GROUPS; group++) {
-        matches[group] = _group_matches(
+        if (_group_matches(
             image,
             palette,
-            group,
-            startx,
-            starty
-        );
-        if (matches[group]) {
-            count++;
-        }
-    }
-
-    if (explicit != -1) {
-        if (!matches[explicit]) {
-            nsk_err(
-                "Requested object palette #%zd does not contain all colors "
-                "of group [%zu, %zu]\n",
-                explicit,
-                groupx,
-                groupy
-            );
-            return false;
-        }
-
-        *selected = (size_t)explicit;
-        return true;
-    }
-
-    if (count == 0) {
-        nsk_err(
-            "Cannot find a matching palette for object group [%zu, %zu]\n",
-            groupx,
-            groupy
-        );
-        return false;
-    }
-
-    size_t first = 0;
-    while (!matches[first]) {
-        first++;
-    }
-
-    for (size_t group = first + 1; group < NSK_PALETTESIZE_GROUPS; group++) {
-        if (matches[group] && !_group_indexesmatch(
-            image,
-            palette,
-            first,
             group,
             startx,
             starty
         )) {
-            nsk_err(
-                "Matching palettes encode object group [%zu, %zu] differently\n"
-                "Provide --explicit-palettes=\"o%zx%zx=N\"\n",
-                groupx,
-                groupy,
-                groupx,
-                groupy
-            );
-            return false;
+            *selected = group;
+            return true;
         }
     }
 
-    *selected = first;
-    return true;
+    nsk_err(
+        "Cannot find a matching palette for object group [%zu, %zu]\n",
+        groupx,
+        groupy
+    );
+    return false;
 }
 
 /*!
@@ -296,10 +150,15 @@ static void _options_validate(void) {
         nsk_err("Invalid option: --back-address cannot be used in object mode\n");
         exit(EXIT_FAILURE);
     }
+
+    if (nsk_options_program.input.explicit) {
+        nsk_err("Invalid option: --explicit-palettes cannot be used in object mode\n");
+        exit(EXIT_FAILURE);
+    }
 }
 
 /*!
- * \brief  Loads and validates the palette needed by an object
+ * \brief  Loads and validates the palette needed by a background PNG
  */
 static void _palette_load(
     struct nsk_type_ppucolors *ppucolors,
@@ -341,7 +200,7 @@ static void _palette_load(
 }
 
 /*!
- * \brief  Saves object tiles as raw row-major CHR data
+ * \brief  Saves background tiles as raw row-major CHR data
  */
 static bool _tiles_save(
     const char                 *filename,
@@ -350,7 +209,7 @@ static bool _tiles_save(
 ) {
     nsk_auto_fclose FILE *file = nsk_io_fopen(filename, "wb");
     if (!file) {
-        nsk_err("Error: cannot open file \"%s\" for object tile writing\n", filename);
+        nsk_err("Error: cannot open file \"%s\" for background tile writing\n", filename);
         return false;
     }
 
@@ -364,7 +223,7 @@ static bool _tiles_save(
 }
 
 /*!
- * \brief  Saves object palette selectors as raw attribute bytes
+ * \brief  Saves background palette selectors as raw attribute bytes
  */
 static bool _attributes_save(
     const char    *filename,
@@ -373,12 +232,12 @@ static bool _attributes_save(
 ) {
     nsk_auto_fclose FILE *file = nsk_io_fopen(filename, "wb");
     if (!file) {
-        nsk_err("Error: cannot open file \"%s\" for object attribute writing\n", filename);
+        nsk_err("Error: cannot open file \"%s\" for background attribute writing\n", filename);
         return false;
     }
 
     if (fwrite(attributes, count, 1, file) != 1) {
-        nsk_err("Error: cannot write object attributes to \"%s\"\n", filename);
+        nsk_err("Error: cannot write background attributes to \"%s\"\n", filename);
         return false;
     }
 
@@ -404,16 +263,12 @@ void nsk_process_object(void) {
 
     if (image->width < NSK_OBJECTSIZE_PIXELS_MIN ||
         image->height < NSK_OBJECTSIZE_PIXELS_MIN ||
-        image->width > NSK_OBJECTSIZE_PIXELS_MAX ||
-        image->height > NSK_OBJECTSIZE_PIXELS_MAX ||
         image->width % NSK_OBJECTSIZE_PIXELS_MIN != 0 ||
         image->height % NSK_OBJECTSIZE_PIXELS_MIN != 0
     ) {
         nsk_err(
-            "Object PNG dimensions must be multiples of %d pixels and no larger "
-            "than %d pixels\n",
-            NSK_OBJECTSIZE_PIXELS_MIN,
-            NSK_OBJECTSIZE_PIXELS_MAX
+            "Object PNG dimensions must be multiples of %d pixels\n",
+            NSK_OBJECTSIZE_PIXELS_MIN
         );
         exit(EXIT_FAILURE);
     }
@@ -424,14 +279,6 @@ void nsk_process_object(void) {
     const size_t groups_height = tiles_height / NSK_OBJECTSIZE_TILEGROUP;
     const size_t attributes_width = (groups_width + 1) / 2;
     const size_t attributes_height = (groups_height + 1) / 2;
-
-    if (!_explicit_validate(
-        nsk_options_program.input.explicit,
-        groups_width,
-        groups_height
-    )) {
-        exit(EXIT_FAILURE);
-    }
 
     nsk_auto_free struct nsk_type_tile *tiles = nsk_util_malloc(
         sizeof(*tiles) * tiles_width * tiles_height
@@ -449,11 +296,6 @@ void nsk_process_object(void) {
                 &palette,
                 groupx,
                 groupy,
-                _explicit_find(
-                    nsk_options_program.input.explicit,
-                    groupx,
-                    groupy
-                ),
                 &selected
             )) {
                 exit(EXIT_FAILURE);
